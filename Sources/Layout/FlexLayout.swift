@@ -109,10 +109,12 @@ open class FlexLayout: Equatable {
         layoutType = measureSelf ? .text : .default
     }
 
-    public func bind(view: LayoutView) {
+    @discardableResult
+    public func bind(view: LayoutView) -> Self {
         self.view = view
         measureSelf = view.measureSelf
         layoutType = .text
+        return self
     }
 
     open func markDirty() { // YGNodeMarkDirtyInternal

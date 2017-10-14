@@ -27,6 +27,7 @@ final public class TextLayout: FlexLayout {
     public private(set) var text: NSAttributedString? = nil
     public private(set) var multiLine = false
 
+    @discardableResult
     public func text(_ value: NSAttributedString) -> TextLayout {
         self.text = value
         measureSelf = true
@@ -34,6 +35,7 @@ final public class TextLayout: FlexLayout {
         return self
     }
 
+    @discardableResult
     public func multiLine(_ value: Bool) -> TextLayout {
         self.multiLine = value
         markDirty()

@@ -54,15 +54,26 @@ final public class ButtonLayout: FlexLayout {
         return layout
     }
 
-//    public func titleLayout(_ value: TextLayout) -> ButtonLayout {
-//        self.titleLayout = value
-//        return self
-//    }
-//
-//    public func imageLayout(_ value: FlexLayout) -> ButtonLayout {
-//        self.imageLayout = value
-//        return self
-//    }
+    @discardableResult
+    public func titleLayout(_ value: TextLayout) -> ButtonLayout {
+        // TODO: Remove
+        if let t = self.titleLayout {
+            remove(t)
+        }
+        self.titleLayout = value
+        append(value)
+        return self
+    }
+
+    @discardableResult
+    public func imageLayout(_ value: FlexLayout) -> ButtonLayout {
+        if let t = self.imageLayout {
+            remove(t)
+        }
+        self.imageLayout = value
+        append(value)
+        return self
+    }
 
     public override func apply(to view: LayoutView? = nil) {
         super.apply(to: view)
@@ -95,6 +106,6 @@ final public class ButtonLayout: FlexLayout {
             break
         }
         button.contentEdgeInsets = style.padding.edgeInsets
-        Log.debug(button.titleEdgeInsets, button.imageEdgeInsets)
+//        Log.debug(button.titleEdgeInsets, button.imageEdgeInsets)
     }
 }

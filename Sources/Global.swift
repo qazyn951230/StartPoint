@@ -19,7 +19,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 public func match<T>(v4: T, v5: T, v6: T, v6p: T, x: T) -> T {
+    switch Device.current {
+    case .phone4:
+        return v4
+    case .phone5:
+        return v5
+    case .phone6:
+        return v6
+    case .phone6Plus:
+        return v6p
+    case .phoneX:
+        return x
+    }
+}
+
+public func match<T>(v4: T?, v5: T?, v6: T?, v6p: T?, x: T?) -> T? {
     switch Device.current {
     case .phone4:
         return v4
@@ -47,6 +63,19 @@ public func match<T>(v4: T, v5: T, v6: T, v6p: T) -> T {
     }
 }
 
+public func match<T>(v4: T?, v5: T?, v6: T?, v6p: T?) -> T? {
+    switch Device.current {
+    case .phone4:
+        return v4
+    case .phone5:
+        return v5
+    case .phone6:
+        return v6
+    case .phone6Plus, .phoneX:
+        return v6p
+    }
+}
+
 public func match<T>(v5: T, v6: T, v6p: T) -> T {
     switch Device.current {
     case .phone4, .phone5:
@@ -58,7 +87,49 @@ public func match<T>(v5: T, v6: T, v6p: T) -> T {
     }
 }
 
+public func match<T>(v5: T?, v6: T?, v6p: T?) -> T? {
+    switch Device.current {
+    case .phone4, .phone5:
+        return v5
+    case .phone6:
+        return v6
+    case .phone6Plus, .phoneX:
+        return v6p
+    }
+}
+
+public func match<T>(v320: T, v375: T, v414: T) -> T {
+    switch Device.current {
+    case .phone4, .phone5:
+        return v320
+    case .phone6, .phoneX:
+        return v375
+    case .phone6Plus:
+        return v414
+    }
+}
+
+public func match<T>(v320: T?, v375: T?, v414: T?) -> T? {
+    switch Device.current {
+    case .phone4, .phone5:
+        return v320
+    case .phone6, .phoneX:
+        return v375
+    case .phone6Plus:
+        return v414
+    }
+}
+
 public func match<T>(v5: T, v6: T) -> T {
+    switch Device.current {
+    case .phone4, .phone5:
+        return v5
+    case .phone6, .phone6Plus, .phoneX:
+        return v6
+    }
+}
+
+public func match<T>(v5: T?, v6: T?) -> T? {
     switch Device.current {
     case .phone4, .phone5:
         return v5
