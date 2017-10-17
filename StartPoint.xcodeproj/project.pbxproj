@@ -57,6 +57,7 @@
 		AC96AE09F1F142DE757815FE /* FlexStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */; };
 		AC96AE1759FDB5DA5564C35C /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1D0B6699F9A5D4C1657 /* Rect.swift */; };
 		AC96AE44B52779DDF9D75355 /* Nibbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9A9B7328643B4D21E12 /* Nibbed.swift */; };
+		AC96AE73FA306B6769AFF119 /* FlexCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */; };
 		AC96AE855B609E3C90DD7339 /* LayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFA1ED6CC64828315DD9 /* LayoutView.swift */; };
 		AC96AE86CB9492AC1B0994B9 /* Flex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1E1A4C40E7EE071DAB2 /* Flex.swift */; };
 		AC96AE9DD084C42E9EB4805C /* MarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */; };
@@ -149,6 +150,7 @@
 		AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexLayout.swift; sourceTree = "<group>"; };
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
+		AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexCollectionViewCell.swift; sourceTree = "<group>"; };
 		AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderTests.swift; sourceTree = "<group>"; };
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
@@ -316,6 +318,14 @@
 			path = Permission;
 			sourceTree = "<group>";
 		};
+		AC96A3A0FB7296A4DD8770C6 /* FlexView */ = {
+			isa = PBXGroup;
+			children = (
+				AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */,
+			);
+			path = FlexView;
+			sourceTree = "<group>";
+		};
 		AC96A551A949238107A409CF /* Layout */ = {
 			isa = PBXGroup;
 			children = (
@@ -436,6 +446,7 @@
 				AC96A465CDAA8A64D61D2480 /* Toast.swift */,
 				BCA2A45A1F3DA5BC007A772A /* View.swift */,
 				AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */,
+				AC96A3A0FB7296A4DD8770C6 /* FlexView */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -641,6 +652,7 @@
 				AC96AE855B609E3C90DD7339 /* LayoutView.swift in Sources */,
 				AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */,
 				AC96A270DCF9EC380399133A /* BannerView.swift in Sources */,
+				AC96AE73FA306B6769AFF119 /* FlexCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

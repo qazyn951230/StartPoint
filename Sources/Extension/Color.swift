@@ -28,6 +28,10 @@ import AppKit
 import CoreGraphics
 import QuartzCore
 
+fileprivate static func convert(_ value: UInt32) -> CGFloat {
+    return CGFloat(value) / CGFloat(255.0)
+}
+
 fileprivate func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
     let value = value < 0xFFFFFFFF ? value : 0xFFFFFFFF
     var a: UInt32 = 0xFF
@@ -37,10 +41,7 @@ fileprivate func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloa
     let r = (value & 0x00FF0000) >> 16
     let g = (value & 0x0000FF00) >> 8
     let b = (value & 0x000000FF)
-    let fn: ((UInt32) -> CGFloat) = { value in
-        return CGFloat(value) / CGFloat(255.0)
-    }
-    return creator(fn(r), fn(g), fn(b), fn(a))
+    return creator(convert(r), convert(g), convert(b), convert(a))
 }
 
 #if os(iOS)

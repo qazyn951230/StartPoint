@@ -22,7 +22,6 @@
 
 import UIKit
 
-@available(iOS 8.2, *)
 public enum FontWeight {
     case ultraLight
     case thin
@@ -34,6 +33,7 @@ public enum FontWeight {
     case heavy
     case black
 
+    @available(iOS 8.2, *)
     public var weight: CGFloat {
         switch self {
         case .ultraLight:
@@ -97,9 +97,13 @@ public class AttributedString {
         return setAttribute(key: NSFontAttributeName, value: UIFont.systemFont(ofSize: size.value), range: range)
     }
 
-    @available(iOS 8.2, *)
+
     public func systemFont(_ size: LayoutValue, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSFontAttributeName, value: UIFont.systemFont(ofSize: size.value, weight: weight.weight), range: range)
+        if #available(iOS 8.2, *) {
+            return setAttribute(key: NSFontAttributeName, value: UIFont.systemFont(ofSize: size.value, weight: weight.weight), range: range)
+        } else {
+            return systemFont(size, range: range)
+        }
     }
 
     public func paragraphStyle(_ value: NSParagraphStyle, range: NSRange? = nil) -> AttributedString {

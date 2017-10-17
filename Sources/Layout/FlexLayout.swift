@@ -216,6 +216,8 @@ open class FlexLayout: Equatable {
         if let view = view ?? self.view {
             let rect = CGRect(x: left + box.left, y: top + box.top, width: box.width, height: box.height)
             view.frame = rect
+            left = 0
+            top = 0
         } else {
             left += box.left
             top += box.top
