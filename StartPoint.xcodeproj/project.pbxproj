@@ -49,6 +49,7 @@
 		AC96A9DEA6C646DB2A35DB0D /* FlexStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */; };
 		AC96AA37353C5E5CB09983E6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF5249A705A624EC8255 /* SessionManager.swift */; };
 		AC96AA6714618BD919012CE8 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAF6CC5FFB07839B5A15 /* Permission.swift */; };
+		AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
 		AC96AAB77DA9AC65A772139B /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AECE71D275CEC562FEA3 /* Log.swift */; };
 		AC96ABA0A87087889ACB0C06 /* FlexBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */; };
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
@@ -134,6 +135,7 @@
 		AC96A80AF565B4E890BC2AF9 /* SizeOverflowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeOverflowTests.swift; sourceTree = "<group>"; };
 		AC96A848B1AC6FB3768CDCB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoPermission.swift; sourceTree = "<group>"; };
+		AC96A85AE0879C1B59BA2247 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		AC96A85E0F923B9028631591 /* AlignSelfTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignSelfTests.swift; sourceTree = "<group>"; };
 		AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayTests.swift; sourceTree = "<group>"; };
 		AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexAlgorithm.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 				AC96A2B0420610F0F4CBC52C /* Size.swift */,
 				BCA2A4581F3DA5BC007A772A /* String.swift */,
 				AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */,
+				AC96A85AE0879C1B59BA2247 /* Collection.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */,
 				AC96A270DCF9EC380399133A /* BannerView.swift in Sources */,
 				AC96AE73FA306B6769AFF119 /* FlexCollectionViewCell.swift in Sources */,
+				AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

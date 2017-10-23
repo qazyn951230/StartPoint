@@ -206,11 +206,11 @@ open class FlexLayout: Equatable {
         return self
     }
 
-    open func apply(to view: LayoutView? = nil) {
+    public func apply(to view: LayoutView? = nil) {
         apply(to: view, left: 0, top: 0)
     }
 
-    public func apply(to view: LayoutView?, left: Double, top: Double) {
+    open func apply(to view: LayoutView?, left: Double, top: Double) {
         var left = left
         var top = top
         if let view = view ?? self.view {

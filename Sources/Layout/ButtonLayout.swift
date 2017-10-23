@@ -75,8 +75,8 @@ final public class ButtonLayout: FlexLayout {
         return self
     }
 
-    public override func apply(to view: LayoutView? = nil) {
-        super.apply(to: view)
+    public override func apply(to view: LayoutView?, left: Double, top: Double) {
+        super.apply(to: view, left: left, top: top)
         guard let button: UIButton = (view ?? self.view) as? UIButton,
               let titleLayout = self.titleLayout,
               let imageLayout = self.imageLayout else {
@@ -106,6 +106,5 @@ final public class ButtonLayout: FlexLayout {
             break
         }
         button.contentEdgeInsets = style.padding.edgeInsets
-//        Log.debug(button.titleEdgeInsets, button.imageEdgeInsets)
     }
 }

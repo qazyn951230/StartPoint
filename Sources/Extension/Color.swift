@@ -28,7 +28,7 @@ import AppKit
 import CoreGraphics
 import QuartzCore
 
-fileprivate static func convert(_ value: UInt32) -> CGFloat {
+fileprivate func convert(_ value: UInt32) -> CGFloat {
     return CGFloat(value) / CGFloat(255.0)
 }
 
