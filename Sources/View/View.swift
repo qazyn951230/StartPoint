@@ -23,6 +23,7 @@
 import UIKit
 
 extension UIView {
+    @objc
     open func fulfill(_ model: Any) {
         // Do nothing.
     }

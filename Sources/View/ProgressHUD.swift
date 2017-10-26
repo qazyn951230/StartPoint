@@ -87,7 +87,7 @@ public class ProgressHUD: UIView {
             blockView.alpha = 0
             transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0,
-                options: .beginFromCurrentState, animations: { [unowned self] _ in
+                options: .beginFromCurrentState, animations: { [unowned self] in
                 self.transform = CGAffineTransform.identity
                 blockView.alpha = 1
                 self.indicatorView.startAnimating()
@@ -103,7 +103,7 @@ public class ProgressHUD: UIView {
         }
         if animated {
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0,
-                options: .beginFromCurrentState, animations: { [unowned self] _ in
+                options: .beginFromCurrentState, animations: { [unowned self] in
                 self.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
                 blockView.alpha = 0
                 self.indicatorView.stopAnimating()

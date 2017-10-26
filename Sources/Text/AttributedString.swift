@@ -34,26 +34,26 @@ public enum FontWeight {
     case black
 
     @available(iOS 8.2, *)
-    public var weight: CGFloat {
+    public var weight: UIFont.Weight {
         switch self {
         case .ultraLight:
-            return UIFontWeightUltraLight
+            return UIFont.Weight.ultraLight
         case .thin:
-            return UIFontWeightThin
+            return UIFont.Weight.thin
         case .light:
-            return UIFontWeightLight
+            return UIFont.Weight.light
         case .regular:
-            return UIFontWeightRegular
+            return UIFont.Weight.regular
         case .medium:
-            return UIFontWeightMedium
+            return UIFont.Weight.medium
         case .semibold:
-            return UIFontWeightSemibold
+            return UIFont.Weight.semibold
         case .bold:
-            return UIFontWeightBold
+            return UIFont.Weight.bold
         case .heavy:
-            return UIFontWeightHeavy
+            return UIFont.Weight.heavy
         case .black:
-            return UIFontWeightBlack
+            return UIFont.Weight.black
         }
     }
 }
@@ -68,7 +68,7 @@ public enum LigatureLevel: Int {
 
 public class AttributedString {
     let string: NSMutableAttributedString
-    var attributes: [String: Any]
+    var attributes: [NSAttributedStringKey: Any]
 
     public var wholeRange: NSRange {
         return NSRange(location: 0, length: string.length)
@@ -79,7 +79,7 @@ public class AttributedString {
         attributes = [:]
     }
 
-    public func setAttribute(key: String, value: Any?, range: NSRange? = nil) -> AttributedString {
+    public func setAttribute(key: NSAttributedStringKey, value: Any?, range: NSRange? = nil) -> AttributedString {
         attributes[key] = value
         if let value = value {
             string.addAttribute(key, value: value, range: range ?? wholeRange)
@@ -90,72 +90,74 @@ public class AttributedString {
     }
 
     public func font(_ value: UIFont, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSFontAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.font, value: value, range: range)
     }
 
     public func systemFont(_ size: LayoutValue, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSFontAttributeName, value: UIFont.systemFont(ofSize: size.value), range: range)
+        return setAttribute(key: NSAttributedStringKey.font, value: UIFont.systemFont(ofSize: size.value), range: range)
     }
 
 
     public func systemFont(_ size: LayoutValue, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
         if #available(iOS 8.2, *) {
-            return setAttribute(key: NSFontAttributeName, value: UIFont.systemFont(ofSize: size.value, weight: weight.weight), range: range)
+            return setAttribute(key: NSAttributedStringKey.font,
+                value: UIFont.systemFont(ofSize: size.value, weight: weight.weight),
+                range: range)
         } else {
             return systemFont(size, range: range)
         }
     }
 
     public func paragraphStyle(_ value: NSParagraphStyle, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSParagraphStyleAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.paragraphStyle, value: value, range: range)
     }
 
     public func color(_ value: UIColor, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSForegroundColorAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.foregroundColor, value: value, range: range)
     }
 
     public func color(hex: UInt32, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSForegroundColorAttributeName, value: UIColor.hex(hex), range: range)
+        return setAttribute(key: NSAttributedStringKey.foregroundColor, value: UIColor.hex(hex), range: range)
     }
 
     public func backgroundColor(_ value: UIColor, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSBackgroundColorAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.backgroundColor, value: value, range: range)
     }
 
     public func backgroundColor(hex: UInt32, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSBackgroundColorAttributeName, value: UIColor.hex(hex), range: range)
+        return setAttribute(key: NSAttributedStringKey.backgroundColor, value: UIColor.hex(hex), range: range)
     }
 
     public func ligature(_ value: LigatureLevel, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSLigatureAttributeName, value: NSNumber(value: value.rawValue), range: range)
+        return setAttribute(key: NSAttributedStringKey.ligature, value: NSNumber(value: value.rawValue), range: range)
     }
 
     public func kern(_ value: Double, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSKernAttributeName, value: NSNumber(value: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.kern, value: NSNumber(value: value), range: range)
     }
 
     public func strikethroughStyle(_ value: NSUnderlineStyle, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrikethroughStyleAttributeName, value: NSNumber(value: value.rawValue), range: range)
+        return setAttribute(key: NSAttributedStringKey.strikethroughStyle, value: NSNumber(value: value.rawValue), range: range)
     }
 
     public func underlineStyle(_ value: NSUnderlineStyle, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSUnderlineStyleAttributeName, value: NSNumber(value: value.rawValue), range: range)
+        return setAttribute(key: NSAttributedStringKey.underlineStyle, value: NSNumber(value: value.rawValue), range: range)
     }
 
     public func strokeColor(_ value: UIColor, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrokeColorAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.strokeColor, value: value, range: range)
     }
 
     public func strokeColor(_ hex: UInt32, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrokeColorAttributeName, value: UIColor.hex(hex), range: range)
+        return setAttribute(key: NSAttributedStringKey.strokeColor, value: UIColor.hex(hex), range: range)
     }
 
     public func strokeWidth(_ value: Double, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrokeWidthAttributeName, value: NSNumber(value: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.strokeWidth, value: NSNumber(value: value), range: range)
     }
 
     public func shadow(_ value: NSShadow, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSShadowAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.shadow, value: value, range: range)
     }
 
     public func shadow(offset: CGSize, radius: LayoutValue, color: UIColor, range: NSRange? = nil) -> AttributedString {
@@ -163,57 +165,58 @@ public class AttributedString {
         t.shadowOffset = offset
         t.shadowBlurRadius = radius.value
         t.shadowColor = color
-        return setAttribute(key: NSShadowAttributeName, value: t, range: range)
+        return setAttribute(key: NSAttributedStringKey.shadow, value: t, range: range)
     }
 
-    public func textEffect(_ value: String = NSTextEffectLetterpressStyle, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSTextEffectAttributeName, value: value, range: range)
+    public func textEffect(_ value: NSAttributedString.TextEffectStyle = NSAttributedString.TextEffectStyle.letterpressStyle,
+                           range: NSRange? = nil) -> AttributedString {
+        return setAttribute(key: NSAttributedStringKey.textEffect, value: value, range: range)
     }
 
     public func attachment(_ value: NSTextAttachment, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSAttachmentAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.attachment, value: value, range: range)
     }
 
     public func link(url: URL, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSLinkAttributeName, value: url, range: range)
+        return setAttribute(key: NSAttributedStringKey.link, value: url, range: range)
     }
 
     public func link(_ value: String, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSLinkAttributeName, value: URL(string: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.link, value: URL(string: value), range: range)
     }
 
     public func baselineOffset(_ value: Double, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSBaselineOffsetAttributeName, value: NSNumber(value: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.baselineOffset, value: NSNumber(value: value), range: range)
     }
 
     public func underlineColor(_ value: UIColor, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSUnderlineColorAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.underlineColor, value: value, range: range)
     }
 
     public func underlineColor(hex: UInt32, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSUnderlineColorAttributeName, value: UIColor.hex(hex), range: range)
+        return setAttribute(key: NSAttributedStringKey.underlineColor, value: UIColor.hex(hex), range: range)
     }
 
     public func strikethroughColor(_ value: UIColor, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrikethroughColorAttributeName, value: value, range: range)
+        return setAttribute(key: NSAttributedStringKey.strikethroughColor, value: value, range: range)
     }
 
     public func strikethroughColor(hex: UInt32, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSStrikethroughColorAttributeName, value: UIColor.hex(hex), range: range)
+        return setAttribute(key: NSAttributedStringKey.strikethroughColor, value: UIColor.hex(hex), range: range)
     }
 
     public func obliqueness(_ value: Double, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSObliquenessAttributeName, value: NSNumber(value: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.obliqueness, value: NSNumber(value: value), range: range)
     }
 
     public func expansion(_ value: Double, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSExpansionAttributeName, value: NSNumber(value: value), range: range)
+        return setAttribute(key: NSAttributedStringKey.expansion, value: NSNumber(value: value), range: range)
     }
 
     public func writingDirection(_ writingDirection: NSWritingDirection,
                                  text textWritingDirection: NSTextWritingDirection,
                                  range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSWritingDirectionAttributeName,
+        return setAttribute(key: NSAttributedStringKey.writingDirection,
             value: [writingDirection.rawValue | textWritingDirection.rawValue],
             range: range)
     }

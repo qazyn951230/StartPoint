@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -551,18 +551,19 @@
 				TargetAttributes = {
 					BC6BA1A81F2DC08600772AA8 = {
 						CreatedOnToolsVersion = 8.3.3;
-						LastSwiftMigration = 0830;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					BC6BA1B11F2DC08700772AA8 = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = F3XBV7X28L;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = BC6BA1A31F2DC08600772AA8 /* Build configuration list for PBXProject "StartPoint" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -704,10 +705,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA71D251F4D0CC100D8CF57 /* iOS-Debug.xcconfig */;
 			buildSettings = {
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
 			};
 			name = Debug;
 		};
@@ -715,10 +712,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA71D261F4D0CC100D8CF57 /* iOS-Release.xcconfig */;
 			buildSettings = {
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
 			};
 			name = Release;
 		};

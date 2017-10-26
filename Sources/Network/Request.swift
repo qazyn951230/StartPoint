@@ -32,13 +32,13 @@ extension Request: ReactiveCompatible {
 extension Reactive where Base: DataRequest {
     public func response<T:DataResponseSerializerProtocol>(serializer: T, queue: DispatchQueue? = nil)
             -> Single<(DataResponse<T.SerializedObject>, T.SerializedObject)> {
-        return Single.create { observer in
+        return Single<(DataResponse<T.SerializedObject>, T.SerializedObject)>.create { observer in
             var request: DataRequest = self.base
             request = request.response(queue: queue, responseSerializer: serializer) {
                 (response: DataResponse<T.SerializedObject>) in
                 switch response.result {
                 case .success(let object):
-                    observer(.success(response, object))
+                    observer(.success((response, object)))
                 case .failure(let error):
                     observer(.error(error))
                 }
@@ -51,12 +51,12 @@ extension Reactive where Base: DataRequest {
 
     public func jsonResponse(queue: DispatchQueue? = nil, options: JSONSerialization.ReadingOptions = .allowFragments)
             -> Single<(DataResponse<Any>, JSON)> {
-        return Single.create { observer in
+        return Single<(DataResponse<Any>, JSON)>.create { observer in
             var request: DataRequest = self.base
             request = request.responseJSON(queue: queue, options: options) { (response: DataResponse<Any>) in
                 switch response.result {
                 case .success(let object):
-                    observer(.success(response, JSON(object)))
+                    observer(.success((response, JSON(object))))
                 case .failure(let error):
                     observer(.error(error))
                 }
@@ -80,7 +80,7 @@ extension Reactive where Base: DataRequest {
             request = request.responseString(queue: queue, encoding: encoding) { (response: DataResponse<String>) in
                 switch response.result {
                 case .success(let object):
-                    observer(.success(response, object))
+                    observer(.success((response, object)))
                 case .failure(let error):
                     observer(.error(error))
                 }
@@ -102,7 +102,7 @@ extension Reactive where Base: DataRequest {
             request = request.responseData(queue: queue) { (response: DataResponse<Data>) in
                 switch response.result {
                 case .success(let object):
-                    observer(.success(response, object))
+                    observer(.success((response, object)))
                 case .failure(let error):
                     observer(.error(error))
                 }

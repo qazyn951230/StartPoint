@@ -24,14 +24,14 @@ import AVFoundation
 import RxSwift
 import RxCocoa
 
-struct CameraPermission {
+struct CameraPermission: PermissionItem {
     static func status() -> Permission {
-        return normalize(AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo))
+        return normalize(AVCaptureDevice.authorizationStatus(for: AVMediaType.video))
     }
 
     static func request() -> Driver<Permission> {
         return Observable.create { observer in
-            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
+            AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
                 let status = granted ? Permission.authorized : Permission.denied
                 observer.onNext(status)
                 observer.onCompleted()

@@ -55,7 +55,7 @@ extension Reactive where Base: CLLocationManager {
     }
 }
 
-struct LocationPermission {
+struct LocationPermission: PermissionItem {
     static func status() -> Permission {
         guard CLLocationManager.locationServicesEnabled() else {
             return .denied

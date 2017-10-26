@@ -54,12 +54,12 @@ open class BasicViewController<View:UIView>: UIViewController, UIGestureRecogniz
         }
     }
 
-    open func backBarItemAction(sender: UIBarButtonItem) {
+    @objc open func backBarItemAction(sender: UIBarButtonItem) {
         navigationController?.popViewController(animated: true)
         viewDidBack()
     }
 
-    open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
+    @objc open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
         viewDidBack()
     }
 

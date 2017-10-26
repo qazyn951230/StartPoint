@@ -24,10 +24,26 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+public protocol PermissionItem {
+    static func status() -> Permission
+    static func request() -> Driver<Permission>
+}
+
 public enum PermissionType {
     case photo
     case camera
     case location
+
+    public var item: PermissionItem.Type {
+        switch self {
+        case .photo:
+            return PhotoPermission.self
+        case .camera:
+            return CameraPermission.self
+        case .location:
+            return LocationPermission.self
+        }
+    }
 }
 
 public enum Permission {
@@ -36,25 +52,11 @@ public enum Permission {
     case denied
 
     public static func status(_ type: PermissionType) -> Permission {
-        switch type {
-        case .photo:
-            return PhotoPermission.status()
-        case .camera:
-            return CameraPermission.status()
-        case .location:
-            return LocationPermission.status()
-        }
+        return type.item.status()
     }
 
     public static func request(_ type: PermissionType) -> Driver<Permission> {
-        switch type {
-        case .photo:
-            return PhotoPermission.request()
-        case .camera:
-            return CameraPermission.request()
-        case .location:
-            return LocationPermission.request()
-        }
+        return type.item.request()
     }
 
     public static func firstRequest(_ type: PermissionType) -> Driver<Permission> {

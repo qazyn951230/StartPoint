@@ -24,7 +24,7 @@ import Photos
 import RxSwift
 import RxCocoa
 
-struct PhotoPermission {
+struct PhotoPermission: PermissionItem {
     static func status() -> Permission {
         return normalize(PHPhotoLibrary.authorizationStatus())
     }
