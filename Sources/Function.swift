@@ -93,37 +93,37 @@ public struct Function {
 
     public static func lengthGreater(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length > value
+            $0.count > value
         }
     }
 
     public static func lengthGreaterOrEqual(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length >= value
+            $0.count >= value
         }
     }
 
     public static func lengthLess(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length < value
+            $0.count < value
         }
     }
 
     public static func lengthLessOrEqual(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length <= value
+            $0.count <= value
         }
     }
 
     public static func lengthEqual(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length == value
+            $0.count == value
         }
     }
 
     public static func lengthNotEqual(_ value: Int) -> (String) -> Bool {
         return {
-            $0.length != value
+            $0.count != value
         }
     }
 

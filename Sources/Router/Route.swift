@@ -102,7 +102,7 @@ class Route<T> {
         if let child = children[path] {
             return child
         }
-        let paths = path.split(separator: "/")
+        let paths = path.split(separator: "/").map(String.init)
         var current: Route<T>? = self
         var result: Route<T>? = nil
         for p in paths {
@@ -122,6 +122,7 @@ class Route<T> {
 
     static func create(_ path: String, value: T) -> Route<T> {
         let array: [Route<T>] = path.split(separator: "/")
+            .map(String.init)
             .map(Route<T>.init)
         if let first = array.first {
             let start = array.index(after: array.startIndex)

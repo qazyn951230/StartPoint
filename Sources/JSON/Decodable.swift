@@ -31,27 +31,75 @@ precedencegroup DecodePrecedence {
 infix operator <|: DecodePrecedence
 infix operator <|?: DecodePrecedence
 
-public protocol JSONDecodable {
-    associatedtype decodeType
-    static func create(json: JSON) -> decodeType
+public protocol BaseNotation {
+    static func objects(from json: JSON) -> [Self]
 }
 
-public extension JSONDecodable {
-    public static func objects(json: JSON) -> [decodeType] {
+public protocol Notation: BaseNotation {
+    init(from json: JSON)
+}
+
+public extension Notation {
+    public static func objects(from json: JSON) -> [Self] {
         guard let array = json.array else {
             return []
         }
-        return array.map(Self.create)
+        return array.map(Self.init)
+    }
+}
+
+public protocol FailableNotation: BaseNotation {
+    init?(from json: JSON)
+}
+
+public extension FailableNotation {
+    public static func objects(from json: JSON) -> [Self] {
+        guard let array = json.array else {
+            return []
+        }
+        return array.flatMap(Self.init)
+    }
+}
+
+public protocol StaticNotation {
+    static func create(from json: JSON) -> Self
+}
+
+public protocol RawNotation: StaticNotation, RawRepresentable {
+    static var `default`: Self { get }
+}
+
+public extension RawNotation where RawValue == String {
+    public static func create(from json: JSON) -> Self {
+        let foo: Self? = self.init(rawValue: json.stringValue)
+        return foo ?? Self.default
     }
 }
 
 // MARK: - Decodable object
-public func <|<T:JSONDecodable>(json: JSON, key: String) -> T where T.decodeType == T {
-    return T.create(json: json[key])
+public func <|?<T:FailableNotation>(json: JSON, key: String) -> T? {
+    return T.init(from: json[key])
 }
 
-public func <|?<T:JSONDecodable>(json: JSON, key: String) -> T? where T.decodeType == T {
-    return T.create(json: json[key])
+public func <|<T:Notation>(json: JSON, key: String) -> T {
+    return T.init(from: json[key])
+}
+
+public func <|<T:StaticNotation>(json: JSON, key: String) -> T {
+    return T.create(from: json[key])
+}
+
+public func <|<T:RawRepresentable>(json: JSON, key: String) -> T? where T.RawValue == String {
+    return T.init(rawValue: json[key].stringValue)
+}
+
+public func <|?<T:BaseNotation>(json: JSON, key: String) -> [T]? {
+    let objects = T.objects(from: json)
+    return objects.count > 0 ? objects : nil
+}
+
+public func <|<T:BaseNotation>(json: JSON, key: String) -> [T] {
+    return T.objects(from: json)
 }
 
 // MARK: - Decodable array

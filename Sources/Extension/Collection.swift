@@ -31,4 +31,12 @@ public extension Collection {
         } while i < endIndex
         return result
     }
+
+    public func forEachIndex(_ body: (Self.Element, Self.Index) throws -> Void) rethrows {
+        var i = startIndex
+        repeat {
+            try body(self[i], i)
+            i = index(after: i)
+        } while i < endIndex
+    }
 }

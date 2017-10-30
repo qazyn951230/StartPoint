@@ -244,4 +244,8 @@ public class AttributedString {
     public func build(_ string: String) -> NSMutableAttributedString {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
+
+    public static func create(_ string: String?) -> AttributedString? {
+        return string.map(AttributedString.init)
+    }
 }

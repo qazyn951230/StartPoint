@@ -20,6 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension String {
-    public static let empty: String = ""
+import UIKit
+
+open class FlexControl: UIControl {
+    public let root = FlexLayout()
+
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        initialization()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialization()
+    }
+
+    open func initialization() {
+        backgroundColor = UIColor.white
+    }
+
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        root.layout(width: bounds.width, height: bounds.height)
+        root.apply()
+    }
 }

@@ -795,9 +795,25 @@ public extension FlexLayout {
     }
 
     @discardableResult
+    public func size(_ value: CGFloat) -> Self {
+        style.width = StyleValue(floatLiteral: Double(value))
+        style.height = style.width
+        markDirty()
+        return self
+    }
+
+    @discardableResult
     public func size(_ value: CGSize) -> Self {
         style.width = StyleValue(floatLiteral: Double(value.width))
         style.height = StyleValue(floatLiteral: Double(value.height))
+        markDirty()
+        return self
+    }
+
+    @discardableResult
+    public func size(width: CGFloat, height: CGFloat) -> Self {
+        style.width = StyleValue(floatLiteral: Double(width))
+        style.height = StyleValue(floatLiteral: Double(height))
         markDirty()
         return self
     }

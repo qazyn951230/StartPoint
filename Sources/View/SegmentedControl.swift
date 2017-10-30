@@ -20,6 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension String {
-    public static let empty: String = ""
+import UIKit
+
+// https://github.com/dzenbot/DZNSegmentedControl/blob/master/Source/DZNSegmentedControl.m
+public final class SegmentedControl: FlexControl {
+    private var buttons: [UIButton] = []
+
+    public var selectedSegmentIndex: Int = 0 {
+        didSet {
+            buttons.forEachIndex { (button, index) in
+                button.isSelected = index == selectedSegmentIndex
+            }
+        }
+    }
+
+    public override func initialization() {
+        root.margin(vertical: 2).flexDirection(.row).justifyContent(.spaceBetween)
+    }
+
+    public func setTitle(_ title: NSAttributedString?, forSegmentAt index: Int) {
+        let button = buttons.object(at: index)
+        button?.setAttributedTitle(title, for: .normal)
+    }
 }

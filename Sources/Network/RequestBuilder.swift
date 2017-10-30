@@ -118,6 +118,7 @@ public class RequestBuilder<T> {
 
     public func scheduler(_ value: SerialDispatchQueueScheduler, queue: DispatchQueue) -> RequestBuilder {
         self.scheduler = value
+        self.queue = queue
         return self
     }
 
