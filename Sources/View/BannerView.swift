@@ -22,21 +22,51 @@
 
 import UIKit
 
-public protocol BannerViewDelegate: class {
+public protocol BannerViewDataSource: class {
     func numberOfBanner(bannerView: BannerView) -> Int
     func bannerView(_ bannerView: BannerView, configImageView imageView: UIImageView, at index: Int)
 }
 
-public final class BannerView: UIView {
-    public private(set) var scrollView: UIScrollView = UIScrollView(frame: .zero)
-    public private(set) var pageControl: UIPageControl = UIPageControl(frame: .zero)
+public protocol BannerViewDelegate: class {
+    func bannerView(_ bannerView: BannerView, didSelectViewAt index: Int)
+}
 
-    var imageViews = [UIImageView]()
-    var count: Int = 0
-    var timer: Timer? = nil
-
+public final class BannerView: UIView, UIScrollViewDelegate {
+    public private(set) var scrollView: UIScrollView = {
+        let view = UIScrollView(frame: .zero)
+        view.showsHorizontalScrollIndicator = false
+        view.showsVerticalScrollIndicator = false
+        view.isPagingEnabled = true
+        return view
+    }()
+    public private(set) var pageControl: UIPageControl = {
+        let page = UIPageControl(frame: .zero)
+        page.isUserInteractionEnabled = false
+        return page
+    }()
+    public private(set) var manualScroll: Bool = false
+    public weak var dataSource: BannerViewDataSource? = nil
     public weak var delegate: BannerViewDelegate? = nil
-    public var autoPlayTimeInterval: TimeInterval = 3.0
+    public var autoPlayTimeInterval: TimeInterval = 3.0 {
+        didSet {
+            startScroll()
+        }
+    }
+    public var selectedViewIndex: Int {
+        get {
+            return index
+        }
+        set(newValue) {
+            scroll(to: newValue)
+        }
+    }
+
+    private var imageViews = [UIImageView]()
+    private var count: Int = 0
+    private var timer: Timer? = nil
+    private var infinite: Bool = false
+    private var index: Int = 0
+    private var tapGesture: UITapGestureRecognizer? = nil
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,9 +78,13 @@ public final class BannerView: UIView {
         initialization()
     }
 
-    func initialization() {
-        pageControl.isUserInteractionEnabled = false
+    deinit {
+        timer?.invalidate()
+        timer = nil
+    }
 
+    func initialization() {
+        scrollView.delegate = self
         addSubview(scrollView)
         addSubview(pageControl)
     }
@@ -61,54 +95,126 @@ public final class BannerView: UIView {
         let size = pageControl.sizeThatFits(bounds.size)
         Layout(for: pageControl, container: bounds.size)
             .right().bottom().size(size).apply()
+        imageViews.forEachIndex { view, i in
+            view.frame = CGRect(x: bounds.width * CGFloat(i), y: 0, size: bounds.size)
+        }
+        scrollView.contentSize = CGSize(width: bounds.width * CGFloat(count + 2), height: bounds.height)
+        scrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
+    }
+
+    public func startScroll(stopWhenValid: Bool = true) {
+        guard stopWhenValid && timer?.isValid == false else {
+            return
+        }
+        timer?.invalidate()
+        guard autoPlayTimeInterval > 0 && infinite else {
+            return
+        }
+        let t = timer ?? Timer(timeInterval: autoPlayTimeInterval, target: self,
+            selector: #selector(autoplay(timer:)), userInfo: nil, repeats: true)
+        RunLoop.main.add(t, forMode: .commonModes)
+        timer = t
+    }
+
+    public func stopScroll() {
+        timer?.invalidate()
+    }
+
+    public func scroll(to index: Int) {
+        guard index > 0 && index < count else {
+            return
+        }
+        let next = index + 1
+        if next != self.index {
+            let x = scrollView.bounds.width * CGFloat(next)
+            scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
+        }
+        self.index = next
     }
 
     public func reloadData() {
         reloadViews()
+        startScroll()
     }
 
     func reloadViews() {
-        imageViews.forEach { $0.removeFromSuperview() }
+        imageViews.forEach {
+            $0.removeFromSuperview()
+        }
         imageViews.removeAll()
         defer {
             pageControl.isHidden = count < 1
         }
-        guard let delegate = self.delegate else {
+        guard let delegate = self.dataSource else {
             return
         }
         count = delegate.numberOfBanner(bannerView: self)
-        guard count > 1 else {
-            let imageView = UIImageView(frame: scrollView.bounds)
+        infinite = count > 1
+        let bounds = scrollView.bounds
+        guard infinite else {
+            let imageView = UIImageView(frame: bounds)
             delegate.bannerView(self, configImageView: imageView, at: 0)
             scrollView.addSubview(imageView)
             imageViews.append(imageView)
-            scrollView.contentSize = scrollView.frame.size
+            scrollView.contentSize = bounds.size
             return
         }
-        let imageView = UIImageView(frame: scrollView.bounds)
+        let imageView = UIImageView(frame: bounds)
         delegate.bannerView(self, configImageView: imageView, at: count - 1)
         scrollView.addSubview(imageView)
         imageViews.append(imageView)
-        for index in 0 ..< count {
-            let imageView = UIImageView(frame: scrollView.bounds)
-            delegate.bannerView(self, configImageView: imageView, at: index)
+        for i in 0..<count {
+            let imageView = UIImageView(frame: bounds.setOrigin(x: bounds.width * CGFloat(i), y: 0))
+            delegate.bannerView(self, configImageView: imageView, at: i)
             scrollView.addSubview(imageView)
             imageViews.append(imageView)
         }
-        let imageView2 = UIImageView(frame: scrollView.bounds)
+        let imageView2 = UIImageView(frame: bounds.setOrigin(x: bounds.width * CGFloat(count + 1), y: 0))
         delegate.bannerView(self, configImageView: imageView2, at: 0)
         scrollView.addSubview(imageView2)
         imageViews.append(imageView2)
 
-        scrollView.contentSize = CGSize(width: scrollView.frame.width * CGFloat(count + 2),
-            height: scrollView.frame.height)
-        scrollView.contentOffset = CGPoint(x: scrollView.frame.width, y: 0)
+        scrollView.contentSize = CGSize(width: bounds.width * CGFloat(count + 2), height: bounds.height)
+        scrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
+        index = 1
     }
 
-//    func reloadPlayTask() {
-//        timer?.invalidate()
-//        guard autoPlayTimeInterval > 0, count > 1 else {
-//            return
-//        }
-//    }
+    @objc
+    func autoplay(timer: Timer) {
+        index += 1
+        let x = scrollView.bounds.width * CGFloat(index)
+        scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
+    }
+
+    // UIScrollViewDelegate
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !manualScroll, infinite else {
+            return
+        }
+        let x = scrollView.contentOffset.x
+        let width = scrollView.bounds.width
+        if x >= (width * CGFloat(count) + width) {
+            scrollView.contentOffset = CGPoint(x: width, y: 0)
+        } else if x <= 0 {
+            scrollView.contentOffset = CGPoint(x: width * CGFloat(count), y: 0)
+        }
+        let next = Int(scrollView.contentOffset.x / width + 0.5)
+        index = next
+    }
+
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        manualScroll = false
+        startScroll(stopWhenValid: false)
+    }
+
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        stopScroll()
+        manualScroll = true
+    }
+
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if decelerate {
+            scrollViewDidEndDecelerating(scrollView)
+        }
+    }
 }

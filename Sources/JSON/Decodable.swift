@@ -94,12 +94,12 @@ public func <|<T:RawRepresentable>(json: JSON, key: String) -> T? where T.RawVal
 }
 
 public func <|?<T:BaseNotation>(json: JSON, key: String) -> [T]? {
-    let objects = T.objects(from: json)
+    let objects = T.objects(from: json[key])
     return objects.count > 0 ? objects : nil
 }
 
 public func <|<T:BaseNotation>(json: JSON, key: String) -> [T] {
-    return T.objects(from: json)
+    return T.objects(from: json[key])
 }
 
 // MARK: - Decodable array
