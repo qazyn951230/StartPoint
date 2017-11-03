@@ -25,33 +25,37 @@ import RxSwift
 import RxCocoa
 
 public protocol PermissionItem {
-    static func status() -> Permission
-    static func request() -> Driver<Permission>
+    func status() -> Driver<Permission>
+    func request() -> Driver<Permission>
 }
 
 public enum PermissionType {
     case photo
     case camera
     case location
+    case notification(NotificationOptions)
 
-    public var item: PermissionItem.Type {
+    var item: PermissionItem {
         switch self {
         case .photo:
-            return PhotoPermission.self
+            return PhotoPermission()
         case .camera:
-            return CameraPermission.self
+            return CameraPermission()
         case .location:
-            return LocationPermission.self
+            return LocationPermission()
+        case .notification(let options):
+            return NotificationPermission(options: options)
         }
     }
 }
 
+// https://github.com/delba/Permission
 public enum Permission {
     case notDetermined
     case authorized
     case denied
 
-    public static func status(_ type: PermissionType) -> Permission {
+    public static func status(_ type: PermissionType) -> Driver<Permission> {
         return type.item.status()
     }
 
@@ -60,17 +64,14 @@ public enum Permission {
     }
 
     public static func firstRequest(_ type: PermissionType) -> Driver<Permission> {
-        func fn(status: Permission) -> Driver<Permission> {
-            switch status {
+        let item = type.item
+        return item.status().flatMap { (permission: Permission) -> Driver<Permission> in
+            switch permission {
             case .notDetermined:
-                return Permission.request(type)
+                return item.request()
             default:
-                return Driver.just(status)
+                return Driver.just(permission)
             }
         }
-
-        return Driver.just(type)
-            .map(Permission.status)
-            .flatMap(fn)
     }
 }

@@ -24,19 +24,19 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 
-class RxLocationManagerDelegateProxy: DelegateProxy, DelegateProxyType, CLLocationManagerDelegate {
-    class func currentDelegateFor(_ object: AnyObject) -> AnyObject? {
+public class RxLocationManagerDelegateProxy: DelegateProxy, DelegateProxyType, CLLocationManagerDelegate {
+    public class func currentDelegateFor(_ object: AnyObject) -> AnyObject? {
         let manager = object as? CLLocationManager
         return manager?.delegate
     }
 
-    class func setCurrentDelegate(_ delegate: AnyObject?, toObject object: AnyObject) {
+    public class func setCurrentDelegate(_ delegate: AnyObject?, toObject object: AnyObject) {
         let manager = object as? CLLocationManager
         manager?.delegate = (delegate as? CLLocationManagerDelegate)
     }
 }
 
-extension Reactive where Base: CLLocationManager {
+public extension Reactive where Base: CLLocationManager {
     public var rxDelegate: DelegateProxy {
         return RxLocationManagerDelegateProxy.proxyForObject(base)
     }
@@ -55,15 +55,16 @@ extension Reactive where Base: CLLocationManager {
     }
 }
 
-struct LocationPermission: PermissionItem {
-    static func status() -> Permission {
+public struct LocationPermission: PermissionItem {
+    public func status() -> Driver<Permission> {
         guard CLLocationManager.locationServicesEnabled() else {
-            return .denied
+            return Driver.just(Permission.denied)
         }
-        return normalize(CLLocationManager.authorizationStatus())
+        let result = LocationPermission.normalize(CLLocationManager.authorizationStatus())
+        return Driver.just(result)
     }
 
-    static func request() -> Driver<Permission> {
+    public func request() -> Driver<Permission> {
         guard CLLocationManager.locationServicesEnabled() else {
             return Driver.just(Permission.denied)
         }
@@ -81,7 +82,7 @@ struct LocationPermission: PermissionItem {
             .asDriver(onErrorJustReturn: Permission.denied)
     }
 
-    static func normalize(_ status: CLAuthorizationStatus) -> Permission {
+    public static func normalize(_ status: CLAuthorizationStatus) -> Permission {
         switch status {
         case .authorizedWhenInUse, .authorizedAlways:
             return .authorized

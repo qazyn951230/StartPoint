@@ -246,3 +246,11 @@ public func <|(json: JSON, key: String) -> UInt64 {
 public func <|(json: JSON, key: String) -> JSON {
     return json[key]
 }
+
+public func <|?(json: JSON, key: String) -> JSON? {
+    let result = json[key]
+    guard result.exists() else {
+        return nil
+    }
+    return result
+}

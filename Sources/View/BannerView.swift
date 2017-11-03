@@ -66,7 +66,6 @@ public final class BannerView: UIView, UIScrollViewDelegate {
     private var timer: Timer? = nil
     private var infinite: Bool = false
     private var index: Int = 0
-    private var tapGesture: UITapGestureRecognizer? = nil
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -87,6 +86,9 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         scrollView.delegate = self
         addSubview(scrollView)
         addSubview(pageControl)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewTapAction(sender:)))
+        scrollView.addGestureRecognizer(tapGesture)
     }
 
     public override func layoutSubviews() {
@@ -103,7 +105,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
     }
 
     public func startScroll(stopWhenValid: Bool = true) {
-        guard stopWhenValid && timer?.isValid == false else {
+        if !stopWhenValid, let x = timer, x.isValid {
             return
         }
         timer?.invalidate()
@@ -184,6 +186,11 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         index += 1
         let x = scrollView.bounds.width * CGFloat(index)
         scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
+    }
+
+    @objc
+    func scrollViewTapAction(sender: AnyObject) {
+        delegate?.bannerView(self, didSelectViewAt: index - 1)
     }
 
     // UIScrollViewDelegate

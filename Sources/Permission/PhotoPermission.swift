@@ -24,12 +24,13 @@ import Photos
 import RxSwift
 import RxCocoa
 
-struct PhotoPermission: PermissionItem {
-    static func status() -> Permission {
-        return normalize(PHPhotoLibrary.authorizationStatus())
+public struct PhotoPermission: PermissionItem {
+    public func status() -> Driver<Permission> {
+        let result = PhotoPermission.normalize(PHPhotoLibrary.authorizationStatus())
+        return Driver.just(result)
     }
 
-    static func request() -> Driver<Permission> {
+    public func request() -> Driver<Permission> {
         return Observable.create { observer in
             PHPhotoLibrary.requestAuthorization { status in
                 observer.onNext(PhotoPermission.normalize(status))
@@ -39,7 +40,7 @@ struct PhotoPermission: PermissionItem {
         }.asDriver(onErrorJustReturn: Permission.denied)
     }
 
-    static func normalize(_ status: PHAuthorizationStatus) -> Permission {
+    public static func normalize(_ status: PHAuthorizationStatus) -> Permission {
         switch status {
         case .authorized:
             return .authorized

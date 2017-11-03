@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC96A006869E723A64110C5B /* Decodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB0722680DBC90E94458 /* Decodable.swift */; };
+		AC96A010F185A399FA3A0241 /* NotificationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */; };
 		AC96A02355DFF1D8761B28D2 /* ManualLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9DBE440F563BF37EAC6 /* ManualLayout.swift */; };
 		AC96A06E7C30FE53825B445F /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA2D9D6E6B73BEDBBC5C /* AttributedString.swift */; };
 		AC96A0846D10B136A2E8550C /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2B0420610F0F4CBC52C /* Size.swift */; };
@@ -130,6 +131,7 @@
 		AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingTests.swift; sourceTree = "<group>"; };
 		AC96A5473FBE3CC634576A01 /* JustifyContentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustifyContentTests.swift; sourceTree = "<group>"; };
 		AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyleTests.swift; sourceTree = "<group>"; };
+		AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationPermission.swift; sourceTree = "<group>"; };
 		AC96A5C929430D3747CC4C57 /* FlexControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexControl.swift; sourceTree = "<group>"; };
 		AC96A630A39CC08BFCD8C783 /* BasicNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicNavigationController.swift; sourceTree = "<group>"; };
 		AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermission.swift; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 				AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */,
 				AC96AAF6CC5FFB07839B5A15 /* Permission.swift */,
 				AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */,
+				AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */,
 			);
 			path = Permission;
 			sourceTree = "<group>";
@@ -678,6 +681,7 @@
 				AC96ACED75EC55C2643DB7E8 /* SegmentedControl.swift in Sources */,
 				AC96A14A2AF7881ADFA618B0 /* FlexView.swift in Sources */,
 				AC96A8845FDE28E2DDD4B608 /* FlexControl.swift in Sources */,
+				AC96A010F185A399FA3A0241 /* NotificationPermission.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
