@@ -58,4 +58,12 @@ public extension UIEdgeInsets {
         lhs = UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left,
             bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
     }
+
+    prefix static func +(x: UIEdgeInsets) -> UIEdgeInsets {
+        return x
+    }
+
+    prefix static func -(x: UIEdgeInsets) -> UIEdgeInsets {
+        return UIEdgeInsets(top: -x.top, left: -x.left, bottom: -x.bottom, right: -x.right)
+    }
 }

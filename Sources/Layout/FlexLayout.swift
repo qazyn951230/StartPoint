@@ -172,7 +172,7 @@ open class FlexLayout: Equatable {
         markDirty()
     }
 
-    public func remove(_ child: FlexLayout) { // // YGNodeRemoveChild
+    public func remove(_ child: FlexLayout) { // YGNodeRemoveChild
         if let index = children.index(of: child) {
             children.remove(at: index)
             child.invalidate()

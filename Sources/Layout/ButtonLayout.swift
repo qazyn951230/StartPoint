@@ -23,7 +23,7 @@
 import UIKit
 
 // √ button padding
-// TODO: title image padding
+// √ title image padding
 final public class ButtonLayout: FlexLayout {
     // Property
     public private(set) var title: NSAttributedString? = nil
@@ -40,23 +40,34 @@ final public class ButtonLayout: FlexLayout {
             .alignItems(.center)
     }
 
-    public func title(_ value: NSAttributedString) -> TextLayout {
+    public func title(_ value: NSAttributedString?) -> TextLayout? {
         self.title = value
-        let layout = TextLayout().text(value)
-        self.titleLayout = layout.append(to: self)
-        return layout
+        guard value != nil else {
+            _ = titleLayout.map(self.remove)
+            titleLayout = nil
+            return nil
+        }
+        titleLayout = TextLayout().text(value).append(to: self)
+        return titleLayout
     }
 
-    public func image(_ value: UIImage) -> FlexLayout {
+    public func image(_ value: UIImage?) -> FlexLayout? {
         self.image = value
-        let layout = FlexLayout().size(value.size)
-        self.imageLayout = layout.append(to: self)
-        return layout
+        return image(size: value?.size)
+    }
+
+    public func image(size value: CGSize?) -> FlexLayout? {
+        guard let size = value else {
+            _ = imageLayout.map(self.remove)
+            imageLayout = nil
+            return nil
+        }
+        imageLayout = FlexLayout().size(size).append(to: self)
+        return imageLayout
     }
 
     @discardableResult
     public func titleLayout(_ value: TextLayout) -> ButtonLayout {
-        // TODO: Remove
         if let t = self.titleLayout {
             remove(t)
         }
@@ -86,24 +97,45 @@ final public class ButtonLayout: FlexLayout {
         let titleSize: CGSize = titleLayout.frame.size
         let imageSize: CGSize = imageLayout.frame.size
         let paddingColumn = CGFloat(style.padding.total(direction: .column))
+        let imageInsets = imageLayout.style.margin.edgeInsets
+        let titleInsets = titleLayout.style.margin.edgeInsets
         switch style.flexDirection {
+        case .row:
+            button.titleEdgeInsets = UIEdgeInsets(top: titleInsets.top,
+                left: titleInsets.left + imageInsets.left,
+                bottom: titleInsets.bottom,
+                right: titleInsets.right - imageInsets.right)
+            button.imageEdgeInsets = UIEdgeInsets(top: imageInsets.top,
+                left: imageInsets.left - titleInsets.left,
+                bottom: imageInsets.bottom,
+                right: imageInsets.right + titleInsets.right)
         case .rowReverse:
-            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -imageSize.width,
-                bottom: 0, right: imageSize.width)
-            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: titleSize.width + imageSize.width,
-                bottom: 0, right: imageSize.width)
+            button.titleEdgeInsets = UIEdgeInsets(top: titleInsets.top,
+                left: titleInsets.left - imageSize.width - imageInsets.horizontal,
+                bottom: titleInsets.bottom,
+                right: imageSize.width + titleInsets.right)
+            button.imageEdgeInsets = UIEdgeInsets(top: imageInsets.top,
+                left: titleSize.width + imageSize.width + titleInsets.horizontal + imageInsets.left,
+                bottom: imageInsets.bottom,
+                right: imageSize.width + imageInsets.right)
         case .column:
-            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -imageSize.width,
-                bottom: titleSize.height - buttonSize.height + paddingColumn, right: 0)
-            button.imageEdgeInsets = UIEdgeInsets(top: imageSize.height - buttonSize.height + paddingColumn,
-                left: 0, bottom: 0, right: -titleSize.width)
+            button.titleEdgeInsets = UIEdgeInsets(top: 0,
+                left: titleInsets.left - imageSize.width,
+                bottom: titleSize.height - buttonSize.height + paddingColumn + titleInsets.bottom * 2,
+                right: titleInsets.right)
+            button.imageEdgeInsets = UIEdgeInsets(top: imageSize.height - buttonSize.height + paddingColumn + imageInsets.top * 2,
+                left: imageInsets.left,
+                bottom: 0,
+                right: imageInsets.right - titleSize.width)
         case .columnReverse:
-            button.titleEdgeInsets = UIEdgeInsets(top: titleSize.height - buttonSize.height + paddingColumn,
-                left: -imageSize.width, bottom: 0, right: 0)
-            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0,
-                bottom: imageSize.height - buttonSize.height + paddingColumn, right: -titleSize.width)
-        default:
-            break
+            button.titleEdgeInsets = UIEdgeInsets(top: titleSize.height - buttonSize.height + paddingColumn + titleInsets.top * 2,
+                left: titleInsets.left - imageSize.width,
+                bottom: 0,
+                right: titleInsets.right)
+            button.imageEdgeInsets = UIEdgeInsets(top: 0,
+                left: imageInsets.left,
+                bottom: imageSize.height - buttonSize.height + paddingColumn + imageInsets.bottom * 2,
+                right: imageInsets.right - titleSize.width)
         }
         button.contentEdgeInsets = style.padding.edgeInsets
     }
