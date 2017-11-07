@@ -103,7 +103,7 @@ public extension LogType {
         let d = dateFormatter.string(from: date)
         let u = URL(fileURLWithPath: file).lastPathComponent
         // MM [main] debug [foo.swift:18]foo() message
-        write(message: "\(d) [\(thread)] \(level.description) [\(u):\(line)]\(function)\n\(message)")
+        write(message: "\(d) [\(thread)] \(level.description) [\(u):\(line)]\(function)\n\(message)\n")
     }
 
     public static func format(level: LogLevel, _ value: Any, separator: String, expand: Bool = true) -> String {

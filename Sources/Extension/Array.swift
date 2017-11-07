@@ -22,7 +22,7 @@
 
 public extension Array {
     public func object(at index: Int) -> Element? {
-        guard index >= self.startIndex && index <= self.endIndex else {
+        guard index >= self.startIndex && index < self.endIndex else {
             return nil
         }
         return self[index]

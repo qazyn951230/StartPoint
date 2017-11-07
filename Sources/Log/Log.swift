@@ -48,7 +48,7 @@ public struct Log: LogType {
         write(level: LogLevel.info, value, file: file, function: function, line: line)
     }
 
-    public static func info(_ value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
+    public static func info(any value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.info, value, file: file, function: function, line: line)
     }
 
@@ -56,7 +56,7 @@ public struct Log: LogType {
         write(level: LogLevel.info, value, file: file, function: function, line: line)
     }
 
-    public static func info(_ value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
+    public static func info(any value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.info, value, file: file, function: function, line: line)
     }
 
@@ -64,7 +64,7 @@ public struct Log: LogType {
         write(level: LogLevel.warn, value, file: file, function: function, line: line)
     }
 
-    public static func warn(_ value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
+    public static func warn(any value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.warn, value, file: file, function: function, line: line)
     }
 
@@ -72,7 +72,7 @@ public struct Log: LogType {
         write(level: LogLevel.warn, value, file: file, function: function, line: line)
     }
 
-    public static func warn(_ value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
+    public static func warn(any value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.warn, value, file: file, function: function, line: line)
     }
 
@@ -80,7 +80,7 @@ public struct Log: LogType {
         write(level: LogLevel.debug, value, file: file, function: function, line: line)
     }
 
-    public static func debug(_ value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
+    public static func debug(any value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.debug, value, file: file, function: function, line: line)
     }
 
@@ -88,7 +88,7 @@ public struct Log: LogType {
         write(level: LogLevel.debug, value, file: file, function: function, line: line)
     }
 
-    public static func debug(_ value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
+    public static func debug(any value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.debug, value, file: file, function: function, line: line)
     }
 
@@ -96,7 +96,7 @@ public struct Log: LogType {
         write(level: LogLevel.error, value, file: file, function: function, line: line)
     }
 
-    public static func error(_ value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
+    public static func error(any value: Any?, file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.error, value, file: file, function: function, line: line)
     }
 
@@ -104,7 +104,7 @@ public struct Log: LogType {
         write(level: LogLevel.error, value, file: file, function: function, line: line)
     }
 
-    public static func error(_ value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
+    public static func error(any value: Any?..., file: String = #file, function: String = #function, line: Int = #line) {
         write(level: LogLevel.error, value, file: file, function: function, line: line)
     }
 }

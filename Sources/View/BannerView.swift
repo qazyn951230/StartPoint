@@ -108,11 +108,11 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         if !stopWhenValid, let x = timer, x.isValid {
             return
         }
-        timer?.invalidate()
+        stopScroll()
         guard autoPlayTimeInterval > 0 && infinite else {
             return
         }
-        let t = timer ?? Timer(timeInterval: autoPlayTimeInterval, target: self,
+        let t = Timer(timeInterval: autoPlayTimeInterval, target: self,
             selector: #selector(autoplay(timer:)), userInfo: nil, repeats: true)
         RunLoop.main.add(t, forMode: .commonModes)
         timer = t
@@ -120,6 +120,8 @@ public final class BannerView: UIView, UIScrollViewDelegate {
 
     public func stopScroll() {
         timer?.invalidate()
+        let x = scrollView.bounds.width * CGFloat(index)
+        scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: false)
     }
 
     public func scroll(to index: Int) {
@@ -135,6 +137,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
     }
 
     public func reloadData() {
+        stopScroll()
         reloadViews()
         startScroll()
     }
@@ -152,26 +155,28 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         }
         count = delegate.numberOfBanner(bannerView: self)
         infinite = count > 1
-        let bounds = scrollView.bounds
+        let size = scrollView.frame.size
         guard infinite else {
-            let imageView = UIImageView(frame: bounds)
-            delegate.bannerView(self, configImageView: imageView, at: 0)
-            scrollView.addSubview(imageView)
-            imageViews.append(imageView)
+            let imageView0 = UIImageView(frame: CGRect(x: 0, y: 0, size: size))
+            delegate.bannerView(self, configImageView: imageView0, at: 0)
+            scrollView.addSubview(imageView0)
+            imageViews.append(imageView0)
             scrollView.contentSize = bounds.size
             return
         }
-        let imageView = UIImageView(frame: bounds)
-        delegate.bannerView(self, configImageView: imageView, at: count - 1)
-        scrollView.addSubview(imageView)
-        imageViews.append(imageView)
-        for i in 0..<count {
-            let imageView = UIImageView(frame: bounds.setOrigin(x: bounds.width * CGFloat(i), y: 0))
+        // First image view,  data index = count - 1
+        let imageView1 = UIImageView(frame: CGRect(x: 0, y: 0, size: size))
+        delegate.bannerView(self, configImageView: imageView1, at: count - 1)
+        scrollView.addSubview(imageView1)
+        imageViews.append(imageView1)
+        for i in 0 ..< count {
+            let imageView = UIImageView(frame: CGRect(x: size.width * CGFloat(i + 1), y: 0, size: size))
             delegate.bannerView(self, configImageView: imageView, at: i)
             scrollView.addSubview(imageView)
             imageViews.append(imageView)
         }
-        let imageView2 = UIImageView(frame: bounds.setOrigin(x: bounds.width * CGFloat(count + 1), y: 0))
+        // Last image view, data index = 0
+        let imageView2 = UIImageView(frame: CGRect(x: size.width * CGFloat(count + 1), y: 0, size: size))
         delegate.bannerView(self, configImageView: imageView2, at: 0)
         scrollView.addSubview(imageView2)
         imageViews.append(imageView2)
