@@ -65,6 +65,15 @@ public protocol StaticNotation {
     static func create(from json: JSON) -> Self
 }
 
+public extension StaticNotation {
+    public static func objects(from json: JSON) -> [Self] {
+        guard let array = json.array else {
+            return []
+        }
+        return array.map(Self.create)
+    }
+}
+
 public protocol RawNotation: StaticNotation, RawRepresentable {
     static var `default`: Self { get }
 }

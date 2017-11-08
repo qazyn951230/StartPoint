@@ -74,6 +74,9 @@ public extension LogType {
             } else if let queue: OperationQueue = OperationQueue.current {
                 thread = queue.name ?? queue.underlyingQueue?.label ?? "unnamed"
             }
+            if thread.isEmpty {
+                thread = Thread.current.description
+            }
         }
         write(level: level, message: message, thread: thread, date: Date(), file: file, function: function, line: line)
     }
