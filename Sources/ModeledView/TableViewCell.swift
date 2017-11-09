@@ -56,12 +56,11 @@ public struct DefaultTableViewCellModel: HeightViewModel {
     public var selectionStyle: UITableViewCellSelectionStyle
 
     public init() {
-        self.init(indicator: true, selection: true)
+        self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    // 是否需要小箭头
-    public init(indicator: Bool, selection: Bool) {
-        accessory = indicator ? .disclosureIndicator : .none
+    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+        self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
 }
@@ -104,12 +103,11 @@ public struct SubtitleTableViewCellModel: HeightViewModel {
     public var selectionStyle: UITableViewCellSelectionStyle
 
     public init() {
-        self.init(indicator: true, selection: true)
+        self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    // 是否需要小箭头
-    public init(indicator: Bool, selection: Bool) {
-        accessory = indicator ? .disclosureIndicator : .none
+    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+        self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
 }
@@ -152,12 +150,11 @@ public struct Value1TableViewCellModel: HeightViewModel {
     public var selectionStyle: UITableViewCellSelectionStyle
 
     public init() {
-        self.init(indicator: true, selection: true)
+        self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    // 是否需要小箭头
-    public init(indicator: Bool, selection: Bool) {
-        accessory = indicator ? .disclosureIndicator : .none
+    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+        self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
 }
@@ -200,12 +197,11 @@ public struct Value2TableViewCellModel: HeightViewModel {
     public var selectionStyle: UITableViewCellSelectionStyle
 
     public init() {
-        self.init(indicator: true, selection: true)
+        self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    // 是否需要小箭头
-    public init(indicator: Bool, selection: Bool) {
-        accessory = indicator ? .disclosureIndicator : .none
+    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+        self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
 }
