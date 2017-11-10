@@ -24,26 +24,31 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 
-public class RxLocationManagerDelegateProxy: DelegateProxy, DelegateProxyType, CLLocationManagerDelegate {
-    public class func currentDelegateFor(_ object: AnyObject) -> AnyObject? {
-        let manager = object as? CLLocationManager
-        return manager?.delegate
+extension CLLocationManager: HasDelegate {
+    public typealias Delegate = CLLocationManagerDelegate
+}
+
+public class RxLocationManagerDelegateProxy: DelegateProxy<CLLocationManager, CLLocationManagerDelegate>,
+    DelegateProxyType, CLLocationManagerDelegate {
+    public init(locationManager: CLLocationManager) {
+        super.init(parentObject: locationManager, delegateProxy: RxLocationManagerDelegateProxy.self)
     }
 
-    public class func setCurrentDelegate(_ delegate: AnyObject?, toObject object: AnyObject) {
-        let manager = object as? CLLocationManager
-        manager?.delegate = (delegate as? CLLocationManagerDelegate)
+    public class func registerKnownImplementations() {
+        self.register {
+            RxLocationManagerDelegateProxy(locationManager: $0)
+        }
     }
 }
 
 public extension Reactive where Base: CLLocationManager {
-    public var rxDelegate: DelegateProxy {
-        return RxLocationManagerDelegateProxy.proxyForObject(base)
+    public var delegate: DelegateProxy<CLLocationManager, CLLocationManagerDelegate> {
+        return RxLocationManagerDelegateProxy.proxy(for: base)
     }
 
     public var didChangeAuthorization: Observable<CLAuthorizationStatus> {
         let selector = #selector(CLLocationManagerDelegate.locationManager(_:didChangeAuthorization:))
-        return rxDelegate.methodInvoked(selector)
+        return delegate.methodInvoked(selector)
             .map { object in
                 if object.count > 1, let code = object[1] as? Int32,
                    let result = CLAuthorizationStatus(rawValue: code) {

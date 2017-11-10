@@ -24,31 +24,16 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public final class RxImagePickerDelegateProxy: DelegateProxy, DelegateProxyType,
-    UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    public class func setCurrentDelegate(_ delegate: AnyObject?, toObject object: AnyObject) {
-        let controller = object as? UIImagePickerController
-        controller?.delegate = delegate.flatMap {
-            $0 as? (UIImagePickerControllerDelegate & UINavigationControllerDelegate)
-        }
-    }
-
-    public class func currentDelegateFor(_ object: AnyObject) -> AnyObject? {
-        let controller = object as? UIImagePickerController
-        return controller.flatMap {
-            $0.delegate
-        }
+public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy, UIImagePickerControllerDelegate {
+    public init(imagePicker: UIImagePickerController) {
+        super.init(navigationController: imagePicker)
     }
 }
 
 public extension Reactive where Base: UIImagePickerController {
-    public var rxDelegate: DelegateProxy {
-        return RxImagePickerDelegateProxy.proxyForObject(base)
-    }
-
     public var didFinishPickingMediaWithInfo: Observable<[String: Any]> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:))
-        return rxDelegate.methodInvoked(selector)
+        return delegate.methodInvoked(selector)
             .map { object in
                 if object.count > 1, let result = object[1] as? [String: Any] {
                     return result
@@ -60,7 +45,7 @@ public extension Reactive where Base: UIImagePickerController {
 
     public var didCancel: Observable<Void> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerControllerDidCancel(_:))
-        return rxDelegate.methodInvoked(selector)
+        return delegate.methodInvoked(selector)
             .map(Function.nothing)
     }
 }
