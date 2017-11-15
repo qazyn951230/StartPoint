@@ -186,15 +186,13 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         index = 1
     }
 
-    @objc
-    func autoplay(timer: Timer) {
+    @objc func autoplay(timer: Timer) {
         index += 1
         let x = scrollView.bounds.width * CGFloat(index)
         scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
     }
 
-    @objc
-    func scrollViewTapAction(sender: AnyObject) {
+    @objc func scrollViewTapAction(sender: AnyObject) {
         delegate?.bannerView(self, didSelectViewAt: index - 1)
     }
 

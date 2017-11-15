@@ -21,26 +21,32 @@
 // SOFTWARE.
 
 public struct Function {
+    @inline(__always)
     public static func this<T>(_ value: T) -> T {
         return value
     }
 
+    @inline(__always)
     public static func maybe<T>(_ value: T?) -> T? {
         return value
     }
 
+    @inline(__always)
     public static func not(_ value: Bool) -> Bool {
         return !value
     }
 
+    @inline(__always)
     public static func empty(string: String) -> Bool {
         return string.isEmpty
     }
 
+    @inline(__always)
     public static func notEmpty(string: String) -> Bool {
         return !string.isEmpty
     }
 
+    @inline(__always)
     public static func empty(string: String?) -> Bool {
         if let s = string {
             return empty(string: s)
@@ -48,6 +54,7 @@ public struct Function {
         return true
     }
 
+    @inline(__always)
     public static func notEmpty(string: String?) -> Bool {
         if let s = string {
             return notEmpty(string: s)
@@ -55,78 +62,96 @@ public struct Function {
         return false
     }
 
+    @inline(__always)
     public static func empty<T:Collection>(collection: T) -> Bool {
         return collection.isEmpty
     }
 
+    @inline(__always)
     public static func notEmpty<T:Collection>(collection: T) -> Bool {
         return !collection.isEmpty
     }
 
+    @inline(__always)
     public static func always<T>(_ value: T) -> (Any) -> T {
-        return { _ in value }
+        return { _ in
+            value
+        }
     }
 
+    @inline(__always)
     public static func alwaysTrue() -> Bool {
         return true
     }
 
+    @inline(__always)
     public static func alwaysTrue(_ value: Any) -> Bool {
         return true
     }
 
+    @inline(__always)
     public static func alwaysFalse() -> Bool {
         return false
     }
 
+    @inline(__always)
     public static func alwaysFalse(_ value: Any) -> Bool {
         return false
     }
 
+    @inline(__always)
     public static func and(_ lhs: Bool, _ rhs: Bool) -> Bool {
         return lhs && rhs
     }
 
+    @inline(__always)
     public static func or(_ lhs: Bool, _ rhs: Bool) -> Bool {
         return lhs || rhs
     }
 
+    @inline(__always)
     public static func lengthGreater(_ value: Int) -> (String) -> Bool {
         return {
             $0.count > value
         }
     }
 
+    @inline(__always)
     public static func lengthGreaterOrEqual(_ value: Int) -> (String) -> Bool {
         return {
             $0.count >= value
         }
     }
 
+    @inline(__always)
     public static func lengthLess(_ value: Int) -> (String) -> Bool {
         return {
             $0.count < value
         }
     }
 
+    @inline(__always)
     public static func lengthLessOrEqual(_ value: Int) -> (String) -> Bool {
         return {
             $0.count <= value
         }
     }
 
+    @inline(__always)
     public static func lengthEqual(_ value: Int) -> (String) -> Bool {
         return {
             $0.count == value
         }
     }
 
+    @inline(__always)
     public static func lengthNotEqual(_ value: Int) -> (String) -> Bool {
         return {
             $0.count != value
         }
     }
 
+    @inline(__always)
     public static func reducedArray(init: Bool = true,
                                     reducer: @escaping (Bool, Bool) -> Bool = Function.and) -> ([Bool]) -> Bool {
         return { array in
@@ -134,24 +159,29 @@ public struct Function {
         }
     }
 
+    @inline(__always)
     public static func first<A, B>(tuple: (A, B)) -> A {
         return tuple.0
     }
 
+    @inline(__always)
     public static func second<A, B>(tuple: (A, B)) -> B {
         return tuple.1
     }
 
+    @inline(__always)
     public static func nothing(_ value: Any) {
         // Do nothing.
     }
 
+    @inline(__always)
     public static func equal<T:Comparable>(_ value: T) -> (T) -> Bool {
         return {
             $0 == value
         }
     }
 
+    @inline(__always)
     public static func notEqual<T:Comparable>(_ value: T) -> (T) -> Bool {
         return {
             $0 != value

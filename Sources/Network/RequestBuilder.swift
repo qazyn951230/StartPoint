@@ -136,13 +136,13 @@ public class RequestBuilder<T> {
         return self
     }
 
-    public func build(session: SessionManager = SessionManager.default) -> Single<DataRequest> {
+    public func build(session: SessionManager = SessionManager.default) -> Observable<DataRequest> {
         func _build(build: RequestBuilder) -> DataRequest {
             return session.request(build.url, method: build.method, parameters: build.parameters,
                 encoding: build.encoding, headers: build.headers)
         }
 
-        return Single<RequestBuilder>.just(self, scheduler: scheduler)
+        return Observable<RequestBuilder>.just(self, scheduler: scheduler)
             .map(_build)
     }
 }

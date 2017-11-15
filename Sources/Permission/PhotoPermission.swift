@@ -34,7 +34,7 @@ public struct PhotoPermission: PermissionItem {
         return Observable.create { observer in
             PHPhotoLibrary.requestAuthorization { status in
                 observer.onNext(PhotoPermission.normalize(status))
-                observer.onCompleted()
+                observer.on(.completed)
             }
             return Disposables.create()
         }.asDriver(onErrorJustReturn: Permission.denied)

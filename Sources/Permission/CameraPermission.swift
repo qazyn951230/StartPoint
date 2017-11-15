@@ -35,7 +35,7 @@ public struct CameraPermission: PermissionItem {
             AVCaptureDevice.requestAccess(for: AVMediaType.video) { granted in
                 let status = granted ? Permission.authorized : Permission.denied
                 observer.onNext(status)
-                observer.onCompleted()
+                observer.on(.completed)
             }
             return Disposables.create()
         }.asDriver(onErrorJustReturn: Permission.denied)

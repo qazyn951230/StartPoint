@@ -83,35 +83,38 @@ public class AlertController<Action:AlertAction> {
         return self
     }
 
-    public func show(in viewController: UIViewController) -> Maybe<Action> {
+    public func show(in viewController: UIViewController) -> Observable<Action> {
         return AlertController.show(alert: self, in: viewController)
     }
 
-    private static func show(alert: AlertController, in viewController: UIViewController) -> Maybe<Action> {
-        return Maybe<Action>.create { observer in
+    private static func show(alert: AlertController, in viewController: UIViewController) -> Observable<Action> {
+        return Observable<Action>.create { observer in
             let controller = UIAlertController(title: alert.title, message: alert.message, preferredStyle: alert.style)
             if let actions = alert.actions {
                 for action in actions {
                     let t = UIAlertAction(title: action.title, style: .default) { _ in
-                        observer(.success(action))
+                        observer.on(.next(action))
+                        observer.on(.completed)
                     }
                     controller.addAction(t)
                 }
             }
             if !alert.ignoreCancel, let cancel = alert.cancelAction as? Action {
                 let t = UIAlertAction(title: cancel.title, style: .cancel) { _ in
-                    observer(.success(cancel))
+                    observer.on(.next(cancel))
+                    observer.on(.completed)
                 }
                 controller.addAction(t)
             } else if let cancel = alert.cancelAction {
                 let t = UIAlertAction(title: cancel.title, style: .cancel) { _ in
-                    observer(.completed)
+                    observer.on(.completed)
                 }
                 controller.addAction(t)
             }
             if let destructive = alert.destructiveAction {
                 let t = UIAlertAction(title: destructive.title, style: .destructive) { _ in
-                    observer(.success(destructive))
+                    observer.on(.next(destructive))
+                    observer.on(.completed)
                 }
                 controller.addAction(t)
             }

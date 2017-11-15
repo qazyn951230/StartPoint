@@ -30,16 +30,17 @@ extension SessionManager: ReactiveCompatible {
 extension Reactive where Base: SessionManager {
     public func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
                         encoding: ParameterEncoding = URLEncoding.default, headers: HTTPHeaders? = nil)
-            -> Single<DataRequest> {
-        return Single<DataRequest>.create { observer in
+            -> Observable<DataRequest> {
+        return Observable<DataRequest>.create { observer in
             let manager: SessionManager = self.base
             let request: DataRequest = manager.request(url, method: method, parameters: parameters,
                 encoding: encoding, headers: headers)
             request.response { response in
                 if let error = response.error {
-                    observer(.error(error))
+                    observer.on(.error(error))
                 } else {
-                    observer(.success(request))
+                    observer.on(.next(request))
+                    observer.on(.completed)
                 }
             }
             if !manager.startRequestsImmediately {
