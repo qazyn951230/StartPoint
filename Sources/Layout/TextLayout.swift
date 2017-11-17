@@ -52,12 +52,4 @@ final public class TextLayout: FlexLayout {
         return text.boundingSize(size: CGSize(width: width, height: height), options: options)
             .ceiled
     }
-
-    open override func apply(to view: LayoutView? = nil) {
-        if let label = (view ?? self.view) as? UILabel {
-            label.numberOfLines = multiLine ? 0 : label.numberOfLines
-            label.attributedText = text
-        }
-        super.apply(to: view)
-    }
 }

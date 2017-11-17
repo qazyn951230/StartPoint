@@ -91,6 +91,14 @@ public class Intent {
         push = Intent.display(source: source.intentController, target: controller, method: method)
     }
 
+    public func start(viewController: UIViewController) {
+        var destination = target.create(intent: self)
+        destination.intent = self
+        let controller = destination.intentController
+        targetController = controller
+        push = Intent.display(source: viewController, target: controller, method: method)
+    }
+
     public func transition(_ function: (IntentTarget) -> Void) {
         var destination = target.create(intent: self)
         destination.intent = self

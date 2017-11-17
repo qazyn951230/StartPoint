@@ -41,6 +41,10 @@ public enum DeviceType {
 //    case padPro129 // 2732 x 2048; @2x; 264 ppi
 //    case watch38 // 272 x 340; @2x
 //    case watch42 // 312 x 390; @2x
+
+    public var iPhoneX: Bool {
+        return self == DeviceType.phoneX
+    }
 }
 
 public enum DeviceVersion: Int {
@@ -59,6 +63,7 @@ public enum DeviceVersion: Int {
     case version103
     case version110
     case version111
+    case version112
 }
 
 public struct Device {
@@ -83,7 +88,9 @@ public struct Device {
             return DeviceVersion.version80
         }
         if v > 10.99 {
-            if v > 11.09  {
+            if v > 11.19 {
+                return DeviceVersion.version112
+            } else if v > 11.09 {
                 return DeviceVersion.version111
             } else {
                 return DeviceVersion.version110
@@ -93,7 +100,7 @@ public struct Device {
                 return DeviceVersion.version103
             } else if v > 10.19 {
                 return DeviceVersion.version102
-            } else if v > 10.09  {
+            } else if v > 10.09 {
                 return DeviceVersion.version101
             } else {
                 return DeviceVersion.version100
@@ -103,7 +110,7 @@ public struct Device {
                 return DeviceVersion.version93
             } else if v > 9.19 {
                 return DeviceVersion.version92
-            } else if v > 9.09  {
+            } else if v > 9.09 {
                 return DeviceVersion.version91
             } else {
                 return DeviceVersion.version90
@@ -115,7 +122,7 @@ public struct Device {
                 return DeviceVersion.version83
             } else if v > 8.19 {
                 return DeviceVersion.version82
-            } else if v > 8.09  {
+            } else if v > 8.09 {
                 return DeviceVersion.version81
             } else {
                 return DeviceVersion.version80
