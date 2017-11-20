@@ -1,3 +1,3 @@
 [submodule "Configs"]
 	path = Configs
-	url = git@github.com:qazyn951230/XCConfigs.git
+	url = https://github.com/qazyn951230/XCConfigs.git
