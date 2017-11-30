@@ -133,4 +133,34 @@ public struct Device {
     public static let size: CGSize = UIScreen.main.bounds.size
     public static let width: CGFloat = size.width
     public static let height: CGFloat = size.height
+
+    public static var landscape: Bool {
+        return UIDevice.current.orientation.isLandscape
+    }
+
+    public static var portrait: Bool {
+        return UIDevice.current.orientation.isPortrait
+    }
+
+    public static var statusBar: CGFloat {
+        guard portrait else {
+            return 0
+        }
+        return current.iPhoneX ? 44 : 20
+    }
+
+    public static var navigationBar: CGFloat {
+        return portrait ? 44 : 32
+    }
+
+    public static var tabBar: CGFloat {
+        return portrait ? 49 : 32
+    }
+
+    public static var homeBar: CGFloat {
+        guard current.iPhoneX else {
+            return 0
+        }
+        return portrait ? 34 : 21
+    }
 }

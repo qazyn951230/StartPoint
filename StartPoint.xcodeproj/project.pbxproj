@@ -43,6 +43,7 @@
 		AC96A77066BBFAF4F4A4FB1E /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26B6278FF9FEB3803D5 /* Object.m */; };
 		AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFCB44A6188AB237A221 /* FlexTests.swift */; };
 		AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */; };
+		AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2429CD251C00FABFCD1 /* SafeArea.swift */; };
 		AC96A8118D2718872E1D4E75 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */; };
 		AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */; };
 		AC96A8845FDE28E2DDD4B608 /* FlexControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5C929430D3747CC4C57 /* FlexControl.swift */; };
@@ -123,6 +124,7 @@
 		AC96A1D0B6699F9A5D4C1657 /* Rect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
 		AC96A1E1A4C40E7EE071DAB2 /* Flex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flex.swift; sourceTree = "<group>"; };
 		AC96A22B90117CA401E899B7 /* ButtonLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonLayout.swift; sourceTree = "<group>"; };
+		AC96A2429CD251C00FABFCD1 /* SafeArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafeArea.swift; sourceTree = "<group>"; };
 		AC96A26B6278FF9FEB3803D5 /* Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Object.m; sourceTree = "<group>"; };
 		AC96A26C55282021CFB56FEC /* AbsolutePositionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbsolutePositionTests.swift; sourceTree = "<group>"; };
 		AC96A2AF396B00CCEA2B44AD /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				BCA2A45B1F3DA5BC007A772A /* ViewModel */,
 				AC96A4EFF6F5C29B3FDD4DFA /* Log */,
 				AC96A6E346C2C0DFF901CEF2 /* StartPoint.swift */,
+				AC96A2429CD251C00FABFCD1 /* SafeArea.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -710,6 +713,7 @@
 				AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */,
 				AC96A0BF3535D4019F85C9DB /* FlexCollectionReusableView.swift in Sources */,
 				AC96AE3CF770D7AD9ECC8EDA /* StartPoint.swift in Sources */,
+				AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

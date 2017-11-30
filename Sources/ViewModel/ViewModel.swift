@@ -28,6 +28,8 @@ public protocol ViewModel {
 
 public protocol SizeViewModel: ViewModel {
     var size: CGSize { get }
+    var width: CGFloat { get }
+    var height: CGFloat { get }
 }
 
 extension SizeViewModel {

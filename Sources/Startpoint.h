@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for StartPoint.
 FOUNDATION_EXPORT double StartPointVersionNumber;
@@ -28,5 +28,4 @@ FOUNDATION_EXPORT double StartPointVersionNumber;
 //! Project version string for StartPoint.
 FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <StartPoint/PublicHeader.h>
 #import <StartPoint/Object.h>
