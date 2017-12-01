@@ -187,4 +187,32 @@ public struct Function {
             $0 != value
         }
     }
+
+    @inline(__always)
+    public static func greater<T:Comparable>(_ value: T) -> (T) -> Bool {
+        return {
+            $0 > value
+        }
+    }
+
+    @inline(__always)
+    public static func greaterOrEqual<T:Comparable>(_ value: T) -> (T) -> Bool {
+        return {
+            $0 >= value
+        }
+    }
+
+    @inline(__always)
+    public static func less<T:Comparable>(_ value: T) -> (T) -> Bool {
+        return {
+            $0 < value
+        }
+    }
+
+    @inline(__always)
+    public static func lessOrEqual<T:Comparable>(_ value: T) -> (T) -> Bool {
+        return {
+            $0 <= value
+        }
+    }
 }
