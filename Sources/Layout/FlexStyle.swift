@@ -22,7 +22,7 @@
 
 import UIKit
 
-public struct FlexStyle {
+public class FlexStyle {
     public init() {
         // Do nothing
     }

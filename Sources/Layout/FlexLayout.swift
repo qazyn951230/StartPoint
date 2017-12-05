@@ -227,6 +227,37 @@ open class FlexLayout: Equatable {
         }
     }
 
+#if DEBUG
+    public func debugApply(root: UIView) {
+        for child in children {
+            debugApply(layout: child, parent: root)
+        }
+    }
+
+    public func debugApply(layout: FlexLayout, parent: UIView) {
+        let item: UIView
+        if let view: UIView = layout.view as? UIView {
+            if let superview = view.superview {
+                if superview != parent {
+                    view.removeFromSuperview()
+                    parent.addSubview(view)
+                }
+            } else {
+                parent.addSubview(view)
+            }
+            item = view
+        } else {
+            item = UIView()
+            item.randomBackgroundColor()
+            parent.addSubview(item)
+        }
+        item.frame = layout.frame
+        layout.children.forEach {
+            debugApply(layout: $0, parent: item)
+        }
+    }
+#endif
+
     public func layout(width: Int?, height: Int?) {
         let width: Double? = width.map(Double.init)
         let height: Double? = height.map(Double.init)
