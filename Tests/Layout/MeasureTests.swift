@@ -522,4 +522,41 @@ class MeasureTests: FlexTestCase {
         XCTAssertEqual(text6.box.height, 548)
     }
 
+    func testPercentWithTextNode() {
+        func fn(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+                return CGSize(width: 90, height: 10)
+        }
+        
+        let root = yogaLayout()
+            .flexDirection(.row)
+            .justifyContent(.spaceBetween)
+            .alignItems(.center)
+            .width(float: 100)
+            .height(float: 80)
+        
+        let root_child0 = yogaLayout().append(to: root)
+        
+        let root_child1 = MeasureLayout()
+            .padding(top:40)
+            .maxWidth(0.5)
+            .append(to: root)
+        root_child1._measure = fn
+        
+        root.calculate()
+        
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 80)
+        
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 40)
+        XCTAssertEqual(root_child0.box.width, 0)
+        XCTAssertEqual(root_child0.box.height, 0)
+        
+        XCTAssertEqual(root_child1.box.left, 50)
+        XCTAssertEqual(root_child1.box.top, 15)
+        XCTAssertEqual(root_child1.box.width, 50)
+        XCTAssertEqual(root_child1.box.height, 50)
+    }
 }

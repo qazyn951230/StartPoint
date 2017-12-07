@@ -177,10 +177,13 @@ extension FlexLayout {
                 child.computedFlexBasis = fmax(resolvedFlexBasis, child.style.padding.total(direction: mainDirection) + child.style.border.total(direction: mainDirection))
             }
         } else if isMainAxisRow && isRowStyleDimDefined {
+            // The width is definite, so use that as the flex basis.
             child.computedFlexBasis = fmax(child.box.resolvedWidth.resolve(by: parentWidth), child.style.padding.total(direction: .row) + child.style.border.total(direction: .row))
         } else if !isMainAxisRow && isColumnStyleDimDefined {
+            // The height is definite, so use that as the flex basis.
             child.computedFlexBasis = fmax(child.box.resolvedHeight.resolve(by: parentHeight), child.style.padding.total(direction: .column) + child.style.border.total(direction: .column))
         } else {
+            // Compute the flex basis and hypothetical main size (i.e. the clamped flex basis).
             childWidth = Double.nan
             childHeight = Double.nan
             let marginRow = child.style.margin.total(direction: .row)
@@ -193,6 +196,8 @@ extension FlexLayout {
                 childHeight = child.box.resolvedHeight.resolve(by: parentWidth) + marginColumn
                 childHeightMeasureMode = .exactly
             }
+            // The W3C spec doesn't say anything about the 'overflow' property,
+            // but all major browsers appear to implement the following logic.
             if !isMainAxisRow && style.overflow.scrolled || !style.overflow.scrolled {
                 if childWidth.isNaN && !width.isNaN {
                     childWidth = width
@@ -346,8 +351,8 @@ extension FlexLayout {
             let (width1, height1) = measure(width: innerWidth, widthMode: widthMode, height: innerHeight, heightMode: heightMode)
             let width2 = !widthMode.isExactly ? (width1 + innerSizeRow) : (width - marginRow)
             let height2 = !heightMode.isExactly ? (height1 + innerSizeColumn) : (height - marginColumn)
-            box.measuredWidth = style.bound(axis: .row, value: width2, axisSize: width, width: width)
-            box.measuredHeight = style.bound(axis: .column, value: height2, axisSize: height, width: width)
+            box.measuredWidth = style.bound(axis: .row, value: width2, axisSize: parentWidth, width: parentWidth)
+            box.measuredHeight = style.bound(axis: .column, value: height2, axisSize: parentHeight, width: parentWidth)
         }
     }
 
@@ -395,10 +400,10 @@ extension FlexLayout {
         let marginAxisRow: Double = style.totalOuterSize(for: .row)
         let marginAxisColumn: Double = style.totalOuterSize(for: .column)
         // STEP 2: DETERMINE AVAILABLE SIZE IN MAIN AND CROSS DIRECTIONS
-        let minInnerWidth = style.minWidth.resolve(by: width) - marginAxisRow - paddingAndBorderAxisRow
-        let maxInnerWidth = style.computedMaxWidth.resolve(by: width) - marginAxisRow - paddingAndBorderAxisRow
-        let minInnerHeight = style.minHeight.resolve(by: height) - marginAxisColumn - paddingAndBorderAxisColumn
-        let maxInnerHeight = style.computedMaxHeight.resolve(by: height) - marginAxisColumn - paddingAndBorderAxisColumn
+        let minInnerWidth = style.minWidth.resolve(by: width) - paddingAndBorderAxisRow
+        let maxInnerWidth = style.computedMaxWidth.resolve(by: width) - paddingAndBorderAxisRow
+        let minInnerHeight = style.minHeight.resolve(by: height) - paddingAndBorderAxisColumn
+        let maxInnerHeight = style.computedMaxHeight.resolve(by: height) - paddingAndBorderAxisColumn
         let minInnerMainDim = isMainAxisRow ? minInnerWidth : minInnerHeight
         let maxInnerMainDim = isMainAxisRow ? maxInnerWidth : maxInnerHeight
         var availableInnerWidth = width - marginAxisRow - paddingAndBorderAxisRow
@@ -515,6 +520,7 @@ extension FlexLayout {
             var leadingMainDim = 0.0
             var betweenMainDim = 0.0
             // STEP 5: RESOLVING FLEXIBLE LENGTHS ON MAIN AXIS
+            var sizeBasedOnContent = false
             if measureModeMainDim != MeasureMode.exactly {
                 if !minInnerMainDim.isNaN && sizeConsumedOnCurrentLine < minInnerMainDim {
                     availableInnerMainDim = minInnerMainDim
@@ -524,10 +530,11 @@ extension FlexLayout {
                     if totalFlexGrowFactors == 0 || computedFlexGrow == 0 {
                         availableInnerMainDim = sizeConsumedOnCurrentLine
                     }
+                    sizeBasedOnContent = true
                 }
             }
             var remainingFreeSpace = 0.0
-            if !availableInnerMainDim.isNaN {
+            if !sizeBasedOnContent && !availableInnerMainDim.isNaN {
                 remainingFreeSpace = availableInnerMainDim - sizeConsumedOnCurrentLine
             } else if sizeConsumedOnCurrentLine < 0 {
                 remainingFreeSpace = 0 - sizeConsumedOnCurrentLine
@@ -669,6 +676,9 @@ extension FlexLayout {
                 } else {
                     betweenMainDim = 0
                 }
+            case .spaceEvenly: // Space is distributed evenly across all elements
+                betweenMainDim = remainingFreeSpace / Double(itemsOnLine + 1)
+                leadingMainDim = betweenMainDim
             case .spaceAround:
                 betweenMainDim = remainingFreeSpace / Double(itemsOnLine)
                 leadingMainDim = betweenMainDim / 2
@@ -718,9 +728,12 @@ extension FlexLayout {
                         continue
                     }
                     if child.style.absoluteLayout {
+                        // If the child is absolutely positioned and has a top/left/bottom/right
+                        // set, override all the previously computed positions to set it correctly.
                         if child.style.isLeadingPositionDefined(for: crossAxis) {
                             child.box.position[crossAxis] = child.style.leadingPosition(for: crossAxis) + style.border.leading(direction: crossAxis) + child.style.margin.leading(direction: crossAxis)
-                        } else {
+                        } else if child.box.position.leading(direction: crossAxis).isNaN {
+                            // If leading position is not defined or calculations result in Nan, default to border + margin
                             child.box.position[crossAxis] = style.border.leading(direction: crossAxis) + child.style.margin.leading(direction: crossAxis)
                         }
                     } else {
@@ -918,6 +931,8 @@ extension FlexLayout {
         if child.box.isDimensionDefined(for: .row, size: width) {
             childWidth = child.box.resolvedWidth.resolve(by: width) + marginRow
         } else {
+            // If the child doesn't have a specified width, compute the width based
+            // on the left/right offsets if they're defined.
             if child.style.isLeadingPositionDefined(for: .row) && child.style.isTrailingPositionDefined(for: .row) {
                 childWidth = box.measuredWidth - style.border.leading(direction: .row) - style.border.trailing(direction: .row) - child.style.leadingPosition(for: .row) - child.style.trailingPosition(for: .row)
                 childWidth = child.style.bound(axis: .row, value: childWidth, axisSize: width, width: width)
@@ -926,6 +941,8 @@ extension FlexLayout {
         if child.box.isDimensionDefined(for: .column, size: height) {
             childHeight = child.box.resolvedHeight.resolve(by: height) + marginColumn
         } else {
+            // If the child doesn't have a specified height, compute the height
+            // based on the top/bottom offsets if they're defined.
             if child.style.isLeadingPositionDefined(for: .column) && child.style.isTrailingPositionDefined(for: .column) {
                 childHeight = box.measuredHeight - style.border.leading(direction: .column) - style.border.trailing(direction: .column) - child.style.leadingPosition(for: .column) - child.style.trailingPosition(for: .column)
                 childHeight = child.style.bound(axis: .column, value: childHeight, axisSize: height, width: width)
@@ -933,6 +950,8 @@ extension FlexLayout {
         }
         // true  ^ true  = false true  ^ false = true
         // false ^ true  = true  false ^ false = false
+        // Exactly one dimension needs to be defined for us to be able to do aspect ratio
+        // calculation. One dimension being the anchor and the other being flexible.
         if childWidth.isNaN != childHeight.isNaN {
             if !child.style.aspectRatio.isNaN {
                 if childWidth.isNaN {
@@ -942,9 +961,13 @@ extension FlexLayout {
                 }
             }
         }
+        // If we're still missing one or the other dimension, measure the content.
         if childWidth.isNaN || childHeight.isNaN {
             childWidthMeasureMode = childWidth.isNaN ? .undefined : .exactly
             childHeightMeasureMode = childHeight.isNaN ? .undefined : .exactly
+            // If the size of the parent is defined then try to constrain the absolute child to that size
+            // as well. This allows text within the absolute child to wrap to the size of its parent.
+            // This is the same behavior as many browsers implement.
             if !isMainAxisRow && childWidth.isNaN && childWidthMeasureMode != MeasureMode.undefined && width > 0 {
                 childWidth = width
                 childWidthMeasureMode = .atMost

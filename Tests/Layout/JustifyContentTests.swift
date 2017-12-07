@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import XCTest
 
 // Generated from YGJustifyContentTest.cpp
 class JustifyContentTests: FlexTestCase {
@@ -356,6 +356,7 @@ class JustifyContentTests: FlexTestCase {
         root.append(root_child0)
 
         let root_child1 = yogaLayout()
+            .height(10)
         root.append(root_child1)
 
         let root_child2 = yogaLayout()
@@ -376,10 +377,10 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.left, 0)
         XCTAssertEqual(root_child1.box.top, 10)
         XCTAssertEqual(root_child1.box.width, 102)
-        XCTAssertEqual(root_child1.box.height, 0)
+        XCTAssertEqual(root_child1.box.height, 10)
 
         XCTAssertEqual(root_child2.box.left, 0)
-        XCTAssertEqual(root_child2.box.top, 10)
+        XCTAssertEqual(root_child2.box.top, 20)
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
@@ -398,10 +399,10 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.left, 0)
         XCTAssertEqual(root_child1.box.top, 10)
         XCTAssertEqual(root_child1.box.width, 102)
-        XCTAssertEqual(root_child1.box.height, 0)
+        XCTAssertEqual(root_child1.box.height, 10)
 
         XCTAssertEqual(root_child2.box.left, 0)
-        XCTAssertEqual(root_child2.box.top, 10)
+        XCTAssertEqual(root_child2.box.top, 20)
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
     }
@@ -655,6 +656,281 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.left, 0)
         XCTAssertEqual(root_child2.box.top, 80)
         XCTAssertEqual(root_child2.box.width, 102)
+        XCTAssertEqual(root_child2.box.height, 10)
+    }
+
+    // Generated from test: justify_content_row_min_width_and_margin
+    func testJustifyContentRowMinWidthAndMargin() {
+        let root = yogaLayout()
+            .flexDirection(.row)
+            .justifyContent(.center)
+            .margin(left: 100)
+            .minWidth(50)
+
+        let root_child0 = yogaLayout()
+            .height(20)
+            .width(20)
+        root.append(root_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 100)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 50)
+        XCTAssertEqual(root.box.height, 20)
+
+        XCTAssertEqual(root_child0.box.left, 15)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 100)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 50)
+        XCTAssertEqual(root.box.height, 20)
+
+        XCTAssertEqual(root_child0.box.left, 15)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+    }
+
+    // Generated from test: justify_content_row_max_width_and_margin
+    func testJustifyContentRowMaxWidthAndMargin() {
+        let root = yogaLayout()
+            .flexDirection(.row)
+            .justifyContent(.center)
+            .margin(left: 100)
+            .maxWidth(80)
+            .width(100)
+
+        let root_child0 = yogaLayout()
+            .height(20)
+            .width(20)
+        root.append(root_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 100)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 80)
+        XCTAssertEqual(root.box.height, 20)
+
+        XCTAssertEqual(root_child0.box.left, 30)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 100)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 80)
+        XCTAssertEqual(root.box.height, 20)
+
+        XCTAssertEqual(root_child0.box.left, 30)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+    }
+
+    // Generated from test: justify_content_column_min_height_and_margin
+    func testJustifyContentColumnMinHeightAndMargin() {
+        let root = yogaLayout()
+            .justifyContent(.center)
+            .margin(top: 100)
+            .minHeight(50)
+
+        let root_child0 = yogaLayout()
+            .height(20)
+            .width(20)
+        root.append(root_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 100)
+        XCTAssertEqual(root.box.width, 20)
+        XCTAssertEqual(root.box.height, 50)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 15)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 100)
+        XCTAssertEqual(root.box.width, 20)
+        XCTAssertEqual(root.box.height, 50)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 15)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+    }
+
+    // Generated from test: justify_content_colunn_max_height_and_margin
+    func testJustifyContentColunnMaxHeightAndMargin() {
+        let root = yogaLayout()
+            .height(100)
+            .justifyContent(.center)
+            .margin(top: 100)
+            .maxHeight(80)
+
+        let root_child0 = yogaLayout()
+            .height(20)
+            .width(20)
+        root.append(root_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 100)
+        XCTAssertEqual(root.box.width, 20)
+        XCTAssertEqual(root.box.height, 80)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 30)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 100)
+        XCTAssertEqual(root.box.width, 20)
+        XCTAssertEqual(root.box.height, 80)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 30)
+        XCTAssertEqual(root_child0.box.width, 20)
+        XCTAssertEqual(root_child0.box.height, 20)
+    }
+
+    // Generated from test: justify_content_column_space_evenly
+    func testJustifyContentColumnSpaceEvenly() {
+        let root = yogaLayout()
+            .height(102)
+            .justifyContent(.spaceEvenly)
+            .width(102)
+
+        let root_child0 = yogaLayout()
+            .height(10)
+        root.append(root_child0)
+
+        let root_child1 = yogaLayout()
+            .height(10)
+        root.append(root_child1)
+
+        let root_child2 = yogaLayout()
+            .height(10)
+        root.append(root_child2)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 102)
+        XCTAssertEqual(root.box.height, 102)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 18)
+        XCTAssertEqual(root_child0.box.width, 102)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 0)
+        XCTAssertEqual(root_child1.box.top, 46)
+        XCTAssertEqual(root_child1.box.width, 102)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 0)
+        XCTAssertEqual(root_child2.box.top, 74)
+        XCTAssertEqual(root_child2.box.width, 102)
+        XCTAssertEqual(root_child2.box.height, 10)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 102)
+        XCTAssertEqual(root.box.height, 102)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 18)
+        XCTAssertEqual(root_child0.box.width, 102)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 0)
+        XCTAssertEqual(root_child1.box.top, 46)
+        XCTAssertEqual(root_child1.box.width, 102)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 0)
+        XCTAssertEqual(root_child2.box.top, 74)
+        XCTAssertEqual(root_child2.box.width, 102)
+        XCTAssertEqual(root_child2.box.height, 10)
+    }
+
+    // Generated from test: justify_content_row_space_evenly
+    func testJustifyContentRowSpaceEvenly() {
+        let root = yogaLayout()
+            .flexDirection(.row)
+            .height(102)
+            .justifyContent(.spaceEvenly)
+            .width(102)
+
+        let root_child0 = yogaLayout()
+            .height(10)
+        root.append(root_child0)
+
+        let root_child1 = yogaLayout()
+            .height(10)
+        root.append(root_child1)
+
+        let root_child2 = yogaLayout()
+            .height(10)
+        root.append(root_child2)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 102)
+        XCTAssertEqual(root.box.height, 102)
+
+        XCTAssertEqual(root_child0.box.left, 26)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 0)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 51)
+        XCTAssertEqual(root_child1.box.top, 0)
+        XCTAssertEqual(root_child1.box.width, 0)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 77)
+        XCTAssertEqual(root_child2.box.top, 0)
+        XCTAssertEqual(root_child2.box.width, 0)
+        XCTAssertEqual(root_child2.box.height, 10)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 102)
+        XCTAssertEqual(root.box.height, 102)
+
+        XCTAssertEqual(root_child0.box.left, 77)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 0)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 51)
+        XCTAssertEqual(root_child1.box.top, 0)
+        XCTAssertEqual(root_child1.box.width, 0)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 26)
+        XCTAssertEqual(root_child2.box.top, 0)
+        XCTAssertEqual(root_child2.box.width, 0)
         XCTAssertEqual(root_child2.box.height, 10)
     }
 }

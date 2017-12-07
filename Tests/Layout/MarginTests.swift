@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import XCTest
 
 // Generated from YGMarginTest.cpp
 class MarginTests: FlexTestCase {
@@ -563,5 +563,13 @@ class MarginTests: FlexTestCase {
 
     // Generated from test: margin_auto_left_fix_right_child_bigger_than_parent
     // func testMarginAutoLeftFixRightChildBiggerThanParent() {
+    // }
+
+    // Generated from test: margin_auto_top_stretching_child
+    // func testMarginAutoTopStretchingChild() {
+    // }
+
+    // Generated from test: margin_auto_left_stretching_child
+    // func testMarginAutoLeftStretchingChild() {
     // }
 }

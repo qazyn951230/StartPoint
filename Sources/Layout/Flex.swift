@@ -424,6 +424,7 @@ public enum JustifyContent {
     case center
     case spaceBetween
     case spaceAround
+    case spaceEvenly
 }
 
 public enum AlignItems {

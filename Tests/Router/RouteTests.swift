@@ -23,28 +23,29 @@
 import XCTest
 @testable import StartPoint
 
-class RouteTests: XCTestCase {
-    func testBasicMatch() {
-        let root: Route<Int> = Route.root(domain: nil)
-        let page: Route<Int> = Route.create("product/type/id", value: 1)
-        root.append(page)
+//class RouteTests: XCTestCase {
+//    func testBasicMatch() {
+//        let root: Route<Int> = Route.root(domain: nil)
+//        let page: Route<Int> = Route.create("product/type/id", value: 1)
+//        root.append(page)
+//
+//        XCTAssertTrue(root.match(path: "product/type/id"))
+//        XCTAssertTrue(root.match(path: "/product/type/id"))
+//        XCTAssertTrue(root.match(path: "product/type/id/"))
+//        XCTAssertFalse(root.match(path: "/product/type/idd"))
+//        XCTAssertFalse(root.match(path: "product/type"))
+//        XCTAssertFalse(root.match(path: "//type/id"))
+//        XCTAssertFalse(root.match(path: "/product/id"))
+//    }
+//
+//    func testPlaceholderMatch() {
+//        let root: Route<Int> = Route.root(domain: nil)
+//        let page: Route<Int> = Route.create("product/:type/:id", value: 1)
+//        root.append(page)
+//
+//        XCTAssertTrue(root.match(path: "product/new/1"))
+//        // TODO: :id => number
+//        XCTAssertTrue(root.match(path: "/product/foo/bar"))
+//    }
+//}
 
-        XCTAssertTrue(root.match(path: "product/type/id"))
-        XCTAssertTrue(root.match(path: "/product/type/id"))
-        XCTAssertTrue(root.match(path: "product/type/id/"))
-        XCTAssertFalse(root.match(path: "/product/type/idd"))
-        XCTAssertFalse(root.match(path: "product/type"))
-        XCTAssertFalse(root.match(path: "//type/id"))
-        XCTAssertFalse(root.match(path: "/product/id"))
-    }
-
-    func testPlaceholderMatch() {
-        let root: Route<Int> = Route.root(domain: nil)
-        let page: Route<Int> = Route.create("product/:type/:id", value: 1)
-        root.append(page)
-
-        XCTAssertTrue(root.match(path: "product/new/1"))
-        // TODO: :id => number
-        XCTAssertTrue(root.match(path: "/product/foo/bar"))
-    }
-}

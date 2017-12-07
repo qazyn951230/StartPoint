@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import XCTest
 
 // Generated from YGAlignItemsTest.cpp
 class AlignItemsTests: FlexTestCase {
@@ -1840,5 +1840,196 @@ class AlignItemsTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0_child0.box.top, 0)
         XCTAssertEqual(root_child0_child0_child0.box.width, 20)
         XCTAssertEqual(root_child0_child0_child0.box.height, 20)
+    }
+
+    // Generated from test: align_flex_start_with_shrinking_children
+    func testAlignFlexStartWithShrinkingChildren() {
+        let root = yogaLayout()
+            .height(500)
+            .width(500)
+
+        let root_child0 = yogaLayout()
+            .alignItems(.flexStart)
+        root.append(root_child0)
+
+        let root_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0.append(root_child0_child0)
+
+        let root_child0_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0_child0.append(root_child0_child0_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 500)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
+    }
+
+    // Generated from test: align_flex_start_with_stretching_children
+    func testAlignFlexStartWithStretchingChildren() {
+        let root = yogaLayout()
+            .height(500)
+            .width(500)
+
+        let root_child0 = yogaLayout()
+        root.append(root_child0)
+
+        let root_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0.append(root_child0_child0)
+
+        let root_child0_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0_child0.append(root_child0_child0_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
+    }
+
+    // Generated from test: align_flex_start_with_shrinking_children_with_stretch
+    func testAlignFlexStartWithShrinkingChildrenWithStretch() {
+        let root = yogaLayout()
+            .height(500)
+            .width(500)
+
+        let root_child0 = yogaLayout()
+            .alignItems(.flexStart)
+        root.append(root_child0)
+
+        let root_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0.append(root_child0_child0)
+
+        let root_child0_child0_child0 = yogaLayout()
+            .flexGrow(1)
+            .flexShrink(1)
+        root_child0_child0.append(root_child0_child0_child0)
+        root.calculate(direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
+
+        root.calculate(direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 500)
+        XCTAssertEqual(root.box.height, 500)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 500)
+        XCTAssertEqual(root_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0.box.left, 500)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0.box.height, 0)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 0)
     }
 }

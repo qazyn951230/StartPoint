@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import XCTest
 
 // Generated from YGAbsolutePositionTest.cpp
 class AbsolutePositionTests: FlexTestCase {
@@ -241,7 +241,7 @@ class AbsolutePositionTests: FlexTestCase {
             .border(right: 10)
             .border(top: 10)
             .height(100)
-            .margin(bottom: 10)
+        _ = root.margin(bottom: 10)
             .margin(left: 10)
             .margin(right: 10)
             .margin(top: 10)

@@ -94,7 +94,7 @@ class FlexBox {
         } else if floor {
             value = value - mod
         } else {
-            value = value - mod + (mod < 0.5 ? 0.0 : 1.0)
+            value = value - mod + ((mod > 0.5 || equal(mod, 0.5)) ? 1.0 : 0.0)
         }
         return value / scale
     }
