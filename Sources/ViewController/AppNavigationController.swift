@@ -229,7 +229,7 @@ open class AppBar: UIView {
     }
 }
 
-open class BasicNavigationController: UIViewController {
+open class AppNavigationController: UIViewController {
     lazy var appBar: AppBar = AppBar(frame: CGRect(origin: .zero, width: Device.width, height: 68))
 
     open override func viewDidLoad() {

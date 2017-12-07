@@ -25,7 +25,7 @@
 		AC96A270DCF9EC380399133A /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */; };
 		AC96A2A6CC238CD41180A91E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC856B0EBD3CCD6A03B6 /* TableViewCell.swift */; };
 		AC96A2F15A160C65A3749ED6 /* RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */; };
-		AC96A313B4B52B02C0891856 /* BasicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF2E79625C539F0F7E98 /* BasicViewController.swift */; };
+		AC96A313B4B52B02C0891856 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF2E79625C539F0F7E98 /* AppViewController.swift */; };
 		AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A22B90117CA401E899B7 /* ButtonLayout.swift */; };
 		AC96A4059B39F13A040C4D05 /* Intent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADF6A697E1AE2C52AB27 /* Intent.swift */; };
 		AC96A4BFADE1B0709502650E /* PagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */; };
@@ -79,7 +79,7 @@
 		AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */; };
 		AC96AFAE3A9ACC9E0137D124 /* PhotoPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */; };
 		AC96AFAE9F22E932FD983726 /* FlexAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */; };
-		AC96AFB74BA6AE0AE9D9B688 /* BasicNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A630A39CC08BFCD8C783 /* BasicNavigationController.swift */; };
+		AC96AFB74BA6AE0AE9D9B688 /* AppNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A630A39CC08BFCD8C783 /* AppNavigationController.swift */; };
 		AC96AFC406398C2019CFE432 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A506CA182155247878AC /* Route.swift */; };
 		AC96AFF35A40C6045FE901F8 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2AF396B00CCEA2B44AD /* Point.swift */; };
 		AC96AFF3F8E252980091E724 /* AlignItemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */; };
@@ -141,7 +141,7 @@
 		AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyleTests.swift; sourceTree = "<group>"; };
 		AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationPermission.swift; sourceTree = "<group>"; };
 		AC96A5C929430D3747CC4C57 /* FlexControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexControl.swift; sourceTree = "<group>"; };
-		AC96A630A39CC08BFCD8C783 /* BasicNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicNavigationController.swift; sourceTree = "<group>"; };
+		AC96A630A39CC08BFCD8C783 /* AppNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNavigationController.swift; sourceTree = "<group>"; };
 		AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermission.swift; sourceTree = "<group>"; };
 		AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinMaxDimensionTests.swift; sourceTree = "<group>"; };
 		AC96A6D19F42865264963109 /* ManualLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualLayoutTests.swift; sourceTree = "<group>"; };
@@ -191,7 +191,7 @@
 		AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexDirectionTests.swift; sourceTree = "<group>"; };
 		AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
-		AC96AF2E79625C539F0F7E98 /* BasicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicViewController.swift; sourceTree = "<group>"; };
+		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		AC96AF4CCDEEAB7B80A449DC /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		AC96AFA1ED6CC64828315DD9 /* LayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutView.swift; sourceTree = "<group>"; };
@@ -414,8 +414,8 @@
 		AC96AE58B0B945BBAD762FBD /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				AC96A630A39CC08BFCD8C783 /* BasicNavigationController.swift */,
-				AC96AF2E79625C539F0F7E98 /* BasicViewController.swift */,
+				AC96A630A39CC08BFCD8C783 /* AppNavigationController.swift */,
+				AC96AF2E79625C539F0F7E98 /* AppViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -693,9 +693,9 @@
 				AC96A961D2413ABE7D375AE5 /* AlertController.swift in Sources */,
 				AC96A95E37503B8812972882 /* UIImagePickerController.swift in Sources */,
 				AC96AF008794E423F1EE5CD9 /* RequestBuilder.swift in Sources */,
-				AC96A313B4B52B02C0891856 /* BasicViewController.swift in Sources */,
+				AC96A313B4B52B02C0891856 /* AppViewController.swift in Sources */,
 				AC96A006869E723A64110C5B /* Decodable.swift in Sources */,
-				AC96AFB74BA6AE0AE9D9B688 /* BasicNavigationController.swift in Sources */,
+				AC96AFB74BA6AE0AE9D9B688 /* AppNavigationController.swift in Sources */,
 				AC96AE855B609E3C90DD7339 /* LayoutView.swift in Sources */,
 				AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */,
 				AC96A270DCF9EC380399133A /* BannerView.swift in Sources */,

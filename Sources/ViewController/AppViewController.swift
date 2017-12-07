@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class BasicViewController<View:UIView>: UIViewController, UIGestureRecognizerDelegate {
+open class AppViewController<View:UIView>: UIViewController, UIGestureRecognizerDelegate {
     open var backBarItem: UIBarButtonItem? = nil
 
     public private(set) var basicView: View? = nil
