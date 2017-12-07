@@ -41,6 +41,10 @@ open class FlexCollectionReusableView: UICollectionReusableView {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
+        flexLayout()
+    }
+
+    open func flexLayout() {
         root.layout(width: bounds.width, height: bounds.height)
         root.apply()
     }
