@@ -24,13 +24,11 @@ import UIKit
 import CoreGraphics
 
 open class FlexLayout: Equatable {
-    internal var dirty: Bool = true
-    private var hasDirtyDescendants = false
-
-    public private(set) weak var view: LayoutView?
+    public internal(set) weak var view: LayoutView?
     public internal(set) var style: FlexStyle
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
+    public internal(set) var dirty: Bool = true
 
     public var layoutType: LayoutType = .default // nodeType
     public var measureSelf: Bool = false {
