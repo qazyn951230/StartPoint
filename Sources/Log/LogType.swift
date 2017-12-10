@@ -32,8 +32,8 @@ public protocol LogType {
 
     static func write(level: LogLevel, _ value: Any, file: String, function: String, line: Int)
     static func write(level: LogLevel, _ value: Any?, file: String, function: String, line: Int)
-    static func write(level: LogLevel, _ value: Any..., file: String, function: String, line: Int)
-    static func write(level: LogLevel, _ value: Any?..., file: String, function: String, line: Int)
+    static func write(level: LogLevel, _ value: [Any], file: String, function: String, line: Int)
+    static func write(level: LogLevel, _ value: [Any?], file: String, function: String, line: Int)
 
     static func close()
     static func write(message: String)
@@ -87,7 +87,7 @@ public extension LogType {
         }
     }
 
-    public static func write(level: LogLevel, _ value: Any..., file: String, function: String, line: Int) {
+    public static func write(level: LogLevel, _ value: [Any], file: String, function: String, line: Int) {
         guard level >= Self.level, value.count > 0 else {
             return
         }
@@ -96,7 +96,7 @@ public extension LogType {
         write(level: level, message: message, thread: thread, date: Date(), file: file, function: function, line: line)
     }
 
-    public static func write(level: LogLevel, _ value: Any?..., file: String, function: String, line: Int) {
+    public static func write(level: LogLevel, _ value: [Any?], file: String, function: String, line: Int) {
         let array: [Any] = value.flatMap(Function.this)
         write(level: level, array, file: file, function: function, line: line)
     }
