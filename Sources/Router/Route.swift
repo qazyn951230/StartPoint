@@ -20,121 +20,103 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class Route<T> {
-    let path: String
-    let domain: Bool
-    let placeholder: Bool
-//    let wildcard: Bool
-    weak var parent: Route<T>? = nil
-    // TODO: nil
-    var children: [String: Route<T>] = [:]
-    var value: T?
+import Foundation
 
-    private init(path: String, domain: Bool = false, placeholder: Bool?, value: T?) {
-        self.path = path
-        self.domain = domain
-        self.placeholder = placeholder ?? path.hasPrefix(":")
+class Route<T> {
+    let component: String
+    let placeholder: Bool
+    var value: T?
+    internal(set) var children: [String: Route<T>] = [:]
+
+    internal init(component: String, value: T?) {
+        placeholder = component.hasPrefix(":")
+        self.component = component
         self.value = value
     }
 
-    convenience init(path: String) {
-        self.init(path: path, domain: false, placeholder: nil, value: nil)
-    }
-
-    func append(_ route: Route<T>) {
-        if route.path.isEmpty {
+    // path => /foo/bar/:id
+    func append(components: [String], value: T?) {
+        guard let first = components.first, first == "/", components.count > 1 else {
             return
         }
-        if let child = children[route.path] {
-            for (_, item) in route.children {
-                item.parent = child
-                child.append(item)
+        var current: Route<T> = self
+        for component in components.dropFirst() {
+            let route = Route<T>(component: component, value: nil)
+            if route.placeholder, let holder = placeholderChild() {
+                current = holder
+            } else if let t = current.children[component] {
+                current = t
+            } else {
+                current.children[component] = route
+                current = route
             }
-        } else {
-            children[route.path] = route
-            route.parent = self
+        }
+        current.value = value
+    }
+
+    func append(_ path: URL, value: T?) {
+        append(components: path.pathComponents, value: value)
+    }
+
+    func append(path: String, value: T?) {
+        if let url = URL(string: path) {
+            append(url, value: value)
         }
     }
 
-    @discardableResult
-    func append(path: String, value: T) -> Route<T> {
-        let route = Route.create(path, value: value)
-        append(route)
-        return route
+    func placeholderChild() -> Route<T>? {
+        for (_, child) in children {
+            if child.placeholder {
+                return child
+            }
+        }
+        return nil
     }
 
-    func use(namespace: String) -> Route<T> {
-        let route: Route<T> = Route(path: namespace)
-        append(route)
-        return route
-    }
-
-    func match(path: String) -> Bool {
-        return false
-//        let paths = path.split(separator: "/")
-//        var next: Route<T>? = self
-//        for item in paths {
-//            if let route = next {
-//                if route.placeholder {
-//                    if route.children.count == 1 {
-//                        (_, next) = route.children.first
-//                    } else {
-//                        break
-//                    }
-//                } else {
-//                    next = route.children[item]
-//                }
-//            } else {
-//                break
-//            }
-//        }
-//        if let next = next {
-//            return next.children.count < 1
-//        } else {
-//            return false
-//        }
-    }
-
-    subscript(path: String) -> Route<T>? {
-        if path.isEmpty {
+    func match(components: [String]) -> T? {
+        guard children.count > 0, let first = components.first,
+              first == "/", components.count > 1 else {
             return nil
         }
-        if let child = children[path] {
-            return child
-        }
-        let paths = path.split(separator: "/").map(String.init)
-        var current: Route<T>? = self
-        var result: Route<T>? = nil
-        for p in paths {
-            result = current?.children[p]
-            if result == nil {
-                break
+        var last: Route<T> = self
+        for component in components.dropFirst() {
+            if let holder = last.placeholderChild() {
+                last = holder
+            } else {
+                guard let t = last.children[component] else {
+                    return nil
+                }
+                last = t
             }
-            current = result
         }
-        return result
+        return last.value
     }
 
-    static func root(domain: String?) -> Route<T> {
-        let placeholder = domain == nil
-        return Route(path: domain ?? "", domain: true, placeholder: placeholder, value: nil)
+    func match(_ path: URL) -> T? {
+        return match(components: path.pathComponents)
     }
 
-    static func create(_ path: String, value: T) -> Route<T> {
-        let array: [Route<T>] = path.split(separator: "/")
-            .map(String.init)
-            .map(Route<T>.init)
-        if let first = array.first {
-            let start = array.index(after: array.startIndex)
-            let end = array.endIndex
-            let last = array[start..<end].reduce(first) { (result: Route<T>, next: Route<T>) -> Route<T> in
-                result.children[next.path] = next
-                next.parent = result
-                return next
-            }
-            last.value = value
-            return first
+    func match(path: String) -> T? {
+        guard let url = URL(string: path) else {
+            return nil
         }
-        return Route(path: path, placeholder: nil, value: value)
+        return match(url)
+    }
+
+    func match(component: String) -> Route<T>? {
+        return children[component]
+    }
+
+    subscript(path: String) -> T? {
+        get {
+            return match(path: path)
+        }
+        set {
+            append(path: path, value: newValue)
+        }
+    }
+
+    static func root(domain: String? = nil) -> Route<T> {
+        return Route(component: domain ?? String.empty, value: nil)
     }
 }

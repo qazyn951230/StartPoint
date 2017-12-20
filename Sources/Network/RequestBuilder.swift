@@ -25,13 +25,13 @@ import RxSwift
 import Dispatch
 import SwiftyJSON
 
-public class RequestBuilder<T> {
+public class RequestBuilder {
     public let url: String
     public let method: HTTPMethod
     public private(set) var scheduler: SerialDispatchQueueScheduler = MainScheduler.instance
     public private(set) var queue: DispatchQueue = DispatchQueue.main
 
-    public private(set) var parameters = [String: T]()
+    public private(set) var parameters = [String: Any]()
     public private(set) var headers = [String: String]()
     public private(set) var encoding: ParameterEncoding = URLEncoding.default
 
@@ -49,7 +49,7 @@ public class RequestBuilder<T> {
         self.method = method
     }
 
-    public func parameter(_ value: T, key: String, log: Bool = true) -> RequestBuilder {
+    public func parameter(_ value: Any, key: String, log: Bool = true) -> RequestBuilder {
         parameters[key] = value
 #if DEBUG
         if log {
@@ -59,7 +59,7 @@ public class RequestBuilder<T> {
         return self
     }
 
-    public func parameters(_ value: [String: T], append: Bool = true, log: Bool = true) -> RequestBuilder {
+    public func parameters(_ value: [String: Any], append: Bool = true, log: Bool = true) -> RequestBuilder {
         if append {
             for (k, v) in value {
                 self.parameters[k] = v

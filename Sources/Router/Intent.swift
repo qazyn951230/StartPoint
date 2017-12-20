@@ -91,12 +91,12 @@ public class Intent {
         push = Intent.display(source: source.intentController, target: controller, method: method)
     }
 
-    public func start(viewController: UIViewController) {
+    public func start(with controller: UIViewController) {
         var destination = target.create(intent: self)
         destination.intent = self
-        let controller = destination.intentController
-        targetController = controller
-        push = Intent.display(source: viewController, target: controller, method: method)
+        let t = destination.intentController
+        targetController = t
+        push = Intent.display(source: controller, target: t, method: method)
     }
 
     public func transition(_ function: (IntentTarget) -> Void) {
@@ -127,10 +127,14 @@ public class Intent {
         case .modal:
             push = false
         case .auto:
-            push = source.navigationController != nil
+            push = source.navigationController != nil || source is UINavigationController
         }
         if push {
-            source.navigationController?.pushViewController(target, animated: true)
+            if let navigation = source as? UINavigationController {
+                navigation.pushViewController(target, animated: true)
+            } else {
+                source.navigationController?.pushViewController(target, animated: true)
+            }
         } else {
             source.present(target, animated: true)
         }

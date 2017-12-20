@@ -24,7 +24,7 @@ import UIKit
 
 enum RouteMethod {
     case target(IntentTarget.Type, IntentMethod)
-    case intent((Intent) -> Void)
+    case intent(() -> Intent)
 }
 
 public class Router {
@@ -32,8 +32,8 @@ public class Router {
     let root: Route<RouteMethod>
 
     public init(scheme: String) {
-        self.scheme = scheme.hasSuffix("://") ? scheme : (scheme + "://")
-        root = Route.root(domain: "")
+        self.scheme = scheme
+        root = Route.root()
     }
 
     init(root: Route<RouteMethod>) {
@@ -42,19 +42,25 @@ public class Router {
     }
 
     public func register(path: String, target: IntentTarget.Type, method: IntentMethod = .auto) {
-        let info = RouteMethod.target(target, method)
-        root.append(path: path, value: info)
+        root[path] = RouteMethod.target(target, method)
     }
 
-    public func register(path: String, handler: @escaping (Intent) -> Void) {
-        let info = RouteMethod.intent(handler)
-        root.append(path: path, value: info)
+    public func register(path: String, _ creator: @escaping () -> Intent) {
+        root[path] = RouteMethod.intent(creator)
     }
 
-    public func use(namespace: String, function: (Router) -> Void) {
-        let route: Route<RouteMethod> = Route(path: namespace)
-        root.append(route)
-        let router = Router(root: route)
-        function(router)
+    public func navigation(path: URL, in controller: UIViewController) -> Bool {
+        guard let host = path.host.flatMap(root.match(component:)),
+              let method = host.match(components: path.pathComponents) else {
+            return false
+        }
+        switch method {
+        case .target(let t, let m):
+            let i = Intent(target: t, method: m)
+            i.start(with: controller)
+        case .intent(let f):
+            f().start(with: controller)
+        }
+        return true
     }
 }
