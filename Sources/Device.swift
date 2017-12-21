@@ -64,6 +64,22 @@ public enum DeviceVersion: Int {
     case version110
     case version111
     case version112
+
+    public static func <(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
+
+    public static func >(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+        return lhs.rawValue > rhs.rawValue
+    }
+
+    public static func <=(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+        return lhs.rawValue <= rhs.rawValue
+    }
+
+    public static func >=(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+        return lhs.rawValue >= rhs.rawValue
+    }
 }
 
 public struct Device {
@@ -84,7 +100,16 @@ public struct Device {
     }()
 
     public static let version: DeviceVersion = {
-        guard let v = Double(UIDevice.current.systemVersion) else {
+        // 11.2.1 is valid version
+        let s = UIDevice.current.systemVersion
+        let array: [Substring] = s.split(separator: ".")
+        let c: String
+        if array.count > 2 {
+            c = String(array[0] + "." + array[1])
+        } else {
+            c = s
+        }
+        guard let v = Double(c) else {
             return DeviceVersion.version80
         }
         if v > 10.99 {
