@@ -20,27 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import CoreGraphics
 
-func yogaLayout() -> FlexLayout {
-    let layout: FlexLayout = FlexLayout()
-//    layout.layoutType = .default
-//    layout.dirty = false
-    return layout
-}
+class MeasureLayout: FlexLayout {
+    var _measure: ((CGFloat, MeasureMode, CGFloat, MeasureMode) -> CGSize)?
 
-func webLayout() -> FlexLayout {
-    let layout: FlexLayout = FlexLayout()
-    layout.style.flexDirection = FlexDirection.row
-    layout.style.alignContent = AlignContent.stretch
-    layout.style.flexShrink = 1
-    return layout
-}
+    override init(view: LayoutView? = nil) {
+        super.init(view: view)
+        measureSelf = true
+        layoutType = .text // measureSelf ? .text : .default
+    }
 
-class FlexTestCase: XCTestCase {
-    override class func setUp() {
-        super.setUp()
-        FlexStyle.scale = 1.0
+    override func measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+        return _measure?(width, widthMode, height, heightMode) ?? CGSize.zero
     }
 }

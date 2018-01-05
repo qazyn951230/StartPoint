@@ -20,27 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import CoreGraphics
 
-func yogaLayout() -> FlexLayout {
-    let layout: FlexLayout = FlexLayout()
-//    layout.layoutType = .default
-//    layout.dirty = false
-    return layout
-}
+class BaselineLayout: FlexLayout {
+    var base: Double = 0
 
-func webLayout() -> FlexLayout {
-    let layout: FlexLayout = FlexLayout()
-    layout.style.flexDirection = FlexDirection.row
-    layout.style.alignContent = AlignContent.stretch
-    layout.style.flexShrink = 1
-    return layout
-}
-
-class FlexTestCase: XCTestCase {
-    override class func setUp() {
-        super.setUp()
-        FlexStyle.scale = 1.0
+    override func baseline(width: Double, height: Double) -> Double {
+        return base
     }
 }
+

@@ -827,7 +827,7 @@ extension FlexLayout {
                             lineHeight = fmax(lineHeight, child.box.measuredDimension(direction: crossAxis) + child.style.totalOuterSize(for: crossAxis))
                         }
                         if computedAlignItem(child: child) == AlignItems.baseline {
-                            let ascent = child.baseline + child.style.margin.leading(direction: .column)
+                            let ascent = child._baseline + child.style.margin.leading(direction: .column)
                             let descent = child.box.measuredDimension(direction: .column) + child.style.totalOuterSize(for: .column) - ascent
                             maxAscentForCurrentLine = fmax(maxAscentForCurrentLine, ascent)
                             maxDescentForCurrentLine = fmax(maxDescentForCurrentLine, descent)
@@ -861,7 +861,7 @@ extension FlexLayout {
                                     }
                                 }
                             case .baseline:
-                                child.box.position.top = currentLead + maxAscentForCurrentLine - child.baseline + child.style.leadingPosition(for: .column)
+                                child.box.position.top = currentLead + maxAscentForCurrentLine - child._baseline + child.style.leadingPosition(for: .column)
                             }
                         }
                     }

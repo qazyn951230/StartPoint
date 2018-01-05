@@ -17,6 +17,7 @@
 		AC96A10782B5489C55A4A4AA /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A70069177338DE20CAF5 /* Global.swift */; };
 		AC96A13FD8709CB560D49271 /* JustifyContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5473FBE3CC634576A01 /* JustifyContentTests.swift */; };
 		AC96A14A2AF7881ADFA618B0 /* FlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E779AE053A7FEB5866 /* FlexView.swift */; };
+		AC96A15D231CE2A7DD54C9D6 /* BaselineFuncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8164BD53E0A64E9F6F5 /* BaselineFuncTests.swift */; };
 		AC96A1C25EC4132344D107E8 /* FlexLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */; };
 		AC96A1E5940F3AD9DE91D218 /* AlignContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1AE69D5878CBB94E011 /* AlignContentTests.swift */; };
 		AC96A22D2B9C0D6382E62C54 /* SizeOverflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A80AF565B4E890BC2AF9 /* SizeOverflowTests.swift */; };
@@ -37,8 +38,10 @@
 		AC96A5BAFF506D6B416039FB /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A95BC07C5AFE77700234 /* LogLevel.swift */; };
 		AC96A5F38B400B1FBEED4784 /* CameraPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */; };
 		AC96A60D4BD368F8AA5DEB33 /* FlexDirectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */; };
+		AC96A6119AB6D701F04B07CF /* MeasureLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E5B0334A7D11D052DA /* MeasureLayout.swift */; };
 		AC96A62AFEA06D51EAA31069 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A465CDAA8A64D61D2480 /* Toast.swift */; };
 		AC96A64D823FF9CC24B4452B /* PercentageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD80B3A636F0422C7751 /* PercentageTests.swift */; };
+		AC96A6511AC0D4581376B815 /* AspectRatioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB45C64C78FA4D5F9DE3 /* AspectRatioTests.swift */; };
 		AC96A752F62283844F5702D7 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA2C3CAEFA2436FB4D76 /* Queue.swift */; };
 		AC96A77066BBFAF4F4A4FB1E /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26B6278FF9FEB3803D5 /* Object.m */; };
 		AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFCB44A6188AB237A221 /* FlexTests.swift */; };
@@ -55,6 +58,7 @@
 		AC96A9C81938A244F20C6D66 /* FlexWrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */; };
 		AC96A9D9A02BA41500592F6E /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA36EE92A0C924EC81CC /* Object.swift */; };
 		AC96A9DEA6C646DB2A35DB0D /* FlexStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */; };
+		AC96AA00E47BA4850A65B2C0 /* BaselineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A872C107A1AF67FFD8A6 /* BaselineLayout.swift */; };
 		AC96AA37353C5E5CB09983E6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF5249A705A624EC8255 /* SessionManager.swift */; };
 		AC96AA6714618BD919012CE8 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAF6CC5FFB07839B5A15 /* Permission.swift */; };
 		AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
@@ -64,6 +68,8 @@
 		AC96ACED75EC55C2643DB7E8 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D9CC8415398080F689 /* SegmentedControl.swift */; };
 		AC96AD0B363703B4490B9200 /* MinMaxDimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */; };
 		AC96AD27B42FC0F2E6BF2824 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8F5925BFE1DC7C3CC13 /* Tests.swift */; };
+		AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */; };
+		AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */; };
 		AC96AE09F1F142DE757815FE /* FlexStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */; };
 		AC96AE1759FDB5DA5564C35C /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1D0B6699F9A5D4C1657 /* Rect.swift */; };
 		AC96AE3CF770D7AD9ECC8EDA /* StartPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E346C2C0DFF901CEF2 /* StartPoint.swift */; };
@@ -146,6 +152,7 @@
 		AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinMaxDimensionTests.swift; sourceTree = "<group>"; };
 		AC96A6D19F42865264963109 /* ManualLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualLayoutTests.swift; sourceTree = "<group>"; };
 		AC96A6E346C2C0DFF901CEF2 /* StartPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartPoint.swift; sourceTree = "<group>"; };
+		AC96A6E5B0334A7D11D052DA /* MeasureLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureLayout.swift; sourceTree = "<group>"; };
 		AC96A6E779AE053A7FEB5866 /* FlexView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexView.swift; sourceTree = "<group>"; };
 		AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutValue.swift; sourceTree = "<group>"; };
 		AC96A70069177338DE20CAF5 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
@@ -153,10 +160,12 @@
 		AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignItemsTests.swift; sourceTree = "<group>"; };
 		AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
 		AC96A80AF565B4E890BC2AF9 /* SizeOverflowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeOverflowTests.swift; sourceTree = "<group>"; };
+		AC96A8164BD53E0A64E9F6F5 /* BaselineFuncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaselineFuncTests.swift; sourceTree = "<group>"; };
 		AC96A848B1AC6FB3768CDCB8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoPermission.swift; sourceTree = "<group>"; };
 		AC96A85AE0879C1B59BA2247 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		AC96A85E0F923B9028631591 /* AlignSelfTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignSelfTests.swift; sourceTree = "<group>"; };
+		AC96A872C107A1AF67FFD8A6 /* BaselineLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaselineLayout.swift; sourceTree = "<group>"; };
 		AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayTests.swift; sourceTree = "<group>"; };
 		AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexAlgorithm.swift; sourceTree = "<group>"; };
 		AC96A8D792053394063F1400 /* LogType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
@@ -177,6 +186,7 @@
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
 		AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexCollectionViewCell.swift; sourceTree = "<group>"; };
+		AC96AB45C64C78FA4D5F9DE3 /* AspectRatioTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AspectRatioTests.swift; sourceTree = "<group>"; };
 		AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderTests.swift; sourceTree = "<group>"; };
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
@@ -189,6 +199,8 @@
 		AC96ADF6A697E1AE2C52AB27 /* Intent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intent.swift; sourceTree = "<group>"; };
 		AC96AE5D3A3D6C6A6C031B63 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexDirectionTests.swift; sourceTree = "<group>"; };
+		AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirtyMarkingTests.swift; sourceTree = "<group>"; };
+		AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultValuesTests.swift; sourceTree = "<group>"; };
 		AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
 		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
@@ -268,22 +280,28 @@
 				AC96A1AE69D5878CBB94E011 /* AlignContentTests.swift */,
 				AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */,
 				AC96A85E0F923B9028631591 /* AlignSelfTests.swift */,
+				AC96AB45C64C78FA4D5F9DE3 /* AspectRatioTests.swift */,
 				AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */,
 				AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */,
+				AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */,
 				AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */,
 				AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */,
 				AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */,
 				AC96AFCB44A6188AB237A221 /* FlexTests.swift */,
 				AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */,
 				AC96A5473FBE3CC634576A01 /* JustifyContentTests.swift */,
+				AC96A6D19F42865264963109 /* ManualLayoutTests.swift */,
 				AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */,
+				AC96A6E5B0334A7D11D052DA /* MeasureLayout.swift */,
 				AC96ADE42256C86A28799055 /* MeasureTests.swift */,
 				AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */,
 				AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */,
 				AC96AD80B3A636F0422C7751 /* PercentageTests.swift */,
 				AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */,
 				AC96A80AF565B4E890BC2AF9 /* SizeOverflowTests.swift */,
-				AC96A6D19F42865264963109 /* ManualLayoutTests.swift */,
+				AC96A8164BD53E0A64E9F6F5 /* BaselineFuncTests.swift */,
+				AC96A872C107A1AF67FFD8A6 /* BaselineLayout.swift */,
+				AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -300,9 +318,9 @@
 			isa = PBXGroup;
 			children = (
 				AC96A848B1AC6FB3768CDCB8 /* Info.plist */,
-				AC96A8F5925BFE1DC7C3CC13 /* Tests.swift */,
 				AC96A1F339CA6B8CEFE79E5B /* Layout */,
 				AC96AB8D6DC9B61E9FD00A87 /* Router */,
+				AC96A8F5925BFE1DC7C3CC13 /* Tests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -743,6 +761,12 @@
 				AC96A9DEA6C646DB2A35DB0D /* FlexStyleTests.swift in Sources */,
 				AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */,
 				AC96A0FC23AC0E924A53FA61 /* ManualLayoutTests.swift in Sources */,
+				AC96A6511AC0D4581376B815 /* AspectRatioTests.swift in Sources */,
+				AC96A6119AB6D701F04B07CF /* MeasureLayout.swift in Sources */,
+				AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */,
+				AC96A15D231CE2A7DD54C9D6 /* BaselineFuncTests.swift in Sources */,
+				AC96AA00E47BA4850A65B2C0 /* BaselineLayout.swift in Sources */,
+				AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

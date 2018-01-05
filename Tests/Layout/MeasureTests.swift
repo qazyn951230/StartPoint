@@ -23,21 +23,7 @@
 import XCTest
 @testable import StartPoint
 
-class MeasureLayout: FlexLayout {
-    var _measure: ((CGFloat, MeasureMode, CGFloat, MeasureMode) -> CGSize)?
-
-    override init(view: LayoutView? = nil) {
-        super.init(view: view)
-        measureSelf = true
-        layoutType = .text // measureSelf ? .text : .default
-    }
-
-    override func measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-        return _measure?(width, widthMode, height, heightMode) ?? CGSize.zero
-    }
-}
-
-    // Generated from YGMeasureTest.cpp
+// Generated from YGMeasureTest.cpp
 class MeasureTests: FlexTestCase {
     var count = 0
 

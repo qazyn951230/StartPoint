@@ -57,7 +57,11 @@ open class FlexLayout: Equatable {
     var cachedMeasurements: [LayoutCache] = [] // performLayout == false
     var lineIndex = 0
 
-    public var baseline: Double { // YGBaseline
+    internal var _baseline: Double { // YGBaseline
+        let value = baseline(width: box.measuredWidth, height: box.measuredHeight)
+        if (!value.isNaN) {
+            return value
+        }
         var baselineChild: FlexLayout? = nil
         for child: FlexLayout in children {
             if child.lineIndex > 0 {
@@ -75,7 +79,7 @@ open class FlexLayout: Equatable {
             }
         }
         if let c = baselineChild {
-            return c.baseline + c.box.position[FlexDirection.column]
+            return c._baseline + c.box.position[FlexDirection.column]
         } else {
             return box.measuredDimension(direction: FlexDirection.column)
         }
@@ -285,6 +289,10 @@ open class FlexLayout: Equatable {
         let height: CGFloat = heightMode.resolve(height)
         let size = view.sizeThatFits(CGSize(width: width, height: height))
         return size.ceiled
+    }
+
+    open func baseline(width: Double, height: Double) -> Double {
+        return Double.nan
     }
 
     // MARK: Equatable

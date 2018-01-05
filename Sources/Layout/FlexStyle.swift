@@ -27,18 +27,18 @@ public class FlexStyle {
         // Do nothing
     }
 
-    public var direction: Direction = .inherit
-    public var flexDirection: FlexDirection = .column
-    public var justifyContent: JustifyContent = .flexStart
-    public var alignContent: AlignContent = .flexStart
-    public var alignItems: AlignItems = .stretch
-    public var alignSelf: AlignSelf = .auto
-    public var flexWrap: FlexWrap = .nowrap
-    public var overflow: Overflow = .visible
-    public var display: Display = .flex
+    public internal(set) var direction: Direction = .inherit
+    public internal(set) var flexDirection: FlexDirection = .column
+    public internal(set) var justifyContent: JustifyContent = .flexStart
+    public internal(set) var alignContent: AlignContent = .flexStart
+    public internal(set) var alignItems: AlignItems = .stretch
+    public internal(set) var alignSelf: AlignSelf = .auto
+    public internal(set) var flexWrap: FlexWrap = .nowrap
+    public internal(set) var overflow: Overflow = .visible
+    public internal(set) var display: Display = .flex
 
-    public var flex: Flex = .none
-    public var flexGrow: Double {
+    public internal(set) var flex: Flex = .none
+    public internal(set) var flexGrow: Double {
         get {
             return flex.grow
         }
@@ -46,7 +46,7 @@ public class FlexStyle {
             flex.grow = newValue
         }
     }
-    public var flexShrink: Double {
+    public internal(set) var flexShrink: Double {
         get {
             return flex.shrink
         }
@@ -54,7 +54,7 @@ public class FlexStyle {
             flex.shrink = newValue
         }
     }
-    public var flexBasis: FlexBasis {
+    public internal(set) var flexBasis: FlexBasis {
         get {
             return flex.basis
         }
@@ -63,21 +63,21 @@ public class FlexStyle {
         }
     }
 
-    public var positionType: PositionType = .relative
-    public var position: Position = .zero
+    public internal(set) var positionType: PositionType = .relative
+    public internal(set) var position: Position = .zero
 
-    public var margin: StyleInsets = .zero
-    public var padding: StyleInsets = .zero
-    public var border: StyleInsets = .zero
+    public internal(set) var margin: StyleInsets = .zero
+    public internal(set) var padding: StyleInsets = .zero
+    public internal(set) var border: StyleInsets = .zero
 
-    public var width: StyleValue = .auto
-    public var height: StyleValue = .auto
+    public internal(set) var width: StyleValue = .auto
+    public internal(set) var height: StyleValue = .auto
 
-    public var minWidth: StyleValue = .length(0)
-    public var minHeight: StyleValue = .length(0)
+    public internal(set) var minWidth: StyleValue = .length(0)
+    public internal(set) var minHeight: StyleValue = .length(0)
 
-    public var maxWidth: StyleValue? = nil
-    public var maxHeight: StyleValue? = nil
+    public internal(set) var maxWidth: StyleValue? = nil
+    public internal(set) var maxHeight: StyleValue? = nil
     var computedMaxWidth: StyleValue {
         return maxWidth ?? StyleValue.auto
     }
@@ -85,7 +85,7 @@ public class FlexStyle {
         return maxHeight ?? StyleValue.auto
     }
 
-    public var aspectRatio: Double = Double.nan
+    public internal(set) var aspectRatio: Double = Double.nan
     public static var scale: Double = Double(UIScreen.main.scale)
     var absoluteLayout: Bool {
         return positionType == PositionType.absolute
