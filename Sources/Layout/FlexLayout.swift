@@ -24,40 +24,44 @@ import UIKit
 import CoreGraphics
 
 open class FlexLayout: Equatable {
+    // MARK: Public properties
+    public let style: FlexStyle
     public internal(set) weak var view: LayoutView?
-    public internal(set) var style: FlexStyle
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
     public internal(set) var dirty: Bool = true
-
-    public var layoutType: LayoutType = .default // nodeType
+    // nodeType
+    public var layoutType: LayoutType = .default
     public var measureSelf: Bool = false {
         didSet {
             layoutType = measureSelf ? .default : .text
         }
     }
+    public var frame: CGRect {
+        return CGRect(x: box.left, y: box.top, width: box.width, height: box.height)
+    }
+    // MARK: Internal properties
+    let box: FlexBox = FlexBox()
     weak var nextChild: FlexLayout? = nil
     // YGResolveFlexGrow
-    var computedFlexGrow: Double { // Root nodes flexGrow should always be 0
+    var computedFlexGrow: Double {
+        // Root nodes flexGrow should always be 0
         return (parent == nil || style.flex.grow.isNaN) ? 0 : style.flex.grow
     }
     // YGNodeResolveFlexShrink
-    var computedFlexShrink: Double { // Root nodes flexShrink should always be 0
+    var computedFlexShrink: Double {
+        // Root nodes flexShrink should always be 0
         return (parent == nil || style.flex.shrink.isNaN) ? 0 : style.flex.shrink
     }
     var flexed: Bool {
-        return style.positionType == .relative &&
-            (computedFlexGrow != 0 || computedFlexShrink != 0)
+        return style.positionType == .relative && (computedFlexGrow != 0 || computedFlexShrink != 0)
     }
     var computedFlexBasis: Double = Double.nan
-
     var lastParentDirection: Direction? = nil
-    let box: FlexBox = FlexBox()
     var cachedLayout: LayoutCache? = nil // performLayout == true
     var cachedMeasurements: [LayoutCache] = [] // performLayout == false
     var lineIndex = 0
-
-    internal var _baseline: Double { // YGBaseline
+    var _baseline: Double { // YGBaseline
         let value = baseline(width: box.measuredWidth, height: box.measuredHeight)
         if (!value.isNaN) {
             return value
@@ -81,7 +85,7 @@ open class FlexLayout: Equatable {
         if let c = baselineChild {
             return c._baseline + c.box.position[FlexDirection.column]
         } else {
-            return box.measuredDimension(direction: FlexDirection.column)
+            return box.measuredDimension(for: FlexDirection.column)
         }
     }
 
@@ -101,10 +105,6 @@ open class FlexLayout: Equatable {
         return false
     }
 
-    public var frame: CGRect {
-        return CGRect(x: box.left, y: box.top, width: box.width, height: box.height)
-    }
-
     public init(view: LayoutView? = nil) {
         self.view = view
         style = FlexStyle()
@@ -121,7 +121,8 @@ open class FlexLayout: Equatable {
         return self
     }
 
-    open func markDirty() { // YGNodeMarkDirtyInternal
+    // YGNodeMarkDirtyInternal
+    open func markDirty() { 
         if dirty {
             return
         }
@@ -166,7 +167,8 @@ open class FlexLayout: Equatable {
         return layout
     }
 
-    public func insert(_ child: FlexLayout, at index: Int) { // YGNodeInsertChild
+    // YGNodeInsertChild
+    public func insert(_ child: FlexLayout, at index: Int) { 
         guard child.parent == nil else {
             // TODO: Warning
             return
@@ -176,7 +178,8 @@ open class FlexLayout: Equatable {
         markDirty()
     }
 
-    public func remove(_ child: FlexLayout) { // YGNodeRemoveChild
+    // YGNodeRemoveChild
+    public func remove(_ child: FlexLayout) { 
         if let index = children.index(of: child) {
             children.remove(at: index)
             child.invalidate()

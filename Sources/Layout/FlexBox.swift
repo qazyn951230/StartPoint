@@ -39,6 +39,13 @@ class FlexBox {
 
     var width: Double = Double.nan // dimensions
     var height: Double = Double.nan // dimensions
+
+    var margin: LayoutInsets = .zero
+    var padding: LayoutInsets = .zero
+    var border: LayoutInsets = .zero
+
+    var direction: Direction = Direction.inherit
+
     var measuredWidth: Double = Double.nan
     var measuredHeight: Double = Double.nan
     var resolvedWidth: StyleValue = .auto // resolvedDimensions
@@ -57,7 +64,7 @@ class FlexBox {
             .isDefined(size: size)
     }
 
-    func setLeadingPosition(direction: FlexDirection, size: Double) {
+    func setLeadingPosition(for direction: FlexDirection, size: Double) {
         switch direction {
         case .column:
             position.top = size
@@ -70,7 +77,7 @@ class FlexBox {
         }
     }
 
-    func setTrailingPosition(direction: FlexDirection, size: Double) {
+    func setTrailingPosition(for direction: FlexDirection, size: Double) {
         switch direction {
         case .column:
             position.bottom = size
@@ -125,11 +132,11 @@ class FlexBox {
         return (absoluteLeft, absoluteTop)
     }
 
-    func measuredDimension(direction: FlexDirection) -> Double {
+    func measuredDimension(for direction: FlexDirection) -> Double {
         return direction.isRow ? measuredWidth : measuredHeight
     }
 
-    func setMeasuredDimension(direction: FlexDirection, size: Double) {
+    func setMeasuredDimension(for direction: FlexDirection, size: Double) {
         if direction.isRow {
             measuredWidth = size
         } else {
@@ -139,6 +146,6 @@ class FlexBox {
 
     // YGNodeIsLayoutDimDefined
     func isLayoutDimensionDefined(for direction: FlexDirection) -> Bool {
-        return measuredDimension(direction: direction) >= 0.0
+        return measuredDimension(for: direction) >= 0.0
     }
 }

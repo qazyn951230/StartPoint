@@ -31,7 +31,7 @@
 		AC96A4059B39F13A040C4D05 /* Intent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADF6A697E1AE2C52AB27 /* Intent.swift */; };
 		AC96A4BFADE1B0709502650E /* PagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */; };
 		AC96A4C76174A3B2A3AD7DD9 /* LocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */; };
-		AC96A4E45330ED5C4C2BE266 /* FlexLayout+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA67AD91A5E0DDA9F337 /* FlexLayout+UI.swift */; };
+		AC96A4E45330ED5C4C2BE266 /* FlexLayout+Setter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */; };
 		AC96A4E666F920D40C04949C /* LayoutValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */; };
 		AC96A5699350613957D8E4B1 /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96AF4CCDEEAB7B80A449DC /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96A58850891422118778BD /* DisplayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */; };
@@ -181,7 +181,7 @@
 		AC96AA2D9D6E6B73BEDBBC5C /* AttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedString.swift; sourceTree = "<group>"; };
 		AC96AA31A616833F79C3128B /* LogDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		AC96AA36EE92A0C924EC81CC /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
-		AC96AA67AD91A5E0DDA9F337 /* FlexLayout+UI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlexLayout+UI.swift"; sourceTree = "<group>"; };
+		AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlexLayout+Setter.swift"; sourceTree = "<group>"; };
 		AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexLayout.swift; sourceTree = "<group>"; };
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
@@ -395,7 +395,7 @@
 				AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */,
 				AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */,
 				AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */,
-				AC96AA67AD91A5E0DDA9F337 /* FlexLayout+UI.swift */,
+				AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */,
 				AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */,
 				AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */,
 				AC96AFA1ED6CC64828315DD9 /* LayoutView.swift */,
@@ -701,7 +701,7 @@
 				AC96AFAE9F22E932FD983726 /* FlexAlgorithm.swift in Sources */,
 				AC96AFC406398C2019CFE432 /* Route.swift in Sources */,
 				AC96A2A6CC238CD41180A91E /* TableViewCell.swift in Sources */,
-				AC96A4E45330ED5C4C2BE266 /* FlexLayout+UI.swift in Sources */,
+				AC96A4E45330ED5C4C2BE266 /* FlexLayout+Setter.swift in Sources */,
 				AC96A02355DFF1D8761B28D2 /* ManualLayout.swift in Sources */,
 				AC96A06E7C30FE53825B445F /* AttributedString.swift in Sources */,
 				AC96AA6714618BD919012CE8 /* Permission.swift in Sources */,

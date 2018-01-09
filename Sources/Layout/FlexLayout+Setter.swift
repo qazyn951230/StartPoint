@@ -23,7 +23,6 @@
 import CoreGraphics
 
 public extension FlexLayout {
-    // default:  = .inherit
     @discardableResult
     public func direction(_ value: Direction) -> Self {
         style.direction = value
@@ -31,7 +30,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .column
     @discardableResult
     public func flexDirection(_ value: FlexDirection) -> Self {
         style.flexDirection = value
@@ -39,7 +37,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .flexStart
     @discardableResult
     public func justifyContent(_ value: JustifyContent) -> Self {
         style.justifyContent = value
@@ -47,7 +44,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .flexStart
     @discardableResult
     public func alignContent(_ value: AlignContent) -> Self {
         style.alignContent = value
@@ -55,7 +51,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .stretch
     @discardableResult
     public func alignItems(_ value: AlignItems) -> Self {
         style.alignItems = value
@@ -63,7 +58,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .auto
     @discardableResult
     public func alignSelf(_ value: AlignSelf) -> Self {
         style.alignSelf = value
@@ -71,7 +65,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .nowrap
     @discardableResult
     public func flexWrap(_ value: FlexWrap) -> Self {
         style.flexWrap = value
@@ -79,7 +72,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .visible
     @discardableResult
     public func overflow(_ value: Overflow) -> Self {
         style.overflow = value
@@ -87,7 +79,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .flex
     @discardableResult
     public func display(_ value: Display) -> Self {
         style.display = value
@@ -95,7 +86,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .none
     @discardableResult
     public func flex(_ value: Flex) -> Self {
         style.flex = value
@@ -124,7 +114,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .relative
     @discardableResult
     public func positionType(_ value: PositionType) -> Self {
         style.positionType = value
@@ -132,7 +121,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .zero
     @discardableResult
     public func position(_ value: Position) -> Self {
         style.position = value
@@ -200,7 +188,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .zero
     @discardableResult
     public func margin(_ value: StyleInsets) -> Self {
         style.margin = value
@@ -210,185 +197,184 @@ public extension FlexLayout {
 
     @discardableResult
     public func margin(top value: Int) -> Self {
-        style.margin.top = Double(value)
+        style.margin.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(top value: Double) -> Self {
-        style.margin.top = value
+        style.margin.top = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(top value: CGFloat) -> Self {
-        style.margin.top = Double(value)
+        style.margin.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(bottom value: Int) -> Self {
-        style.margin.bottom = Double(value)
+        style.margin.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(bottom value: Double) -> Self {
-        style.margin.bottom = value
+        style.margin.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(bottom value: CGFloat) -> Self {
-        style.margin.bottom = Double(value)
+        style.margin.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(left value: Int) -> Self {
-        style.margin.left = Double(value)
+        style.margin.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(left value: Double) -> Self {
-        style.margin.left = value
+        style.margin.left = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(left value: CGFloat) -> Self {
-        style.margin.left = Double(value)
+        style.margin.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(right value: Int) -> Self {
-        style.margin.right = Double(value)
+        style.margin.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(right value: Double) -> Self {
-        style.margin.right = value
+        style.margin.right = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(right value: CGFloat) -> Self {
-        style.margin.right = Double(value)
+        style.margin.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(leading value: Int?) -> Self {
-        style.margin.leading = value.map(Double.init)
+        style.margin.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(leading value: Double?) -> Self {
-        style.margin.leading = value
+        style.margin.leading = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(leading value: CGFloat?) -> Self {
-        style.margin.leading = value.map(Double.init)
+        style.margin.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(trailing value: Int?) -> Self {
-        style.margin.trailing = value.map(Double.init)
+        style.margin.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(trailing value: Double?) -> Self {
-        style.margin.trailing = value
+        style.margin.trailing = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(trailing value: CGFloat?) -> Self {
-        style.margin.trailing = value.map(Double.init)
+        style.margin.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(vertical value: Int) -> Self {
-        style.margin.top = Double(value)
-        style.margin.bottom = Double(value)
+        style.margin.top = StyleValue(floatLiteral: Double(value))
+        style.margin.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(vertical value: Double) -> Self {
-        style.margin.top = value
-        style.margin.bottom = value
+        style.margin.top = StyleValue(floatLiteral: value)
+        style.margin.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(vertical value: CGFloat) -> Self {
-        style.margin.top = Double(value)
-        style.margin.bottom = Double(value)
+        style.margin.top = StyleValue(floatLiteral: Double(value))
+        style.margin.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(horizontal value: Int) -> Self {
-        style.margin.left = Double(value)
-        style.margin.right = Double(value)
-        style.margin.leading = Double(value)
-        style.margin.trailing = Double(value)
+        style.margin.left = StyleValue(floatLiteral: Double(value))
+        style.margin.right = StyleValue(floatLiteral: Double(value))
+        style.margin.leading = StyleValue(floatLiteral: Double(value))
+        style.margin.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(horizontal value: Double) -> Self {
-        style.margin.left = value
-        style.margin.right = value
-        style.margin.leading = value
-        style.margin.trailing = value
+        style.margin.left = StyleValue(floatLiteral: value)
+        style.margin.right = StyleValue(floatLiteral: value)
+        style.margin.leading = StyleValue(floatLiteral: value)
+        style.margin.trailing = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func margin(horizontal value: CGFloat) -> Self {
-        style.margin.left = Double(value)
-        style.margin.right = Double(value)
-        style.margin.leading = Double(value)
-        style.margin.trailing = Double(value)
+        style.margin.left = StyleValue(floatLiteral: Double(value))
+        style.margin.right = StyleValue(floatLiteral: Double(value))
+        style.margin.leading = StyleValue(floatLiteral: Double(value))
+        style.margin.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
-    // default:  = .zero
     @discardableResult
     public func padding(_ value: StyleInsets) -> Self {
         style.padding = value
@@ -398,185 +384,184 @@ public extension FlexLayout {
 
     @discardableResult
     public func padding(top value: Int) -> Self {
-        style.padding.top = Double(value)
+        style.padding.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(top value: Double) -> Self {
-        style.padding.top = value
+        style.padding.top = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(top value: CGFloat) -> Self {
-        style.padding.top = Double(value)
+        style.padding.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(bottom value: Int) -> Self {
-        style.padding.bottom = Double(value)
+        style.padding.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(bottom value: Double) -> Self {
-        style.padding.bottom = value
+        style.padding.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(bottom value: CGFloat) -> Self {
-        style.padding.bottom = Double(value)
+        style.padding.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(left value: Int) -> Self {
-        style.padding.left = Double(value)
+        style.padding.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(left value: Double) -> Self {
-        style.padding.left = value
+        style.padding.left = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(left value: CGFloat) -> Self {
-        style.padding.left = Double(value)
+        style.padding.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(right value: Int) -> Self {
-        style.padding.right = Double(value)
+        style.padding.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(right value: Double) -> Self {
-        style.padding.right = value
+        style.padding.right = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(right value: CGFloat) -> Self {
-        style.padding.right = Double(value)
+        style.padding.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(leading value: Int?) -> Self {
-        style.padding.leading = value.map(Double.init)
+        style.padding.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(leading value: Double?) -> Self {
-        style.padding.leading = value
+        style.padding.leading = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(leading value: CGFloat?) -> Self {
-        style.padding.leading = value.map(Double.init)
+        style.padding.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(trailing value: Int?) -> Self {
-        style.padding.trailing = value.map(Double.init)
+        style.padding.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(trailing value: Double?) -> Self {
-        style.padding.trailing = value
+        style.padding.trailing = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(trailing value: CGFloat?) -> Self {
-        style.padding.trailing = value.map(Double.init)
+        style.padding.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(vertical value: Int) -> Self {
-        style.padding.top = Double(value)
-        style.padding.bottom = Double(value)
+        style.padding.top = StyleValue(floatLiteral: Double(value))
+        style.padding.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(vertical value: Double) -> Self {
-        style.padding.top = value
-        style.padding.bottom = value
+        style.padding.top = StyleValue(floatLiteral: value)
+        style.padding.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(vertical value: CGFloat) -> Self {
-        style.padding.top = Double(value)
-        style.padding.bottom = Double(value)
+        style.padding.top = StyleValue(floatLiteral: Double(value))
+        style.padding.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(horizontal value: Int) -> Self {
-        style.padding.left = Double(value)
-        style.padding.right = Double(value)
-        style.padding.leading = Double(value)
-        style.padding.trailing = Double(value)
+        style.padding.left = StyleValue(floatLiteral: Double(value))
+        style.padding.right = StyleValue(floatLiteral: Double(value))
+        style.padding.leading = StyleValue(floatLiteral: Double(value))
+        style.padding.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(horizontal value: Double) -> Self {
-        style.padding.left = value
-        style.padding.right = value
-        style.padding.leading = value
-        style.padding.trailing = value
+        style.padding.left = StyleValue(floatLiteral: value)
+        style.padding.right = StyleValue(floatLiteral: value)
+        style.padding.leading = StyleValue(floatLiteral: value)
+        style.padding.trailing = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func padding(horizontal value: CGFloat) -> Self {
-        style.padding.left = Double(value)
-        style.padding.right = Double(value)
-        style.padding.leading = Double(value)
-        style.padding.trailing = Double(value)
+        style.padding.left = StyleValue(floatLiteral: Double(value))
+        style.padding.right = StyleValue(floatLiteral: Double(value))
+        style.padding.leading = StyleValue(floatLiteral: Double(value))
+        style.padding.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
-    // default:  = .zero
     @discardableResult
     public func border(_ value: StyleInsets) -> Self {
         style.border = value
@@ -586,185 +571,184 @@ public extension FlexLayout {
 
     @discardableResult
     public func border(top value: Int) -> Self {
-        style.border.top = Double(value)
+        style.border.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(top value: Double) -> Self {
-        style.border.top = value
+        style.border.top = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(top value: CGFloat) -> Self {
-        style.border.top = Double(value)
+        style.border.top = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(bottom value: Int) -> Self {
-        style.border.bottom = Double(value)
+        style.border.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(bottom value: Double) -> Self {
-        style.border.bottom = value
+        style.border.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(bottom value: CGFloat) -> Self {
-        style.border.bottom = Double(value)
+        style.border.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(left value: Int) -> Self {
-        style.border.left = Double(value)
+        style.border.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(left value: Double) -> Self {
-        style.border.left = value
+        style.border.left = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(left value: CGFloat) -> Self {
-        style.border.left = Double(value)
+        style.border.left = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(right value: Int) -> Self {
-        style.border.right = Double(value)
+        style.border.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(right value: Double) -> Self {
-        style.border.right = value
+        style.border.right = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(right value: CGFloat) -> Self {
-        style.border.right = Double(value)
+        style.border.right = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(leading value: Int?) -> Self {
-        style.border.leading = value.map(Double.init)
+        style.border.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(leading value: Double?) -> Self {
-        style.border.leading = value
+        style.border.leading = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(leading value: CGFloat?) -> Self {
-        style.border.leading = value.map(Double.init)
+        style.border.leading = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(trailing value: Int?) -> Self {
-        style.border.trailing = value.map(Double.init)
+        style.border.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(trailing value: Double?) -> Self {
-        style.border.trailing = value
+        style.border.trailing = value.map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(trailing value: CGFloat?) -> Self {
-        style.border.trailing = value.map(Double.init)
+        style.border.trailing = value.map(Double.init).map(StyleValue.init(floatLiteral:))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(vertical value: Int) -> Self {
-        style.border.top = Double(value)
-        style.border.bottom = Double(value)
+        style.border.top = StyleValue(floatLiteral: Double(value))
+        style.border.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(vertical value: Double) -> Self {
-        style.border.top = value
-        style.border.bottom = value
+        style.border.top = StyleValue(floatLiteral: value)
+        style.border.bottom = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(vertical value: CGFloat) -> Self {
-        style.border.top = Double(value)
-        style.border.bottom = Double(value)
+        style.border.top = StyleValue(floatLiteral: Double(value))
+        style.border.bottom = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(horizontal value: Int) -> Self {
-        style.border.left = Double(value)
-        style.border.right = Double(value)
-        style.border.leading = Double(value)
-        style.border.trailing = Double(value)
+        style.border.left = StyleValue(floatLiteral: Double(value))
+        style.border.right = StyleValue(floatLiteral: Double(value))
+        style.border.leading = StyleValue(floatLiteral: Double(value))
+        style.border.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(horizontal value: Double) -> Self {
-        style.border.left = value
-        style.border.right = value
-        style.border.leading = value
-        style.border.trailing = value
+        style.border.left = StyleValue(floatLiteral: value)
+        style.border.right = StyleValue(floatLiteral: value)
+        style.border.leading = StyleValue(floatLiteral: value)
+        style.border.trailing = StyleValue(floatLiteral: value)
         markDirty()
         return self
     }
 
     @discardableResult
     public func border(horizontal value: CGFloat) -> Self {
-        style.border.left = Double(value)
-        style.border.right = Double(value)
-        style.border.leading = Double(value)
-        style.border.trailing = Double(value)
+        style.border.left = StyleValue(floatLiteral: Double(value))
+        style.border.right = StyleValue(floatLiteral: Double(value))
+        style.border.leading = StyleValue(floatLiteral: Double(value))
+        style.border.trailing = StyleValue(floatLiteral: Double(value))
         markDirty()
         return self
     }
 
-    // default:  = .auto
     @discardableResult
     public func width(_ value: StyleValue) -> Self {
         style.width = value
@@ -779,7 +763,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .auto
     @discardableResult
     public func height(_ value: StyleValue) -> Self {
         style.height = value
@@ -834,7 +817,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .length(0)
     @discardableResult
     public func minWidth(_ value: StyleValue) -> Self {
         style.minWidth = value
@@ -849,7 +831,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = .length(0)
     @discardableResult
     public func minHeight(_ value: StyleValue) -> Self {
         style.minHeight = value
@@ -864,6 +845,7 @@ public extension FlexLayout {
         return self
     }
 
+    @discardableResult
     public func minSize(_ value: CGSize) -> Self {
         style.minWidth = StyleValue(floatLiteral: Double(value.width))
         style.minHeight = StyleValue(floatLiteral: Double(value.height))
@@ -871,7 +853,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = nil
     @discardableResult
     public func maxWidth(_ value: StyleValue?) -> Self {
         style.maxWidth = value
@@ -886,7 +867,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = nil
     @discardableResult
     public func maxHeight(_ value: StyleValue?) -> Self {
         style.maxHeight = value
@@ -901,6 +881,7 @@ public extension FlexLayout {
         return self
     }
 
+    @discardableResult
     public func maxSize(_ value: CGSize) -> Self {
         style.maxWidth = StyleValue(floatLiteral: Double(value.width))
         style.maxHeight = StyleValue(floatLiteral: Double(value.height))
@@ -908,7 +889,6 @@ public extension FlexLayout {
         return self
     }
 
-    // default:  = Double.nan
     @discardableResult
     public func aspectRatio(_ value: Double) -> Self {
         style.aspectRatio = value

@@ -78,6 +78,7 @@ public class FlexStyle {
 
     public internal(set) var maxWidth: StyleValue? = nil
     public internal(set) var maxHeight: StyleValue? = nil
+
     var computedMaxWidth: StyleValue {
         return maxWidth ?? StyleValue.auto
     }
@@ -101,7 +102,7 @@ public class FlexStyle {
     }
 
     // YGResolveFlexDirection
-    func resolveDirection(by layoutDirection: Direction) -> FlexDirection {
+    func resolveFlexDirection(by layoutDirection: Direction) -> FlexDirection {
         if layoutDirection == Direction.rtl {
             if flexDirection == FlexDirection.row {
                 return FlexDirection.rowReverse
@@ -149,20 +150,84 @@ public class FlexStyle {
         }
     }
 
-    func totalInnerSize(for direction: FlexDirection) -> Double {
-        return padding.total(direction: direction) + border.total(direction: direction)
+    // YGNodeLeadingMargin
+    @inline(__always)
+    func leadingMargin(for direction: FlexDirection, width: Double) -> Double {
+        let value = margin.leading(direction: direction)
+        return value.resolve(by: width)
     }
 
-    func totalLeadingSize(for direction: FlexDirection) -> Double {
-        return padding.leading(direction: direction) + border.leading(direction: direction)
+    // YGNodeTrailingMargin
+    @inline(__always)
+    func trailingMargin(for direction: FlexDirection, width: Double) -> Double {
+        let value = margin.trailing(direction: direction)
+        return value.resolve(by: width)
     }
 
-    func totalTrailingSize(for direction: FlexDirection) -> Double {
-        return padding.trailing(direction: direction) + border.trailing(direction: direction)
+    // YGNodeLeadingPadding
+    @inline(__always)
+    func leadingPadding(for direction: FlexDirection, width: Double) -> Double {
+        let value = padding.leading(direction: direction)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
     }
 
-    func totalOuterSize(for direction: FlexDirection) -> Double {
-        return margin.total(direction: direction)
+    // YGNodeTrailingPadding
+    @inline(__always)
+    func trailingPadding(for direction: FlexDirection, width: Double) -> Double {
+        let value = padding.trailing(direction: direction)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
+    }
+
+    // YGNodeLeadingBorder
+    @inline(__always)
+    func leadingBorder(for direction: FlexDirection) -> Double {
+        let value = border.leading(direction: direction)
+        let result = value.resolve(by: 0)
+        return result > 0 ? result : 0
+    }
+
+    // YGNodeTrailingBorder
+    @inline(__always)
+    func trailingBorder(for direction: FlexDirection) -> Double {
+        let value = border.trailing(direction: direction)
+        let result = value.resolve(by: 0)
+        return result > 0 ? result : 0
+    }
+
+    // YGNodePaddingAndBorderForAxis
+    @inline(__always)
+    func totalInnerSize(for direction: FlexDirection, width: Double) -> Double {
+        return totalLeadingSize(for: direction, width: width) + totalTrailingSize(for: direction, width: width)
+    }
+
+    // YGNodeLeadingPaddingAndBorder
+    @inline(__always)
+    func totalLeadingSize(for direction: FlexDirection, width: Double) -> Double {
+        return leadingPadding(for: direction, width: width) + leadingBorder(for: direction)
+    }
+
+    // YGNodeTrailingPaddingAndBorder
+    @inline(__always)
+    func totalTrailingSize(for direction: FlexDirection, width: Double) -> Double {
+        return trailingPadding(for: direction, width: width) + trailingBorder(for: direction)
+    }
+
+    // YGNodeMarginForAxis
+    @inline(__always)
+    func totalOuterSize(for direction: FlexDirection, width: Double) -> Double {
+        return leadingMargin(for: direction, width: width) + trailingMargin(for: direction, width: width)
+    }
+
+    @inline(__always)
+    func totalPadding(for direction: FlexDirection, width: Double) -> Double {
+        return leadingPadding(for: direction, width: width) + trailingPadding(for: direction, width: width)
+    }
+
+    @inline(__always)
+    func totalBorder(for direction: FlexDirection) -> Double {
+        return leadingBorder(for: direction) + trailingBorder(for: direction)
     }
 
     // YGNodeBoundAxisWithinMinAndMax
@@ -186,14 +251,18 @@ public class FlexStyle {
         return bound
     }
 
-    // YGNodeBoundAxis
+    // YGNodeBoundAxis(node, axis, value, axisSize, widthSize)
+    // TODO: Rename method and parameters
     func bound(axis direction: FlexDirection, value: Double, axisSize: Double, width: Double) -> Double {
-        return fmax(bound(axis: direction, value: value, axisSize: axisSize), totalInnerSize(for: direction))
+        return fmax(bound(axis: direction, value: value, axisSize: axisSize),
+            totalInnerSize(for: direction, width: width))
     }
 
-    // YGConstrainMaxSizeForMode
-    func constrainMaxSize(axis: FlexDirection, parentAxisSize: Double, parentWidth: Double, mode: MeasureMode, size: Double) -> (MeasureMode, Double) {
-        let maxSize = maxDimension(by: axis).resolve(by: parentAxisSize) + margin.total(direction: axis)
+    // YGConstrainMaxSizeForMode(axis, parentAxisSize, parentWidth, mode, size)
+    // TODO: Rename method and parameters
+    func constrainMaxSize(axis: FlexDirection, parentAxisSize: Double, parentWidth: Double, mode: MeasureMode,
+                          size: Double) -> (MeasureMode, Double) {
+        let maxSize = maxDimension(by: axis).resolve(by: parentAxisSize) + totalOuterSize(for: axis, width: parentWidth)
         switch mode {
         case .exactly, .atMost:
             let s: Double = (maxSize.isNaN || size < maxSize) ? size : maxSize
@@ -208,7 +277,7 @@ public class FlexStyle {
     }
 
     // YGNodeResolveDirection
-    func resolveLayoutDirection(by direction: Direction) -> Direction {
+    func resolveDirection(by direction: Direction) -> Direction {
         if self.direction == Direction.inherit {
             return direction != Direction.inherit ? direction : .ltr
         } else {

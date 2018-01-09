@@ -41,7 +41,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
     public init(floatLiteral value: Double) {
         if value.isNaN {
             self = StyleValue.auto
-        } else if value < 1 && value > -1 {
+        } else if value < 1 && value > -1 && value != 0 {
             self = StyleValue.percentage(value * 100)
         } else {
             self = StyleValue.length(value)
@@ -82,19 +82,45 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
             return false
         }
     }
+
+    public static func +(lhs: StyleValue, rhs: StyleValue) -> StyleValue {
+        switch (lhs, rhs) {
+        case (.auto, .auto):
+            return .auto
+        case (.length(let a), .length(let b)):
+            return .length(a + b)
+        case (.percentage(let a), .percentage(let b)):
+            return .percentage(a + b)
+        default: // error
+            return .length(0)
+        }
+    }
+
+    public static func -(lhs: StyleValue, rhs: StyleValue) -> StyleValue {
+        switch (lhs, rhs) {
+        case (.auto, .auto):
+            return .auto
+        case (.length(let a), .length(let b)):
+            return .length(a - b)
+        case (.percentage(let a), .percentage(let b)):
+            return .percentage(a - b)
+        default: // error
+            return .length(0)
+        }
+    }
 }
 
 public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
     public static let zero: StyleInsets = StyleInsets(0)
 
-    public var top: Double
-    public var bottom: Double
-    public var left: Double
-    public var right: Double
-    public var leading: Double?
-    public var trailing: Double?
+    public var top: StyleValue
+    public var bottom: StyleValue
+    public var left: StyleValue
+    public var right: StyleValue
+    public var leading: StyleValue?
+    public var trailing: StyleValue?
 
-    public init(_ value: Double) {
+    public init(_ value: StyleValue) {
         top = value
         bottom = value
         left = value
@@ -103,7 +129,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         trailing = nil
     }
 
-    public init(vertical: Double, horizontal: Double) {
+    public init(vertical: StyleValue, horizontal: StyleValue) {
         top = vertical
         bottom = vertical
         left = horizontal
@@ -112,7 +138,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         trailing = horizontal
     }
 
-    public init(top: Double, left: Double, bottom: Double, right: Double) {
+    public init(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) {
         self.top = top
         self.left = left
         self.bottom = bottom
@@ -121,7 +147,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         trailing = nil
     }
 
-    public init(top: Double = 0, bottom: Double = 0, leading: Double?, trailing: Double?) {
+    public init(top: StyleValue, bottom: StyleValue, leading: StyleValue?, trailing: StyleValue?) {
         self.top = top
         self.bottom = bottom
         self.leading = leading
@@ -132,15 +158,16 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
 
     // ExpressibleByFloatLiteral
     public init(floatLiteral value: Double) {
-        self.init(value)
+        self.init(StyleValue(floatLiteral: value))
     }
 
     // ExpressibleByIntegerLiteral
     public init(integerLiteral value: Int) {
-        self.init(Double(value))
+        self.init(StyleValue(integerLiteral: value))
     }
 
-    public func leading(direction: FlexDirection) -> Double {
+    // static const YGEdge leading[4]
+    public func leading(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
             return self.leading ?? left
@@ -153,7 +180,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
-    public func trailing(direction: FlexDirection) -> Double {
+    public func trailing(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
             return self.trailing ?? right
@@ -166,7 +193,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
-    public func total(direction: FlexDirection) -> Double {
+    public func total(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
             return (leading ?? left) + (trailing ?? right)
@@ -177,16 +204,38 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
+    // FIXME: leading != left
     public var edgeInsets: UIEdgeInsets {
-        return UIEdgeInsets(top: CGFloat(top), left: CGFloat(leading ?? left),
-            bottom: CGFloat(bottom), right: CGFloat(trailing ?? right))
+        return UIEdgeInsets.zero //(top: CGFloat(top), left: CGFloat(leading ?? left),
+        // bottom: CGFloat(bottom), right: CGFloat(trailing ?? right))
     }
 
     public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {
-        return lhs.left == rhs.left &&
-            lhs.right == rhs.right &&
-            lhs.top == rhs.top &&
-            lhs.bottom == rhs.bottom
+        return lhs.left == rhs.left && lhs.right == rhs.right &&
+            lhs.top == rhs.top && lhs.bottom == rhs.bottom
+    }
+}
+
+struct LayoutInsets {
+    static let zero: LayoutInsets = LayoutInsets(0)
+
+    var top: Double
+    var bottom: Double
+    var left: Double
+    var right: Double
+
+    init(_ value: Double) {
+        top = value
+        bottom = value
+        left = value
+        right = value
+    }
+
+    init(top: Double, left: Double, bottom: Double, right: Double) {
+        self.top = top
+        self.left = left
+        self.bottom = bottom
+        self.right = right
     }
 }
 
@@ -492,7 +541,7 @@ public enum MeasureMode {
         return self == MeasureMode.atMost
     }
 
-    public func resolve<T:FloatingPoint>(_ value: T) -> T {
+    public func resolve<T: FloatingPoint>(_ value: T) -> T {
         return isUndefined ? T.greatestFiniteMagnitude : value
     }
 }
@@ -638,11 +687,11 @@ struct LayoutCache {
     }
 }
 
-func inner<T:Comparable>(_ value: T, min: T, max: T) -> T {
+func inner<T: Comparable>(_ value: T, min: T, max: T) -> T {
     return Swift.max(Swift.min(value, max), min)
 }
 
-func inner<T:Comparable>(_ value: T, min: T?, max: T?) -> T {
+func inner<T: Comparable>(_ value: T, min: T?, max: T?) -> T {
     var r = value
     if let max = max {
         r = Swift.min(r, max)

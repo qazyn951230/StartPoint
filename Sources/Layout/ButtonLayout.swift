@@ -96,7 +96,8 @@ final public class ButtonLayout: FlexLayout {
         let buttonSize: CGSize = frame.size
         let titleSize: CGSize = titleLayout.frame.size
         let imageSize: CGSize = imageLayout.frame.size
-        let paddingColumn = CGFloat(style.padding.total(direction: .column))
+        // FIXME: Use box.padding
+        let paddingColumn = CGFloat(style.totalPadding(for: .column, width: Double(frame.width)))
         let imageInsets = imageLayout.style.margin.edgeInsets
         let titleInsets = titleLayout.style.margin.edgeInsets
         switch style.flexDirection {
