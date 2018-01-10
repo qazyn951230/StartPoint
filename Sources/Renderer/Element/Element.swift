@@ -37,18 +37,57 @@ open class ElementState {
     }
 }
 
+public struct ElementFlag {
+    public var hasGestureRecognizer = true
+    public var layered = true
+    public var asynchronously = true
+    public var rasterizes = true
+    public var bypassEnsureDisplay = true
+    public var displaySuspended = true
+    public var animateSizeChanges = true
+    public var canClearContentsOfLayer = true
+    public var canCallSetNeedsDisplayOfLayer = true
+    public var implementsDrawRect = true
+    public var implementsImageDisplay = true
+    public var implementsDrawParameters = true
+    public var isEnteringHierarchy = true
+    public var isExitingHierarchy = true
+    public var isInHierarchy = true
+    public var visibilityNotificationsDisabled = true
+    public var deallocating = true
+}
+
+public struct ElementOption: OptionSet {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    static let synchronous = ElementOption(rawValue: 1 << 0)
+    static let layoutInProgress = ElementOption(rawValue: 1 << 1)
+}
+
 open class Element<View: UIView, State: ElementState>: Equatable {
     private var _view: View? = nil
     public var view: View {
+        lock.lock()
         if _view == nil {
+            Assert.mainThread()
             loadView()
         }
+        lock.unlock()
         return _view ?? View(frame: .zero)
     }
 
     public let layout = FlexLayout()
+    /** protected */
+    public let lock = Mutex(recursive: true)
+    public let flags = Atomic<ElementOption>([])
+    public var flag = ElementFlag()
     public private(set) var pendingState: State? = nil
     public private(set) var children: [Element<UIView, ElementState>] = []
+    public private(set) var superElement: Element<UIView, ElementState>? = nil
 
     public var loaded: Bool {
         return _view != nil
@@ -77,6 +116,7 @@ open class Element<View: UIView, State: ElementState>: Equatable {
         }
     }
 
+    // locked
     public func loadView() {
         let t = createView()
         for child in children {

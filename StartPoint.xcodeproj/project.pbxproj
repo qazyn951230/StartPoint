@@ -29,6 +29,7 @@
 		AC96A2F15A160C65A3749ED6 /* RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */; };
 		AC96A313B4B52B02C0891856 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF2E79625C539F0F7E98 /* AppViewController.swift */; };
 		AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A22B90117CA401E899B7 /* ButtonLayout.swift */; };
+		AC96A393E66DA30657EEB75B /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6DDD008EA2E1B50A5E4 /* Atomic.swift */; };
 		AC96A4059B39F13A040C4D05 /* Intent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADF6A697E1AE2C52AB27 /* Intent.swift */; };
 		AC96A4BFADE1B0709502650E /* PagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */; };
 		AC96A4C76174A3B2A3AD7DD9 /* LocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */; };
@@ -85,6 +86,7 @@
 		AC96AEA1BF655FB38DE38B80 /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4AA987A5889D9C389D6 /* Thread.swift */; };
 		AC96AEC01D91FA4260D05C71 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9AF443FC015B0799EF5 /* Array.swift */; };
 		AC96AF008794E423F1EE5CD9 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */; };
+		AC96AF41E6A65FE5C506E1FD /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1198FC1348F64D04B2F /* Lock.swift */; };
 		AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADD6A32F1944E34B2888 /* RouteTests.swift */; };
 		AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */; };
 		AC96AFAE3A9ACC9E0137D124 /* PhotoPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */; };
@@ -130,6 +132,7 @@
 /* Begin PBXFileReference section */
 		AC96A01C66B235CC8602B54C /* RunLoopQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunLoopQueue.swift; sourceTree = "<group>"; };
 		AC96A0FCF7D4FE5D5D091381 /* AlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
+		AC96A1198FC1348F64D04B2F /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
 		AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagingView.swift; sourceTree = "<group>"; };
 		AC96A1AE69D5878CBB94E011 /* AlignContentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignContentTests.swift; sourceTree = "<group>"; };
 		AC96A1D0B6699F9A5D4C1657 /* Rect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
@@ -157,6 +160,7 @@
 		AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermission.swift; sourceTree = "<group>"; };
 		AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinMaxDimensionTests.swift; sourceTree = "<group>"; };
 		AC96A6D19F42865264963109 /* ManualLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualLayoutTests.swift; sourceTree = "<group>"; };
+		AC96A6DDD008EA2E1B50A5E4 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		AC96A6E346C2C0DFF901CEF2 /* StartPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartPoint.swift; sourceTree = "<group>"; };
 		AC96A6E5B0334A7D11D052DA /* MeasureLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureLayout.swift; sourceTree = "<group>"; };
 		AC96A6E779AE053A7FEB5866 /* FlexView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexView.swift; sourceTree = "<group>"; };
@@ -469,6 +473,8 @@
 			isa = PBXGroup;
 			children = (
 				AC96A01C66B235CC8602B54C /* RunLoopQueue.swift */,
+				AC96A1198FC1348F64D04B2F /* Lock.swift */,
+				AC96A6DDD008EA2E1B50A5E4 /* Atomic.swift */,
 			);
 			path = Thread;
 			sourceTree = "<group>";
@@ -780,6 +786,8 @@
 				AC96A5219500EFFD0504EA92 /* RunLoopQueue.swift in Sources */,
 				AC96AC9D591F76CBEC07C03A /* Assert.swift in Sources */,
 				AC96AEA1BF655FB38DE38B80 /* Thread.swift in Sources */,
+				AC96AF41E6A65FE5C506E1FD /* Lock.swift in Sources */,
+				AC96A393E66DA30657EEB75B /* Atomic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
