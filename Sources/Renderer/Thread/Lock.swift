@@ -67,7 +67,7 @@ final public class UnfairLock: Locking {
     }
 }
 
-final public class Mutex: Locking {
+final public class MutexLock: Locking {
     private let mutex: UnsafeMutablePointer<pthread_mutex_t>
 
     public init(recursive: Bool = false) {
@@ -128,7 +128,7 @@ public struct Lock {
         if #available(iOS 10.0, *) {
             return UnfairLock()
         } else {
-            return Mutex()
+            return MutexLock()
         }
     }
 }

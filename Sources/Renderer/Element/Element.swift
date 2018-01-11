@@ -82,7 +82,7 @@ open class Element<View: UIView, State: ElementState>: Equatable {
 
     public let layout = FlexLayout()
     /** protected */
-    public let lock = Mutex(recursive: true)
+    public let lock = MutexLock(recursive: true)
     public let flags = Atomic<ElementOption>([])
     public var flag = ElementFlag()
     public private(set) var pendingState: State? = nil
@@ -99,6 +99,7 @@ open class Element<View: UIView, State: ElementState>: Equatable {
         }
         set {
             let state: State = pendingState ?? State()
+            pendingState = state
             state.background = newValue
         }
     }
