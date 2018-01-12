@@ -71,6 +71,7 @@
 		AC96AD27B42FC0F2E6BF2824 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8F5925BFE1DC7C3CC13 /* Tests.swift */; };
 		AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */; };
 		AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */; };
+		AC96ADF4C11FCFFFC0761DB5 /* HadOverflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */; };
 		AC96AE09F1F142DE757815FE /* FlexStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */; };
 		AC96AE1759FDB5DA5564C35C /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1D0B6699F9A5D4C1657 /* Rect.swift */; };
 		AC96AE3CF770D7AD9ECC8EDA /* StartPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E346C2C0DFF901CEF2 /* StartPoint.swift */; };
@@ -192,6 +193,7 @@
 		AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexCollectionViewCell.swift; sourceTree = "<group>"; };
 		AC96AB45C64C78FA4D5F9DE3 /* AspectRatioTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AspectRatioTests.swift; sourceTree = "<group>"; };
 		AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderTests.swift; sourceTree = "<group>"; };
+		AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HadOverflowTests.swift; sourceTree = "<group>"; };
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
 		AC96AC5EBC21F4B236B8210B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */,
 				AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */,
 				AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */,
+				AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -775,6 +778,7 @@
 				AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */,
 				AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */,
 				AC96AE99947574E7ACF31F92 /* ComputedPaddingTests.swift in Sources */,
+				AC96ADF4C11FCFFFC0761DB5 /* HadOverflowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

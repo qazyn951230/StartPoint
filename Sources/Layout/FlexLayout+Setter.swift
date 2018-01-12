@@ -248,6 +248,11 @@ public extension FlexLayout {
     }
 
     @discardableResult
+    public func margin(value: StyleValue) -> Self {
+        return margin(StyleInsets(top: value, left: value, bottom: value, right: value))
+    }
+
+    @discardableResult
     public func margin(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) -> Self {
         return margin(StyleInsets(top: top, left: right, bottom: bottom, right: right))
     }
@@ -334,6 +339,11 @@ public extension FlexLayout {
             markDirty()
         }
         return self
+    }
+
+    @discardableResult
+    public func padding(value: StyleValue) -> Self {
+        return padding(StyleInsets(top: value, left: value, bottom: value, right: value))
     }
 
     @discardableResult
