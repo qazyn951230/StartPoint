@@ -29,23 +29,23 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_propagation
     func testDirtyPropagation() {
         let root = FlexLayout()
-        root.style.alignItems = .flexStart
-        root.style.width = 100
-        root.style.height = 100
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
         let root_child0 = FlexLayout()
-        root_child0.style.width = 50
-        root_child0.style.height = 20
+        root_child0.width(StyleValue.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
         let root_child1 = FlexLayout()
-        root_child1.style.width = 50
-        root_child1.style.height = 20
+        root_child1.width(StyleValue.length(50))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
         root.calculate(direction: Direction.ltr)
 
-        root_child0.width(20)
+        root_child0.width(StyleValue.length(20))
 
         XCTAssertTrue(root_child0.dirty)
         XCTAssertFalse(root_child1.dirty)
@@ -61,23 +61,23 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_propagation_only_if_prop_changed
     func testDirtyPropagationOnlyIfPropChanged() {
         let root = FlexLayout()
-        root.style.alignItems = .flexStart
-        root.style.width = 100
-        root.style.height = 100
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
         let root_child0 = FlexLayout()
-        root_child0.style.width = 50
-        root_child0.style.height = 20
+        root_child0.width(StyleValue.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
         let root_child1 = FlexLayout()
-        root_child1.style.width = 50
-        root_child1.style.height = 20
+        root_child1.width(StyleValue.length(50))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
         root.calculate(direction: Direction.ltr)
 
-        root_child0.style.width = 50
+        root_child0.width(StyleValue.length(50))
 
         XCTAssertFalse(root_child0.dirty)
         XCTAssertFalse(root_child1.dirty)
@@ -87,18 +87,18 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_mark_all_children_as_dirty_when_display_changes
     func testDirtyMarkAllChildrenAsDirtyWhenDisplayChanges() {
         let root = FlexLayout()
-        root.style.flexDirection = FlexDirection.row
-        root.style.height = 100
+        root.flexDirection(FlexDirection.row)
+        root.height(StyleValue.length(100))
 
         let child0 = FlexLayout()
-        child0.style.flexGrow = 1
+        child0.flexGrow(1)
         let child1 = FlexLayout()
-        child1.style.flexGrow = 1
+        child1.flexGrow(1)
 
         let child1_child0 = FlexLayout()
         let child1_child0_child0 = FlexLayout()
-        child1_child0_child0.style.width = 8
-        child1_child0_child0.style.height = 16
+        child1_child0_child0.width(StyleValue.length(8))
+        child1_child0_child0.height(StyleValue.length(16))
 
         child1_child0.append(child1_child0_child0)
 
@@ -106,8 +106,8 @@ class DirtyMarkingTests: FlexTestCase {
         root.append(child0)
         root.append(child1)
 
-        child0.style.display = Display.flex
-        child1.style.display = Display.none
+        child0.display(Display.flex)
+        child1.display(Display.none)
         root.calculate(direction: Direction.ltr)
         XCTAssertEqual(child1_child0_child0.box.width, 0)
         XCTAssertEqual(child1_child0_child0.box.height, 0)
@@ -134,13 +134,13 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_node_only_if_children_are_actually_removed
     func testDirtyNodeOnlyIfChildrenAreActuallyRemoved() {
         let root = FlexLayout()
-        root.style.alignItems = .flexStart
-        root.style.width = 50
-        root.style.height = 50
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
 
         let child0 = FlexLayout()
-        child0.style.width = 50
-        child0.style.height = 25
+        child0.width(StyleValue.length(50))
+        child0.height(StyleValue.length(25))
         root.append(child0)
 
         root.calculate(direction: Direction.ltr)
@@ -156,15 +156,15 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_node_only_if_undefined_values_gets_set_to_undefined
     func testDirtyNodeOnlyIfUndefinedValuesGetsSetToUndefined() {
         let root = FlexLayout()
-        root.style.width = 50
-        root.style.height = 50
-        root.style.maxWidth = nil
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+        root.minWidth(StyleValue.length(Double.nan))
 
         root.calculate(direction: Direction.ltr)
 
         XCTAssertFalse(root.dirty)
 
-        root.style.maxWidth = nil
+        root.minWidth(StyleValue.length(Double.nan))
 
         XCTAssertFalse(root.dirty)
     }

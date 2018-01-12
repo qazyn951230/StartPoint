@@ -49,6 +49,7 @@
 		AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2429CD251C00FABFCD1 /* SafeArea.swift */; };
 		AC96A8118D2718872E1D4E75 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */; };
 		AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */; };
+		AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */; };
 		AC96A8845FDE28E2DDD4B608 /* FlexControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5C929430D3747CC4C57 /* FlexControl.swift */; };
 		AC96A89C5095B176A30D61E3 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8D792053394063F1400 /* LogType.swift */; };
 		AC96A95E37503B8812972882 /* UIImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */; };
@@ -78,6 +79,7 @@
 		AC96AE8328EC6A497FAD665C /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2BEB5B8FDC95696FC69 /* Log.swift */; };
 		AC96AE855B609E3C90DD7339 /* LayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFA1ED6CC64828315DD9 /* LayoutView.swift */; };
 		AC96AE86CB9492AC1B0994B9 /* Flex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1E1A4C40E7EE071DAB2 /* Flex.swift */; };
+		AC96AE99947574E7ACF31F92 /* ComputedPaddingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */; };
 		AC96AE9DD084C42E9EB4805C /* MarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */; };
 		AC96AEC01D91FA4260D05C71 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9AF443FC015B0799EF5 /* Array.swift */; };
 		AC96AF008794E423F1EE5CD9 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */; };
@@ -140,6 +142,7 @@
 		AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		AC96A465CDAA8A64D61D2480 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		AC96A4D9CC8415398080F689 /* SegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
+		AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputedMarginTests.swift; sourceTree = "<group>"; };
 		AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyle.swift; sourceTree = "<group>"; };
 		AC96A506CA182155247878AC /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingTests.swift; sourceTree = "<group>"; };
@@ -182,6 +185,7 @@
 		AC96AA31A616833F79C3128B /* LogDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		AC96AA36EE92A0C924EC81CC /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlexLayout+Setter.swift"; sourceTree = "<group>"; };
+		AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputedPaddingTests.swift; sourceTree = "<group>"; };
 		AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexLayout.swift; sourceTree = "<group>"; };
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 				AC96A8164BD53E0A64E9F6F5 /* BaselineFuncTests.swift */,
 				AC96A872C107A1AF67FFD8A6 /* BaselineLayout.swift */,
 				AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */,
+				AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */,
+				AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -767,6 +773,8 @@
 				AC96A15D231CE2A7DD54C9D6 /* BaselineFuncTests.swift in Sources */,
 				AC96AA00E47BA4850A65B2C0 /* BaselineLayout.swift in Sources */,
 				AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */,
+				AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */,
+				AC96AE99947574E7ACF31F92 /* ComputedPaddingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

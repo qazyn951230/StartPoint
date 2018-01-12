@@ -28,6 +28,15 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
     case percentage(Double)
     case auto
 
+    internal var valid: Bool {
+        switch self {
+        case .length(let l), .percentage(let l):
+            return !l.isNaN
+        default:
+            return true
+        }
+    }
+
     public static var match: StyleValue {
         return StyleValue.percentage(100)
     }
@@ -71,12 +80,22 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         }
     }
 
+    static func makeLength(_ value: Double?) -> StyleValue? {
+        guard let v = value else {
+            return nil
+        }
+        return StyleValue.length(v)
+    }
+
     // MARK: Equatable
     public static func ==(lhs: StyleValue, rhs: StyleValue) -> Bool {
         switch (lhs, rhs) {
         case (.auto, .auto):
             return true
         case (.length(let a), .length(let b)), (.percentage(let a), .percentage(let b)):
+            if a.isNaN {
+                return b.isNaN
+            }
             return a == b
         default:
             return false

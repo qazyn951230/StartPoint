@@ -22,6 +22,7 @@
 
 import UIKit
 
+// gYGNodeStyleDefaults
 public class FlexStyle {
     public init() {
         // Do nothing
@@ -102,15 +103,8 @@ public class FlexStyle {
     }
 
     // YGResolveFlexDirection
-    func resolveFlexDirection(by layoutDirection: Direction) -> FlexDirection {
-        if layoutDirection == Direction.rtl {
-            if flexDirection == FlexDirection.row {
-                return FlexDirection.rowReverse
-            } else if flexDirection == FlexDirection.rowReverse {
-                return FlexDirection.row
-            }
-        }
-        return flexDirection
+    func resolveFlexDirection(by direction: Direction) -> FlexDirection {
+        return flexDirection.resolve(by: direction)
     }
 
     // YGNodeIsLeadingPosDefined

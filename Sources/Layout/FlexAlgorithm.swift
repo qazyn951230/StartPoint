@@ -324,23 +324,7 @@ extension FlexLayout {
         // TODO: Give a waring.
         let widthMode: MeasureMode = width.isNaN ? .undefined : widthMode
         let heightMode: MeasureMode = height.isNaN ? .undefined : heightMode
-        let mainAxis = style.resolveFlexDirection(by: direction)
-        let crossAxis = mainAxis.cross(by: direction)
-
-        box.margin.left = style.leadingMargin(for: mainAxis, width: parentWidth)
-        box.margin.right = style.trailingMargin(for: mainAxis, width: parentWidth)
-        box.margin.top = style.leadingMargin(for: crossAxis, width: parentWidth)
-        box.margin.bottom = style.trailingMargin(for: mainAxis, width: parentWidth)
-
-        box.padding.left = style.leadingPadding(for: mainAxis, width: parentWidth)
-        box.padding.right = style.trailingPadding(for: mainAxis, width: parentWidth)
-        box.padding.top = style.leadingPadding(for: crossAxis, width: parentWidth)
-        box.padding.bottom = style.trailingPadding(for: mainAxis, width: parentWidth)
-
-        box.border.left = style.leadingBorder(for: mainAxis)
-        box.border.right = style.trailingBorder(for: mainAxis)
-        box.border.top = style.leadingBorder(for: crossAxis)
-        box.border.bottom = style.trailingBorder(for: mainAxis)
+        layoutBox(by: direction, width: parentWidth)
 
         if children.count > 0 {
             flexLayout(width: width, height: height, direction: direction, widthMode: widthMode,
@@ -353,6 +337,35 @@ extension FlexLayout {
                 emptyLayout(width: width, height: height, widthMode: widthMode, heightMode: heightMode,
                     parentWidth: parentWidth, parentHeight: parentHeight)
             }
+        }
+    }
+
+    // YGNodelayoutImpl
+    func layoutBox(by direction: Direction, width: Double) {
+        let rowDirection = FlexDirection.row.resolve(by: direction)
+        let columnDirection = FlexDirection.column.resolve(by: direction)
+
+        box.margin.top = style.leadingMargin(for: columnDirection, width: width)
+        box.margin.bottom = style.trailingMargin(for: columnDirection, width: width)
+        box.padding.top = style.leadingPadding(for: columnDirection, width: width)
+        box.padding.bottom = style.trailingPadding(for: columnDirection, width: width)
+        box.border.top = style.leadingBorder(for: columnDirection)
+        box.border.bottom = style.trailingBorder(for: columnDirection)
+
+        if direction == Direction.ltr {
+            box.margin.left = style.leadingMargin(for: rowDirection, width: width)
+            box.margin.right = style.trailingMargin(for: rowDirection, width: width)
+            box.padding.left = style.leadingPadding(for: rowDirection, width: width)
+            box.padding.right = style.trailingPadding(for: rowDirection, width: width)
+            box.border.left = style.leadingBorder(for: rowDirection)
+            box.border.right = style.trailingBorder(for: rowDirection)
+        } else {
+            box.margin.right = style.leadingMargin(for: rowDirection, width: width)
+            box.margin.left = style.trailingMargin(for: rowDirection, width: width)
+            box.padding.right = style.leadingPadding(for: rowDirection, width: width)
+            box.padding.left = style.trailingPadding(for: rowDirection, width: width)
+            box.border.right = style.leadingBorder(for: rowDirection)
+            box.border.left = style.trailingBorder(for: rowDirection)
         }
     }
 

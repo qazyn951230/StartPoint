@@ -106,25 +106,6 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertEqual(root.box.direction, Direction.inherit)
     }
 
-    // Generated from test: assert_webdefault_values
-//    func testAssertWebDefaultValues() { // YGConfigSetUseWebDefaults(config, true);
-//        let root = yogaLayout()
-//
-//        XCTAssertEqual(FlexDirection.row, root.style.flexDirection)
-//        XCTAssertEqual(.stretch, root.style.alignContent)
-//        XCTAssertEqual(root.style.flexShrink, 1.0)
-//    }
-
-    // Generated from test: assert_webdefault_values_reset
-//    func testAssertWebDefaultValuesReset() { // YGConfigSetUseWebDefaults(config, true);
-//        let root = yogaLayout()
-//        YGNodeReset(root)
-//
-//        XCTAssertEqual(FlexDirection.row, root.style.flexDirection)
-//        XCTAssertEqual(.stretch, root.style.alignContent)
-//        XCTAssertEqual(root.style.flexShrink, 1.0)
-//    }
-
     // Generated from test: assert_legacy_stretch_behaviour
 //    func testAssertLegacyStretchBehaviour() {
 //        YGConfigSetUseLegacyStretchBehaviour(config, true)
