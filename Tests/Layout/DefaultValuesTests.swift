@@ -46,10 +46,10 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertEqual(root.style.flexShrink, 0.0)
         XCTAssertEqual(root.style.flexBasis, FlexBasis.auto)
 
-        XCTAssertNil(root.style.position.left)
-        XCTAssertNil(root.style.position.top)
-        XCTAssertNil(root.style.position.right)
-        XCTAssertNil(root.style.position.bottom)
+        XCTAssertEqual(root.style.position.left, StyleValue.auto)
+        XCTAssertEqual(root.style.position.top, StyleValue.auto)
+        XCTAssertEqual(root.style.position.right, StyleValue.auto)
+        XCTAssertEqual(root.style.position.bottom, StyleValue.auto)
         XCTAssertNil(root.style.position.leading)
         XCTAssertNil(root.style.position.trailing)
 

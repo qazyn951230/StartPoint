@@ -231,7 +231,8 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
 
     public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {
         return lhs.left == rhs.left && lhs.right == rhs.right &&
-            lhs.top == rhs.top && lhs.bottom == rhs.bottom
+            lhs.top == rhs.top && lhs.bottom == rhs.bottom &&
+            lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
     }
 }
 
@@ -259,22 +260,16 @@ struct LayoutInsets {
 }
 
 public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
-    public static let zero: Position = Position(nil)
+    public static let zero: Position = Position(StyleValue.auto)
 
-    var top: Double?
-    var bottom: Double?
-    var left: Double?
-    var right: Double?
-    var leading: Double?
-    var trailing: Double?
+    var top: StyleValue
+    var bottom: StyleValue
+    var left: StyleValue
+    var right: StyleValue
+    var leading: StyleValue?
+    var trailing: StyleValue?
 
-    var empty: Bool {
-        return top == nil && bottom == nil &&
-            left == nil && right == nil &&
-            leading == nil && trailing == nil
-    }
-
-    public init(_ value: Double?) {
+    public init(_ value: StyleValue) {
         top = value
         bottom = value
         left = value
@@ -283,7 +278,7 @@ public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         trailing = nil
     }
 
-    public init(vertical: Double?, horizontal: Double?) {
+    public init(vertical: StyleValue, horizontal: StyleValue) {
         top = vertical
         bottom = vertical
         left = horizontal
@@ -292,7 +287,7 @@ public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         trailing = horizontal
     }
 
-    public init(top: Double?, left: Double?, bottom: Double?, right: Double?) {
+    public init(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) {
         self.top = top
         self.left = left
         self.bottom = bottom
@@ -301,26 +296,26 @@ public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         trailing = nil
     }
 
-    public init(top: Double?, bottom: Double?, leading: Double?, trailing: Double?) {
+    public init(top: StyleValue, bottom: StyleValue, leading: StyleValue?, trailing: StyleValue?) {
         self.top = top
         self.bottom = bottom
         self.leading = leading
         self.trailing = trailing
-        left = nil
-        right = nil
+        left = StyleValue.auto
+        right = StyleValue.auto
     }
 
     // ExpressibleByFloatLiteral
     public init(floatLiteral value: Double) {
-        self.init(value)
+        self.init(StyleValue(floatLiteral: value))
     }
 
     // ExpressibleByIntegerLiteral
     public init(integerLiteral value: Int) {
-        self.init(Double(value))
+        self.init(StyleValue(integerLiteral: value))
     }
 
-    public func leading(direction: FlexDirection) -> Double? {
+    public func leading(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
             return self.leading ?? left
@@ -333,7 +328,7 @@ public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         }
     }
 
-    public func trailing(direction: FlexDirection) -> Double? {
+    public func trailing(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
             return self.trailing ?? right
@@ -346,34 +341,21 @@ public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         }
     }
 
-    public func total(direction: FlexDirection) -> Double? {
+    public func total(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
-            if let a = (leading ?? left), let b = (trailing ?? right) {
-                return a + b
-            } else {
-                return nil
-            }
+            return (leading ?? left) + (trailing ?? right)
         case .rowReverse:
-            if let a = (leading ?? right), let b = (trailing ?? left) {
-                return a + b
-            } else {
-                return nil
-            }
+            return (leading ?? right) + (trailing ?? left)
         case .column, .columnReverse:
-            if let top = top, let bottom = bottom {
-                return top + bottom
-            } else {
-                return nil
-            }
+            return top + bottom
         }
     }
 
     public static func ==(lhs: Position, rhs: Position) -> Bool {
-        return lhs.left == rhs.left &&
-            lhs.right == rhs.right &&
-            lhs.top == rhs.top &&
-            lhs.bottom == rhs.bottom
+        return lhs.left == rhs.left && lhs.right == rhs.right &&
+            lhs.top == rhs.top && lhs.bottom == rhs.bottom &&
+            lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
     }
 }
 

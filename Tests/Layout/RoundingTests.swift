@@ -612,7 +612,7 @@ class RoundingTests: FlexTestCase {
     func testRoundingFractialInput3() {
         let root = yogaLayout()
             .height(113.4)
-            .position(top: 0.3)
+            .position(top: StyleValue.length(0.3))
             .width(100)
 
         let root_child0 = yogaLayout()
@@ -679,7 +679,7 @@ class RoundingTests: FlexTestCase {
     func testRoundingFractialInput4() {
         let root = yogaLayout()
             .height(113.4)
-            .position(top: 0.7)
+            .position(top: StyleValue.length(0.7))
             .width(100)
 
         let root_child0 = yogaLayout()

@@ -742,7 +742,7 @@ extension FlexLayout {
                 }
                 if child.style.absoluteLayout && child.style.isLeadingPositionDefined(for: mainAxis) {
                     if performLayout {
-                        child.box.position[mainAxis] = child.style.leadingPosition(for: mainAxis) +
+                        child.box.position[mainAxis] = child.style.leadingPosition(for: mainAxis, size: availableInnerMainDim) +
                             style.leadingBorder(for: mainAxis) +
                             child.style.leadingMargin(for: mainAxis, width: availableInnerWidth)
                     }
@@ -782,7 +782,7 @@ extension FlexLayout {
                         // If the child is absolutely positioned and has a top/left/bottom/right
                         // set, override all the previously computed positions to set it correctly.
                         if child.style.isLeadingPositionDefined(for: crossAxis) {
-                            child.box.position[crossAxis] = child.style.leadingPosition(for: crossAxis) +
+                            child.box.position[crossAxis] = child.style.leadingPosition(for: crossAxis, size: availableInnerCrossDim) +
                                 style.leadingBorder(for: crossAxis) +
                                 child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
                         } else if child.box.position.leading(direction: crossAxis).isNaN {
@@ -922,7 +922,7 @@ extension FlexLayout {
                                     }
                                 }
                             case .baseline:
-                                child.box.position.top = currentLead + maxAscentForCurrentLine - child._baseline + child.style.leadingPosition(for: .column)
+                                child.box.position.top = currentLead + maxAscentForCurrentLine - child._baseline + child.style.leadingPosition(for: .column, size: availableInnerCrossDim)
                             }
                         }
                     }
@@ -995,7 +995,7 @@ extension FlexLayout {
             // If the child doesn't have a specified width, compute the width based
             // on the left/right offsets if they're defined.
             if child.style.isLeadingPositionDefined(for: .row) && child.style.isTrailingPositionDefined(for: .row) {
-                childWidth = box.measuredWidth - style.totalBorder(for: .row) - child.style.leadingPosition(for: .row) - child.style.trailingPosition(for: .row)
+                childWidth = box.measuredWidth - style.totalBorder(for: .row) - child.style.leadingPosition(for: .row, size: width) - child.style.trailingPosition(for: .row, size: width)
                 childWidth = child.style.bound(axis: .row, value: childWidth, axisSize: width, width: width)
             }
         }
@@ -1005,7 +1005,7 @@ extension FlexLayout {
             // If the child doesn't have a specified height, compute the height
             // based on the top/bottom offsets if they're defined.
             if child.style.isLeadingPositionDefined(for: .column) && child.style.isTrailingPositionDefined(for: .column) {
-                childHeight = box.measuredHeight - style.totalBorder(for: .column) - child.style.leadingPosition(for: .column) - child.style.trailingPosition(for: .column)
+                childHeight = box.measuredHeight - style.totalBorder(for: .column) - child.style.leadingPosition(for: .column, size: height) - child.style.trailingPosition(for: .column, size: height)
                 childHeight = child.style.bound(axis: .column, value: childHeight, axisSize: height, width: width)
             }
         }
@@ -1039,7 +1039,7 @@ extension FlexLayout {
         }
         _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: .exactly, heightMode: .exactly, parentWidth: childWidth, parentHeight: childHeight, direction: direction, layout: true, reason: "abs-layout")
         if child.style.isTrailingPositionDefined(for: mainAxis) && !child.style.isLeadingPositionDefined(for: mainAxis) {
-            let size: Double = box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis) - style.trailingBorder(for: mainAxis) - child.style.trailingMargin(for: mainAxis, width: width) - child.style.trailingPosition(for: mainAxis)
+            let size: Double = box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis) - style.trailingBorder(for: mainAxis) - child.style.trailingMargin(for: mainAxis, width: width) - child.style.trailingPosition(for: mainAxis, size: (isMainAxisRow ? width : height))
             child.box.position.setLeading(direction: mainAxis, size: size)
         } else if !child.style.isLeadingPositionDefined(for: mainAxis) && style.justifyContent == JustifyContent.center {
             let size: Double = (box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis)) / 2
@@ -1049,7 +1049,7 @@ extension FlexLayout {
             child.box.position.setLeading(direction: mainAxis, size: size)
         }
         if child.style.isTrailingPositionDefined(for: crossAxis) && !child.style.isLeadingPositionDefined(for: crossAxis) {
-            let size: Double = box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis) - style.trailingBorder(for: crossAxis) - child.style.trailingMargin(for: crossAxis, width: width) - child.style.trailingPosition(for: crossAxis)
+            let size: Double = box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis) - style.trailingBorder(for: crossAxis) - child.style.trailingMargin(for: crossAxis, width: width) - child.style.trailingPosition(for: crossAxis, size: (isMainAxisRow ? height : width))
             child.box.position.setLeading(direction: crossAxis, size: size)
         } else if !child.style.isLeadingPositionDefined(for: crossAxis) && computedAlignItem(child: child) == AlignItems.center {
             let size: Double = (box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis)) / 2

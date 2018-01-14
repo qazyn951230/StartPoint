@@ -159,17 +159,27 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(top: Double?, left: Double?, bottom: Double?, right: Double?) -> Self {
+    public func position(value: StyleValue) -> Self {
+        return position(Position(value))
+    }
+
+    @discardableResult
+    public func position(float value: CGFloat) -> Self {
+        return position(Position(StyleValue.length(Double(value))))
+    }
+
+    @discardableResult
+    public func position(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) -> Self {
         return position(Position(top: top, left: left, bottom: bottom, right: right))
     }
 
     @discardableResult
-    public func position(top: Double?, bottom: Double?, leading: Double?, trailing: Double?) -> Self {
+    public func position(top: StyleValue, bottom: StyleValue, leading: StyleValue?, trailing: StyleValue?) -> Self {
         return position(Position(top: top, bottom: bottom, leading: leading, trailing: trailing))
     }
 
     @discardableResult
-    public func position(top value: Double?) -> Self {
+    public func position(top value: StyleValue) -> Self {
         if (style.position.top != value) {
             style.position.top = value
             markDirty()
@@ -178,7 +188,7 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(bottom value: Double?) -> Self {
+    public func position(bottom value: StyleValue) -> Self {
         if (style.position.bottom != value) {
             style.position.bottom = value
             markDirty()
@@ -187,7 +197,7 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(left value: Double?) -> Self {
+    public func position(left value: StyleValue) -> Self {
         if (style.position.left != value) {
             style.position.left = value
             markDirty()
@@ -196,7 +206,7 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(right value: Double?) -> Self {
+    public func position(right value: StyleValue) -> Self {
         if (style.position.right != value) {
             style.position.right = value
             markDirty()
@@ -205,7 +215,7 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(leading value: Double?) -> Self {
+    public func position(leading value: StyleValue) -> Self {
         if (style.position.leading != value) {
             style.position.leading = value
             markDirty()
@@ -214,7 +224,7 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(trailing value: Double?) -> Self {
+    public func position(trailing value: StyleValue) -> Self {
         if (style.position.trailing != value) {
             style.position.trailing = value
             markDirty()
@@ -223,14 +233,14 @@ public extension FlexLayout {
     }
 
     @discardableResult
-    public func position(vertical value: Double?) -> Self {
+    public func position(vertical value: StyleValue) -> Self {
         position(top: value)
         position(bottom: value)
         return self
     }
 
     @discardableResult
-    public func position(horizontal value: Double?) -> Self {
+    public func position(horizontal value: StyleValue) -> Self {
         position(left: value)
         position(right: value)
         position(leading: value)
@@ -249,7 +259,12 @@ public extension FlexLayout {
 
     @discardableResult
     public func margin(value: StyleValue) -> Self {
-        return margin(StyleInsets(top: value, left: value, bottom: value, right: value))
+        return margin(StyleInsets(value))
+    }
+
+    @discardableResult
+    public func margin(float value: CGFloat) -> Self {
+        return margin(StyleInsets(StyleValue.length(Double(value))))
     }
 
     @discardableResult
@@ -343,7 +358,12 @@ public extension FlexLayout {
 
     @discardableResult
     public func padding(value: StyleValue) -> Self {
-        return padding(StyleInsets(top: value, left: value, bottom: value, right: value))
+        return padding(StyleInsets(value))
+    }
+
+    @discardableResult
+    public func padding(float value: CGFloat) -> Self {
+        return padding(StyleInsets(StyleValue.length(Double(value))))
     }
 
     @discardableResult
@@ -437,6 +457,12 @@ public extension FlexLayout {
     @discardableResult
     public func border(_ value: Double) -> Self {
         let insets = StyleInsets(StyleValue.length(value))
+        return border(insets)
+    }
+
+    @discardableResult
+    public func border(float value: CGFloat) -> Self {
+        let insets = StyleInsets(StyleValue.length(Double(value)))
         return border(insets)
     }
 
