@@ -23,7 +23,7 @@
 @testable import StartPoint
 import XCTest
 
-// Generated from YGhasOverflowTest.cpp
+// Generated from YGHadOverflowTest.cpp
 class HadOverflowTests: FlexTestCase {
     var root = FlexLayout()
 

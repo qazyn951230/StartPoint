@@ -429,9 +429,12 @@ extension FlexLayout {
 
     // YGNodelayoutImpl
     func flexLayout(width: Double, height: Double, direction: Direction, widthMode: MeasureMode, heightMode: MeasureMode, parentWidth: Double, parentHeight: Double, layout performLayout: Bool) {
+        // If we're not being asked to perform a full layout we can skip the algorithm if we already know the size
         if !performLayout && fixedLayout(width: width, height: height, widthMode: widthMode, heightMode: heightMode, parentWidth: parentWidth, parentHeight: parentHeight) {
             return
         }
+        // Reset layout flags, as they could have changed.
+        box.hasOverflow = false
         let direction = style.resolveDirection(by: direction)
         // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
         let mainAxis = style.flexDirection.resolve(by: direction)
@@ -661,8 +664,8 @@ extension FlexLayout {
                     var childMainSize = updatedMainSize + marginMain
                     var childCrossMeasureMode = MeasureMode.undefined
                     var childMainMeasureMode = MeasureMode.exactly
-                    if let t = currentRelativeChild, !t.style.aspectRatio.isNaN {
-                        let ratio = t.style.aspectRatio
+                    if !child.style.aspectRatio.isNaN {
+                        let ratio = child.style.aspectRatio
                         if isMainAxisRow {
                             childCrossSize = (childMainSize - marginMain) / ratio
                         } else {
@@ -696,10 +699,12 @@ extension FlexLayout {
                     let childWidthMeasureMode = isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode
                     let childHeightMeasureMode = isMainAxisRow ? childCrossMeasureMode : childMainMeasureMode
                     _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction, layout: performLayout && !requiresStretchLayout, reason: "flex")
-                    currentRelativeChild = currentRelativeChild?.nextChild
+                    box.hasOverflow = box.hasOverflow || child.box.hasOverflow
+                    currentRelativeChild = child.nextChild
                 }
             }
             remainingFreeSpace = originalRemainingFreeSpace + deltaFreeSpace
+            box.hasOverflow = box.hasOverflow || (remainingFreeSpace < 0)
             // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
             if measureModeMainDim.isAtMost && remainingFreeSpace > 0 {
                 if style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize) >= 0 {
