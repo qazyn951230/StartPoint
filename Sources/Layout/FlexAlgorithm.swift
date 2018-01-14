@@ -742,6 +742,9 @@ extension FlexLayout {
                 }
                 if child.style.absoluteLayout && child.style.isLeadingPositionDefined(for: mainAxis) {
                     if performLayout {
+                        // In case the child is position absolute and has left/top being
+                        // defined, we override the position to whatever the user said
+                        // (and margin/border).
                         child.box.position[mainAxis] = child.style.leadingPosition(for: mainAxis, size: availableInnerMainDim) +
                             style.leadingBorder(for: mainAxis) +
                             child.style.leadingMargin(for: mainAxis, width: availableInnerWidth)
@@ -781,11 +784,13 @@ extension FlexLayout {
                     if child.style.absoluteLayout {
                         // If the child is absolutely positioned and has a top/left/bottom/right
                         // set, override all the previously computed positions to set it correctly.
+                        let isLeadingPositionDefined = child.style.isLeadingPositionDefined(for: crossAxis)
                         if child.style.isLeadingPositionDefined(for: crossAxis) {
                             child.box.position[crossAxis] = child.style.leadingPosition(for: crossAxis, size: availableInnerCrossDim) +
                                 style.leadingBorder(for: crossAxis) +
                                 child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
-                        } else if child.box.position.leading(direction: crossAxis).isNaN {
+                        }
+                        if !isLeadingPositionDefined || child.box.position.leading(direction: crossAxis).isNaN {
                             // If leading position is not defined or calculations result in Nan, default to border + margin
                             child.box.position[crossAxis] = style.leadingBorder(for: crossAxis) +
                                 child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
