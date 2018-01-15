@@ -66,6 +66,7 @@
 		AC96AA6714618BD919012CE8 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAF6CC5FFB07839B5A15 /* Permission.swift */; };
 		AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
 		AC96ABA0A87087889ACB0C06 /* FlexBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */; };
+		AC96ABC592AE1C3A0A83555E /* MeasureModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */; };
 		AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
 		AC96ACED75EC55C2643DB7E8 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D9CC8415398080F689 /* SegmentedControl.swift */; };
@@ -213,6 +214,7 @@
 		AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultValuesTests.swift; sourceTree = "<group>"; };
 		AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
+		AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureModeTests.swift; sourceTree = "<group>"; };
 		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		AC96AF4CCDEEAB7B80A449DC /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */,
 				AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */,
 				AC96AE568274699F0A27BA44 /* MeasureCacheTests.swift */,
+				AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -787,6 +790,7 @@
 				AC96ADF4C11FCFFFC0761DB5 /* HadOverflowTests.swift in Sources */,
 				AC96A5711AB4DFB855E692F2 /* InfiniteHeightTests.swift in Sources */,
 				AC96A60FF4AA61629688CD75 /* MeasureCacheTests.swift in Sources */,
+				AC96ABC592AE1C3A0A83555E /* MeasureModeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
