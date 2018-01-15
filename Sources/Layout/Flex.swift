@@ -185,7 +185,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         self.init(StyleValue(integerLiteral: value))
     }
 
-    // static const YGEdge leading[4]
+    // YGMarginLeadingValue
     public func leading(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
@@ -199,6 +199,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
+    // YGMarginTrailingValue
     public func trailing(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:

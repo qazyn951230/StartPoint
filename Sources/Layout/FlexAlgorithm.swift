@@ -149,8 +149,9 @@ extension FlexLayout {
     }
 
     // YGNodeDimWithMargin
-    func dimensionWithMargin(axis: FlexDirection, width: Double) -> Double {
-        return box.measuredDimension(for: axis) + style.totalOuterSize(for: axis, width: width)
+    @inline(__always)
+    func dimensionWithMargin(for direction: FlexDirection, width: Double) -> Double {
+        return box.measuredDimension(for: direction) + style.totalOuterSize(for: direction, width: width)
     }
 
     func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> (Double, Double) {
@@ -673,7 +674,7 @@ extension FlexLayout {
                         }
                         childCrossMeasureMode = .exactly
                         childCrossSize += marginCross
-                    } else if !availableInnerCrossDim.isNaN && !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && measureModeCrossDim.isExactly && !(isNodeFlexWrap && flexBasisOverflows) && computedAlignItem(child: child) == AlignItems.stretch {
+                    } else if !availableInnerCrossDim.isNaN && !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && measureModeCrossDim.isExactly && !(isNodeFlexWrap && flexBasisOverflows) && computedAlignItem(child: child) == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto && child.style.margin.trailing(direction: crossAxis) != StyleValue.auto {
                         childCrossSize = availableInnerCrossDim
                         childCrossMeasureMode = MeasureMode.exactly
                     } else if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) {
@@ -693,7 +694,7 @@ extension FlexLayout {
                     }
                     (childMainMeasureMode, childMainSize) = child.style.constrainMaxSize(axis: mainAxis, parentAxisSize: availableInnerMainDim, parentWidth: availableInnerWidth, mode: childMainMeasureMode, size: childMainSize)
                     (childCrossMeasureMode, childCrossSize) = child.style.constrainMaxSize(axis: crossAxis, parentAxisSize: availableInnerCrossDim, parentWidth: availableInnerWidth, mode: childCrossMeasureMode, size: childCrossSize)
-                    let requiresStretchLayout = !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && computedAlignItem(child: child) == AlignItems.stretch
+                    let requiresStretchLayout = !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && computedAlignItem(child: child) == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto && child.style.margin.trailing(direction: crossAxis) != StyleValue.auto
                     let childWidth = isMainAxisRow ? childMainSize : childCrossSize
                     let childHeight = !isMainAxisRow ? childMainSize : childCrossSize
                     let childWidthMeasureMode = isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode
@@ -713,26 +714,38 @@ extension FlexLayout {
                     remainingFreeSpace = 0
                 }
             }
-            // No support with auto margin
-            switch style.justifyContent {
-            case .center:
-                leadingMainDim = remainingFreeSpace / 2
-            case .flexEnd:
-                leadingMainDim = remainingFreeSpace
-            case .spaceBetween:
-                if itemsOnLine > 1 {
-                    betweenMainDim = fmax(remainingFreeSpace, 0) / Double(itemsOnLine - 1)
-                } else {
-                    betweenMainDim = 0
+            var numberOfAutoMarginsOnCurrentLine: Double = 0.0
+            for child: FlexLayout in children[startOfLineIndex..<endOfLineIndex] {
+                if child.style.relativeLayout {
+                    if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
+                        numberOfAutoMarginsOnCurrentLine += 1.0
+                    }
+                    if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
+                        numberOfAutoMarginsOnCurrentLine += 1.0
+                    }
                 }
-            case .spaceEvenly: // Space is distributed evenly across all elements
-                betweenMainDim = remainingFreeSpace / Double(itemsOnLine + 1)
-                leadingMainDim = betweenMainDim
-            case .spaceAround:
-                betweenMainDim = remainingFreeSpace / Double(itemsOnLine)
-                leadingMainDim = betweenMainDim / 2
-            case .flexStart:
-                break
+            }
+            if numberOfAutoMarginsOnCurrentLine < 1 {
+                switch style.justifyContent {
+                case .center:
+                    leadingMainDim = remainingFreeSpace / 2
+                case .flexEnd:
+                    leadingMainDim = remainingFreeSpace
+                case .spaceBetween:
+                    if itemsOnLine > 1 {
+                        betweenMainDim = fmax(remainingFreeSpace, 0) / Double(itemsOnLine - 1)
+                    } else {
+                        betweenMainDim = 0
+                    }
+                case .spaceEvenly: // Space is distributed evenly across all elements
+                    betweenMainDim = remainingFreeSpace / Double(itemsOnLine + 1)
+                    leadingMainDim = betweenMainDim
+                case .spaceAround:
+                    betweenMainDim = remainingFreeSpace / Double(itemsOnLine)
+                    leadingMainDim = betweenMainDim / 2
+                case .flexStart:
+                    break
+                }
             }
             var mainDim = leadingPaddingAndBorderMain + leadingMainDim
             var crossDim = 0.0
@@ -750,16 +763,23 @@ extension FlexLayout {
                             child.style.leadingMargin(for: mainAxis, width: availableInnerWidth)
                     }
                 } else {
-                    if !child.style.absoluteLayout {
+                    if child.style.relativeLayout {
+                        if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
+                            mainDim += remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
+                        }
                         if performLayout {
                             child.box.position[mainAxis] += mainDim
                         }
+                        if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
+                            mainDim += remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
+                        }
                         if canSkipFlex {
-                            mainDim += betweenMainDim + child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth) + child.computedFlexBasis
+                            mainDim += betweenMainDim + child.computedFlexBasis +
+                                child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
                             crossDim = availableInnerCrossDim
                         } else {
-                            mainDim += betweenMainDim + child.dimensionWithMargin(axis: mainAxis, width: availableInnerWidth)
-                            crossDim = fmax(crossDim, child.dimensionWithMargin(axis: crossAxis, width: availableInnerWidth))
+                            mainDim += betweenMainDim + child.dimensionWithMargin(for: mainAxis, width: availableInnerWidth)
+                            crossDim = fmax(crossDim, child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth))
                         }
                     } else if performLayout {
                         child.box.position[mainAxis] += style.leadingBorder(for: mainAxis) + leadingMainDim
@@ -798,7 +818,8 @@ extension FlexLayout {
                     } else {
                         var leadingCrossDim = leadingPaddingAndBorderCross
                         let alignItem = computedAlignItem(child: child)
-                        if alignItem == AlignItems.stretch {
+                        if alignItem == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto &&
+                               child.style.margin.trailing(direction: crossAxis) != StyleValue.auto {
                             if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) {
                                 var childMainSize = child.box.measuredDimension(for: mainAxis)
                                 var childCrossSize = crossDim
@@ -818,14 +839,34 @@ extension FlexLayout {
                                 _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction, layout: true, reason: "stretch")
                             }
                         } else {
-                            let remainingCrossDim = containerCrossAxis - child.dimensionWithMargin(axis: crossAxis, width: availableInnerWidth)
-                            if alignItem == AlignItems.center {
+                            let remainingCrossDim = containerCrossAxis - child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth)
+                            if child.style.margin.leading(direction: crossAxis) == StyleValue.auto {
+                                if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
+                                    leadingCrossDim += fmax(0, remainingCrossDim / 2)
+                                } else {
+                                    leadingCrossDim += fmax(0, remainingCrossDim)
+                                }
+                            } else if alignItem == AlignItems.center {
                                 leadingCrossDim += remainingCrossDim / 2
                             } else if alignItem == AlignItems.flexStart {
-                                // Do nothing.
+                                // No-op
                             } else {
                                 leadingCrossDim += remainingCrossDim
                             }
+//                            if child.style.margin.leading(direction: crossAxis) == StyleValue.auto &&
+//                                   child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
+//                                leadingCrossDim += fmax(0, remainingCrossDim / 2)
+//                            } else if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
+//                                // No-op
+//                            } else if child.style.margin.leading(direction: crossAxis) == StyleValue.auto {
+//                                leadingCrossDim += fmax(0, remainingCrossDim)
+//                            } else if alignItem == AlignItems.center {
+//                                leadingCrossDim += remainingCrossDim / 2
+//                            } else if alignItem == AlignItems.flexStart {
+//                                // No-op
+//                            } else {
+//                                leadingCrossDim += remainingCrossDim
+//                            }
                         }
                         child.box.position[crossAxis] += totalLineCrossDim + leadingCrossDim
                     }

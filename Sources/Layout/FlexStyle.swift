@@ -142,14 +142,16 @@ public class FlexStyle {
     @inline(__always)
     func leadingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.leading(direction: direction)
-        return value.resolve(by: width)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
     }
 
     // YGNodeTrailingMargin
     @inline(__always)
     func trailingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.trailing(direction: direction)
-        return value.resolve(by: width)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
     }
 
     // YGNodeLeadingPadding
