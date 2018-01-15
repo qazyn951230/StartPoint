@@ -39,6 +39,7 @@
 		AC96A5BAFF506D6B416039FB /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A95BC07C5AFE77700234 /* LogLevel.swift */; };
 		AC96A5F38B400B1FBEED4784 /* CameraPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */; };
 		AC96A60D4BD368F8AA5DEB33 /* FlexDirectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */; };
+		AC96A60FF4AA61629688CD75 /* MeasureCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE568274699F0A27BA44 /* MeasureCacheTests.swift */; };
 		AC96A6119AB6D701F04B07CF /* MeasureLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E5B0334A7D11D052DA /* MeasureLayout.swift */; };
 		AC96A62AFEA06D51EAA31069 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A465CDAA8A64D61D2480 /* Toast.swift */; };
 		AC96A64D823FF9CC24B4452B /* PercentageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD80B3A636F0422C7751 /* PercentageTests.swift */; };
@@ -205,6 +206,7 @@
 		AC96ADD6A32F1944E34B2888 /* RouteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteTests.swift; sourceTree = "<group>"; };
 		AC96ADE42256C86A28799055 /* MeasureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureTests.swift; sourceTree = "<group>"; };
 		AC96ADF6A697E1AE2C52AB27 /* Intent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intent.swift; sourceTree = "<group>"; };
+		AC96AE568274699F0A27BA44 /* MeasureCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureCacheTests.swift; sourceTree = "<group>"; };
 		AC96AE5D3A3D6C6A6C031B63 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexDirectionTests.swift; sourceTree = "<group>"; };
 		AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirtyMarkingTests.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */,
 				AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */,
 				AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */,
+				AC96AE568274699F0A27BA44 /* MeasureCacheTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				AC96AE99947574E7ACF31F92 /* ComputedPaddingTests.swift in Sources */,
 				AC96ADF4C11FCFFFC0761DB5 /* HadOverflowTests.swift in Sources */,
 				AC96A5711AB4DFB855E692F2 /* InfiniteHeightTests.swift in Sources */,
+				AC96A60FF4AA61629688CD75 /* MeasureCacheTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
