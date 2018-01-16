@@ -13,6 +13,7 @@
 		AC96A06E7C30FE53825B445F /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA2D9D6E6B73BEDBBC5C /* AttributedString.swift */; };
 		AC96A0846D10B136A2E8550C /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2B0420610F0F4CBC52C /* Size.swift */; };
 		AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */; };
+		AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4B8CA1524BB5D64E63A /* RoundingMeasureFuncTests.swift */; };
 		AC96A0BF3535D4019F85C9DB /* FlexCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA2B750B4444C8DC0BE0 /* FlexCollectionReusableView.swift */; };
 		AC96A0FC23AC0E924A53FA61 /* ManualLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6D19F42865264963109 /* ManualLayoutTests.swift */; };
 		AC96A10782B5489C55A4A4AA /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A70069177338DE20CAF5 /* Global.swift */; };
@@ -149,6 +150,7 @@
 		AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		AC96A465CDAA8A64D61D2480 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		AC96A4A2070B519A0B214291 /* NodeChildTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeChildTests.swift; sourceTree = "<group>"; };
+		AC96A4B8CA1524BB5D64E63A /* RoundingMeasureFuncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundingMeasureFuncTests.swift; sourceTree = "<group>"; };
 		AC96A4D9CC8415398080F689 /* SegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
 		AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputedMarginTests.swift; sourceTree = "<group>"; };
 		AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyle.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 				AC96A4A2070B519A0B214291 /* NodeChildTests.swift */,
 				AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */,
 				AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */,
+				AC96A4B8CA1524BB5D64E63A /* RoundingMeasureFuncTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -803,6 +806,7 @@
 				AC96A7918E55CEAC35D5CBD6 /* NodeChildTests.swift in Sources */,
 				AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */,
 				AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */,
+				AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
