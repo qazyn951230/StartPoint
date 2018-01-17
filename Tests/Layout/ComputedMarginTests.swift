@@ -33,10 +33,10 @@ class ComputedMarginTests: FlexTestCase {
         root.style.height = 100
         root.style.margin.leading = StyleValue.percentage(10)
 
-//        root.calculate(width: 100, height: 100, direction: Direction.ltr)
-//
-//        XCTAssertEqual(root.box.margin.left, 10)
-//        XCTAssertEqual(root.box.margin.right, 0)
+        root.calculate(width: 100, height: 100, direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.margin.left, 10)
+        XCTAssertEqual(root.box.margin.right, 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.rtl)
 
