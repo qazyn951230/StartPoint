@@ -28,30 +28,30 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_column
     func testWrapColumn() {
-        let root = yogaLayout()
-            .flexWrap(.wrap)
-            .height(100)
+        let root = FlexLayout()
+        root.flexWrap(FlexWrap.wrap)
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(30))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(30))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(30))
         root.append(root_child3)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -78,7 +78,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child3.box.width, 30)
         XCTAssertEqual(root_child3.box.height, 30)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -108,31 +108,31 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_row
     func testWrapRow() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(30))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(30))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(30))
         root.append(root_child3)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -159,7 +159,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child3.box.width, 30)
         XCTAssertEqual(root_child3.box.height, 30)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -189,32 +189,32 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_row_align_items_flex_end
     func testWrapRowAlignItemsFlexEnd() {
-        let root = yogaLayout()
-            .alignItems(.flexEnd)
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.alignItems(AlignItems.flexEnd)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(30))
         root.append(root_child3)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -241,7 +241,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child3.box.width, 30)
         XCTAssertEqual(root_child3.box.height, 30)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -271,32 +271,32 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_row_align_items_center
     func testWrapRowAlignItemsCenter() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.alignItems(AlignItems.center)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(30))
         root.append(root_child3)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -323,7 +323,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child3.box.width, 30)
         XCTAssertEqual(root_child3.box.height, 30)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -353,23 +353,23 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: flex_wrap_children_with_min_main_overriding_flex_basis
     func testFlexWrapChildrenWithMinMainOverridingFlexBasis() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .height(50)
-            .minWidth(55)
+        let root_child0 = FlexLayout()
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.minWidth(StyleValue.length(55))
+        root_child0.height(StyleValue.length(50))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexBasis(50)
-            .height(50)
-            .minWidth(55)
+        let root_child1 = FlexLayout()
+        root_child1.flexBasis(FlexBasis.length(50))
+        root_child1.minWidth(StyleValue.length(55))
+        root_child1.height(StyleValue.length(50))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -386,7 +386,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 55)
         XCTAssertEqual(root_child1.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -406,28 +406,28 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: flex_wrap_wrap_to_child_height
     func testFlexWrapWrapToChildHeight() {
-        let root = yogaLayout()
+        let root = FlexLayout()
 
-        let root_child0 = yogaLayout()
-            .alignItems(.flexStart)
-            .flexDirection(.row)
-            .flexWrap(.wrap)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.alignItems(AlignItems.flexStart)
+        root_child0.flexWrap(FlexWrap.wrap)
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .width(100)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(100))
         root_child0.append(root_child0_child0)
 
-        let root_child0_child0_child0 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child0_child0_child0 = FlexLayout()
+        root_child0_child0_child0.width(StyleValue.length(100))
+        root_child0_child0_child0.height(StyleValue.length(100))
         root_child0_child0.append(root_child0_child0_child0)
 
-        let root_child1 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(100))
+        root_child1.height(StyleValue.length(100))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -454,7 +454,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 100)
         XCTAssertEqual(root_child1.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -484,20 +484,20 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: flex_wrap_align_stretch_fits_one_row
     func testFlexWrapAlignStretchFitsOneRow() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .height(100)
-            .width(150)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(150))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .width(50)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(50))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(50)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(50))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -514,7 +514,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 50)
         XCTAssertEqual(root_child1.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -534,36 +534,36 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_row_align_content_flex_start
     func testWrapReverseRowAlignContentFlexStart() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -595,7 +595,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -630,37 +630,37 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_row_align_content_center
     func testWrapReverseRowAlignContentCenter() {
-        let root = yogaLayout()
-            .alignContent(.center)
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.alignContent(AlignContent.center)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -692,7 +692,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -727,36 +727,36 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_row_single_line_different_size
     func testWrapReverseRowSingleLineDifferentSize() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .width(300)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(300))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -788,7 +788,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -823,37 +823,37 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_row_align_content_stretch
     func testWrapReverseRowAlignContentStretch() {
-        let root = yogaLayout()
-            .alignContent(.stretch)
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.alignContent(AlignContent.stretch)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -885,7 +885,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -920,37 +920,37 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_row_align_content_space_around
     func testWrapReverseRowAlignContentSpaceAround() {
-        let root = yogaLayout()
-            .alignContent(.spaceAround)
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.alignContent(AlignContent.spaceAround)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -982,7 +982,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1017,37 +1017,37 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_reverse_column_fixed_size
     func testWrapReverseColumnFixedSize() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexWrap(.wrapReverse)
-            .height(100)
-            .width(200)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.center)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(30)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(30))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(20)
-            .width(30)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(30))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(30)
-            .width(30)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(30))
+        root_child2.height(StyleValue.length(30))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(40)
-            .width(30)
+        let root_child3 = FlexLayout()
+        root_child3.width(StyleValue.length(30))
+        root_child3.height(StyleValue.length(40))
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .height(50)
-            .width(30)
+        let root_child4 = FlexLayout()
+        root_child4.width(StyleValue.length(30))
+        root_child4.height(StyleValue.length(50))
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1079,7 +1079,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 30)
         XCTAssertEqual(root_child4.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1114,26 +1114,26 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrapped_row_within_align_items_center
     func testWrappedRowWithinAlignItemsCenter() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .height(200)
-            .width(200)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.center)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(200))
 
-        let root_child0 = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.flexWrap(FlexWrap.wrap)
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(80)
-            .width(150)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(150))
+        root_child0_child0.height(StyleValue.length(80))
         root_child0.append(root_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .height(80)
-            .width(80)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.width(StyleValue.length(80))
+        root_child0_child1.height(StyleValue.length(80))
         root_child0.append(root_child0_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1155,7 +1155,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child0_child1.box.width, 80)
         XCTAssertEqual(root_child0_child1.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1180,26 +1180,26 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrapped_row_within_align_items_flex_start
     func testWrappedRowWithinAlignItemsFlexStart() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .height(200)
-            .width(200)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.flexStart)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(200))
 
-        let root_child0 = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.flexWrap(FlexWrap.wrap)
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(80)
-            .width(150)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(150))
+        root_child0_child0.height(StyleValue.length(80))
         root_child0.append(root_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .height(80)
-            .width(80)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.width(StyleValue.length(80))
+        root_child0_child1.height(StyleValue.length(80))
         root_child0.append(root_child0_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1221,7 +1221,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child0_child1.box.width, 80)
         XCTAssertEqual(root_child0_child1.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1246,26 +1246,26 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrapped_row_within_align_items_flex_end
     func testWrappedRowWithinAlignItemsFlexEnd() {
-        let root = yogaLayout()
-            .alignItems(.flexEnd)
-            .height(200)
-            .width(200)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.flexEnd)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(200))
 
-        let root_child0 = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.flexWrap(FlexWrap.wrap)
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(80)
-            .width(150)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(150))
+        root_child0_child0.height(StyleValue.length(80))
         root_child0.append(root_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .height(80)
-            .width(80)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.width(StyleValue.length(80))
+        root_child0_child1.height(StyleValue.length(80))
         root_child0.append(root_child0_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1287,7 +1287,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child0_child1.box.width, 80)
         XCTAssertEqual(root_child0_child1.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1312,34 +1312,34 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrapped_column_max_height
     func testWrappedColumnMaxHeight() {
-        let root = yogaLayout()
-            .alignContent(.center)
-            .alignItems(.center)
-            .flexWrap(.wrap)
-            .height(500)
-            .justifyContent(.center)
-            .width(700)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignContent(AlignContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(700))
+        root.height(StyleValue.length(500))
 
-        let root_child0 = yogaLayout()
-            .height(500)
-            .maxHeight(200)
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(100))
+        root_child0.height(StyleValue.length(500))
+        root_child0.maxHeight(StyleValue.length(200))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(200)
-            .margin(bottom: 20)
-            .margin(left: 20)
-            .margin(right: 20)
-            .margin(top: 20)
-            .width(200)
+        let root_child1 = FlexLayout()
+        root_child1.margin(left: StyleValue.length(20))
+        root_child1.margin(top: StyleValue.length(20))
+        root_child1.margin(right: StyleValue.length(20))
+        root_child1.margin(bottom: StyleValue.length(20))
+        root_child1.width(StyleValue.length(200))
+        root_child1.height(StyleValue.length(200))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(100))
+        root_child2.height(StyleValue.length(100))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1361,7 +1361,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1386,40 +1386,40 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrapped_column_max_height_flex
     func testWrappedColumnMaxHeightFlex() {
-        let root = yogaLayout()
-            .alignContent(.center)
-            .alignItems(.center)
-            .flexWrap(.wrap)
-            .height(500)
-            .justifyContent(.center)
-            .width(700)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignContent(AlignContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexWrap(FlexWrap.wrap)
+        root.width(StyleValue.length(700))
+        root.height(StyleValue.length(500))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
-            .height(500)
-            .maxHeight(200)
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexShrink(1)
+        root_child0.flexBasis(FlexBasis.percentage(0))
+        root_child0.width(StyleValue.length(100))
+        root_child0.height(StyleValue.length(500))
+        root_child0.maxHeight(StyleValue.length(200))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
-            .height(200)
-            .margin(bottom: 20)
-            .margin(left: 20)
-            .margin(right: 20)
-            .margin(top: 20)
-            .width(200)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.flexShrink(1)
+        root_child1.flexBasis(FlexBasis.percentage(0))
+        root_child1.margin(left: StyleValue.length(20))
+        root_child1.margin(top: StyleValue.length(20))
+        root_child1.margin(right: StyleValue.length(20))
+        root_child1.margin(bottom: StyleValue.length(20))
+        root_child1.width(StyleValue.length(200))
+        root_child1.height(StyleValue.length(200))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(100))
+        root_child2.height(StyleValue.length(100))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1441,7 +1441,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1466,33 +1466,33 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_nodes_with_content_sizing_overflowing_margin
     func testWrapNodesWithContentSizingOverflowingMargin() {
-        let root = yogaLayout()
-            .height(500)
-            .width(500)
+        let root = FlexLayout()
+        root.width(StyleValue.length(500))
+        root.height(StyleValue.length(500))
 
-        let root_child0 = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(85)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.flexWrap(FlexWrap.wrap)
+        root_child0.width(StyleValue.length(85))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
+        let root_child0_child0 = FlexLayout()
         root_child0.append(root_child0_child0)
 
-        let root_child0_child0_child0 = yogaLayout()
-            .height(40)
-            .width(40)
+        let root_child0_child0_child0 = FlexLayout()
+        root_child0_child0_child0.width(StyleValue.length(40))
+        root_child0_child0_child0.height(StyleValue.length(40))
         root_child0_child0.append(root_child0_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .margin(right: 10)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.margin(right: StyleValue.length(10))
         root_child0.append(root_child0_child1)
 
-        let root_child0_child1_child0 = yogaLayout()
-            .height(40)
-            .width(40)
+        let root_child0_child1_child0 = FlexLayout()
+        root_child0_child1_child0.width(StyleValue.length(40))
+        root_child0_child1_child0.height(StyleValue.length(40))
         root_child0_child1.append(root_child0_child1_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1524,7 +1524,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child0_child1_child0.box.width, 40)
         XCTAssertEqual(root_child0_child1_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1559,33 +1559,33 @@ class FlexWrapTests: FlexTestCase {
 
     // Generated from test: wrap_nodes_with_content_sizing_margin_cross
     func testWrapNodesWithContentSizingMarginCross() {
-        let root = yogaLayout()
-            .height(500)
-            .width(500)
+        let root = FlexLayout()
+        root.width(StyleValue.length(500))
+        root.height(StyleValue.length(500))
 
-        let root_child0 = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrap)
-            .width(70)
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.flexWrap(FlexWrap.wrap)
+        root_child0.width(StyleValue.length(70))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
+        let root_child0_child0 = FlexLayout()
         root_child0.append(root_child0_child0)
 
-        let root_child0_child0_child0 = yogaLayout()
-            .height(40)
-            .width(40)
+        let root_child0_child0_child0 = FlexLayout()
+        root_child0_child0_child0.width(StyleValue.length(40))
+        root_child0_child0_child0.height(StyleValue.length(40))
         root_child0_child0.append(root_child0_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .margin(top: 10)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.margin(top: StyleValue.length(10))
         root_child0.append(root_child0_child1)
 
-        let root_child0_child1_child0 = yogaLayout()
-            .height(40)
-            .width(40)
+        let root_child0_child1_child0 = FlexLayout()
+        root_child0_child1_child0.width(StyleValue.length(40))
+        root_child0_child1_child0.height(StyleValue.length(40))
         root_child0_child1.append(root_child0_child1_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -1617,7 +1617,7 @@ class FlexWrapTests: FlexTestCase {
         XCTAssertEqual(root_child0_child1_child0.box.width, 40)
         XCTAssertEqual(root_child0_child1_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

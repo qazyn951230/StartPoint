@@ -28,23 +28,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_flex_start
     func testJustifyContentRowFlexStart() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -66,7 +66,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 102)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -91,24 +91,24 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_flex_end
     func testJustifyContentRowFlexEnd() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .justifyContent(.flexEnd)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.flexEnd)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -130,7 +130,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 102)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -155,24 +155,24 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_center
     func testJustifyContentRowCenter() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .justifyContent(.center)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.center)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -194,7 +194,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 102)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -219,24 +219,24 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_space_between
     func testJustifyContentRowSpaceBetween() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .justifyContent(.spaceBetween)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.spaceBetween)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -258,7 +258,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 102)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -283,24 +283,24 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_space_around
     func testJustifyContentRowSpaceAround() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .justifyContent(.spaceAround)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.spaceAround)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -322,7 +322,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 102)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -347,22 +347,22 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_flex_start
     func testJustifyContentColumnFlexStart() {
-        let root = yogaLayout()
-            .height(102)
-            .width(102)
+        let root = FlexLayout()
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -384,7 +384,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -409,23 +409,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_flex_end
     func testJustifyContentColumnFlexEnd() {
-        let root = yogaLayout()
-            .height(102)
-            .justifyContent(.flexEnd)
-            .width(102)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.flexEnd)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -447,7 +447,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -472,23 +472,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_center
     func testJustifyContentColumnCenter() {
-        let root = yogaLayout()
-            .height(102)
-            .justifyContent(.center)
-            .width(102)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -510,7 +510,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -535,23 +535,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_space_between
     func testJustifyContentColumnSpaceBetween() {
-        let root = yogaLayout()
-            .height(102)
-            .justifyContent(.spaceBetween)
-            .width(102)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.spaceBetween)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -573,7 +573,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -598,23 +598,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_space_around
     func testJustifyContentColumnSpaceAround() {
-        let root = yogaLayout()
-            .height(102)
-            .justifyContent(.spaceAround)
-            .width(102)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.spaceAround)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -636,7 +636,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -661,17 +661,17 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_min_width_and_margin
     func testJustifyContentRowMinWidthAndMargin() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .justifyContent(.center)
-            .margin(left: 100)
-            .minWidth(50)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.center)
+        root.margin(left: StyleValue.length(100))
+        root.minWidth(StyleValue.length(50))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 100)
         XCTAssertEqual(root.box.top, 0)
@@ -683,7 +683,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 100)
         XCTAssertEqual(root.box.top, 0)
@@ -698,18 +698,18 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_max_width_and_margin
     func testJustifyContentRowMaxWidthAndMargin() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .justifyContent(.center)
-            .margin(left: 100)
-            .maxWidth(80)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.center)
+        root.margin(left: StyleValue.length(100))
+        root.width(StyleValue.length(100))
+        root.maxWidth(StyleValue.length(80))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 100)
         XCTAssertEqual(root.box.top, 0)
@@ -721,7 +721,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 100)
         XCTAssertEqual(root.box.top, 0)
@@ -736,16 +736,16 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_min_height_and_margin
     func testJustifyContentColumnMinHeightAndMargin() {
-        let root = yogaLayout()
-            .justifyContent(.center)
-            .margin(top: 100)
-            .minHeight(50)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.margin(top: StyleValue.length(100))
+        root.minHeight(StyleValue.length(50))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 100)
@@ -757,7 +757,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 100)
@@ -772,17 +772,17 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_colunn_max_height_and_margin
     func testJustifyContentColunnMaxHeightAndMargin() {
-        let root = yogaLayout()
-            .height(100)
-            .justifyContent(.center)
-            .margin(top: 100)
-            .maxHeight(80)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.margin(top: StyleValue.length(100))
+        root.height(StyleValue.length(100))
+        root.maxHeight(StyleValue.length(80))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 100)
@@ -794,7 +794,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 100)
@@ -809,23 +809,23 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_column_space_evenly
     func testJustifyContentColumnSpaceEvenly() {
-        let root = yogaLayout()
-            .height(102)
-            .justifyContent(.spaceEvenly)
-            .width(102)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.spaceEvenly)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -847,7 +847,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 102)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -872,24 +872,24 @@ class JustifyContentTests: FlexTestCase {
 
     // Generated from test: justify_content_row_space_evenly
     func testJustifyContentRowSpaceEvenly() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(102)
-            .justifyContent(.spaceEvenly)
-            .width(102)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.spaceEvenly)
+        root.width(StyleValue.length(102))
+        root.height(StyleValue.length(102))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -911,7 +911,7 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 0)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

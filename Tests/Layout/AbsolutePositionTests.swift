@@ -28,18 +28,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_width_height_start_top
     func testAbsoluteLayoutWidthHeightStartTop() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .position(leading: 10)
-            .position(top: 10)
-            .positionType(.absolute)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(leading: StyleValue.length(10))
+        root_child0.position(top: StyleValue.length(10))
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -51,7 +51,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -66,18 +66,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_width_height_end_bottom
     func testAbsoluteLayoutWidthHeightEndBottom() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .position(bottom: 10)
-            .position(trailing: 10)
-            .positionType(.absolute)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(trailing: StyleValue.length(10))
+        root_child0.position(bottom: StyleValue.length(10))
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -89,7 +89,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -104,18 +104,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_start_top_end_bottom
     func testAbsoluteLayoutStartTopEndBottom() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .position(bottom: 10)
-            .position(leading: 10)
-            .position(top: 10)
-            .position(trailing: 10)
-            .positionType(.absolute)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(leading: StyleValue.length(10))
+        root_child0.position(top: StyleValue.length(10))
+        root_child0.position(trailing: StyleValue.length(10))
+        root_child0.position(bottom: StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -127,7 +127,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 80)
         XCTAssertEqual(root_child0.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -142,20 +142,20 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_width_height_start_top_end_bottom
     func testAbsoluteLayoutWidthHeightStartTopEndBottom() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .position(bottom: 10)
-            .position(leading: 10)
-            .position(top: 10)
-            .position(trailing: 10)
-            .positionType(.absolute)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(leading: StyleValue.length(10))
+        root_child0.position(top: StyleValue.length(10))
+        root_child0.position(trailing: StyleValue.length(10))
+        root_child0.position(bottom: StyleValue.length(10))
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -167,7 +167,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -182,23 +182,23 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: do_not_clamp_height_of_absolute_node_to_height_of_its_overflow_hidden_parent
     func testDoNotClampHeightOfAbsoluteNodeToHeightOfItsOverflowHiddenParent() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(50)
-            .overflow(.hidden)
-            .width(50)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.overflow(Overflow.hidden)
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
 
-        let root_child0 = yogaLayout()
-            .position(leading: 0)
-            .position(top: 0)
-            .positionType(.absolute)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(leading: StyleValue.length(0))
+        root_child0.position(top: StyleValue.length(0))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(100))
+        root_child0_child0.height(StyleValue.length(100))
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -215,7 +215,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0.box.width, 100)
         XCTAssertEqual(root_child0_child0.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -235,62 +235,62 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_within_border
     func testAbsoluteLayoutWithinBorder() {
-        let root = yogaLayout()
-            .border(bottom: 10)
-            .border(left: 10)
-            .border(right: 10)
-            .border(top: 10)
-            .height(100)
-        _ = root.margin(bottom: 10)
-            .margin(left: 10)
-            .margin(right: 10)
-            .margin(top: 10)
-            .padding(bottom: 10)
-            .padding(left: 10)
-            .padding(right: 10)
-            .padding(top: 10)
-            .width(100)
+        let root = FlexLayout()
+        root.margin(left: StyleValue.length(10))
+        root.margin(top: StyleValue.length(10))
+        root.margin(right: StyleValue.length(10))
+        root.margin(bottom: StyleValue.length(10))
+        root.padding(left: StyleValue.length(10))
+        root.padding(top: StyleValue.length(10))
+        root.padding(right: StyleValue.length(10))
+        root.padding(bottom: StyleValue.length(10))
+        root.border(left: 10)
+        root.border(top: 10)
+        root.border(right: 10)
+        root.border(bottom: 10)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(50)
-            .position(left: 0)
-            .position(top: 0)
-            .positionType(.absolute)
-            .width(50)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(left: StyleValue.length(0))
+        root_child0.position(top: StyleValue.length(0))
+        root_child0.width(StyleValue.length(50))
+        root_child0.height(StyleValue.length(50))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(50)
-            .position(bottom: 0)
-            .position(right: 0)
-            .positionType(.absolute)
-            .width(50)
+        let root_child1 = FlexLayout()
+        root_child1.positionType(PositionType.absolute)
+        root_child1.position(right: StyleValue.length(0))
+        root_child1.position(bottom: StyleValue.length(0))
+        root_child1.width(StyleValue.length(50))
+        root_child1.height(StyleValue.length(50))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(50)
-            .margin(bottom: 10)
-            .margin(left: 10)
-            .margin(right: 10)
-            .margin(top: 10)
-            .position(left: 0)
-            .position(top: 0)
-            .positionType(.absolute)
-            .width(50)
+        let root_child2 = FlexLayout()
+        root_child2.positionType(PositionType.absolute)
+        root_child2.position(left: StyleValue.length(0))
+        root_child2.position(top: StyleValue.length(0))
+        root_child2.margin(left: StyleValue.length(10))
+        root_child2.margin(top: StyleValue.length(10))
+        root_child2.margin(right: StyleValue.length(10))
+        root_child2.margin(bottom: StyleValue.length(10))
+        root_child2.width(StyleValue.length(50))
+        root_child2.height(StyleValue.length(50))
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .height(50)
-            .margin(bottom: 10)
-            .margin(left: 10)
-            .margin(right: 10)
-            .margin(top: 10)
-            .position(bottom: 0)
-            .position(right: 0)
-            .positionType(.absolute)
-            .width(50)
+        let root_child3 = FlexLayout()
+        root_child3.positionType(PositionType.absolute)
+        root_child3.position(right: StyleValue.length(0))
+        root_child3.position(bottom: StyleValue.length(0))
+        root_child3.margin(left: StyleValue.length(10))
+        root_child3.margin(top: StyleValue.length(10))
+        root_child3.margin(right: StyleValue.length(10))
+        root_child3.margin(bottom: StyleValue.length(10))
+        root_child3.width(StyleValue.length(50))
+        root_child3.height(StyleValue.length(50))
         root.append(root_child3)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 10)
         XCTAssertEqual(root.box.top, 10)
@@ -317,7 +317,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child3.box.width, 50)
         XCTAssertEqual(root_child3.box.height, 50)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 10)
         XCTAssertEqual(root.box.top, 10)
@@ -347,19 +347,19 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_center
     func testAbsoluteLayoutAlignItemsAndJustifyContentCenter() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -371,7 +371,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -386,19 +386,19 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_flex_end
     func testAbsoluteLayoutAlignItemsAndJustifyContentFlexEnd() {
-        let root = yogaLayout()
-            .alignItems(.flexEnd)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.flexEnd)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.flexEnd)
+        root.alignItems(AlignItems.flexEnd)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -410,7 +410,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -425,18 +425,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_justify_content_center
     func testAbsoluteLayoutJustifyContentCenter() {
-        let root = yogaLayout()
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -448,7 +448,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -463,18 +463,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_center
     func testAbsoluteLayoutAlignItemsCenter() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .width(110)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -486,7 +486,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -501,18 +501,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_center_on_child_only
     func testAbsoluteLayoutAlignItemsCenterOnChildOnly() {
-        let root = yogaLayout()
-            .flexGrow(1)
-            .height(100)
-            .width(110)
+        let root = FlexLayout()
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.center)
-            .height(40)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.center)
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -524,7 +524,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -539,20 +539,20 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_center_and_top_position
     func testAbsoluteLayoutAlignItemsAndJustifyContentCenterAndTopPosition() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .position(top: 10)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(top: StyleValue.length(10))
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -564,7 +564,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -579,20 +579,20 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_center_and_bottom_position
     func testAbsoluteLayoutAlignItemsAndJustifyContentCenterAndBottomPosition() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .position(bottom: 10)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(bottom: StyleValue.length(10))
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -604,7 +604,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -619,20 +619,20 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_center_and_left_position
     func testAbsoluteLayoutAlignItemsAndJustifyContentCenterAndLeftPosition() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .position(left: 5)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(left: StyleValue.length(5))
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -644,7 +644,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -659,20 +659,20 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_align_items_and_justify_content_center_and_right_position
     func testAbsoluteLayoutAlignItemsAndJustifyContentCenterAndRightPosition() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .flexGrow(1)
-            .height(100)
-            .justifyContent(.center)
-            .width(110)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.flexGrow(1)
+        root.width(StyleValue.length(110))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(40)
-            .position(right: 5)
-            .positionType(.absolute)
-            .width(60)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(right: StyleValue.length(5))
+        root_child0.width(StyleValue.length(60))
+        root_child0.height(StyleValue.length(40))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -684,7 +684,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 60)
         XCTAssertEqual(root_child0.box.height, 40)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -699,18 +699,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: position_root_with_rtl_should_position_withoutdirection
     func testPositionRootWithRtlShouldPositionWithoutdirection() {
-        let root = yogaLayout()
-            .height(52)
-            .position(left: 72)
-            .width(52)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.position(left: StyleValue.length(72))
+        root.width(StyleValue.length(52))
+        root.height(StyleValue.length(52))
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 72)
         XCTAssertEqual(root.box.top, 0)
         XCTAssertEqual(root.box.width, 52)
         XCTAssertEqual(root.box.height, 52)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 72)
         XCTAssertEqual(root.box.top, 0)
@@ -719,22 +719,89 @@ class AbsolutePositionTests: FlexTestCase {
     }
 
     // Generated from test: absolute_layout_percentage_bottom_based_on_parent_height
-    // func testAbsoluteLayoutPercentageBottomBasedOnParentHeight() {
-    // }
+    func testAbsoluteLayoutPercentageBottomBasedOnParentHeight() {
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(200))
+
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.position(top: StyleValue.percentage(50))
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
+        root.append(root_child0)
+
+        let root_child1 = FlexLayout()
+        root_child1.positionType(PositionType.absolute)
+        root_child1.position(bottom: StyleValue.percentage(50))
+        root_child1.width(StyleValue.length(10))
+        root_child1.height(StyleValue.length(10))
+        root.append(root_child1)
+
+        let root_child2 = FlexLayout()
+        root_child2.positionType(PositionType.absolute)
+        root_child2.position(top: StyleValue.percentage(10))
+        root_child2.position(bottom: StyleValue.percentage(10))
+        root_child2.width(StyleValue.length(10))
+        root.append(root_child2)
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 200)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 100)
+        XCTAssertEqual(root_child0.box.width, 10)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 0)
+        XCTAssertEqual(root_child1.box.top, 90)
+        XCTAssertEqual(root_child1.box.width, 10)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 0)
+        XCTAssertEqual(root_child2.box.top, 20)
+        XCTAssertEqual(root_child2.box.width, 10)
+        XCTAssertEqual(root_child2.box.height, 160)
+
+        root.calculate(direction: Direction.rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 200)
+
+        XCTAssertEqual(root_child0.box.left, 90)
+        XCTAssertEqual(root_child0.box.top, 100)
+        XCTAssertEqual(root_child0.box.width, 10)
+        XCTAssertEqual(root_child0.box.height, 10)
+
+        XCTAssertEqual(root_child1.box.left, 90)
+        XCTAssertEqual(root_child1.box.top, 90)
+        XCTAssertEqual(root_child1.box.width, 10)
+        XCTAssertEqual(root_child1.box.height, 10)
+
+        XCTAssertEqual(root_child2.box.left, 90)
+        XCTAssertEqual(root_child2.box.top, 20)
+        XCTAssertEqual(root_child2.box.width, 10)
+        XCTAssertEqual(root_child2.box.height, 160)
+    }
 
     // Generated from test: absolute_layout_in_wrap_reverse_column_container
     func testAbsoluteLayoutInWrapReverseColumnContainer() {
-        let root = yogaLayout()
-            .flexWrap(.wrapReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .positionType(.absolute)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -746,7 +813,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -761,18 +828,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_in_wrap_reverse_row_container
     func testAbsoluteLayoutInWrapReverseRowContainer() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(20)
-            .positionType(.absolute)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -784,7 +851,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -799,18 +866,18 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_in_wrap_reverse_column_container_flex_end
     func testAbsoluteLayoutInWrapReverseColumnContainerFlexEnd() {
-        let root = yogaLayout()
-            .flexWrap(.wrapReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.flexEnd)
-            .height(20)
-            .positionType(.absolute)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.flexEnd)
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -822,7 +889,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -837,19 +904,19 @@ class AbsolutePositionTests: FlexTestCase {
 
     // Generated from test: absolute_layout_in_wrap_reverse_row_container_flex_end
     func testAbsoluteLayoutInWrapReverseRowContainerFlexEnd() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .flexWrap(.wrapReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.flexWrap(FlexWrap.wrapReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.flexEnd)
-            .height(20)
-            .positionType(.absolute)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.flexEnd)
+        root_child0.positionType(PositionType.absolute)
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -861,7 +928,7 @@ class AbsolutePositionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 20)
         XCTAssertEqual(root_child0.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

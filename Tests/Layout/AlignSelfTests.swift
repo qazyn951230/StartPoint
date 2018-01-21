@@ -28,16 +28,16 @@ class AlignSelfTests: FlexTestCase {
 
     // Generated from test: align_self_center
     func testAlignSelfCenter() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.center)
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.center)
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -49,7 +49,7 @@ class AlignSelfTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -64,16 +64,16 @@ class AlignSelfTests: FlexTestCase {
 
     // Generated from test: align_self_flex_end
     func testAlignSelfFlexEnd() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.flexEnd)
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.flexEnd)
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -85,7 +85,7 @@ class AlignSelfTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -100,16 +100,16 @@ class AlignSelfTests: FlexTestCase {
 
     // Generated from test: align_self_flex_start
     func testAlignSelfFlexStart() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.flexStart)
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.flexStart)
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -121,7 +121,7 @@ class AlignSelfTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -136,17 +136,17 @@ class AlignSelfTests: FlexTestCase {
 
     // Generated from test: align_self_flex_end_override_flex_start
     func testAlignSelfFlexEndOverrideFlexStart() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.alignItems(AlignItems.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.flexEnd)
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.flexEnd)
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -158,7 +158,7 @@ class AlignSelfTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -173,28 +173,28 @@ class AlignSelfTests: FlexTestCase {
 
     // Generated from test: align_self_baseline
     func testAlignSelfBaseline() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .alignSelf(.baseline)
-            .height(50)
-            .width(50)
+        let root_child0 = FlexLayout()
+        root_child0.alignSelf(AlignSelf.baseline)
+        root_child0.width(StyleValue.length(50))
+        root_child0.height(StyleValue.length(50))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .alignSelf(.baseline)
-            .height(20)
-            .width(50)
+        let root_child1 = FlexLayout()
+        root_child1.alignSelf(AlignSelf.baseline)
+        root_child1.width(StyleValue.length(50))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
-        let root_child1_child0 = yogaLayout()
-            .height(10)
-            .width(50)
+        let root_child1_child0 = FlexLayout()
+        root_child1_child0.width(StyleValue.length(50))
+        root_child1_child0.height(StyleValue.length(10))
         root_child1.append(root_child1_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -216,7 +216,7 @@ class AlignSelfTests: FlexTestCase {
         XCTAssertEqual(root_child1_child0.box.width, 50)
         XCTAssertEqual(root_child1_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

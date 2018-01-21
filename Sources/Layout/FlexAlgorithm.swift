@@ -325,6 +325,8 @@ extension FlexLayout {
         // TODO: Give a waring.
         let widthMode: MeasureMode = width.isNaN ? .undefined : widthMode
         let heightMode: MeasureMode = height.isNaN ? .undefined : heightMode
+        // Set the resolved resolution in the node's layout.
+        box.direction = style.resolveDirection(by: direction)
         layoutBox(by: direction, width: parentWidth)
 
         if children.count > 0 {
@@ -846,6 +848,8 @@ extension FlexLayout {
                                 } else {
                                     leadingCrossDim += fmax(0, remainingCrossDim)
                                 }
+                            } else if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
+                                // No-op
                             } else if alignItem == AlignItems.center {
                                 leadingCrossDim += remainingCrossDim / 2
                             } else if alignItem == AlignItems.flexStart {
@@ -853,20 +857,6 @@ extension FlexLayout {
                             } else {
                                 leadingCrossDim += remainingCrossDim
                             }
-//                            if child.style.margin.leading(direction: crossAxis) == StyleValue.auto &&
-//                                   child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
-//                                leadingCrossDim += fmax(0, remainingCrossDim / 2)
-//                            } else if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
-//                                // No-op
-//                            } else if child.style.margin.leading(direction: crossAxis) == StyleValue.auto {
-//                                leadingCrossDim += fmax(0, remainingCrossDim)
-//                            } else if alignItem == AlignItems.center {
-//                                leadingCrossDim += remainingCrossDim / 2
-//                            } else if alignItem == AlignItems.flexStart {
-//                                // No-op
-//                            } else {
-//                                leadingCrossDim += remainingCrossDim
-//                            }
                         }
                         child.box.position[crossAxis] += totalLineCrossDim + leadingCrossDim
                     }

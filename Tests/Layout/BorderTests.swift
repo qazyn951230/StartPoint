@@ -28,19 +28,19 @@ class BorderTests: FlexTestCase {
 
     // Generated from test: border_no_size
     func testBorderNoSize() {
-        let root = yogaLayout()
-            .border(bottom: 10)
-            .border(left: 10)
-            .border(right: 10)
-            .border(top: 10)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.border(left: 10)
+        root.border(top: 10)
+        root.border(right: 10)
+        root.border(bottom: 10)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
         XCTAssertEqual(root.box.width, 20)
         XCTAssertEqual(root.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -50,17 +50,17 @@ class BorderTests: FlexTestCase {
 
     // Generated from test: border_container_match_child
     func testBorderContainerMatchChild() {
-        let root = yogaLayout()
-            .border(bottom: 10)
-            .border(left: 10)
-            .border(right: 10)
-            .border(top: 10)
+        let root = FlexLayout()
+        root.border(left: 10)
+        root.border(top: 10)
+        root.border(right: 10)
+        root.border(bottom: 10)
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -72,7 +72,7 @@ class BorderTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -87,19 +87,19 @@ class BorderTests: FlexTestCase {
 
     // Generated from test: border_flex_child
     func testBorderFlexChild() {
-        let root = yogaLayout()
-            .border(bottom: 10)
-            .border(left: 10)
-            .border(right: 10)
-            .border(top: 10)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.border(left: 10)
+        root.border(top: 10)
+        root.border(right: 10)
+        root.border(bottom: 10)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -111,7 +111,7 @@ class BorderTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -126,18 +126,18 @@ class BorderTests: FlexTestCase {
 
     // Generated from test: border_stretch_child
     func testBorderStretchChild() {
-        let root = yogaLayout()
-            .border(bottom: 10)
-            .border(left: 10)
-            .border(right: 10)
-            .border(top: 10)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.border(left: 10)
+        root.border(top: 10)
+        root.border(right: 10)
+        root.border(bottom: 10)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -149,7 +149,7 @@ class BorderTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 80)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -164,20 +164,20 @@ class BorderTests: FlexTestCase {
 
     // Generated from test: border_center_child
     func testBorderCenterChild() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .border(bottom: 20)
-            .border(leading: 10)
-            .border(trailing: 20)
-            .height(100)
-            .justifyContent(.center)
-            .width(100)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.border(leading: 10)
+        root.border(trailing: 20)
+        root.border(bottom: 20)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -189,7 +189,7 @@ class BorderTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

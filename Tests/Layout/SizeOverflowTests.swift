@@ -28,18 +28,18 @@ class SizeOverflowTests: FlexTestCase {
 
     // Generated from test: nested_overflowing_child
     func testNestedOverflowingChild() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
+        let root_child0 = FlexLayout()
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(200)
-            .width(200)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(200))
+        root_child0_child0.height(StyleValue.length(200))
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -56,7 +56,7 @@ class SizeOverflowTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0.box.width, 200)
         XCTAssertEqual(root_child0_child0.box.height, 200)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -76,20 +76,20 @@ class SizeOverflowTests: FlexTestCase {
 
     // Generated from test: nested_overflowing_child_in_constraint_parent
     func testNestedOverflowingChildInConstraintParent() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(100))
+        root_child0.height(StyleValue.length(100))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(200)
-            .width(200)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(200))
+        root_child0_child0.height(StyleValue.length(200))
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -106,7 +106,7 @@ class SizeOverflowTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0.box.width, 200)
         XCTAssertEqual(root_child0_child0.box.height, 200)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -126,19 +126,19 @@ class SizeOverflowTests: FlexTestCase {
 
     // Generated from test: parent_wrap_child_size_overflowing_parent
     func testParentWrapChildSizeOverflowingParent() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(100))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(200)
-            .width(100)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(100))
+        root_child0_child0.height(StyleValue.length(200))
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -155,7 +155,7 @@ class SizeOverflowTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0.box.width, 100)
         XCTAssertEqual(root_child0_child0.box.height, 200)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
