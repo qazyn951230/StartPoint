@@ -28,6 +28,15 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
     case percentage(Double)
     case auto
 
+    internal var valid: Bool {
+        switch self {
+        case .length(let l), .percentage(let l):
+            return !l.isNaN
+        default:
+            return true
+        }
+    }
+
     public static var match: StyleValue {
         return StyleValue.percentage(100)
     }
@@ -71,12 +80,22 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         }
     }
 
+    static func makeLength(_ value: Double?) -> StyleValue? {
+        guard let v = value else {
+            return nil
+        }
+        return StyleValue.length(v)
+    }
+
     // MARK: Equatable
     public static func ==(lhs: StyleValue, rhs: StyleValue) -> Bool {
         switch (lhs, rhs) {
         case (.auto, .auto):
             return true
         case (.length(let a), .length(let b)), (.percentage(let a), .percentage(let b)):
+            if a.isNaN {
+                return b.isNaN
+            }
             return a == b
         default:
             return false
@@ -166,7 +185,137 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         self.init(StyleValue(integerLiteral: value))
     }
 
-    // static const YGEdge leading[4]
+    // YGMarginLeadingValue
+    public func leading(direction: FlexDirection) -> StyleValue {
+        switch direction {
+        case .row:
+            return self.leading ?? left
+        case .rowReverse:
+            return self.leading ?? right
+        case .column:
+            return top
+        case .columnReverse:
+            return bottom
+        }
+    }
+
+    // YGMarginTrailingValue
+    public func trailing(direction: FlexDirection) -> StyleValue {
+        switch direction {
+        case .row:
+            return self.trailing ?? right
+        case .rowReverse:
+            return self.trailing ?? left
+        case .column:
+            return bottom
+        case .columnReverse:
+            return top
+        }
+    }
+
+    public func total(direction: FlexDirection) -> StyleValue {
+        switch direction {
+        case .row:
+            return (leading ?? left) + (trailing ?? right)
+        case .rowReverse:
+            return (leading ?? right) + (trailing ?? left)
+        case .column, .columnReverse:
+            return top + bottom
+        }
+    }
+
+    // FIXME: leading != left
+    public var edgeInsets: UIEdgeInsets {
+        return UIEdgeInsets.zero //(top: CGFloat(top), left: CGFloat(leading ?? left),
+        // bottom: CGFloat(bottom), right: CGFloat(trailing ?? right))
+    }
+
+    public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {
+        return lhs.left == rhs.left && lhs.right == rhs.right &&
+            lhs.top == rhs.top && lhs.bottom == rhs.bottom &&
+            lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
+    }
+}
+
+struct LayoutInsets {
+    static let zero: LayoutInsets = LayoutInsets(0)
+
+    var top: Double
+    var bottom: Double
+    var left: Double
+    var right: Double
+
+    init(_ value: Double) {
+        top = value
+        bottom = value
+        left = value
+        right = value
+    }
+
+    init(top: Double, left: Double, bottom: Double, right: Double) {
+        self.top = top
+        self.left = left
+        self.bottom = bottom
+        self.right = right
+    }
+}
+
+public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+    public static let zero: Position = Position(StyleValue.auto)
+
+    var top: StyleValue
+    var bottom: StyleValue
+    var left: StyleValue
+    var right: StyleValue
+    var leading: StyleValue?
+    var trailing: StyleValue?
+
+    public init(_ value: StyleValue) {
+        top = value
+        bottom = value
+        left = value
+        right = value
+        leading = nil
+        trailing = nil
+    }
+
+    public init(vertical: StyleValue, horizontal: StyleValue) {
+        top = vertical
+        bottom = vertical
+        left = horizontal
+        right = horizontal
+        leading = horizontal
+        trailing = horizontal
+    }
+
+    public init(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) {
+        self.top = top
+        self.left = left
+        self.bottom = bottom
+        self.right = right
+        leading = nil
+        trailing = nil
+    }
+
+    public init(top: StyleValue, bottom: StyleValue, leading: StyleValue?, trailing: StyleValue?) {
+        self.top = top
+        self.bottom = bottom
+        self.leading = leading
+        self.trailing = trailing
+        left = StyleValue.auto
+        right = StyleValue.auto
+    }
+
+    // ExpressibleByFloatLiteral
+    public init(floatLiteral value: Double) {
+        self.init(StyleValue(floatLiteral: value))
+    }
+
+    // ExpressibleByIntegerLiteral
+    public init(integerLiteral value: Int) {
+        self.init(StyleValue(integerLiteral: value))
+    }
+
     public func leading(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
@@ -204,157 +353,10 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
-    // FIXME: leading != left
-    public var edgeInsets: UIEdgeInsets {
-        return UIEdgeInsets.zero //(top: CGFloat(top), left: CGFloat(leading ?? left),
-        // bottom: CGFloat(bottom), right: CGFloat(trailing ?? right))
-    }
-
-    public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {
-        return lhs.left == rhs.left && lhs.right == rhs.right &&
-            lhs.top == rhs.top && lhs.bottom == rhs.bottom
-    }
-}
-
-struct LayoutInsets {
-    static let zero: LayoutInsets = LayoutInsets(0)
-
-    var top: Double
-    var bottom: Double
-    var left: Double
-    var right: Double
-
-    init(_ value: Double) {
-        top = value
-        bottom = value
-        left = value
-        right = value
-    }
-
-    init(top: Double, left: Double, bottom: Double, right: Double) {
-        self.top = top
-        self.left = left
-        self.bottom = bottom
-        self.right = right
-    }
-}
-
-public struct Position: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
-    public static let zero: Position = Position(nil)
-
-    var top: Double?
-    var bottom: Double?
-    var left: Double?
-    var right: Double?
-    var leading: Double?
-    var trailing: Double?
-
-    var empty: Bool {
-        return top == nil && bottom == nil &&
-            left == nil && right == nil &&
-            leading == nil && trailing == nil
-    }
-
-    public init(_ value: Double?) {
-        top = value
-        bottom = value
-        left = value
-        right = value
-        leading = nil
-        trailing = nil
-    }
-
-    public init(vertical: Double?, horizontal: Double?) {
-        top = vertical
-        bottom = vertical
-        left = horizontal
-        right = horizontal
-        leading = horizontal
-        trailing = horizontal
-    }
-
-    public init(top: Double?, left: Double?, bottom: Double?, right: Double?) {
-        self.top = top
-        self.left = left
-        self.bottom = bottom
-        self.right = right
-        leading = nil
-        trailing = nil
-    }
-
-    public init(top: Double?, bottom: Double?, leading: Double?, trailing: Double?) {
-        self.top = top
-        self.bottom = bottom
-        self.leading = leading
-        self.trailing = trailing
-        left = nil
-        right = nil
-    }
-
-    // ExpressibleByFloatLiteral
-    public init(floatLiteral value: Double) {
-        self.init(value)
-    }
-
-    // ExpressibleByIntegerLiteral
-    public init(integerLiteral value: Int) {
-        self.init(Double(value))
-    }
-
-    public func leading(direction: FlexDirection) -> Double? {
-        switch direction {
-        case .row:
-            return self.leading ?? left
-        case .rowReverse:
-            return self.leading ?? right
-        case .column:
-            return top
-        case .columnReverse:
-            return bottom
-        }
-    }
-
-    public func trailing(direction: FlexDirection) -> Double? {
-        switch direction {
-        case .row:
-            return self.trailing ?? right
-        case .rowReverse:
-            return self.trailing ?? left
-        case .column:
-            return bottom
-        case .columnReverse:
-            return top
-        }
-    }
-
-    public func total(direction: FlexDirection) -> Double? {
-        switch direction {
-        case .row:
-            if let a = (leading ?? left), let b = (trailing ?? right) {
-                return a + b
-            } else {
-                return nil
-            }
-        case .rowReverse:
-            if let a = (leading ?? right), let b = (trailing ?? left) {
-                return a + b
-            } else {
-                return nil
-            }
-        case .column, .columnReverse:
-            if let top = top, let bottom = bottom {
-                return top + bottom
-            } else {
-                return nil
-            }
-        }
-    }
-
     public static func ==(lhs: Position, rhs: Position) -> Bool {
-        return lhs.left == rhs.left &&
-            lhs.right == rhs.right &&
-            lhs.top == rhs.top &&
-            lhs.bottom == rhs.bottom
+        return lhs.left == rhs.left && lhs.right == rhs.right &&
+            lhs.top == rhs.top && lhs.bottom == rhs.bottom &&
+            lhs.leading == rhs.leading && lhs.trailing == rhs.trailing
     }
 }
 

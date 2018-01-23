@@ -51,6 +51,8 @@ class FlexBox {
     var resolvedWidth: StyleValue = .auto // resolvedDimensions
     var resolvedHeight: StyleValue = .auto // resolvedDimensions
 
+    var hasOverflow = false
+
     var generation: Int64 = 0
     static var totalGeneration: Int64 = 0
 

@@ -46,10 +46,10 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertEqual(root.style.flexShrink, 0.0)
         XCTAssertEqual(root.style.flexBasis, FlexBasis.auto)
 
-        XCTAssertNil(root.style.position.left)
-        XCTAssertNil(root.style.position.top)
-        XCTAssertNil(root.style.position.right)
-        XCTAssertNil(root.style.position.bottom)
+        XCTAssertEqual(root.style.position.left, StyleValue.auto)
+        XCTAssertEqual(root.style.position.top, StyleValue.auto)
+        XCTAssertEqual(root.style.position.right, StyleValue.auto)
+        XCTAssertEqual(root.style.position.bottom, StyleValue.auto)
         XCTAssertNil(root.style.position.leading)
         XCTAssertNil(root.style.position.trailing)
 
@@ -105,25 +105,6 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertTrue(root.box.height.isNaN)
         XCTAssertEqual(root.box.direction, Direction.inherit)
     }
-
-    // Generated from test: assert_webdefault_values
-//    func testAssertWebDefaultValues() { // YGConfigSetUseWebDefaults(config, true);
-//        let root = yogaLayout()
-//
-//        XCTAssertEqual(FlexDirection.row, root.style.flexDirection)
-//        XCTAssertEqual(.stretch, root.style.alignContent)
-//        XCTAssertEqual(root.style.flexShrink, 1.0)
-//    }
-
-    // Generated from test: assert_webdefault_values_reset
-//    func testAssertWebDefaultValuesReset() { // YGConfigSetUseWebDefaults(config, true);
-//        let root = yogaLayout()
-//        YGNodeReset(root)
-//
-//        XCTAssertEqual(FlexDirection.row, root.style.flexDirection)
-//        XCTAssertEqual(.stretch, root.style.alignContent)
-//        XCTAssertEqual(root.style.flexShrink, 1.0)
-//    }
 
     // Generated from test: assert_legacy_stretch_behaviour
 //    func testAssertLegacyStretchBehaviour() {

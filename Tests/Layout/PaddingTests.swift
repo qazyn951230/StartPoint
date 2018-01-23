@@ -28,19 +28,19 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: padding_no_size
     func testPaddingNoSize() {
-        let root = yogaLayout()
-            .padding(bottom: 10)
-            .padding(left: 10)
-            .padding(right: 10)
-            .padding(top: 10)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.padding(left: StyleValue.length(10))
+        root.padding(top: StyleValue.length(10))
+        root.padding(right: StyleValue.length(10))
+        root.padding(bottom: StyleValue.length(10))
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
         XCTAssertEqual(root.box.width, 20)
         XCTAssertEqual(root.box.height, 20)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -50,17 +50,17 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: padding_container_match_child
     func testPaddingContainerMatchChild() {
-        let root = yogaLayout()
-            .padding(bottom: 10)
-            .padding(left: 10)
-            .padding(right: 10)
-            .padding(top: 10)
+        let root = FlexLayout()
+        root.padding(left: StyleValue.length(10))
+        root.padding(top: StyleValue.length(10))
+        root.padding(right: StyleValue.length(10))
+        root.padding(bottom: StyleValue.length(10))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -72,7 +72,7 @@ class PaddingTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -87,19 +87,19 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: padding_flex_child
     func testPaddingFlexChild() {
-        let root = yogaLayout()
-            .height(100)
-            .padding(bottom: 10)
-            .padding(left: 10)
-            .padding(right: 10)
-            .padding(top: 10)
-            .width(100)
+        let root = FlexLayout()
+        root.padding(left: StyleValue.length(10))
+        root.padding(top: StyleValue.length(10))
+        root.padding(right: StyleValue.length(10))
+        root.padding(bottom: StyleValue.length(10))
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -111,7 +111,7 @@ class PaddingTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 80)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -126,18 +126,18 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: padding_stretch_child
     func testPaddingStretchChild() {
-        let root = yogaLayout()
-            .height(100)
-            .padding(bottom: 10)
-            .padding(left: 10)
-            .padding(right: 10)
-            .padding(top: 10)
-            .width(100)
+        let root = FlexLayout()
+        root.padding(left: StyleValue.length(10))
+        root.padding(top: StyleValue.length(10))
+        root.padding(right: StyleValue.length(10))
+        root.padding(bottom: StyleValue.length(10))
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -149,7 +149,7 @@ class PaddingTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 80)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -164,20 +164,20 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: padding_center_child
     func testPaddingCenterChild() {
-        let root = yogaLayout()
-            .alignItems(.center)
-            .height(100)
-            .justifyContent(.center)
-            .padding(bottom: 20)
-            .padding(leading: 10)
-            .padding(trailing: 20)
-            .width(100)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.center)
+        root.alignItems(AlignItems.center)
+        root.padding(leading: StyleValue.length(10))
+        root.padding(trailing: StyleValue.length(20))
+        root.padding(bottom: StyleValue.length(20))
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -189,7 +189,7 @@ class PaddingTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -204,21 +204,21 @@ class PaddingTests: FlexTestCase {
 
     // Generated from test: child_with_padding_align_end
     func testChildWithPaddingAlignEnd() {
-        let root = yogaLayout()
-            .alignItems(.flexEnd)
-            .height(200)
-            .justifyContent(.flexEnd)
-            .width(200)
+        let root = FlexLayout()
+        root.justifyContent(JustifyContent.flexEnd)
+        root.alignItems(AlignItems.flexEnd)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(200))
 
-        let root_child0 = yogaLayout()
-            .height(100)
-            .padding(bottom: 20)
-            .padding(left: 20)
-            .padding(right: 20)
-            .padding(top: 20)
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.padding(left: StyleValue.length(20))
+        root_child0.padding(top: StyleValue.length(20))
+        root_child0.padding(right: StyleValue.length(20))
+        root_child0.padding(bottom: StyleValue.length(20))
+        root_child0.width(StyleValue.length(100))
+        root_child0.height(StyleValue.length(100))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -230,7 +230,7 @@ class PaddingTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 100)
         XCTAssertEqual(root_child0.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

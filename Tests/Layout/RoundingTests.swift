@@ -28,23 +28,23 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_flex_basis_flex_grow_row_width_of_100
     func testRoundingFlexBasisFlexGrowRowWidthOf100() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -66,7 +66,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 33)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -91,31 +91,31 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_flex_basis_flex_grow_row_prime_number_width
     func testRoundingFlexBasisFlexGrowRowPrimeNumberWidth() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(113)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(113))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
         root.append(root_child2)
 
-        let root_child3 = yogaLayout()
-            .flexGrow(1)
+        let root_child3 = FlexLayout()
+        root_child3.flexGrow(1)
         root.append(root_child3)
 
-        let root_child4 = yogaLayout()
-            .flexGrow(1)
+        let root_child4 = FlexLayout()
+        root_child4.flexGrow(1)
         root.append(root_child4)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -147,7 +147,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child4.box.width, 23)
         XCTAssertEqual(root_child4.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -182,24 +182,24 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_flex_basis_flex_shrink_row
     func testRoundingFlexBasisFlexShrinkRow() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(101)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(101))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(100)
-            .flexShrink(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexShrink(1)
+        root_child0.flexBasis(FlexBasis.length(100))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexBasis(25)
+        let root_child1 = FlexLayout()
+        root_child1.flexBasis(FlexBasis.length(25))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexBasis(25)
+        let root_child2 = FlexLayout()
+        root_child2.flexBasis(FlexBasis.length(25))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -221,7 +221,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 25)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -246,26 +246,26 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_flex_basis_overrides_main_size
     func testRoundingFlexBasisOverridesMainSize() {
-        let root = yogaLayout()
-            .height(113)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(113))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .flexGrow(1)
-            .height(20)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -287,7 +287,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 24)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -312,26 +312,26 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_total_fractial
     func testRoundingTotalFractial() {
-        let root = yogaLayout()
-            .height(113.4)
-            .width(87.4)
+        let root = FlexLayout()
+        root.width(StyleValue.length(87.4))
+        root.height(StyleValue.length(113.4))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50.3)
-            .flexGrow(0.7)
-            .height(20.3)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(0.7)
+        root_child0.flexBasis(FlexBasis.length(50.3))
+        root_child0.height(StyleValue.length(20.3))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1.6)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1.6)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1.1)
-            .height(10.7)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1.1)
+        root_child2.height(StyleValue.length(10.7))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -353,7 +353,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 87)
         XCTAssertEqual(root_child2.box.height, 24)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -378,40 +378,40 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_total_fractial_nested
     func testRoundingTotalFractialNested() {
-        let root = yogaLayout()
-            .height(113.4)
-            .width(87.4)
+        let root = FlexLayout()
+        root.width(StyleValue.length(87.4))
+        root.height(StyleValue.length(113.4))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50.3)
-            .flexGrow(0.7)
-            .height(20.3)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(0.7)
+        root_child0.flexBasis(FlexBasis.length(50.3))
+        root_child0.height(StyleValue.length(20.3))
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .flexBasis(.length(0.3))
-            .flexGrow(1)
-            .height(9.9)
-            .position(bottom: 13.3)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.flexGrow(1)
+        root_child0_child0.flexBasis(FlexBasis.length(0.3))
+        root_child0_child0.position(bottom: StyleValue.length(13.3))
+        root_child0_child0.height(StyleValue.length(9.9))
         root_child0.append(root_child0_child0)
 
-        let root_child0_child1 = yogaLayout()
-            .flexBasis(.length(0.3))
-            .flexGrow(4)
-            .height(1.1)
-            .position(top: 13.3)
+        let root_child0_child1 = FlexLayout()
+        root_child0_child1.flexGrow(4)
+        root_child0_child1.flexBasis(FlexBasis.length(0.3))
+        root_child0_child1.position(top: StyleValue.length(13.3))
+        root_child0_child1.height(StyleValue.length(1.1))
         root_child0.append(root_child0_child1)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1.6)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1.6)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1.1)
-            .height(10.7)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1.1)
+        root_child2.height(StyleValue.length(10.7))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -443,7 +443,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 87)
         XCTAssertEqual(root_child2.box.height, 24)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -478,26 +478,26 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_fractial_input_1
     func testRoundingFractialInput1() {
-        let root = yogaLayout()
-            .height(113.4)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(113.4))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .flexGrow(1)
-            .height(20)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -519,7 +519,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 24)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -544,26 +544,26 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_fractial_input_2
     func testRoundingFractialInput2() {
-        let root = yogaLayout()
-            .height(113.6)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(113.6))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .flexGrow(1)
-            .height(20)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -585,7 +585,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 25)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -610,27 +610,27 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_fractial_input_3
     func testRoundingFractialInput3() {
-        let root = yogaLayout()
-            .height(113.4)
-            .position(top: 0.3)
-            .width(100)
+        let root = FlexLayout()
+        root.position(top: StyleValue.length(0.3))
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(113.4))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .flexGrow(1)
-            .height(20)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -652,7 +652,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 25)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -677,27 +677,27 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_fractial_input_4
     func testRoundingFractialInput4() {
-        let root = yogaLayout()
-            .height(113.4)
-            .position(top: 0.7)
-            .width(100)
+        let root = FlexLayout()
+        root.position(top: StyleValue.length(0.7))
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(113.4))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(50)
-            .flexGrow(1)
-            .height(20)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.height(StyleValue.length(20))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 1)
@@ -719,7 +719,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 24)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 1)
@@ -744,30 +744,30 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_inner_node_controversy_horizontal
     func testRoundingInnerNodeControversyHorizontal() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .width(320)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(320))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child1_child0 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child1_child0 = FlexLayout()
+        root_child1_child0.flexGrow(1)
+        root_child1_child0.height(StyleValue.length(10))
         root_child1.append(root_child1_child0)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -794,7 +794,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 107)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -824,29 +824,29 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_inner_node_controversy_vertical
     func testRoundingInnerNodeControversyVertical() {
-        let root = yogaLayout()
-            .height(320)
+        let root = FlexLayout()
+        root.height(StyleValue.length(320))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child1_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child1_child0 = FlexLayout()
+        root_child1_child0.flexGrow(1)
+        root_child1_child0.width(StyleValue.length(10))
         root_child1.append(root_child1_child0)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -873,7 +873,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 107)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -903,46 +903,46 @@ class RoundingTests: FlexTestCase {
 
     // Generated from test: rounding_inner_node_controversy_combined
     func testRoundingInnerNodeControversyCombined() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(320)
-            .width(640)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(640))
+        root.height(StyleValue.length(320))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
-            .height(.percentage(100))
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.height(StyleValue.percentage(100))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
-            .height(.percentage(100))
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.height(StyleValue.percentage(100))
         root.append(root_child1)
 
-        let root_child1_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(.percentage(100))
+        let root_child1_child0 = FlexLayout()
+        root_child1_child0.flexGrow(1)
+        root_child1_child0.width(StyleValue.percentage(100))
         root_child1.append(root_child1_child0)
 
-        let root_child1_child1 = yogaLayout()
-            .flexGrow(1)
-            .width(.percentage(100))
+        let root_child1_child1 = FlexLayout()
+        root_child1_child1.flexGrow(1)
+        root_child1_child1.width(StyleValue.percentage(100))
         root_child1.append(root_child1_child1)
 
-        let root_child1_child1_child0 = yogaLayout()
-            .flexGrow(1)
-            .width(.percentage(100))
+        let root_child1_child1_child0 = FlexLayout()
+        root_child1_child1_child0.flexGrow(1)
+        root_child1_child1_child0.width(StyleValue.percentage(100))
         root_child1_child1.append(root_child1_child1_child0)
 
-        let root_child1_child2 = yogaLayout()
-            .flexGrow(1)
-            .width(.percentage(100))
+        let root_child1_child2 = FlexLayout()
+        root_child1_child2.flexGrow(1)
+        root_child1_child2.width(StyleValue.percentage(100))
         root_child1.append(root_child1_child2)
 
-        let root_child2 = yogaLayout()
-            .flexGrow(1)
-            .height(.percentage(100))
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.height(StyleValue.percentage(100))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -984,7 +984,7 @@ class RoundingTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 213)
         XCTAssertEqual(root_child2.box.height, 320)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

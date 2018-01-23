@@ -28,21 +28,21 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_column_no_height
     func testFlexDirectionColumnNoHeight() {
-        let root = yogaLayout()
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -64,7 +64,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -89,22 +89,22 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_row_no_width
     func testFlexDirectionRowNoWidth() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -126,7 +126,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -151,22 +151,22 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_column
     func testFlexDirectionColumn() {
-        let root = yogaLayout()
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -188,7 +188,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -213,23 +213,23 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_row
     func testFlexDirectionRow() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -251,7 +251,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -276,23 +276,23 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_column_reverse
     func testFlexDirectionColumnReverse() {
-        let root = yogaLayout()
-            .flexDirection(.columnReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.columnReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .height(10)
+        let root_child0 = FlexLayout()
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .height(10)
+        let root_child1 = FlexLayout()
+        root_child1.height(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .height(10)
+        let root_child2 = FlexLayout()
+        root_child2.height(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -314,7 +314,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 100)
         XCTAssertEqual(root_child2.box.height, 10)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -339,23 +339,23 @@ class FlexDirectionTests: FlexTestCase {
 
     // Generated from test: flex_direction_row_reverse
     func testFlexDirectionRowReverse() {
-        let root = yogaLayout()
-            .flexDirection(.rowReverse)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.rowReverse)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .width(10)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(10))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .width(10)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(10))
         root.append(root_child1)
 
-        let root_child2 = yogaLayout()
-            .width(10)
+        let root_child2 = FlexLayout()
+        root_child2.width(StyleValue.length(10))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -377,7 +377,7 @@ class FlexDirectionTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 10)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

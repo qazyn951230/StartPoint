@@ -28,20 +28,20 @@ class DisplayTests: FlexTestCase {
 
     // Generated from test: display_none
     func testDisplayNone() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .display(.none)
-            .flexGrow(1)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.display(Display.none)
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -58,7 +58,7 @@ class DisplayTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 0)
         XCTAssertEqual(root_child1.box.height, 0)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -78,21 +78,21 @@ class DisplayTests: FlexTestCase {
 
     // Generated from test: display_none_fixed_size
     func testDisplayNoneFixedSize() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .display(.none)
-            .height(20)
-            .width(20)
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(20))
+        root_child1.height(StyleValue.length(20))
+        root_child1.display(Display.none)
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -109,7 +109,7 @@ class DisplayTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 0)
         XCTAssertEqual(root_child1.box.height, 0)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -129,25 +129,25 @@ class DisplayTests: FlexTestCase {
 
     // Generated from test: display_none_with_margin
     func testDisplayNoneWithMargin() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .display(.none)
-            .height(20)
-            .margin(bottom: 10)
-            .margin(left: 10)
-            .margin(right: 10)
-            .margin(top: 10)
-            .width(20)
+        let root_child0 = FlexLayout()
+        root_child0.margin(left: StyleValue.length(10))
+        root_child0.margin(top: StyleValue.length(10))
+        root_child0.margin(right: StyleValue.length(10))
+        root_child0.margin(bottom: StyleValue.length(10))
+        root_child0.width(StyleValue.length(20))
+        root_child0.height(StyleValue.length(20))
+        root_child0.display(Display.none)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .flexGrow(1)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -164,7 +164,7 @@ class DisplayTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 100)
         XCTAssertEqual(root_child1.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -184,39 +184,39 @@ class DisplayTests: FlexTestCase {
 
     // Generated from test: display_none_with_child
     func testDisplayNoneWithChild() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
+        root_child0.flexShrink(1)
+        root_child0.flexBasis(FlexBasis.percentage(0))
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .display(.none)
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.flexShrink(1)
+        root_child1.flexBasis(FlexBasis.percentage(0))
+        root_child1.display(Display.none)
         root.append(root_child1)
 
-        let root_child1_child0 = yogaLayout()
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
-            .minHeight(0)
-            .minWidth(0)
-            .width(20)
+        let root_child1_child0 = FlexLayout()
+        root_child1_child0.flexGrow(1)
+        root_child1_child0.flexShrink(1)
+        root_child1_child0.flexBasis(FlexBasis.percentage(0))
+        root_child1_child0.width(StyleValue.length(20))
+        root_child1_child0.minWidth(StyleValue.length(0))
+        root_child1_child0.minHeight(StyleValue.length(0))
         root_child1.append(root_child1_child0)
 
-        let root_child2 = yogaLayout()
-            .flexBasis(0)
-            .flexGrow(1)
-            .flexShrink(1)
+        let root_child2 = FlexLayout()
+        root_child2.flexGrow(1)
+        root_child2.flexShrink(1)
+        root_child2.flexBasis(FlexBasis.percentage(0))
         root.append(root_child2)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -243,7 +243,7 @@ class DisplayTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.width, 50)
         XCTAssertEqual(root_child2.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -273,21 +273,21 @@ class DisplayTests: FlexTestCase {
 
     // Generated from test: display_none_with_position
     func testDisplayNoneWithPosition() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .height(100)
-            .width(100)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        let root_child0 = yogaLayout()
-            .flexGrow(1)
+        let root_child0 = FlexLayout()
+        root_child0.flexGrow(1)
         root.append(root_child0)
 
-        let root_child1 = yogaLayout()
-            .display(.none)
-            .flexGrow(1)
-            .position(top: 10)
+        let root_child1 = FlexLayout()
+        root_child1.flexGrow(1)
+        root_child1.position(top: StyleValue.length(10))
+        root_child1.display(Display.none)
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -304,7 +304,7 @@ class DisplayTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.width, 0)
         XCTAssertEqual(root_child1.box.height, 0)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

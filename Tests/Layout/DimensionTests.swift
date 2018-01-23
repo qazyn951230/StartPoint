@@ -28,13 +28,13 @@ class DimensionTests: FlexTestCase {
 
     // Generated from test: wrap_child
     func testWrapChild() {
-        let root = yogaLayout()
+        let root = FlexLayout()
 
-        let root_child0 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(100))
+        root_child0.height(StyleValue.length(100))
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -46,7 +46,7 @@ class DimensionTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 100)
         XCTAssertEqual(root_child0.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -61,16 +61,16 @@ class DimensionTests: FlexTestCase {
 
     // Generated from test: wrap_grandchild
     func testWrapGrandchild() {
-        let root = yogaLayout()
+        let root = FlexLayout()
 
-        let root_child0 = yogaLayout()
+        let root_child0 = FlexLayout()
         root.append(root_child0)
 
-        let root_child0_child0 = yogaLayout()
-            .height(100)
-            .width(100)
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.width(StyleValue.length(100))
+        root_child0_child0.height(StyleValue.length(100))
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -87,7 +87,7 @@ class DimensionTests: FlexTestCase {
         XCTAssertEqual(root_child0_child0.box.width, 100)
         XCTAssertEqual(root_child0_child0.box.height, 100)
 
-        root.calculate(direction: .rtl)
+        root.calculate(direction: Direction.rtl)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)

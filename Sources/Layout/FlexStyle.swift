@@ -22,6 +22,7 @@
 
 import UIKit
 
+// gYGNodeStyleDefaults
 public class FlexStyle {
     public init() {
         // Do nothing
@@ -102,51 +103,38 @@ public class FlexStyle {
     }
 
     // YGResolveFlexDirection
-    func resolveFlexDirection(by layoutDirection: Direction) -> FlexDirection {
-        if layoutDirection == Direction.rtl {
-            if flexDirection == FlexDirection.row {
-                return FlexDirection.rowReverse
-            } else if flexDirection == FlexDirection.rowReverse {
-                return FlexDirection.row
-            }
-        }
-        return flexDirection
+    func resolveFlexDirection(by direction: Direction) -> FlexDirection {
+        return flexDirection.resolve(by: direction)
     }
 
     // YGNodeIsLeadingPosDefined
     func isLeadingPositionDefined(for direction: FlexDirection) -> Bool {
-        return (direction.isRow && position.leading != nil) ||
-            (position.leading(direction: direction) != nil)
+        return position.leading(direction: direction) != StyleValue.auto
     }
 
     // YGNodeIsTrailingPosDefined
     func isTrailingPositionDefined(for direction: FlexDirection) -> Bool {
-        return (direction.isRow && position.trailing != nil) ||
-            (position.trailing(direction: direction) != nil)
+        return position.trailing(direction: direction) != StyleValue.auto
     }
 
     // YGNodeLeadingPosition
-    func leadingPosition(for direction: FlexDirection) -> Double {
-        if direction.isRow, let leading = position.leading {
-            return leading
-        }
-        return position.leading(direction: direction) ?? 0
+    func leadingPosition(for direction: FlexDirection, size: Double) -> Double {
+        let value = position.leading(direction: direction)
+        return value == StyleValue.auto ? 0.0 : value.resolve(by: size)
     }
 
     // YGNodeTrailingPosition
-    func trailingPosition(for direction: FlexDirection) -> Double {
-        if direction.isRow, let leading = position.trailing {
-            return leading
-        }
-        return position.trailing(direction: direction) ?? 0
+    func trailingPosition(for direction: FlexDirection, size: Double) -> Double {
+        let value = position.trailing(direction: direction)
+        return value == StyleValue.auto ? 0.0 : value.resolve(by: size)
     }
 
     // YGNodeRelativePosition
     func relativePosition(for direction: FlexDirection, size: Double) -> Double {
         if isLeadingPositionDefined(for: direction) {
-            return leadingPosition(for: direction)
+            return leadingPosition(for: direction, size: size)
         } else {
-            return 0 - trailingPosition(for: direction)
+            return 0 - trailingPosition(for: direction, size: size)
         }
     }
 
@@ -154,14 +142,16 @@ public class FlexStyle {
     @inline(__always)
     func leadingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.leading(direction: direction)
-        return value.resolve(by: width)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
     }
 
     // YGNodeTrailingMargin
     @inline(__always)
     func trailingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.trailing(direction: direction)
-        return value.resolve(by: width)
+        let result = value.resolve(by: width)
+        return result > 0 ? result : 0
     }
 
     // YGNodeLeadingPadding

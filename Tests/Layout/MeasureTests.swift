@@ -1,39 +1,39 @@
-    // MIT License
-    //
-    // Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
-    //
-    // Permission is hereby granted, free of charge, to any person obtaining a copy
-    // of this software and associated documentation files (the "Software"), to deal
-    // in the Software without restriction, including without limitation the rights
-    // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    // copies of the Software, and to permit persons to whom the Software is
-    // furnished to do so, subject to the following conditions:
-    //
-    // The above copyright notice and this permission notice shall be included in all
-    // copies or substantial portions of the Software.
-    //
-    // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    // SOFTWARE.
+// MIT License
+//
+// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
-import XCTest
 @testable import StartPoint
+import XCTest
 
 // Generated from YGMeasureTest.cpp
 class MeasureTests: FlexTestCase {
-    var count = 0
+    var measureCount = 0
 
     func _measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-        count += 1
+        measureCount += 1
         return CGSize(width: 10, height: 10)
     }
 
     func _simulate_wrapping_text(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
-            -> CGSize {
+        -> CGSize {
         if widthMode.isUndefined || width >= 68 {
             return CGSize(width: 68, height: 16)
         }
@@ -41,61 +41,73 @@ class MeasureTests: FlexTestCase {
     }
 
     func _measure_assert_negative(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
-            -> CGSize {
+        -> CGSize {
         XCTAssertGreaterThanOrEqual(width, 0)
         XCTAssertGreaterThanOrEqual(height, 0)
         return CGSize.zero
     }
 
+    func _measure_90_10(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
+        -> CGSize {
+        return CGSize(width: 90, height: 10)
+    }
+
     override func setUp() {
-        count = 0
+        measureCount = 0
     }
 
     // Generated from test: dont_measure_single_grow_shrink_child
     func testDontMeasureSingleGrowShrinkChild() {
-        let root = yogaLayout()
-            .width(100)
-            .height(100)
-        let root_child0 = MeasureLayout()
-        root_child0.flexGrow(1)
-            .flexShrink(1)
-        root_child0._measure = _measure
-        root.append(root_child0)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        XCTAssertEqual(count, 0)
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.flexGrow(1)
+        root_child0.flexShrink(1)
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 0)
     }
 
     // Generated from test: measure_absolute_child_with_no_constraints
     func testMeasureAbsoluteChildWithNoConstraints() {
-        let root = yogaLayout()
-        let root_child0 = yogaLayout()
+        let root = FlexLayout()
+
+        let root_child0 = FlexLayout()
         root.append(root_child0)
+
         let root_child0_child0 = MeasureLayout()
-        root_child0_child0.positionType(.absolute)
+        root_child0_child0.positionType(PositionType.absolute)
         root_child0_child0._measure = _measure
         root_child0.append(root_child0_child0)
-        root.calculate(direction: .ltr)
 
-        XCTAssertEqual(count, 1)
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 1)
     }
 
     // Generated from test: dont_measure_when_min_equals_max
     func testDontMeasureWhenMinEqualsMax() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .width(100)
-            .height(100)
-        let root_child0 = MeasureLayout()
-        root_child0.minWidth(10)
-            .maxWidth(10)
-            .minHeight(10)
-            .maxHeight(10)
-        root_child0._measure = _measure
-        root.append(root_child0)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        XCTAssertEqual(count, 0)
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.minWidth(StyleValue.length(10))
+        root_child0.maxWidth(StyleValue.length(10))
+        root_child0.minHeight(StyleValue.length(10))
+        root_child0.maxHeight(StyleValue.length(10))
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 0)
         XCTAssertEqual(root_child0.box.left, 0)
         XCTAssertEqual(root_child0.box.top, 0)
         XCTAssertEqual(root_child0.box.width, 10)
@@ -104,21 +116,42 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: dont_measure_when_min_equals_max_percentages
     func testDontMeasureWhenMinEqualsMaxPercentages() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .width(100)
-            .height(100)
-        let root_child0 = MeasureLayout()
-        root_child0.minWidth(10)
-            .maxWidth(10)
-            .minHeight(10)
-            .maxHeight(10)
-        root_child0._measure = _measure
-        root.append(root_child0)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        XCTAssertEqual(count, 0)
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.minWidth(StyleValue.percentage(10))
+        root_child0.maxWidth(StyleValue.percentage(10))
+        root_child0.minHeight(StyleValue.percentage(10))
+        root_child0.maxHeight(StyleValue.percentage(10))
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 0)
         XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 10)
+        XCTAssertEqual(root_child0.box.height, 10)
+    }
+
+    // Generated from test: measure_nodes_with_margin_auto_and_stretch
+    func testMeasureNodesWithMarginAutoAndStretch() {
+        let root = FlexLayout()
+        root.width(StyleValue.length(500))
+        root.height(StyleValue.length(500))
+
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.margin(left: StyleValue.auto)
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root_child0.box.left, 490)
         XCTAssertEqual(root_child0.box.top, 0)
         XCTAssertEqual(root_child0.box.width, 10)
         XCTAssertEqual(root_child0.box.height, 10)
@@ -126,20 +159,22 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: dont_measure_when_min_equals_max_mixed_width_percent
     func testDontMeasureWhenMinEqualsMaxMixedWidthPercent() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .width(100)
-            .height(100)
-        let root_child0 = MeasureLayout()
-        root_child0.minWidth(10)
-            .maxWidth(10)
-            .minHeight(10)
-            .maxHeight(10)
-        root_child0._measure = _measure
-        root.append(root_child0)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        XCTAssertEqual(count, 0)
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.minWidth(StyleValue.percentage(10))
+        root_child0.maxWidth(StyleValue.percentage(10))
+        root_child0.minHeight(StyleValue.length(10))
+        root_child0.maxHeight(StyleValue.length(10))
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 0)
         XCTAssertEqual(root_child0.box.left, 0)
         XCTAssertEqual(root_child0.box.top, 0)
         XCTAssertEqual(root_child0.box.width, 10)
@@ -148,20 +183,22 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: dont_measure_when_min_equals_max_mixed_height_percent
     func testDontMeasureWhenMinEqualsMaxMixedHeightPercent() {
-        let root = yogaLayout()
-            .alignItems(.flexStart)
-            .width(100)
-            .height(100)
-        let root_child0 = MeasureLayout()
-        root_child0.minWidth(10)
-            .maxWidth(10)
-            .minHeight(10)
-            .maxHeight(10)
-        root_child0._measure = _measure
-        root.append(root_child0)
-        root.calculate(direction: .ltr)
+        let root = FlexLayout()
+        root.alignItems(.flexStart)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
-        XCTAssertEqual(count, 0)
+        let root_child0 = MeasureLayout()
+        root_child0._measure = _measure
+        root_child0.minWidth(StyleValue.length(10))
+        root_child0.maxWidth(StyleValue.length(10))
+        root_child0.minHeight(StyleValue.percentage(10))
+        root_child0.maxHeight(StyleValue.percentage(10))
+        root.append(root_child0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(measureCount, 0)
         XCTAssertEqual(root_child0.box.left, 0)
         XCTAssertEqual(root_child0.box.top, 0)
         XCTAssertEqual(root_child0.box.width, 10)
@@ -170,13 +207,16 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_enough_size_should_be_in_single_line
     func testMeasureEnoughSizeShouldBeInSingleLine() {
-        let root = yogaLayout()
-            .width(100)
+        let root = FlexLayout()
+        root.width(StyleValue.length(100))
+
         let root_child0 = MeasureLayout()
         root_child0.alignSelf(.flexStart)
         root_child0._measure = _simulate_wrapping_text
+
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root_child0.box.width, 68)
         XCTAssertEqual(root_child0.box.height, 16)
@@ -184,13 +224,16 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_not_enough_size_should_wrap
     func testMeasureNotEnoughSizeShouldWrap() {
-        let root = yogaLayout()
-            .width(55)
+        let root = FlexLayout()
+        root.width(StyleValue.length(55))
+
         let root_child0 = MeasureLayout()
         root_child0.alignSelf(.flexStart)
         root_child0._measure = _simulate_wrapping_text
+
         root.append(root_child0)
-        root.calculate(direction: .ltr)
+
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root_child0.box.width, 50)
         XCTAssertEqual(root_child0.box.height, 32)
@@ -198,16 +241,19 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_zero_space_should_grow
     func testMeasureZeroSpaceShouldGrow() {
-        let root = yogaLayout()
-            .height(200)
-            .flexDirection(.column)
-            .flexGrow(0)
+        let root = FlexLayout()
+        root.height(StyleValue.length(200))
+        root.flexDirection(FlexDirection.column)
+        root.flexGrow(0)
+
         let root_child0 = MeasureLayout()
-        root_child0.flexDirection(.column)
-            .padding(100)
+        root_child0.flexDirection(FlexDirection.column)
+        root_child0.padding(value: StyleValue.length(100))
         root_child0._measure = _measure
+
         root.append(root_child0)
-        root.calculate(width: 282, direction: .ltr)
+
+        root.calculate(width: 282, height: Double.nan, direction: Direction.ltr)
 
         XCTAssertEqual(root_child0.box.width, 282)
         XCTAssertEqual(root_child0.box.top, 0)
@@ -215,22 +261,24 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_flex_direction_row_and_padding
     func testMeasureFlexDirectionRowAndPadding() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .padding(left: 25)
-            .padding(top: 25)
-            .padding(right: 25)
-            .padding(bottom: 25)
-            .width(50)
-            .height(50)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.padding(left: StyleValue.length(25))
+        root.padding(top: StyleValue.length(25))
+        root.padding(right: StyleValue.length(25))
+        root.padding(bottom: StyleValue.length(25))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
@@ -250,19 +298,21 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_flex_direction_column_and_padding
     func testMeasureFlexDirectionColumnAndPadding() {
-        let root = yogaLayout()
-            .margin(top: 20)
-            .padding(25)
-            .width(50)
-            .height(50)
+        let root = FlexLayout()
+        root.margin(top: StyleValue.length(20))
+        root.padding(value: StyleValue.length(25))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -282,19 +332,21 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_flex_direction_row_no_padding
     func testMeasureFlexDirectionRowNoPadding() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .margin(top: 20)
-            .width(50)
-            .height(50)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.margin(top: StyleValue.length(20))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -314,20 +366,22 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_flex_direction_row_no_padding_align_items_flexstart
     func testMeasureFlexDirectionRowNoPaddingAlignItemsFlexstart() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .margin(top: 20)
-            .width(50)
-            .height(50)
-            .alignItems(.flexStart)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.margin(top: StyleValue.length(20))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+        root.alignItems(.flexStart)
+
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -347,22 +401,23 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_with_fixed_size
     func testMeasureWithFixedSize() {
-        let root = yogaLayout()
-            .margin(top: 20)
-            .padding(25)
-            .width(50)
-            .height(50)
-        let root_child0 = MeasureLayout()
-        root_child0.width(10)
-            .height(10)
+        let root = FlexLayout()
+        root.margin(top: StyleValue.length(20))
+        root.padding(value: StyleValue.length(25))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
 
+        let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
+        root_child0.width(StyleValue.length(10))
+        root_child0.height(StyleValue.length(10))
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -382,20 +437,22 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_with_flex_shrink
     func testMeasureWithFlexShrink() {
-        let root = yogaLayout()
-            .margin(top: 20)
-            .padding(25)
-            .width(50)
-            .height(50)
+        let root = FlexLayout()
+        root.margin(top: StyleValue.length(20))
+        root.padding(value: StyleValue.length(25))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+
         let root_child0 = MeasureLayout()
-        root_child0.flexShrink(1)
         root_child0._measure = _simulate_wrapping_text
+        root_child0.flexShrink(1)
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -415,19 +472,21 @@ class MeasureTests: FlexTestCase {
 
     // Generated from test: measure_no_padding
     func testMeasureNoPadding() {
-        let root = yogaLayout()
-            .margin(top: 20)
-            .width(50)
-            .height(50)
+        let root = FlexLayout()
+        root.margin(top: StyleValue.length(20))
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(50))
+
         let root_child0 = MeasureLayout()
-        root_child0.flexShrink(1)
         root_child0._measure = _simulate_wrapping_text
+        root_child0.flexShrink(1)
         root.append(root_child0)
-        let root_child1 = yogaLayout()
-            .width(5)
-            .height(5)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(StyleValue.length(5))
+        root_child1.height(StyleValue.length(5))
         root.append(root_child1)
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 20)
@@ -445,101 +504,76 @@ class MeasureTests: FlexTestCase {
         XCTAssertEqual(root_child1.box.height, 5)
     }
 
+    // Generated from test: can_nullify_measure_func_on_any_node
+    func testCanNullifyMeasureFuncOnAnyNode() {
+        let root = MeasureLayout()
+        root.append(FlexLayout())
+
+        root._measure = nil
+        XCTAssertNil(root._measure)
+    }
+
     // Generated from test: cant_call_negative_measure
     func testCantCallNegativeMeasure() {
-        let root = yogaLayout()
-            .flexDirection(.column)
-            .width(50)
-            .height(10)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.column)
+        root.width(StyleValue.length(50))
+        root.height(StyleValue.length(10))
+
         let root_child0 = MeasureLayout()
-        root_child0.margin(top: 20)
         root_child0._measure = _measure_assert_negative
+        root_child0.margin(top: StyleValue.length(20))
         root.append(root_child0)
 
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
     }
 
     // Generated from test: cant_call_negative_measure_horizontal
     func testCantCallNegativeMeasureHorizontal() {
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .width(10)
-            .height(20)
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(10))
+        root.height(StyleValue.length(20))
+
         let root_child0 = MeasureLayout()
-        root_child0.margin(leading: 20)
         root_child0._measure = _measure_assert_negative
+        root_child0.margin(leading: StyleValue.length(20))
         root.append(root_child0)
 
-        root.calculate(direction: .ltr)
+        root.calculate(direction: Direction.ltr)
     }
 
-    func testMeasureNotEnoughSizeShouldWrap2() {
-        func fn(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-            return CGSize(width: width, height: 67)
-        }
-
-        let div4 = FlexLayout()
-            .flexDirection(.row)
-            .margin(top: 20)
-        let div5 = FlexLayout()
-            .width(60)
-            .height(60)
-        div4.append(div5)
-        let text6 = MeasureLayout()
-        text6.flex(1)
-        text6._measure = fn
-        div4.append(text6)
-
-        div4.calculate(width: 320, height: 568)
-
-        XCTAssertEqual(div4.box.left, 0)
-        XCTAssertEqual(div4.box.top, 20)
-        XCTAssertEqual(div4.box.width, 320)
-        XCTAssertEqual(div4.box.height, 548)
-
-        XCTAssertEqual(div5.box.left, 0)
-        XCTAssertEqual(div5.box.top, 0)
-        XCTAssertEqual(div5.box.width, 60)
-        XCTAssertEqual(div5.box.height, 60)
-
-        XCTAssertEqual(text6.box.left, 60)
-        XCTAssertEqual(text6.box.top, 0)
-        XCTAssertEqual(text6.box.width, 260)
-        XCTAssertEqual(text6.box.height, 548)
-    }
-
+    // Generated from test: percent_with_text_node
     func testPercentWithTextNode() {
-        func fn(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-                return CGSize(width: 90, height: 10)
-        }
-        
-        let root = yogaLayout()
-            .flexDirection(.row)
-            .justifyContent(.spaceBetween)
-            .alignItems(.center)
-            .width(float: 100)
-            .height(float: 80)
-        
-        let root_child0 = yogaLayout().append(to: root)
-        
+        let root = FlexLayout()
+        root.flexDirection(FlexDirection.row)
+        root.justifyContent(JustifyContent.spaceBetween)
+        root.alignItems(.center)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(80))
+
+        let root_child0 = FlexLayout()
+        root.append(root_child0)
+
         let root_child1 = MeasureLayout()
-            .padding(top:40)
-            .maxWidth(0.5)
-            .append(to: root)
-        root_child1._measure = fn
-        
-        root.calculate()
-        
+
+        root_child1._measure = _measure_90_10
+        root_child1.maxWidth(StyleValue.percentage(50))
+        root_child1.padding(top: StyleValue.percentage(50))
+        root.append(root_child1)
+
+        root.calculate(direction: Direction.ltr)
+
         XCTAssertEqual(root.box.left, 0)
         XCTAssertEqual(root.box.top, 0)
         XCTAssertEqual(root.box.width, 100)
         XCTAssertEqual(root.box.height, 80)
-        
+
         XCTAssertEqual(root_child0.box.left, 0)
         XCTAssertEqual(root_child0.box.top, 40)
         XCTAssertEqual(root_child0.box.width, 0)
         XCTAssertEqual(root_child0.box.height, 0)
-        
+
         XCTAssertEqual(root_child1.box.left, 50)
         XCTAssertEqual(root_child1.box.top, 15)
         XCTAssertEqual(root_child1.box.width, 50)
