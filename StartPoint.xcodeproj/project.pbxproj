@@ -91,6 +91,7 @@
 		AC96AE9DD084C42E9EB4805C /* MarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */; };
 		AC96AEC01D91FA4260D05C71 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9AF443FC015B0799EF5 /* Array.swift */; };
 		AC96AF008794E423F1EE5CD9 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */; };
+		AC96AF09A5D86AB525F6CCAC /* FlexTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB70E7F9DDB17EB63E18 /* FlexTableViewCell.swift */; };
 		AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADD6A32F1944E34B2888 /* RouteTests.swift */; };
 		AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */; };
 		AC96AFAE3A9ACC9E0137D124 /* PhotoPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */; };
@@ -203,6 +204,7 @@
 		AC96AB28D295111FC5105631 /* FlexCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexCollectionViewCell.swift; sourceTree = "<group>"; };
 		AC96AB45C64C78FA4D5F9DE3 /* AspectRatioTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AspectRatioTests.swift; sourceTree = "<group>"; };
 		AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderTests.swift; sourceTree = "<group>"; };
+		AC96AB70E7F9DDB17EB63E18 /* FlexTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexTableViewCell.swift; sourceTree = "<group>"; };
 		AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HadOverflowTests.swift; sourceTree = "<group>"; };
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				AC96A6E779AE053A7FEB5866 /* FlexView.swift */,
 				AC96A5C929430D3747CC4C57 /* FlexControl.swift */,
 				AC96AA2B750B4444C8DC0BE0 /* FlexCollectionReusableView.swift */,
+				AC96AB70E7F9DDB17EB63E18 /* FlexTableViewCell.swift */,
 			);
 			path = FlexView;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				AC96A0BF3535D4019F85C9DB /* FlexCollectionReusableView.swift in Sources */,
 				AC96AE3CF770D7AD9ECC8EDA /* StartPoint.swift in Sources */,
 				AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */,
+				AC96AF09A5D86AB525F6CCAC /* FlexTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

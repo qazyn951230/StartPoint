@@ -22,11 +22,11 @@
 
 import UIKit
 
-open class FlexCollectionViewCell: UICollectionViewCell, Flexed {
+open class FlexTableViewCell: UITableViewCell, Flexed {
     public let root = FlexLayout()
 
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         initialization()
     }
 
@@ -36,7 +36,7 @@ open class FlexCollectionViewCell: UICollectionViewCell, Flexed {
     }
 
     open func initialization() {
-        backgroundColor = UIColor.white
+        contentView.backgroundColor = UIColor.white
     }
 
     override open func layoutSubviews() {

@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class FlexCollectionReusableView: UICollectionReusableView {
+open class FlexCollectionReusableView: UICollectionReusableView, Flexed {
     public let root = FlexLayout()
 
     public override init(frame: CGRect) {

@@ -22,7 +22,19 @@
 
 import UIKit
 
-open class FlexView: UIView {
+public protocol Flexed {
+    var root: FlexLayout { get }
+    func flexLayout()
+}
+
+public extension Flexed where Self: UIView {
+    public func flexLayout() {
+        root.layout(width: bounds.width, height: bounds.height)
+        root.apply()
+    }
+}
+
+open class FlexView: UIView, Flexed {
     public let root = FlexLayout()
 
     public override init(frame: CGRect) {

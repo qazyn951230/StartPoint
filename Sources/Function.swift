@@ -175,6 +175,11 @@ public struct Function {
     }
 
     @inline(__always)
+    public static func nothing() {
+        // Do nothing.
+    }
+
+    @inline(__always)
     public static func equal<T:Comparable>(_ value: T) -> (T) -> Bool {
         return {
             $0 == value

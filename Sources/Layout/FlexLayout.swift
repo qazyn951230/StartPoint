@@ -255,10 +255,10 @@ open class FlexLayout: Equatable {
             item = view
         } else {
             item = UIView()
-            item.randomBackgroundColor()
             parent.addSubview(item)
         }
         item.frame = layout.frame
+        item.randomBackgroundColor()
         layout.children.forEach {
             debugApply(layout: $0, parent: item)
         }

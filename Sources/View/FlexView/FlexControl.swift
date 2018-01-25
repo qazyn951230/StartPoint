@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class FlexControl: UIControl {
+open class FlexControl: UIControl, Flexed {
     public let root = FlexLayout()
 
     public override init(frame: CGRect) {
