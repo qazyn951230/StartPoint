@@ -23,13 +23,6 @@
 import XCTest
 @testable import StartPoint
 
-func yogaLayout() -> FlexLayout {
-    let layout: FlexLayout = FlexLayout()
-//    layout.layoutType = .default
-//    layout.dirty = false
-    return layout
-}
-
 func webLayout() -> FlexLayout {
     let layout: FlexLayout = FlexLayout()
     layout.style.flexDirection = FlexDirection.row

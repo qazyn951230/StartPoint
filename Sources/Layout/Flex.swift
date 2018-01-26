@@ -93,10 +93,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         case (.auto, .auto):
             return true
         case (.length(let a), .length(let b)), (.percentage(let a), .percentage(let b)):
-            if a.isNaN {
-                return b.isNaN
-            }
-            return a == b
+            return equal(a, b)
         default:
             return false
         }
@@ -463,8 +460,8 @@ public struct Flex: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLi
     }
 
     public static func ==(lhs: Flex, rhs: Flex) -> Bool {
-        return lhs.grow == rhs.grow &&
-            lhs.shrink == rhs.shrink &&
+        return equal(lhs.grow, rhs.grow) &&
+            equal(lhs.shrink, rhs.shrink) &&
             lhs.basis == rhs.basis
     }
 }

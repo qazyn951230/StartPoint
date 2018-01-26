@@ -56,6 +56,23 @@ class FlexBox {
     var generation: Int64 = 0
     static var totalGeneration: Int64 = 0
 
+    func reset() {
+        position = .zero
+        margin = .zero
+        padding = .zero
+        border = .zero
+
+        width = 0
+        height = 0
+        measuredWidth = Double.nan
+        measuredHeight = Double.nan
+        resolvedWidth = .auto
+        resolvedHeight = .auto
+
+        hasOverflow = false
+        generation = 0
+    }
+
     func computedDimension(by direction: FlexDirection) -> StyleValue {
         return direction.isRow ? resolvedWidth : resolvedHeight
     }

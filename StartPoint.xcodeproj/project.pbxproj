@@ -30,6 +30,7 @@
 		AC96A2F15A160C65A3749ED6 /* RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */; };
 		AC96A313B4B52B02C0891856 /* AppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF2E79625C539F0F7E98 /* AppViewController.swift */; };
 		AC96A3440239B63CEF26A2EA /* ButtonLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A22B90117CA401E899B7 /* ButtonLayout.swift */; };
+		AC96A3FE03768BF5F4255EE1 /* StyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF82C7E003113F5EB468 /* StyleTests.swift */; };
 		AC96A4059B39F13A040C4D05 /* Intent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADF6A697E1AE2C52AB27 /* Intent.swift */; };
 		AC96A4BFADE1B0709502650E /* PagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */; };
 		AC96A4C76174A3B2A3AD7DD9 /* LocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */; };
@@ -71,6 +72,7 @@
 		AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
 		AC96ABA0A87087889ACB0C06 /* FlexBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */; };
 		AC96ABC592AE1C3A0A83555E /* MeasureModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */; };
+		AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */; };
 		AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
 		AC96ACED75EC55C2643DB7E8 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D9CC8415398080F689 /* SegmentedControl.swift */; };
@@ -214,6 +216,7 @@
 		AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexBox.swift; sourceTree = "<group>"; };
 		AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelayoutTests.swift; sourceTree = "<group>"; };
 		AC96AD80B3A636F0422C7751 /* PercentageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PercentageTests.swift; sourceTree = "<group>"; };
+		AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroOutLayoutRecursivlyTests.swift; sourceTree = "<group>"; };
 		AC96ADD6A32F1944E34B2888 /* RouteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouteTests.swift; sourceTree = "<group>"; };
 		AC96ADE42256C86A28799055 /* MeasureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureTests.swift; sourceTree = "<group>"; };
 		AC96ADF6A697E1AE2C52AB27 /* Intent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intent.swift; sourceTree = "<group>"; };
@@ -228,6 +231,7 @@
 		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		AC96AF4CCDEEAB7B80A449DC /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		AC96AF82C7E003113F5EB468 /* StyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleTests.swift; sourceTree = "<group>"; };
 		AC96AFA1ED6CC64828315DD9 /* LayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutView.swift; sourceTree = "<group>"; };
 		AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DimensionTests.swift; sourceTree = "<group>"; };
 		AC96AFCB44A6188AB237A221 /* FlexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexTests.swift; sourceTree = "<group>"; };
@@ -334,6 +338,8 @@
 				AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */,
 				AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */,
 				AC96A4B8CA1524BB5D64E63A /* RoundingMeasureFuncTests.swift */,
+				AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */,
+				AC96AF82C7E003113F5EB468 /* StyleTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -811,6 +817,8 @@
 				AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */,
 				AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */,
 				AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */,
+				AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */,
+				AC96A3FE03768BF5F4255EE1 /* StyleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -105,47 +105,4 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertTrue(root.box.height.isNaN)
         XCTAssertEqual(root.box.direction, Direction.inherit)
     }
-
-    // Generated from test: assert_legacy_stretch_behaviour
-//    func testAssertLegacyStretchBehaviour() {
-//        YGConfigSetUseLegacyStretchBehaviour(config, true)
-//        let root = yogaLayout()
-//        root.style.width = 500
-//        root.style.height = 500
-//
-//        let root_child0 = yogaLayout()
-//        root_child0.style.alignItems = .flexStart
-//        root.append(root_child0)
-//
-//        let root_child0_child0 = yogaLayout()
-//        root_child0_child0.style.flexGrow = 1
-//        root_child0_child0.style.flexShrink = 1
-//        root_child0.append(root_child0_child0)
-//
-//        let root_child0_child0_child0 = yogaLayout()
-//        root_child0_child0_child0.style.flexGrow = 1
-//        root_child0_child0_child0.style.flexShrink = 1
-//        root_child0_child0.append(root_child0_child0_child0)
-//        root.calculate(direction: Direction.ltr)
-//
-//        XCTAssertEqual(root.box.left, 0.0)
-//        XCTAssertEqual(root.box.top, 0.0)
-//        XCTAssertEqual(root.box.width, 500.0)
-//        XCTAssertEqual(root.box.height, 500.0)
-//
-//        XCTAssertEqual(root_child0.box.left, 0.0)
-//        XCTAssertEqual(root_child0.box.top, 0.0)
-//        XCTAssertEqual(root_child0.box.width, 500.0)
-//        XCTAssertEqual(root_child0.box.height, 500.0)
-//
-//        XCTAssertEqual(root_child0_child0.box.left, 0.0)
-//        XCTAssertEqual(root_child0_child0.box.top, 0.0)
-//        XCTAssertEqual(root_child0_child0.box.width, 0.0)
-//        XCTAssertEqual(root_child0_child0.box.height, 500.0)
-//
-//        XCTAssertEqual(root_child0_child0_child0.box.left, 0.0)
-//        XCTAssertEqual(root_child0_child0_child0.box.top, 0.0)
-//        XCTAssertEqual(root_child0_child0_child0.box.width, 0.0)
-//        XCTAssertEqual(root_child0_child0_child0.box.height, 500.0)
-//    }
 }

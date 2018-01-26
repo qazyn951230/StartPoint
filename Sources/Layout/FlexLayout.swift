@@ -29,7 +29,7 @@ open class FlexLayout: Equatable {
     public internal(set) weak var view: LayoutView?
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
-    public internal(set) var dirty: Bool = true
+    public internal(set) var dirty: Bool = false
     // nodeType
     public var layoutType: LayoutType = .default
     public var measureSelf: Bool = false {
@@ -138,6 +138,13 @@ open class FlexLayout: Equatable {
 //        computedFlexBasis = 0
         box.measuredWidth = 0
         box.measuredHeight = 0
+    }
+
+    public func copyStyle(from layout: FlexLayout) {
+        if style != layout.style {
+            style.copy(from: layout.style)
+            markDirty()
+        }
     }
 
     // MARK: - Managing Child layouts

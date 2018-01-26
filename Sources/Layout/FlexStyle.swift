@@ -23,7 +23,7 @@
 import UIKit
 
 // gYGNodeStyleDefaults
-public class FlexStyle {
+public class FlexStyle: Equatable {
     public init() {
         // Do nothing
     }
@@ -100,6 +100,125 @@ public class FlexStyle {
     }
     var hidden: Bool {
         return display == Display.none
+    }
+
+    // Equatable
+    public static func ==(lhs: FlexStyle, rhs: FlexStyle) -> Bool {
+        var _equal = true
+        _equal = lhs.direction == rhs.direction
+        if !_equal {
+            return false
+        }
+        _equal = lhs.flexDirection == rhs.flexDirection
+        if !_equal {
+            return false
+        }
+        _equal = lhs.direction == rhs.direction
+        if !_equal {
+            return false
+        }
+        _equal = lhs.justifyContent == rhs.justifyContent
+        if !_equal {
+            return false
+        }
+        _equal = lhs.alignContent == rhs.alignContent
+        if !_equal {
+            return false
+        }
+        _equal = lhs.alignItems == rhs.alignItems
+        if !_equal {
+            return false
+        }
+        _equal = lhs.alignSelf == rhs.alignSelf
+        if !_equal {
+            return false
+        }
+        _equal = lhs.flexWrap == rhs.flexWrap
+        if !_equal {
+            return false
+        }
+        _equal = lhs.display == rhs.display
+        if !_equal {
+            return false
+        }
+        _equal = lhs.flex == rhs.flex
+        if !_equal {
+            return false
+        }
+        _equal = lhs.positionType == rhs.positionType
+        if !_equal {
+            return false
+        }
+        _equal = lhs.position == rhs.position
+        if !_equal {
+            return false
+        }
+        _equal = lhs.margin == rhs.margin
+        if !_equal {
+            return false
+        }
+        _equal = lhs.padding == rhs.padding
+        if !_equal {
+            return false
+        }
+        _equal = lhs.border == rhs.border
+        if !_equal {
+            return false
+        }
+        _equal = lhs.width == rhs.width
+        if !_equal {
+            return false
+        }
+        _equal = lhs.height == rhs.height
+        if !_equal {
+            return false
+        }
+        _equal = lhs.minWidth == rhs.minWidth
+        if !_equal {
+            return false
+        }
+        _equal = lhs.minHeight == rhs.minHeight
+        if !_equal {
+            return false
+        }
+        _equal = lhs.maxWidth == rhs.maxWidth
+        if !_equal {
+            return false
+        }
+        _equal = lhs.maxHeight == rhs.maxHeight
+        if !_equal {
+            return false
+        }
+        _equal = equal(lhs.aspectRatio, rhs.aspectRatio)
+        if !_equal {
+            return false
+        }
+        return true
+    }
+
+    public func copy(from style: FlexStyle) {
+        direction = style.direction
+        flexDirection = style.flexDirection
+        direction = style.direction
+        justifyContent = style.justifyContent
+        alignContent = style.alignContent
+        alignItems = style.alignItems
+        alignSelf = style.alignSelf
+        flexWrap = style.flexWrap
+        display = style.display
+        flex = style.flex
+        positionType = style.positionType
+        position = style.position
+        margin = style.margin
+        padding = style.padding
+        border = style.border
+        width = style.width
+        height = style.height
+        minWidth = style.minWidth
+        minHeight = style.minHeight
+        maxWidth = style.maxWidth
+        maxHeight = style.maxHeight
+        aspectRatio = style.aspectRatio
     }
 
     // YGResolveFlexDirection

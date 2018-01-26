@@ -123,9 +123,7 @@ extension FlexLayout {
 
     // YGZeroOutLayoutRecursivly
     func zeroLayout() {
-        box.width = 0
-        box.height = 0
-        box.position = .zero
+        box.reset()
         cachedLayout = nil
         children.forEach {
             $0.zeroLayout()

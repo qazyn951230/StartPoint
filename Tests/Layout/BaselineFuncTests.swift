@@ -29,25 +29,25 @@ class BaselineFuncTests: FlexTestCase {
     // Generated from test: align_baseline_customer_func
     func testAlignBaselineCustomerFunc() {
         let root = FlexLayout()
-        root.style.flexDirection = FlexDirection.row
-        root.style.alignItems = .baseline
-        root.style.width = 100
-        root.style.height = 100
+        root.flexDirection(FlexDirection.row)
+        root.alignItems(.baseline)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
 
         let root_child0 = FlexLayout()
-        root_child0.style.width = 50
-        root_child0.style.height = 50
+        root_child0.width(StyleValue.length(50))
+        root_child0.height(StyleValue.length(50))
         root.append(root_child0)
 
         let root_child1 = FlexLayout()
-        root_child1.style.width = 50
-        root_child1.style.height = 20
+        root_child1.width(StyleValue.length(50))
+        root_child1.height(StyleValue.length(20))
         root.append(root_child1)
 
         let root_child1_child0 = BaselineLayout()
-        root_child1_child0.style.width = 50
-        root_child1_child0.style.height = 20
-        root_child1_child0.base = 10
+        root_child1_child0.width(StyleValue.length(50))
+        root_child1_child0.base = { (_: Double, _: Double) in 10.0 }
+        root_child1_child0.height(StyleValue.length(20))
         root_child1.append(root_child1_child0)
         root.calculate(direction: Direction.ltr)
 

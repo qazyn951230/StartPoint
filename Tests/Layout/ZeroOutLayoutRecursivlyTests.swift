@@ -23,24 +23,33 @@
 @testable import StartPoint
 import XCTest
 
-// Generated from YGComputedMarginTest.cpp
-class ComputedMarginTests: FlexTestCase {
+// Generated from YGZeroOutLayoutRecursivlyTest.cpp
+class ZeroOutLayoutRecursivlyTests: FlexTestCase {
 
-    // Generated from test: computed_layout_margin
-    func testComputedLayoutMargin() {
+    // Generated from test: zero_out_layout
+    func testZeroOutLayout() {
         let root = FlexLayout()
-        root.width(StyleValue.length(100))
-        root.height(StyleValue.length(100))
-        root.margin(leading: StyleValue.percentage(10))
+        root.flexDirection(FlexDirection.row)
+        root.width(StyleValue.length(200))
+        root.height(StyleValue.length(200))
+
+        let child = FlexLayout()
+        root.append(child)
+        child.width(StyleValue.length(100))
+        child.height(StyleValue.length(100))
+        child.margin(top: StyleValue.length(10))
+        child.padding(top: StyleValue.length(10))
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
 
-        XCTAssertEqual(root.box.margin.left, 10)
-        XCTAssertEqual(root.box.margin.right, 0)
+        XCTAssertEqual(child.box.margin.top, 10)
+        XCTAssertEqual(child.box.padding.top, 10)
 
-        root.calculate(width: 100, height: 100, direction: Direction.rtl)
+        child.display(Display.none)
 
-        XCTAssertEqual(root.box.margin.left, 0)
-        XCTAssertEqual(root.box.margin.right, 10)
+        root.calculate(width: 100, height: 100, direction: Direction.ltr)
+
+        XCTAssertEqual(child.box.margin.top, 0)
+        XCTAssertEqual(child.box.padding.top, 0)
     }
 }

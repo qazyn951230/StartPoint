@@ -29,9 +29,9 @@ class ComputedPaddingTests: FlexTestCase {
     // Generated from test: computed_layout_padding
     func testComputedLayoutPadding() {
         let root = FlexLayout()
-        root.style.width = 100
-        root.style.height = 100
-        root.style.padding.leading = StyleValue.percentage(10)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
+        root.padding(leading: StyleValue.percentage(10))
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
 

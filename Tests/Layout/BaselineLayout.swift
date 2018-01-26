@@ -24,10 +24,10 @@
 import CoreGraphics
 
 class BaselineLayout: FlexLayout {
-    var base: Double = 0
+    var base: ((Double, Double) -> Double)?
 
     override func baseline(width: Double, height: Double) -> Double {
-        return base
+        return base?(width, height) ?? 0
     }
 }
 
