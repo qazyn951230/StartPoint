@@ -368,7 +368,7 @@ public extension FlexLayout {
 
     @discardableResult
     public func padding(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) -> Self {
-        return padding(StyleInsets(top: top, left: right, bottom: bottom, right: right))
+        return padding(StyleInsets(top: top, left: left, bottom: bottom, right: right))
     }
 
     @discardableResult

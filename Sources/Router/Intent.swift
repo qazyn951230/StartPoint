@@ -38,14 +38,19 @@ public protocol IntentTarget: IntentSource {
 }
 
 private var tr0gSJaB = "tr0gSJaB"
+
 public extension IntentTarget where Self: UIViewController {
     public var intentController: UIViewController {
         return self
     }
 
     public var intent: Intent? {
-        get { return associatedObject(key: &tr0gSJaB) }
-        set { setAssociatedObject(key: &tr0gSJaB, object: newValue) }
+        get {
+            return associatedObject(key: &tr0gSJaB)
+        }
+        set {
+            setAssociatedObject(key: &tr0gSJaB, object: newValue)
+        }
     }
 
     public func finishIntent(result: IntentResult? = nil) {
@@ -127,7 +132,8 @@ public class Intent {
         case .modal:
             push = false
         case .auto:
-            push = source.navigationController != nil || source is UINavigationController
+            push = (source.navigationController != nil || source is UINavigationController) &&
+                !(target is UINavigationController)
         }
         if push {
             if let navigation = source as? UINavigationController {
