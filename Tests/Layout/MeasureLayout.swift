@@ -26,7 +26,7 @@ import CoreGraphics
 class MeasureLayout: FlexLayout {
     var _measure: ((CGFloat, MeasureMode, CGFloat, MeasureMode) -> CGSize)?
 
-    override init(view: LayoutView? = nil) {
+    required init(view: LayoutView? = nil) {
         super.init(view: view)
         measureSelf = true
         layoutType = .text // measureSelf ? .text : .default

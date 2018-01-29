@@ -103,8 +103,8 @@ class DirtyMarkingTests: FlexTestCase {
         child1_child0.append(child1_child0_child0)
 
         child1.append(child1_child0)
-        root.append(child0)
-        root.append(child1)
+        root.insert(child0, at: 0)
+        root.insert(child1, at: 0)
 
         child0.display(Display.flex)
         child1.display(Display.none)

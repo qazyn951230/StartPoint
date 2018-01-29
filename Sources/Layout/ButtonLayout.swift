@@ -32,7 +32,7 @@ final public class ButtonLayout: FlexLayout {
     public private(set) var titleLayout: TextLayout? = nil
     public private(set) var imageLayout: FlexLayout? = nil
 
-    public override init(view: LayoutView? = nil) {
+    public required init(view: LayoutView? = nil) {
         super.init(view: view)
         flexDirection(.row)
             .justifyContent(.center)

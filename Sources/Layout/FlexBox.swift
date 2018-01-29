@@ -61,9 +61,10 @@ class FlexBox {
         margin = .zero
         padding = .zero
         border = .zero
+        direction = .inherit
 
-        width = 0
-        height = 0
+        width = Double.nan
+        height = Double.nan
         measuredWidth = Double.nan
         measuredHeight = Double.nan
         resolvedWidth = .auto
@@ -71,6 +72,23 @@ class FlexBox {
 
         hasOverflow = false
         generation = 0
+    }
+
+    func copy(from box: FlexBox) {
+        position = box.position
+        margin = box.margin
+        padding = box.padding
+        border = box.border
+
+        width = box.width
+        height = box.height
+        measuredWidth = box.measuredWidth
+        measuredHeight = box.measuredHeight
+        resolvedWidth = box.resolvedWidth
+        resolvedHeight = box.resolvedHeight
+
+        hasOverflow = box.hasOverflow
+        generation = box.generation
     }
 
     func computedDimension(by direction: FlexDirection) -> StyleValue {

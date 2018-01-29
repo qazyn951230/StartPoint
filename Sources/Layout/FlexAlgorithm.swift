@@ -123,8 +123,12 @@ extension FlexLayout {
 
     // YGZeroOutLayoutRecursivly
     func zeroLayout() {
-        box.reset()
-        cachedLayout = nil
+        invalidate()
+        box.width = 0
+        box.height = 0
+        box.measuredWidth = 0
+        box.measuredHeight = 0
+        copyChildrenIfNeeded()
         children.forEach {
             $0.zeroLayout()
         }
@@ -434,6 +438,7 @@ extension FlexLayout {
         if !performLayout && fixedLayout(width: width, height: height, widthMode: widthMode, heightMode: heightMode, parentWidth: parentWidth, parentHeight: parentHeight) {
             return
         }
+        copyChildrenIfNeeded()
         // Reset layout flags, as they could have changed.
         box.hasOverflow = false
         let direction = style.resolveDirection(by: direction)

@@ -105,7 +105,7 @@ open class FlexLayout: Equatable {
         return false
     }
 
-    public init(view: LayoutView? = nil) {
+    public required init(view: LayoutView? = nil) {
         self.view = view
         style = FlexStyle()
         // TODO: measureSelf & layoutType
@@ -132,12 +132,9 @@ open class FlexLayout: Equatable {
     }
 
     open func invalidate() {
-        box.position = .zero
-        box.width = Double.nan
-        box.height = Double.nan
-//        computedFlexBasis = 0
-        box.measuredWidth = 0
-        box.measuredHeight = 0
+        box.reset()
+        cachedLayout = nil
+        cachedMeasurements.removeAll()
     }
 
     public func copyStyle(from layout: FlexLayout) {
@@ -147,12 +144,55 @@ open class FlexLayout: Equatable {
         }
     }
 
+    func copy(from layout: FlexLayout) {
+        copyStyle(from: layout)
+        box.copy(from: layout.box)
+        dirty = layout.dirty
+        layoutType = layout.layoutType
+        measureSelf = layout.measureSelf
+        nextChild = layout.nextChild
+        computedFlexBasis = layout.computedFlexBasis
+        lastParentDirection = layout.lastParentDirection
+        cachedLayout = layout.cachedLayout
+        cachedMeasurements = layout.cachedMeasurements
+        lineIndex = layout.lineIndex
+    }
+
+    // YGNodeClone
+    open func copy<Layout: FlexLayout>() -> Layout {
+        // TODO: view or nil
+        let layout = Layout(view: view)
+        layout.copy(from: self)
+        layout.children = children
+        layout.parent = nil
+        return layout
+    }
+
+    open func copyChildrenIfNeeded() {
+        guard children.count > 0 else {
+            return
+        }
+        guard let first = children.first, first.parent != self else {
+            // If the first child has this node as its parent, we assume that it is already unique.
+            // We can do this because if we have it has a child, that means that its parent was at some
+            // point cloned which made that subtree immutable.
+            // We also assume that all its sibling are cloned as well.
+            return
+        }
+        children = children.map {
+            let child = $0.copy()
+            child.parent = self
+            return child
+        }
+    }
+
     // MARK: - Managing Child layouts
     public func append(_ child: FlexLayout) {
         guard child.parent == nil else {
             // TODO: Warning
             return
         }
+        copyChildrenIfNeeded()
         children.append(child)
         child.parent = self
         markDirty()
@@ -180,35 +220,59 @@ open class FlexLayout: Equatable {
             // TODO: Warning
             return
         }
+        copyChildrenIfNeeded()
         children.insert(child, at: index)
         child.parent = self
         markDirty()
     }
 
     // YGNodeRemoveChild
-    public func remove(_ child: FlexLayout) { 
-        if let index = children.index(of: child) {
-            children.remove(at: index)
-            child.invalidate()
-            child.parent = nil
-            markDirty()
+    public func remove(_ child: FlexLayout) {
+        guard children.count > 0 else {
+            return
         }
+        if let first = children.first, first.parent == self {
+            // If the first child has this node as its parent, we assume that it is already unique.
+            // We can now try to delete a child in this list.
+            if let index = children.index(of: child) {
+                children.remove(at: index)
+                child.invalidate()
+                child.parent = nil
+                markDirty()
+            }
+            return
+        }
+        var array = [FlexLayout]()
+        for item in children {
+            if item != child {
+                let layout: FlexLayout = item.copy()
+                layout.parent = self
+                array.append(layout)
+            } else {
+                child.markDirty()
+                continue
+            }
+        }
+        children = array
     }
 
     public func removeAll() {
         guard children.count > 0 else {
             return
         }
-        for child in children {
-            child.invalidate()
-            child.parent = nil
+        if let first = children.first, first.parent == self {
+            // If the first child has this node as its parent, we assume that this child set is unique.
+            for child in children {
+                child.invalidate()
+                child.parent = nil
+            }
         }
         children.removeAll()
         markDirty()
     }
 
     public func child(at index: Int) -> FlexLayout? {
-        guard index > 0 && index < children.count else {
+        guard index > -1 && index < children.count else {
             return nil
         }
         return children[index]
