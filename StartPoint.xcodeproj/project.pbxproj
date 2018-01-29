@@ -54,6 +54,7 @@
 		AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */; };
 		AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */; };
 		AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2429CD251C00FABFCD1 /* SafeArea.swift */; };
+		AC96A80C1EF61F19CC7CE2DA /* AndroidNewsFeeds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */; };
 		AC96A8118D2718872E1D4E75 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */; };
 		AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */; };
 		AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */; };
@@ -164,6 +165,7 @@
 		AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyleTests.swift; sourceTree = "<group>"; };
 		AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationPermission.swift; sourceTree = "<group>"; };
 		AC96A5C929430D3747CC4C57 /* FlexControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexControl.swift; sourceTree = "<group>"; };
+		AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndroidNewsFeeds.swift; sourceTree = "<group>"; };
 		AC96A630A39CC08BFCD8C783 /* AppNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppNavigationController.swift; sourceTree = "<group>"; };
 		AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermission.swift; sourceTree = "<group>"; };
 		AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinMaxDimensionTests.swift; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 				AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */,
 				AC96AF82C7E003113F5EB468 /* StyleTests.swift */,
 				AC96A7DD51A8DC2463702C6E /* PersistenceTests.swift */,
+				AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -823,6 +826,7 @@
 				AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */,
 				AC96A3FE03768BF5F4255EE1 /* StyleTests.swift in Sources */,
 				AC96ACAF4592BC56CCA73704 /* PersistenceTests.swift in Sources */,
+				AC96A80C1EF61F19CC7CE2DA /* AndroidNewsFeeds.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
