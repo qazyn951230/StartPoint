@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import StartPoint
 import CoreGraphics
+@testable import StartPoint
 
 class MeasureLayout: FlexLayout {
     var _measure: ((CGFloat, MeasureMode, CGFloat, MeasureMode) -> CGSize)?

@@ -38,7 +38,7 @@ class InfiniteHeightTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(300))
         root_child0.height(StyleValue.length(300))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.positionType(PositionType.absolute)
@@ -46,7 +46,7 @@ class InfiniteHeightTests: FlexTestCase {
         root_child1.position(top: StyleValue.percentage(20))
         root_child1.width(StyleValue.percentage(20))
         root_child1.height(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

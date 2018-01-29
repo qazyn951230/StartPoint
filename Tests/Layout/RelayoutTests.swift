@@ -33,7 +33,7 @@ class RelayoutTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.minHeight(StyleValue.length(10))
         root_child0.maxHeight(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
         XCTAssertEqual(root_child0.box.height, 10)

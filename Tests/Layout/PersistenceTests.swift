@@ -207,7 +207,7 @@ class PersistenceTests: FlexTestCase {
         XCTAssertEqual(root2_child1.box.height, 60)
 
         // The deeper children are untouched.
-        XCTAssertEqual(root_child1_0, root2_child1.child(at: 0))
-        XCTAssertEqual(root_child1_1, root2_child1.child(at: 1))
+        XCTAssertEqual(root2_child1.child(at: 0)!, root_child1_0)
+        XCTAssertEqual(root2_child1.child(at: 1)!, root_child1_1)
     }
 }

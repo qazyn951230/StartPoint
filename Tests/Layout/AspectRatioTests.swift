@@ -25,6 +25,7 @@ import XCTest
 
 // Generated from YGAspectRatioTest.cpp
 class AspectRatioTests: FlexTestCase {
+
     func _measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode _: MeasureMode) -> CGSize {
         let width: CGFloat = widthMode.isExactly ? width : 50
         let height: CGFloat = widthMode.isExactly ? height : 50
@@ -41,7 +42,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -61,7 +62,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -83,7 +84,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -104,7 +105,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -122,7 +123,7 @@ class AspectRatioTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -143,7 +144,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -164,7 +165,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(150))
         root_child0.flexShrink(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -184,13 +185,13 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.percentage(100))
         root_child0.flexShrink(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.percentage(100))
         root_child1.flexShrink(1)
         root_child1.aspectRatio(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         root.calculate(direction: Direction.ltr)
 
@@ -215,7 +216,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexBasis(50)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -237,7 +238,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(0))
         root_child0.width(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -259,7 +260,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(0))
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -280,7 +281,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.maxWidth(StyleValue.length(40))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -301,7 +302,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(50))
         root_child0.maxHeight(StyleValue.length(40))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -322,7 +323,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(30))
         root_child0.minWidth(StyleValue.length(40))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -343,7 +344,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(30))
         root_child0.minHeight(StyleValue.length(40))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -363,7 +364,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(2)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -383,7 +384,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(100))
         root_child0.aspectRatio(0.5)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -403,7 +404,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(50))
         root_child0.aspectRatio(0.5)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -423,7 +424,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(100))
         root_child0.aspectRatio(2)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -443,7 +444,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _measure
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -466,7 +467,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -488,7 +489,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -510,13 +511,13 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(100))
         root_child1.flexGrow(1)
         root_child1.aspectRatio(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         root.calculate(direction: Direction.ltr)
 
@@ -542,13 +543,13 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(100))
         root_child1.flexGrow(1)
         root_child1.aspectRatio(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         root.calculate(direction: Direction.ltr)
 
@@ -575,7 +576,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.width(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(0.5)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -596,7 +597,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.height(StyleValue.length(50))
         root_child0.flexGrow(1)
         root_child0.aspectRatio(2)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -618,7 +619,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(10))
         root_child0.position(right: StyleValue.length(10))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -640,7 +641,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(10))
         root_child0.position(bottom: StyleValue.length(10))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -660,7 +661,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -679,7 +680,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -698,7 +699,7 @@ class AspectRatioTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(50))
         root_child0.aspectRatio(4)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -722,7 +723,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.aspectRatio(1)
         root_child0.margin(left: StyleValue.length(10))
         root_child0.margin(right: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -746,7 +747,7 @@ class AspectRatioTests: FlexTestCase {
         root_child0.aspectRatio(1)
         root_child0.margin(left: StyleValue.length(10))
         root_child0.margin(right: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -758,19 +759,20 @@ class AspectRatioTests: FlexTestCase {
     }
 
     // Generated from test: aspect_ratio_should_prefer_explicit_height
-    func testAspectRatioShouldPreferExplicitHeight() {
-        let root = webLayout()
+    func testAspectRatioShouldPreferExplicitHeight() { // YGConfigSetUseWebDefaults(config, true);
+
+        let root = FlexLayout()
         root.flexDirection(FlexDirection.column)
 
-        let root_child0 = webLayout()
+        let root_child0 = FlexLayout()
         root_child0.flexDirection(FlexDirection.column)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
-        let root_child0_child0 = webLayout()
+        let root_child0_child0 = FlexLayout()
         root_child0_child0.flexDirection(FlexDirection.column)
         root_child0_child0.height(StyleValue.length(100))
         root_child0_child0.aspectRatio(2)
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(width: 100, height: 200, direction: Direction.ltr)
 
@@ -785,19 +787,20 @@ class AspectRatioTests: FlexTestCase {
     }
 
     // Generated from test: aspect_ratio_should_prefer_explicit_width
-    func testAspectRatioShouldPreferExplicitWidth() {
-        let root = webLayout()
+    func testAspectRatioShouldPreferExplicitWidth() { // YGConfigSetUseWebDefaults(config, true);
+
+        let root = FlexLayout()
         root.flexDirection(FlexDirection.row)
 
-        let root_child0 = webLayout()
+        let root_child0 = FlexLayout()
         root_child0.flexDirection(FlexDirection.row)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
-        let root_child0_child0 = webLayout()
+        let root_child0_child0 = FlexLayout()
         root_child0_child0.flexDirection(FlexDirection.row)
         root_child0_child0.width(StyleValue.length(100))
         root_child0_child0.aspectRatio(0.5)
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 
@@ -819,12 +822,12 @@ class AspectRatioTests: FlexTestCase {
         root_child0.flexDirection(FlexDirection.column)
         root_child0.aspectRatio(2)
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = webLayout()
         root_child0_child0.aspectRatio(4)
         root_child0_child0.flexGrow(1)
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
 

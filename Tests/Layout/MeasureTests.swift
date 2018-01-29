@@ -27,12 +27,12 @@ import XCTest
 class MeasureTests: FlexTestCase {
     var measureCount = 0
 
-    func _measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+    func _measure(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
         measureCount += 1
         return CGSize(width: 10, height: 10)
     }
 
-    func _simulate_wrapping_text(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
+    func _simulate_wrapping_text(width: CGFloat, widthMode: MeasureMode, height _: CGFloat, heightMode _: MeasureMode)
         -> CGSize {
         if widthMode.isUndefined || width >= 68 {
             return CGSize(width: 68, height: 16)
@@ -40,14 +40,14 @@ class MeasureTests: FlexTestCase {
         return CGSize(width: 50, height: 32)
     }
 
-    func _measure_assert_negative(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
+    func _measure_assert_negative(width: CGFloat, widthMode _: MeasureMode, height: CGFloat, heightMode _: MeasureMode)
         -> CGSize {
         XCTAssertGreaterThanOrEqual(width, 0)
         XCTAssertGreaterThanOrEqual(height, 0)
         return CGSize.zero
     }
 
-    func _measure_90_10(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode)
+    func _measure_90_10(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode)
         -> CGSize {
         return CGSize(width: 90, height: 10)
     }
@@ -66,7 +66,7 @@ class MeasureTests: FlexTestCase {
         root_child0._measure = _measure
         root_child0.flexGrow(1)
         root_child0.flexShrink(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -78,12 +78,12 @@ class MeasureTests: FlexTestCase {
         let root = FlexLayout()
 
         let root_child0 = FlexLayout()
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = MeasureLayout()
         root_child0_child0.positionType(PositionType.absolute)
         root_child0_child0._measure = _measure
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -103,7 +103,7 @@ class MeasureTests: FlexTestCase {
         root_child0.maxWidth(StyleValue.length(10))
         root_child0.minHeight(StyleValue.length(10))
         root_child0.maxHeight(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -127,7 +127,7 @@ class MeasureTests: FlexTestCase {
         root_child0.maxWidth(StyleValue.percentage(10))
         root_child0.minHeight(StyleValue.percentage(10))
         root_child0.maxHeight(StyleValue.percentage(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -147,7 +147,7 @@ class MeasureTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _measure
         root_child0.margin(left: StyleValue.auto)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -170,7 +170,7 @@ class MeasureTests: FlexTestCase {
         root_child0.maxWidth(StyleValue.percentage(10))
         root_child0.minHeight(StyleValue.length(10))
         root_child0.maxHeight(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -194,7 +194,7 @@ class MeasureTests: FlexTestCase {
         root_child0.maxWidth(StyleValue.length(10))
         root_child0.minHeight(StyleValue.percentage(10))
         root_child0.maxHeight(StyleValue.percentage(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -214,7 +214,7 @@ class MeasureTests: FlexTestCase {
         root_child0.alignSelf(.flexStart)
         root_child0._measure = _simulate_wrapping_text
 
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -231,7 +231,7 @@ class MeasureTests: FlexTestCase {
         root_child0.alignSelf(.flexStart)
         root_child0._measure = _simulate_wrapping_text
 
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -251,7 +251,7 @@ class MeasureTests: FlexTestCase {
         root_child0.padding(value: StyleValue.length(100))
         root_child0._measure = _measure
 
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(width: 282, height: Double.nan, direction: Direction.ltr)
 
@@ -272,12 +272,12 @@ class MeasureTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -306,12 +306,12 @@ class MeasureTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -340,12 +340,12 @@ class MeasureTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -375,12 +375,12 @@ class MeasureTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -411,12 +411,12 @@ class MeasureTests: FlexTestCase {
         root_child0._measure = _simulate_wrapping_text
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -446,12 +446,12 @@ class MeasureTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root_child0.flexShrink(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -480,12 +480,12 @@ class MeasureTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _simulate_wrapping_text
         root_child0.flexShrink(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(5))
         root_child1.height(StyleValue.length(5))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -507,7 +507,7 @@ class MeasureTests: FlexTestCase {
     // Generated from test: can_nullify_measure_func_on_any_node
     func testCanNullifyMeasureFuncOnAnyNode() {
         let root = MeasureLayout()
-        root.append(FlexLayout())
+        root.insert(FlexLayout(), at: 0)
 
         root._measure = nil
         XCTAssertNil(root._measure)
@@ -523,7 +523,7 @@ class MeasureTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _measure_assert_negative
         root_child0.margin(top: StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
     }
@@ -538,7 +538,7 @@ class MeasureTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _measure_assert_negative
         root_child0.margin(leading: StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
     }
@@ -553,14 +553,14 @@ class MeasureTests: FlexTestCase {
         root.height(StyleValue.length(80))
 
         let root_child0 = FlexLayout()
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = MeasureLayout()
 
         root_child1._measure = _measure_90_10
         root_child1.maxWidth(StyleValue.percentage(50))
         root_child1.padding(top: StyleValue.percentage(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         root.calculate(direction: Direction.ltr)
 

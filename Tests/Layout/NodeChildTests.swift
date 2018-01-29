@@ -33,7 +33,7 @@ class NodeChildTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 

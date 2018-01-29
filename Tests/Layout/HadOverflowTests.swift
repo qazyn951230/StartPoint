@@ -43,12 +43,12 @@ class HadOverflowTests: FlexTestCase {
         child0.height(StyleValue.length(40))
         child0.margin(top: StyleValue.length(10))
         child0.margin(bottom: StyleValue.length(15))
-        root.append(child0)
+        root.insert(child0, at: 0)
         let child1 = FlexLayout()
         child1.width(StyleValue.length(80))
         child1.height(StyleValue.length(40))
         child1.margin(bottom: StyleValue.length(5))
-        root.append(child1)
+        root.insert(child1, at: 1)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 
@@ -62,12 +62,12 @@ class HadOverflowTests: FlexTestCase {
         child0.height(StyleValue.length(40))
         child0.margin(top: StyleValue.length(10))
         child0.margin(bottom: StyleValue.length(10))
-        root.append(child0)
+        root.insert(child0, at: 0)
         let child1 = FlexLayout()
         child1.width(StyleValue.length(80))
         child1.height(StyleValue.length(40))
         child1.margin(bottom: StyleValue.length(5))
-        root.append(child1)
+        root.insert(child1, at: 1)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 
@@ -81,32 +81,32 @@ class HadOverflowTests: FlexTestCase {
         child0.height(StyleValue.length(40))
         child0.margin(top: StyleValue.length(10))
         child0.margin(bottom: StyleValue.length(10))
-        root.append(child0)
+        root.insert(child0, at: 0)
         let child1 = FlexLayout()
         child1.width(StyleValue.length(80))
         child1.height(StyleValue.length(40))
         child1.margin(bottom: StyleValue.length(5))
         child1.flexShrink(1)
-        root.append(child1)
+        root.insert(child1, at: 1)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 
         XCTAssertFalse(root.box.hasOverflow)
     }
 
-    // Generated from test: hasOverflow_gets_reset_if_not_logger_valid
-    func testhasOverflowGetsResetIfNotLoggerValid() {
+    // Generated from test: hadOverflow_gets_reset_if_not_logger_valid
+    func testHadOverflowGetsResetIfNotLoggerValid() {
         let child0 = FlexLayout()
         child0.width(StyleValue.length(80))
         child0.height(StyleValue.length(40))
         child0.margin(top: StyleValue.length(10))
         child0.margin(bottom: StyleValue.length(10))
-        root.append(child0)
+        root.insert(child0, at: 0)
         let child1 = FlexLayout()
         child1.width(StyleValue.length(80))
         child1.height(StyleValue.length(40))
         child1.margin(bottom: StyleValue.length(5))
-        root.append(child1)
+        root.insert(child1, at: 1)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 
@@ -126,16 +126,16 @@ class HadOverflowTests: FlexTestCase {
         child0.height(StyleValue.length(40))
         child0.margin(top: StyleValue.length(10))
         child0.margin(bottom: StyleValue.length(10))
-        root.append(child0)
+        root.insert(child0, at: 0)
         let child1 = FlexLayout()
         child1.width(StyleValue.length(80))
         child1.height(StyleValue.length(40))
-        root.append(child1)
+        root.insert(child1, at: 1)
         let child1_1 = FlexLayout()
         child1_1.width(StyleValue.length(80))
         child1_1.height(StyleValue.length(40))
         child1_1.margin(bottom: StyleValue.length(5))
-        child1.append(child1_1)
+        child1.insert(child1_1, at: 0)
 
         root.calculate(width: 200, height: 100, direction: Direction.ltr)
 

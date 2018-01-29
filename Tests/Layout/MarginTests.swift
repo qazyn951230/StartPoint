@@ -1045,17 +1045,17 @@ class MarginTests: FlexTestCase {
         root_child1.height(StyleValue.length(50))
         root.append(root_child1)
 //        root.calculate(direction: Direction.ltr)
-//
+        //
 //        XCTAssertEqual(root.box.left, 0)
 //        XCTAssertEqual(root.box.top, 0)
 //        XCTAssertEqual(root.box.width, 200)
 //        XCTAssertEqual(root.box.height, 200)
-//
+        //
 //        XCTAssertEqual(root_child0.box.left, 150)
 //        XCTAssertEqual(root_child0.box.top, 0)
 //        XCTAssertEqual(root_child0.box.width, 50)
 //        XCTAssertEqual(root_child0.box.height, 50)
-//
+        //
 //        XCTAssertEqual(root_child1.box.left, 75)
 //        XCTAssertEqual(root_child1.box.top, 50)
 //        XCTAssertEqual(root_child1.box.width, 50)

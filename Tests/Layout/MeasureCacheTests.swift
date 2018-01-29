@@ -47,7 +47,7 @@ class MeasureCacheTests: FlexTestCase {
         return CGSize(width: w, height: h)
     }
 
-    func _measure_84_49(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+    func _measure_84_49(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
         measureCount += 1
         return CGSize(width: 84.0, height: 49.0)
     }
@@ -63,7 +63,7 @@ class MeasureCacheTests: FlexTestCase {
         let root_child0 = MeasureLayout()
         root_child0._measure = _measureMax
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 
@@ -76,7 +76,7 @@ class MeasureCacheTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _measureMin
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
         root.calculate(width: 100, height: 50, direction: Direction.ltr)
@@ -91,7 +91,7 @@ class MeasureCacheTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _measureMin
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
         root.calculate(width: 100, height: 50, direction: Direction.ltr)
@@ -106,7 +106,7 @@ class MeasureCacheTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _measureMin
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
         root.alignItems(.stretch)
@@ -122,7 +122,7 @@ class MeasureCacheTests: FlexTestCase {
 
         let root_child0 = MeasureLayout()
         root_child0._measure = _measureMin
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: Double.nan, direction: Direction.ltr)
         root.calculate(width: 10, height: Double.nan, direction: Direction.ltr)
@@ -140,11 +140,11 @@ class MeasureCacheTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.padding(value: StyleValue.length(2.88))
         root_child0.flexDirection(FlexDirection.row)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = MeasureLayout()
         root_child0_child0._measure = _measure_84_49
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
 

@@ -34,7 +34,7 @@ class ZeroOutLayoutRecursivlyTests: FlexTestCase {
         root.height(StyleValue.length(200))
 
         let child = FlexLayout()
-        root.append(child)
+        root.insert(child, at: 0)
         child.width(StyleValue.length(100))
         child.height(StyleValue.length(100))
         child.margin(top: StyleValue.length(10))
