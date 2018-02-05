@@ -93,7 +93,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         case (.auto, .auto):
             return true
         case (.length(let a), .length(let b)), (.percentage(let a), .percentage(let b)):
-            return equal(a, b)
+            return a ~~ b
         default:
             return false
         }
@@ -460,8 +460,8 @@ public struct Flex: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLi
     }
 
     public static func ==(lhs: Flex, rhs: Flex) -> Bool {
-        return equal(lhs.grow, rhs.grow) &&
-            equal(lhs.shrink, rhs.shrink) &&
+        return lhs.grow ~~ rhs.grow &&
+            lhs.shrink ~~ rhs.shrink &&
             lhs.basis == rhs.basis
     }
 }
@@ -642,7 +642,7 @@ struct LayoutCache {
     let heightMode: MeasureMode
 
     func isEqual(width: Double, height: Double, widthMode: MeasureMode, heightMode: MeasureMode) -> Bool {
-        return equal(self.width, width) && equal(self.height, height) &&
+        return self.width ~~ width && self.height ~~ height &&
             self.widthMode == widthMode && self.heightMode == heightMode
     }
 
@@ -657,10 +657,10 @@ struct LayoutCache {
         let lastWidth = rounded ? FlexBox.round(self.width, scale: scale, ceil: false, floor: false) : self.width
         let lastHeight = rounded ? FlexBox.round(self.height, scale: scale, ceil: false, floor: false) : self.height
 
-        let sameWidth = self.widthMode == widthMode && equal(_width, lastWidth)
+        let sameWidth = self.widthMode == widthMode && _width ~~ lastWidth
         let sameWidth2 = LayoutCache.validateSize(mode: widthMode, size: width - marginRow,
             lastMode: self.widthMode, lastSize: self.width, computedSize: self.computedWidth)
-        let sameHeight = self.heightMode == heightMode && equal(_height, lastHeight)
+        let sameHeight = self.heightMode == heightMode && _height ~~ lastHeight
         let sameHeight2 = LayoutCache.validateSize(mode: heightMode, size: height - marginColumn,
             lastMode: self.heightMode, lastSize: self.height, computedSize: self.computedHeight)
         return (sameWidth || sameWidth2) && (sameHeight || sameHeight2)
@@ -670,13 +670,13 @@ struct LayoutCache {
                              lastSize: Double, computedSize: Double) -> Bool {
         switch mode {
         case .exactly:
-            return equal(size, computedSize)
+            return size ~~ computedSize
         case .atMost:
             switch lastMode {
             case .undefined:
-                return (size >= computedSize || equal(size, computedSize))
+                return (size >= computedSize || size ~~ computedSize)
             case .atMost:
-                return (lastSize > size && (computedSize <= size || equal(size, computedSize)))
+                return (lastSize > size && (computedSize <= size || size ~~ computedSize))
             case .exactly:
                 return false
             }
@@ -699,11 +699,4 @@ func inner<T: Comparable>(_ value: T, min: T?, max: T?) -> T {
         r = Swift.max(r, min)
     }
     return r
-}
-
-func equal(_ lhs: Double, _ rhs: Double) -> Bool {
-    if lhs.isNaN {
-        return rhs.isNaN
-    }
-    return abs(lhs - rhs) < 0.0001
 }

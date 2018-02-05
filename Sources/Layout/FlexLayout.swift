@@ -121,8 +121,8 @@ open class FlexLayout: Equatable {
         return self
     }
 
-    // YGNodeMarkDirtyInternal
-    open func markDirty() { 
+    // YGNodeMarkDirty
+    open func markDirty() {
         if dirty {
             return
         }

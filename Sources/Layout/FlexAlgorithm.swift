@@ -261,6 +261,9 @@ extension FlexLayout {
                                  layout: Bool, reason: String) -> Bool {
         let layoutNeeded: Bool
         if let lastParentDirection = self.lastParentDirection {
+//            // Notice: A `layout` with measure function and marked dirty should layout in case its content changed.
+//            layoutNeeded = (dirty && (box.generation != FlexBox.totalGeneration || measureSelf)) ||
+//            lastParentDirection != direction
             layoutNeeded = (dirty && box.generation != FlexBox.totalGeneration) || lastParentDirection != direction
         } else {
             layoutNeeded = true

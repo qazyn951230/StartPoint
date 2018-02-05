@@ -57,3 +57,41 @@ extension Double: LayoutValue {
         return CGFloat(self)
     }
 }
+
+public struct Size: Equatable {
+    public let width: Double
+    public let height: Double
+
+    public init(width: Double, height: Double) {
+        self.width = width
+        self.height = height
+    }
+
+    public static var zero = Size(width: 0, height: 0)
+
+    public static func ==(lhs: Size, rhs: Size) -> Bool {
+        return lhs.width ~~ rhs.width && lhs.height ~~ rhs.height
+    }
+}
+
+public struct Rect: Equatable {
+    public let x: Double
+    public let y: Double
+    public let width: Double
+    public let height: Double
+
+    public init(x: Double, y: Double, width: Double, height: Double) {
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+    }
+
+    public static let zero = Rect(x: 0.0, y: 0.0, width: 0.0, height: 0.0)
+
+    public static func ==(lhs: Rect, rhs: Rect) -> Bool {
+        return lhs.x ~~ rhs.x && lhs.y ~~ rhs.y &&
+            lhs.width ~~ rhs.width && lhs.height ~~ rhs.height
+    }
+}
+

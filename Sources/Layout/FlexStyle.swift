@@ -189,7 +189,7 @@ public class FlexStyle: Equatable {
         if !_equal {
             return false
         }
-        _equal = equal(lhs.aspectRatio, rhs.aspectRatio)
+        _equal = lhs.aspectRatio ~~ rhs.aspectRatio
         if !_equal {
             return false
         }

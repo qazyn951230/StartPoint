@@ -22,8 +22,27 @@
 
 import Foundation
 
-class FlexBox {
-    var position: LayoutPosition = .zero
+final class FlexBox {
+    static var totalGeneration: Int64 = 0
+
+    var position: LayoutPosition = LayoutPosition.zero
+    var width: Double = Double.nan // dimensions
+    var height: Double = Double.nan // dimensions
+
+    var margin: LayoutInsets = LayoutInsets.zero
+    var padding: LayoutInsets = LayoutInsets.zero
+    var border: LayoutInsets = LayoutInsets.zero
+
+    var direction: Direction = Direction.inherit
+
+    var measuredWidth: Double = Double.nan
+    var measuredHeight: Double = Double.nan
+    var resolvedWidth: StyleValue = StyleValue.auto // resolvedDimensions
+    var resolvedHeight: StyleValue = StyleValue.auto // resolvedDimensions
+
+    var hasOverflow = false
+    var generation: Int64 = 0
+
     var top: Double {
         return position.top
     }
@@ -36,25 +55,6 @@ class FlexBox {
     var right: Double {
         return position.right
     }
-
-    var width: Double = Double.nan // dimensions
-    var height: Double = Double.nan // dimensions
-
-    var margin: LayoutInsets = .zero
-    var padding: LayoutInsets = .zero
-    var border: LayoutInsets = .zero
-
-    var direction: Direction = Direction.inherit
-
-    var measuredWidth: Double = Double.nan
-    var measuredHeight: Double = Double.nan
-    var resolvedWidth: StyleValue = .auto // resolvedDimensions
-    var resolvedHeight: StyleValue = .auto // resolvedDimensions
-
-    var hasOverflow = false
-
-    var generation: Int64 = 0
-    static var totalGeneration: Int64 = 0
 
     func reset() {
         position = .zero
@@ -131,14 +131,14 @@ class FlexBox {
     static func round(_ value: Double, scale: Double, ceil: Bool, floor: Bool) -> Double {
         var value = value * scale
         let mod = fmod(value, 1)
-        if equal(mod, 0) {
+        if mod ~~ 0 {
             value = value - mod
-        } else if equal(mod, 1) || ceil {
+        } else if mod ~~ 1 || ceil {
             value = value - mod + 1
         } else if floor {
             value = value - mod
         } else {
-            value = value - mod + ((mod > 0.5 || equal(mod, 0.5)) ? 1.0 : 0.0)
+            value = value - mod + ((mod > 0.5 || mod ~~ 0.5) ? 1.0 : 0.0)
         }
         return value / scale
     }
@@ -157,8 +157,8 @@ class FlexBox {
         position.left = FlexBox.round(nodeLeft, scale: scale, ceil: false, floor: textLayout)
         position.top = FlexBox.round(nodeTop, scale: scale, ceil: false, floor: textLayout)
 
-        let fractionalWidth = !equal(fmod(nodeWidth * scale, 1.0), 0) && !equal(fmod(nodeWidth * scale, 1.0), 1.0)
-        let fractionalHeight = !equal(fmod(nodeHeight * scale, 1.0), 0) && !equal(fmod(nodeHeight * scale, 1.0), 1.0)
+        let fractionalWidth = !(fmod(nodeWidth * scale, 1.0) ~~ 0) && !(fmod(nodeWidth * scale, 1.0) ~~ 1.0)
+        let fractionalHeight = !(fmod(nodeHeight * scale, 1.0) ~~ 0) && !(fmod(nodeHeight * scale, 1.0) ~~ 1.0)
 
         width = FlexBox.round(absoluteRight, scale: scale, ceil: (textLayout && fractionalWidth),
             floor: (textLayout && !fractionalWidth)) -
