@@ -20,11 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import QuartzCore
 
-NS_ASSUME_NONNULL_BEGIN
-
-NSString *stringAddress(id object);
-size_t longAddress(id object);
-
-NS_ASSUME_NONNULL_END
+open class LayerElement<Layer: CALayer>: Element {
+    private var _layer: Layer? = nil
+    override var rawLayer: CALayer? {
+        return _layer
+    }
+    override var _loaded: Bool {
+        return _layer != nil
+    }
+}

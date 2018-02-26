@@ -22,42 +22,32 @@
 
 import UIKit
 
-public protocol Flexed {
-    var root: FlexLayout { get }
-    func flexLayout()
-}
+public typealias ButtonComponent = Component<UIButton, ComponentState>
 
-public extension Flexed where Self: UIView {
-    public func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
-    }
-}
-
-open class FlexView: UIView, Flexed {
-    public let root = FlexLayout()
-
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialization()
+public extension Component where View: UIButton {
+    @discardableResult
+    public func title(_ value: NSAttributedString?) -> Self {
+        // TODO: Verify button state
+        view?.setAttributedTitle(value, for: .normal)
+        view?.setAttributedTitle(value, for: .selected)
+        view?.setAttributedTitle(value, for: .disabled)
+        layout.markDirty()
+        return self
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
+    @discardableResult
+    public func title(_ value: NSAttributedString?, for state: UIControlState) -> Self {
+        view?.setAttributedTitle(value, for: state)
+        layout.markDirty()
+        return self
     }
 
-    open func initialization() {
-        backgroundColor = UIColor.white
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        flexLayout()
-    }
-
-    open func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
+    @discardableResult
+    public func title(_ value: NSAttributedString?, states: UIControlState...) -> Self {
+        for state in states {
+            view?.setAttributedTitle(value, for: state)
+        }
+        layout.markDirty()
+        return self
     }
 }

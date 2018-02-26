@@ -67,6 +67,10 @@ public struct Size: Equatable {
         self.height = height
     }
 
+    public init(cgSize: CGSize) {
+        self.init(width: Double(cgSize.width), height: Double(cgSize.height))
+    }
+
     public static var zero = Size(width: 0, height: 0)
 
     public static func ==(lhs: Size, rhs: Size) -> Bool {

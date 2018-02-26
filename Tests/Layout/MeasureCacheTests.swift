@@ -33,23 +33,23 @@ class MeasureCacheTests: FlexTestCase {
         measureCount = 0
     }
 
-    func _measureMax(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+    func _measureMax(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         measureCount += 1
-        let w: CGFloat = widthMode.isUndefined ? 10 : width
-        let h: CGFloat = heightMode.isUndefined ? 10 : height
-        return CGSize(width: w, height: h)
+        let w: Double = widthMode.isUndefined ? 10 : width
+        let h: Double = heightMode.isUndefined ? 10 : height
+        return Size(width: w, height: h)
     }
 
-    func _measureMin(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+    func _measureMin(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         measureCount += 1
-        let w: CGFloat = (widthMode.isUndefined || (widthMode.isAtMost && width > 10)) ? 10 : width
-        let h: CGFloat = (heightMode.isUndefined || heightMode.isAtMost && height > 10) ? 10 : height
-        return CGSize(width: w, height: h)
+        let w: Double = (widthMode.isUndefined || (widthMode.isAtMost && width > 10)) ? 10 : width
+        let h: Double = (heightMode.isUndefined || heightMode.isAtMost && height > 10) ? 10 : height
+        return Size(width: w, height: h)
     }
 
-    func _measure_84_49(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
+    func _measure_84_49(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         measureCount += 1
-        return CGSize(width: 84.0, height: 49.0)
+        return Size(width: 84.0, height: 49.0)
     }
 
     // Generated from test: measure_once_single_flexible_child
@@ -60,8 +60,8 @@ class MeasureCacheTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureMax
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureMax
         root_child0.flexGrow(1)
         root.insert(root_child0, at: 0)
 
@@ -74,8 +74,8 @@ class MeasureCacheTests: FlexTestCase {
     func testRemeasureWithSameExactWidthLargerThanNeededHeight() {
         let root = FlexLayout()
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureMin
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureMin
         root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
@@ -89,8 +89,8 @@ class MeasureCacheTests: FlexTestCase {
         let root = FlexLayout()
         root.alignItems(.flexStart)
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureMin
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureMin
         root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
@@ -104,8 +104,8 @@ class MeasureCacheTests: FlexTestCase {
         let root = FlexLayout()
         root.alignItems(.flexStart)
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureMin
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureMin
         root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: 100, direction: Direction.ltr)
@@ -120,8 +120,8 @@ class MeasureCacheTests: FlexTestCase {
         let root = FlexLayout()
         root.alignItems(.flexStart)
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureMin
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureMin
         root.insert(root_child0, at: 0)
 
         root.calculate(width: 100, height: Double.nan, direction: Direction.ltr)
@@ -142,8 +142,8 @@ class MeasureCacheTests: FlexTestCase {
         root_child0.flexDirection(FlexDirection.row)
         root.insert(root_child0, at: 0)
 
-        let root_child0_child0 = MeasureLayout()
-        root_child0_child0._measure = _measure_84_49
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.measureSelf = _measure_84_49
         root_child0.insert(root_child0_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)

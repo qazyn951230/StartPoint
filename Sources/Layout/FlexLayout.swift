@@ -20,29 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
-import CoreGraphics
-
 open class FlexLayout: Equatable {
     // MARK: Public properties
-    public let style: FlexStyle
-    public internal(set) weak var view: LayoutView?
+    public let style: FlexStyle = FlexStyle()
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
     public internal(set) var dirty: Bool = false
     // nodeType
     public var layoutType: LayoutType = .default
-    public var measureSelf: Bool = false {
+    public var measureSelf: ((Double, MeasureMode, Double, MeasureMode) -> Size)? {
         didSet {
-            layoutType = measureSelf ? .default : .text
+            layoutType = measureSelf == nil ? .default : .text
         }
-    }
-    public var frame: CGRect {
-        return CGRect(x: box.left, y: box.top, width: box.width, height: box.height)
     }
     // MARK: Internal properties
     let box: FlexBox = FlexBox()
     weak var nextChild: FlexLayout? = nil
+    var lastParentDirection: Direction? = nil
+    var cachedLayout: LayoutCache? = nil // performLayout == true
+    var cachedMeasurements: [LayoutCache] = [] // performLayout == false
+    var lineIndex = 0
+
+    public required init() {
+        // Do nothing.
+    }
+
     // YGResolveFlexGrow
     var computedFlexGrow: Double {
         // Root nodes flexGrow should always be 0
@@ -56,18 +58,13 @@ open class FlexLayout: Equatable {
     var flexed: Bool {
         return style.positionType == .relative && (computedFlexGrow != 0 || computedFlexShrink != 0)
     }
-    var computedFlexBasis: Double = Double.nan
-    var lastParentDirection: Direction? = nil
-    var cachedLayout: LayoutCache? = nil // performLayout == true
-    var cachedMeasurements: [LayoutCache] = [] // performLayout == false
-    var lineIndex = 0
     var _baseline: Double { // YGBaseline
         let value = baseline(width: box.measuredWidth, height: box.measuredHeight)
         if (!value.isNaN) {
             return value
         }
         var baselineChild: FlexLayout? = nil
-        for child: FlexLayout in children {
+        for child in children {
             if child.lineIndex > 0 {
                 break
             }
@@ -88,7 +85,6 @@ open class FlexLayout: Equatable {
             return box.measuredDimension(for: FlexDirection.column)
         }
     }
-
     // YGIsBaselineLayout
     var isBaselineLayout: Bool {
         if style.flexDirection.isColumn {
@@ -105,34 +101,26 @@ open class FlexLayout: Equatable {
         return false
     }
 
-    public required init(view: LayoutView? = nil) {
-        self.view = view
-        style = FlexStyle()
-        // TODO: measureSelf & layoutType
-        measureSelf = view?.measureSelf ?? false
-        layoutType = measureSelf ? .text : .default
-    }
-
-    @discardableResult
-    public func bind(view: LayoutView) -> Self {
-        self.view = view
-        measureSelf = view.measureSelf
-        layoutType = .text
-        return self
-    }
-
     // YGNodeMarkDirty
-    open func markDirty() {
+    public func markDirty() {
+        // Only a layout with measure function should manually mark self dirty
+        if measureSelf != nil {
+            _markDirty()
+        }
+    }
+
+    // markDirtyAndPropogate
+    internal func _markDirty() {
         if dirty {
             return
         }
         dirty = true
-        computedFlexBasis = Double.nan
-        parent?.markDirty()
+        box.computedFlexBasis = Double.nan
+        parent?._markDirty()
     }
 
     open func invalidate() {
-        box.reset()
+        box.invalidate()
         cachedLayout = nil
         cachedMeasurements.removeAll()
     }
@@ -140,7 +128,7 @@ open class FlexLayout: Equatable {
     public func copyStyle(from layout: FlexLayout) {
         if style != layout.style {
             style.copy(from: layout.style)
-            markDirty()
+            _markDirty()
         }
     }
 
@@ -151,7 +139,7 @@ open class FlexLayout: Equatable {
         layoutType = layout.layoutType
         measureSelf = layout.measureSelf
         nextChild = layout.nextChild
-        computedFlexBasis = layout.computedFlexBasis
+        box.computedFlexBasis = layout.box.computedFlexBasis
         lastParentDirection = layout.lastParentDirection
         cachedLayout = layout.cachedLayout
         cachedMeasurements = layout.cachedMeasurements
@@ -160,8 +148,7 @@ open class FlexLayout: Equatable {
 
     // YGNodeClone
     open func copy<Layout: FlexLayout>() -> Layout {
-        // TODO: view or nil
-        let layout = Layout(view: view)
+        let layout = Layout()
         layout.copy(from: self)
         layout.children = children
         layout.parent = nil
@@ -189,41 +176,25 @@ open class FlexLayout: Equatable {
     // MARK: - Managing Child layouts
     public func append(_ child: FlexLayout) {
         guard child.parent == nil else {
-            // TODO: Warning
+            assertFail("Append a layout with parent")
             return
         }
         copyChildrenIfNeeded()
         children.append(child)
         child.parent = self
-        markDirty()
-    }
-
-    public func append(view: LayoutView) -> FlexLayout {
-//        if let v = self.view {
-//            if let t = view.superview {
-//                if t != v {
-//                    // FIXME: throw Error
-//                    return FlexLayout()
-//                }
-//            } else {
-//                v.addSubview(view)
-//            }
-//        }
-        let layout = FlexLayout(view: view)
-        append(layout)
-        return layout
+        _markDirty()
     }
 
     // YGNodeInsertChild
-    public func insert(_ child: FlexLayout, at index: Int) { 
+    public func insert(_ child: FlexLayout, at index: Int) {
         guard child.parent == nil else {
-            // TODO: Warning
+            assertFail("Append a layout with parent")
             return
         }
         copyChildrenIfNeeded()
         children.insert(child, at: index)
         child.parent = self
-        markDirty()
+        _markDirty()
     }
 
     // YGNodeRemoveChild
@@ -238,7 +209,7 @@ open class FlexLayout: Equatable {
                 children.remove(at: index)
                 child.invalidate()
                 child.parent = nil
-                markDirty()
+                _markDirty()
             }
             return
         }
@@ -249,7 +220,7 @@ open class FlexLayout: Equatable {
                 layout.parent = self
                 array.append(layout)
             } else {
-                child.markDirty()
+                child._markDirty()
                 continue
             }
         }
@@ -268,7 +239,7 @@ open class FlexLayout: Equatable {
             }
         }
         children.removeAll()
-        markDirty()
+        _markDirty()
     }
 
     public func child(at index: Int) -> FlexLayout? {
@@ -284,85 +255,8 @@ open class FlexLayout: Equatable {
         return self
     }
 
-    public func apply(to view: LayoutView? = nil) {
-        apply(to: view, left: 0, top: 0)
-    }
-
-    open func apply(to view: LayoutView?, left: Double, top: Double) {
-        var left = left
-        var top = top
-        if let view = view ?? self.view {
-            let rect = CGRect(x: left + box.left, y: top + box.top, width: box.width, height: box.height)
-            view.frame = rect
-            left = 0
-            top = 0
-        } else {
-            left += box.left
-            top += box.top
-        }
-        children.forEach {
-            $0.apply(to: nil, left: left, top: top)
-        }
-    }
-
-#if DEBUG
-    public func debugApply(root: UIView) {
-        for child in children {
-            debugApply(layout: child, parent: root)
-        }
-    }
-
-    public func debugApply(layout: FlexLayout, parent: UIView) {
-        let item: UIView
-        if let view: UIView = layout.view as? UIView {
-            if let superview = view.superview {
-                if superview != parent {
-                    view.removeFromSuperview()
-                    parent.addSubview(view)
-                }
-            } else {
-                parent.addSubview(view)
-            }
-            item = view
-        } else {
-            item = UIView()
-            parent.addSubview(item)
-        }
-        item.frame = layout.frame
-        item.randomBackgroundColor()
-        layout.children.forEach {
-            debugApply(layout: $0, parent: item)
-        }
-    }
-#endif
-
-    public func layout(width: Int?, height: Int?) {
-        let width: Double? = width.map(Double.init)
-        let height: Double? = height.map(Double.init)
-        layout(width: width, height: height)
-    }
-
-    public func layout(width: Double? = nil, height: Double? = nil) {
-        let width: Double = width ?? Double.nan
-        let height: Double = height ?? Double.nan
-        let direction: Direction = style.direction == .inherit ? .ltr : style.direction
-        calculate(width: width, height: height, direction: direction)
-    }
-
-    public func layout(width: CGFloat?, height: CGFloat?) {
-        let width: Double? = width.map(Double.init)
-        let height: Double? = height.map(Double.init)
-        layout(width: width, height: height)
-    }
-
-    open func measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-        guard let view = self.view else {
-            return CGSize.zero
-        }
-        let width: CGFloat = widthMode.resolve(width)
-        let height: CGFloat = heightMode.resolve(height)
-        let size = view.sizeThatFits(CGSize(width: width, height: height))
-        return size.ceiled
+    open func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
+        return measureSelf?(width, widthMode, height, heightMode) ?? Size.zero
     }
 
     open func baseline(width: Double, height: Double) -> Double {
@@ -372,18 +266,5 @@ open class FlexLayout: Equatable {
     // MARK: Equatable
     open static func ==(lhs: FlexLayout, rhs: FlexLayout) -> Bool {
         return lhs === rhs
-    }
-
-    // MARK: Debug
-    public func debug(file: String = #file, function: String = #function, line: Int = #line) {
-#if DEBUG
-        func fn(layout: FlexLayout) {
-            print(layout.frame)
-            layout.children.forEach(fn)
-        }
-
-        Log.debug("", file: file, function: function, line: line)
-        fn(layout: self)
-#endif
     }
 }

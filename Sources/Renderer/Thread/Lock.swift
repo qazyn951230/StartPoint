@@ -31,10 +31,20 @@ public protocol Locking {
 public extension Locking {
     @discardableResult
     @inline(__always)
-    public func scoped<T>(_ method: () throws -> T) rethrows -> T {
+    public func locking<T>(_ method: () throws -> T) rethrows -> T {
         lock()
         defer {
             unlock()
+        }
+        return try method()
+    }
+
+    @discardableResult
+    @inline(__always)
+    public func unlocking<T>(_ method: () throws -> T) rethrows -> T {
+        unlock()
+        defer {
+            lock()
         }
         return try method()
     }

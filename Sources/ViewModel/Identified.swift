@@ -23,28 +23,32 @@
 import UIKit
 
 public protocol Identified {
+    var identifier: String { get }
+}
+
+public protocol StaticIdentified {
     static var identifier: String { get }
 }
 
-public extension Identified {
+public extension StaticIdentified {
     public static var identifier: String {
         return String(describing: self)
     }
 }
 
-public extension Identified where Self: UITableViewCell {
+public extension StaticIdentified where Self: UITableViewCell {
     public static func register(to tableView: UITableView) {
         tableView.register(self, forCellReuseIdentifier: identifier)
     }
 }
 
-public extension Identified where Self: UICollectionViewCell {
+public extension StaticIdentified where Self: UICollectionViewCell {
     public static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forCellWithReuseIdentifier: identifier)
     }
 }
 
-public extension Identified where Self: UICollectionReusableView {
+public extension StaticIdentified where Self: UICollectionReusableView {
     public static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                 withReuseIdentifier: identifier)
@@ -53,5 +57,5 @@ public extension Identified where Self: UICollectionReusableView {
     }
 }
 
-extension UIView: Identified { }
-extension UIViewController: Identified { }
+extension UIView: StaticIdentified { }
+extension UIViewController: StaticIdentified { }

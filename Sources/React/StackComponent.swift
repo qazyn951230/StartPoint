@@ -20,19 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import CoreGraphics
-@testable import StartPoint
-
-class MeasureLayout: FlexLayout {
-    var _measure: ((CGFloat, MeasureMode, CGFloat, MeasureMode) -> CGSize)?
-
-    required init(view: LayoutView? = nil) {
-        super.init(view: view)
-        measureSelf = true
-        layoutType = .text // measureSelf ? .text : .default
-    }
-
-    override func measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-        return _measure?(width, widthMode, height, heightMode) ?? CGSize.zero
+public final class StackComponent: BasicComponent<ComponentState> {
+    public init() {
+        super.init(framed: false)
     }
 }

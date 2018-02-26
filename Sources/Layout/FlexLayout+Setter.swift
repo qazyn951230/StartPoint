@@ -27,7 +27,7 @@ public extension FlexLayout {
     public func direction(_ value: Direction) -> Self {
         if (style.direction != value) {
             style.direction = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -36,7 +36,7 @@ public extension FlexLayout {
     public func flexDirection(_ value: FlexDirection) -> Self {
         if (style.flexDirection != value) {
             style.flexDirection = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -45,7 +45,7 @@ public extension FlexLayout {
     public func justifyContent(_ value: JustifyContent) -> Self {
         if (style.justifyContent != value) {
             style.justifyContent = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -54,7 +54,7 @@ public extension FlexLayout {
     public func alignContent(_ value: AlignContent) -> Self {
         if (style.alignContent != value) {
             style.alignContent = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -63,7 +63,7 @@ public extension FlexLayout {
     public func alignItems(_ value: AlignItems) -> Self {
         if (style.alignItems != value) {
             style.alignItems = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -72,7 +72,7 @@ public extension FlexLayout {
     public func alignSelf(_ value: AlignSelf) -> Self {
         if (style.alignSelf != value) {
             style.alignSelf = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -81,7 +81,7 @@ public extension FlexLayout {
     public func flexWrap(_ value: FlexWrap) -> Self {
         if (style.flexWrap != value) {
             style.flexWrap = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -90,7 +90,7 @@ public extension FlexLayout {
     public func overflow(_ value: Overflow) -> Self {
         if (style.overflow != value) {
             style.overflow = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -99,7 +99,7 @@ public extension FlexLayout {
     public func display(_ value: Display) -> Self {
         if (style.display != value) {
             style.display = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -108,7 +108,7 @@ public extension FlexLayout {
     public func flex(_ value: Flex) -> Self {
         if (style.flex != value) {
             style.flex = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -117,7 +117,7 @@ public extension FlexLayout {
     public func flexGrow(_ value: Double) -> Self {
         if (style.flexGrow != value) {
             style.flexGrow = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -126,7 +126,7 @@ public extension FlexLayout {
     public func flexShrink(_ value: Double) -> Self {
         if (style.flexShrink != value) {
             style.flexShrink = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -135,7 +135,7 @@ public extension FlexLayout {
     public func flexBasis(_ value: FlexBasis) -> Self {
         if (style.flexBasis != value) {
             style.flexBasis = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -144,7 +144,7 @@ public extension FlexLayout {
     public func positionType(_ value: PositionType) -> Self {
         if (style.positionType != value) {
             style.positionType = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -153,7 +153,7 @@ public extension FlexLayout {
     public func position(_ value: Position) -> Self {
         if (style.position != value) {
             style.position = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -182,7 +182,7 @@ public extension FlexLayout {
     public func position(top value: StyleValue) -> Self {
         if (style.position.top != value) {
             style.position.top = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -191,7 +191,7 @@ public extension FlexLayout {
     public func position(bottom value: StyleValue) -> Self {
         if (style.position.bottom != value) {
             style.position.bottom = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -200,7 +200,7 @@ public extension FlexLayout {
     public func position(left value: StyleValue) -> Self {
         if (style.position.left != value) {
             style.position.left = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -209,7 +209,7 @@ public extension FlexLayout {
     public func position(right value: StyleValue) -> Self {
         if (style.position.right != value) {
             style.position.right = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -218,7 +218,7 @@ public extension FlexLayout {
     public func position(leading value: StyleValue) -> Self {
         if (style.position.leading != value) {
             style.position.leading = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -227,7 +227,7 @@ public extension FlexLayout {
     public func position(trailing value: StyleValue) -> Self {
         if (style.position.trailing != value) {
             style.position.trailing = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -252,7 +252,7 @@ public extension FlexLayout {
     public func margin(_ value: StyleInsets) -> Self {
         if (style.margin != value) {
             style.margin = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -281,7 +281,7 @@ public extension FlexLayout {
     public func margin(top value: StyleValue) -> Self {
         if (style.margin.top != value) {
             style.margin.top = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -290,7 +290,7 @@ public extension FlexLayout {
     public func margin(bottom value: StyleValue) -> Self {
         if (style.margin.bottom != value) {
             style.margin.bottom = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -299,7 +299,7 @@ public extension FlexLayout {
     public func margin(left value: StyleValue) -> Self {
         if (style.margin.left != value) {
             style.margin.left = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -308,7 +308,7 @@ public extension FlexLayout {
     public func margin(right value: StyleValue) -> Self {
         if (style.margin.right != value) {
             style.margin.right = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -317,7 +317,7 @@ public extension FlexLayout {
     public func margin(leading value: StyleValue?) -> Self {
         if (style.margin.leading != value) {
             style.margin.leading = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -326,7 +326,7 @@ public extension FlexLayout {
     public func margin(trailing value: StyleValue?) -> Self {
         if (style.margin.trailing != value) {
             style.margin.trailing = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -351,7 +351,7 @@ public extension FlexLayout {
     public func padding(_ value: StyleInsets) -> Self {
         if (style.padding != value) {
             style.padding = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -380,7 +380,7 @@ public extension FlexLayout {
     public func padding(top value: StyleValue) -> Self {
         if (style.padding.top != value) {
             style.padding.top = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -389,7 +389,7 @@ public extension FlexLayout {
     public func padding(bottom value: StyleValue) -> Self {
         if (style.padding.bottom != value) {
             style.padding.bottom = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -398,7 +398,7 @@ public extension FlexLayout {
     public func padding(left value: StyleValue) -> Self {
         if (style.padding.left != value) {
             style.padding.left = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -407,7 +407,7 @@ public extension FlexLayout {
     public func padding(right value: StyleValue) -> Self {
         if (style.padding.right != value) {
             style.padding.right = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -416,7 +416,7 @@ public extension FlexLayout {
     public func padding(leading value: StyleValue?) -> Self {
         if (style.padding.leading != value) {
             style.padding.leading = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -425,7 +425,7 @@ public extension FlexLayout {
     public func padding(trailing value: StyleValue?) -> Self {
         if (style.padding.trailing != value) {
             style.padding.trailing = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -449,7 +449,7 @@ public extension FlexLayout {
     internal func border(_ value: StyleInsets) -> Self {
         if (style.border != value) {
             style.border = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -483,7 +483,7 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.top != v) {
             style.border.top = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -493,7 +493,7 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.bottom != v) {
             style.border.bottom = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -503,7 +503,7 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.left != v) {
             style.border.left = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -513,7 +513,7 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.right != v) {
             style.border.right = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -523,7 +523,7 @@ public extension FlexLayout {
         let v = StyleValue.makeLength(value)
         if (style.border.leading != v) {
             style.border.leading = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -533,7 +533,7 @@ public extension FlexLayout {
         let v = StyleValue.makeLength(value)
         if (style.border.trailing != v) {
             style.border.trailing = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -543,11 +543,11 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.top != v) {
             style.border.top = v
-            markDirty()
+            _markDirty()
         }
         if (style.border.bottom != v) {
             style.border.bottom = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -557,19 +557,19 @@ public extension FlexLayout {
         let v = StyleValue.length(value)
         if (style.border.left != v) {
             style.border.left = v
-            markDirty()
+            _markDirty()
         }
         if (style.border.right != v) {
             style.border.right = v
-            markDirty()
+            _markDirty()
         }
         if (style.border.leading != v) {
             style.border.leading = v
-            markDirty()
+            _markDirty()
         }
         if (style.border.trailing != v) {
             style.border.trailing = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -578,7 +578,7 @@ public extension FlexLayout {
     public func width(_ value: StyleValue) -> Self {
         if (style.width != value) {
             style.width = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -592,7 +592,7 @@ public extension FlexLayout {
     public func height(_ value: StyleValue) -> Self {
         if (style.height != value) {
             style.height = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -607,11 +607,11 @@ public extension FlexLayout {
         let v = StyleValue(floatLiteral: value)
         if (style.width != v) {
             style.width = v
-            markDirty()
+            _markDirty()
         }
         if (style.height != v) {
             style.height = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -621,11 +621,11 @@ public extension FlexLayout {
         let v = StyleValue.length(Double(value))
         if (style.width != v) {
             style.width = v
-            markDirty()
+            _markDirty()
         }
         if (style.height != v) {
             style.height = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -646,7 +646,7 @@ public extension FlexLayout {
     public func minWidth(_ value: StyleValue) -> Self {
         if (style.minWidth != value) {
             style.minWidth = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -660,7 +660,7 @@ public extension FlexLayout {
     public func minHeight(_ value: StyleValue) -> Self {
         if (style.minHeight != value) {
             style.minHeight = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -675,11 +675,11 @@ public extension FlexLayout {
         let v = StyleValue(floatLiteral: value)
         if (style.minWidth != v) {
             style.minWidth = v
-            markDirty()
+            _markDirty()
         }
         if (style.minHeight != v) {
             style.minHeight = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -689,11 +689,11 @@ public extension FlexLayout {
         let v = StyleValue.length(Double(value))
         if (style.minWidth != v) {
             style.minWidth = v
-            markDirty()
+            _markDirty()
         }
         if (style.minHeight != v) {
             style.minHeight = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -714,7 +714,7 @@ public extension FlexLayout {
     public func maxWidth(_ value: StyleValue?) -> Self {
         if (style.maxWidth != value) {
             style.maxWidth = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -734,7 +734,7 @@ public extension FlexLayout {
     public func maxHeight(_ value: StyleValue?) -> Self {
         if (style.maxHeight != value) {
             style.maxHeight = value
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -760,11 +760,11 @@ public extension FlexLayout {
         }
         if (style.maxWidth != v) {
             style.maxWidth = v
-            markDirty()
+            _markDirty()
         }
         if (style.maxHeight != v) {
             style.maxHeight = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -779,11 +779,11 @@ public extension FlexLayout {
         }
         if (style.maxWidth != v) {
             style.maxWidth = v
-            markDirty()
+            _markDirty()
         }
         if (style.maxHeight != v) {
             style.maxHeight = v
-            markDirty()
+            _markDirty()
         }
         return self
     }
@@ -804,7 +804,7 @@ public extension FlexLayout {
     public func aspectRatio(_ value: Double) -> Self {
         if (style.aspectRatio != value) {
             style.aspectRatio = value
-            markDirty()
+            _markDirty()
         }
         return self
     }

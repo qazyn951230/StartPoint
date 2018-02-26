@@ -156,11 +156,6 @@ extension FlexLayout {
         return box.measuredDimension(for: direction) + style.totalOuterSize(for: direction, width: width)
     }
 
-    func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> (Double, Double) {
-        let size = measure(width: CGFloat(width), widthMode: widthMode, height: CGFloat(height), heightMode: heightMode)
-        return (Double(size.width), Double(size.height))
-    }
-
     // YGNodeComputeFlexBasisForChild
     func resolveFlexBasis(for child: FlexLayout, width: Double, widthMode: MeasureMode, height: Double,
                           heightMode: MeasureMode, parentWidth: Double, parentHeight: Double, direction: Direction) {
@@ -176,17 +171,17 @@ extension FlexLayout {
         let isRowStyleDimDefined = child.box.isDimensionDefined(for: .row, size: parentWidth)
         let isColumnStyleDimDefined = child.box.isDimensionDefined(for: .column, size: parentHeight)
         if !(resolvedFlexBasis.isNaN || mainDirectionSize.isNaN) {
-            if child.computedFlexBasis.isNaN {
-                child.computedFlexBasis = fmax(resolvedFlexBasis,
+            if child.box.computedFlexBasis.isNaN {
+                child.box.computedFlexBasis = fmax(resolvedFlexBasis,
                     child.style.totalInnerSize(for: mainDirection, width: parentWidth))
             }
         } else if isMainAxisRow && isRowStyleDimDefined {
             // The width is definite, so use that as the flex basis.
-            child.computedFlexBasis = fmax(child.box.resolvedWidth.resolve(by: parentWidth),
+            child.box.computedFlexBasis = fmax(child.box.resolvedWidth.resolve(by: parentWidth),
                 child.style.totalInnerSize(for: .row, width: parentWidth))
         } else if !isMainAxisRow && isColumnStyleDimDefined {
             // The height is definite, so use that as the flex basis.
-            child.computedFlexBasis = fmax(child.box.resolvedHeight.resolve(by: parentHeight),
+            child.box.computedFlexBasis = fmax(child.box.resolvedHeight.resolve(by: parentHeight),
                 child.style.totalInnerSize(for: .column, width: parentWidth))
         } else {
             // Compute the flex basis and hypothetical main size (i.e. the clamped flex basis).
@@ -251,7 +246,7 @@ extension FlexLayout {
             (childHeightMeasureMode, childHeight) = child.style.constrainMaxSize(axis: .column, parentAxisSize: parentHeight, parentWidth: parentWidth, mode: childHeightMeasureMode, size: childHeight)
             // Measure the child
             _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: parentWidth, parentHeight: parentHeight, direction: direction, layout: false, reason: "measure")
-            child.computedFlexBasis = max(child.box.measuredDimension(for: mainDirection), child.style.totalInnerSize(for: mainDirection, width: parentWidth))
+            child.box.computedFlexBasis = max(child.box.measuredDimension(for: mainDirection), child.style.totalInnerSize(for: mainDirection, width: parentWidth))
         }
     }
 
@@ -273,7 +268,7 @@ extension FlexLayout {
             cachedMeasurements.removeAll()
         }
         var cachedResult: LayoutCache? = nil
-        if children.count < 1 && measureSelf {
+        if children.count < 1 && measureSelf != nil {
             let marginRow = style.totalOuterSize(for: .row, width: parentWidth)
             let marginColumn = style.totalOuterSize(for: .column, width: parentWidth)
             if let layout = cachedLayout, layout.validate(width: width, height: height, widthMode: widthMode,
@@ -338,7 +333,7 @@ extension FlexLayout {
             flexLayout(width: width, height: height, direction: direction, widthMode: widthMode,
                 heightMode: heightMode, parentWidth: parentWidth, parentHeight: parentHeight, layout: layout)
         } else {
-            if measureSelf {
+            if measureSelf != nil {
                 measureLayout(width: width, height: height, widthMode: widthMode, heightMode: heightMode,
                     parentWidth: parentWidth, parentHeight: parentHeight)
             } else {
@@ -394,9 +389,9 @@ extension FlexLayout {
             let innerSizeColumn = style.totalInnerSize(for: .column, width: width)
             let innerWidth = width.isNaN ? width : fmax(0, width - innerSizeRow - marginRow)
             let innerHeight = height.isNaN ? height : fmax(0, height - innerSizeColumn - marginColumn)
-            let (width1, height1) = measure(width: innerWidth, widthMode: widthMode, height: innerHeight, heightMode: heightMode)
-            let width2 = !widthMode.isExactly ? (width1 + innerSizeRow) : (width - marginRow)
-            let height2 = !heightMode.isExactly ? (height1 + innerSizeColumn) : (height - marginColumn)
+            let size = measure(width: innerWidth, widthMode: widthMode, height: innerHeight, heightMode: heightMode)
+            let width2 = !widthMode.isExactly ? (size.width + innerSizeRow) : (width - marginRow)
+            let height2 = !heightMode.isExactly ? (size.height + innerSizeColumn) : (height - marginColumn)
             box.measuredWidth = style.bound(axis: .row, value: width2, axisSize: parentWidth, width: parentWidth)
             box.measuredHeight = style.bound(axis: .column, value: height2, axisSize: parentHeight, width: parentWidth)
         }
@@ -503,12 +498,12 @@ extension FlexLayout {
                 child.nextChild = nil
             } else {
                 if let singleFlexChild = singleFlexChild, child == singleFlexChild {
-                    child.computedFlexBasis = 0
+                    child.box.computedFlexBasis = 0
                 } else {
                     resolveFlexBasis(for: child, width: availableInnerWidth, widthMode: widthMode, height: availableInnerHeight, heightMode: heightMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction)
                 }
             }
-            totalOuterFlexBasis += child.computedFlexBasis + child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+            totalOuterFlexBasis += child.box.computedFlexBasis + child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
         }
         let flexBasisOverflows = measureModeMainDim == MeasureMode.undefined ? false : totalOuterFlexBasis > availableInnerWidth
         let isNodeFlexWrap = style.wrapped
@@ -545,7 +540,7 @@ extension FlexLayout {
                 if !child.style.absoluteLayout {
                     let childMarginMainAxis = child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
                     // NOTE: min(nan, 0) => nan, min(0, nan) => 0
-                    let flexBasisWithMaxConstraints = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.computedFlexBasis)
+                    let flexBasisWithMaxConstraints = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis)
                     let flexBasisWithMinAndMaxConstraints = fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), flexBasisWithMaxConstraints)
                     if sizeConsumedOnCurrentLineIncludingMinConstraint + flexBasisWithMinAndMaxConstraints + childMarginMainAxis > availableInnerMainDim && isNodeFlexWrap && itemsOnLine > 0 {
                         break
@@ -555,7 +550,7 @@ extension FlexLayout {
                     itemsOnLine += 1
                     if child.flexed {
                         totalFlexGrowFactors += child.computedFlexGrow
-                        totalFlexShrinkScaledFactors += (0 - child.computedFlexShrink) * child.computedFlexBasis
+                        totalFlexShrinkScaledFactors += (0 - child.computedFlexShrink) * child.box.computedFlexBasis
                     }
                     if firstRelativeChild == nil {
                         firstRelativeChild = child
@@ -611,7 +606,7 @@ extension FlexLayout {
                         break
                     }
                     childFlexBasis = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize),
-                        fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.computedFlexBasis))
+                        fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis))
                     if remainingFreeSpace < 0 {
                         flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
                         if flexShrinkScaledFactor != 0 {
@@ -647,7 +642,7 @@ extension FlexLayout {
                     guard let child = currentRelativeChild else {
                         break
                     }
-                    childFlexBasis = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.computedFlexBasis))
+                    childFlexBasis = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis))
                     var updatedMainSize = childFlexBasis
                     if remainingFreeSpace < 0 {
                         flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
@@ -782,7 +777,7 @@ extension FlexLayout {
                             mainDim += remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
                         }
                         if canSkipFlex {
-                            mainDim += betweenMainDim + child.computedFlexBasis +
+                            mainDim += betweenMainDim + child.box.computedFlexBasis +
                                 child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
                             crossDim = availableInnerCrossDim
                         } else {

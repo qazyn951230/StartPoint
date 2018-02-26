@@ -20,36 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
-import CoreGraphics
+import QuartzCore
 
-final public class TextLayout: FlexLayout {
-    public private(set) var text: NSAttributedString? = nil
-    public private(set) var multiLine = false
+private var lCfke0x5 = "lCfke0x5"
 
-    @discardableResult
-    public func text(_ value: NSAttributedString?) -> TextLayout {
-        self.text = value
-        measureSelf = true
-        markDirty()
-        return self
-    }
-
-    @discardableResult
-    public func multiLine(_ value: Bool) -> TextLayout {
-        self.multiLine = value
-        markDirty()
-        return self
-    }
-
-    open override func measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
-        guard let text = text else {
-            return super.measure(width: width, widthMode: widthMode, height: height, heightMode: heightMode)
+extension CALayer {
+    var element: Element? {
+        get {
+            if self is AsyncLayer {
+                return (self as? AsyncLayer)?._element
+            }
+            let value = self.associatedObject(key: &lCfke0x5) as Weak<Element>?
+            return value?.value
         }
-        let width: CGFloat = widthMode.resolve(width)
-        let height: CGFloat = heightMode.resolve(height)
-        let options: NSStringDrawingOptions = multiLine ? [.usesLineFragmentOrigin] : []
-        return text.boundingSize(size: CGSize(width: width, height: height), options: options)
-            .ceiled
+        set {
+            if self is AsyncLayer {
+                (self as? AsyncLayer)?._element = newValue
+                return
+            }
+            let value: Weak<Element>? = newValue.map(Weak.init)
+            self.setAssociatedObject(key: &lCfke0x5, object: value, policy: .OBJC_ASSOCIATION_RETAIN)
+        }
     }
 }

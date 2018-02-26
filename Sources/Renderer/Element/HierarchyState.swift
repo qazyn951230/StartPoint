@@ -20,32 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+// ASHierarchyState
+public struct HierarchyState: OptionSet {
+    // union x|y
+    // intersection x&y
+    // subtracting ~x
+    public let rawValue: Int
 
-open class FlexTableViewCell: UITableViewCell, Flexed {
-    public let root = FlexLayout()
-
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        initialization()
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
+    public static let rasterized = HierarchyState(rawValue: 1 << 0)
+    public static let rangeManaged = HierarchyState(rawValue: 1 << 1)
+    public static let transitioningSuperElement = HierarchyState(rawValue: 1 << 2)
+    public static let layoutPending = HierarchyState(rawValue: 1 << 3)
+
+    public static let all: HierarchyState = [HierarchyState.rasterized, .rangeManaged,
+                                             .transitioningSuperElement, .layoutPending]
+
+    internal var _rasterized: Bool {
+        return contains(.rasterized)
     }
 
-    open func initialization() {
-        contentView.backgroundColor = UIColor.white
+    internal var _rangeManaged: Bool {
+        return contains(.rangeManaged)
     }
 
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        flexLayout()
+    internal var _transitioningSuperElement: Bool {
+        return contains(.transitioningSuperElement)
     }
 
-    open func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
+    internal var _layoutPending: Bool {
+        return contains(.layoutPending)
     }
 }

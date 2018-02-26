@@ -24,9 +24,9 @@
 import XCTest
 
 struct MeasureConstraint {
-    let width: CGFloat
+    let width: Double
     let widthMode: MeasureMode
-    let height: CGFloat
+    let height: Double
     let heightMode: MeasureMode
 }
 
@@ -39,13 +39,13 @@ class MeasureModeTests: FlexTestCase {
         constraintList = []
     }
 
-    func _measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode: MeasureMode) -> CGSize {
+    func _measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         let constraint = MeasureConstraint(width: width, widthMode: widthMode,
                                            height: height, heightMode: heightMode)
         constraintList.append(constraint)
-        let w: CGFloat = widthMode.isUndefined ? 10 : width
-        let h: CGFloat = heightMode.isUndefined ? 10 : width
-        return CGSize(width: w, height: h)
+        let w: Double = widthMode.isUndefined ? 10 : width
+        let h: Double = heightMode.isUndefined ? 10 : width
+        return Size(width: w, height: h)
     }
 
     // Generated from test: exactly_measure_stretched_child_column
@@ -54,8 +54,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -73,8 +73,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -91,8 +91,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -110,8 +110,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -129,8 +129,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -149,8 +149,8 @@ class MeasureModeTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -166,9 +166,9 @@ class MeasureModeTests: FlexTestCase {
         let root = FlexLayout()
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
+        let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0._measure = _measure
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -187,10 +187,10 @@ class MeasureModeTests: FlexTestCase {
         let root = FlexLayout()
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
+        let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.flexBasis(0)
-        root_child0._measure = _measure
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -209,8 +209,8 @@ class MeasureModeTests: FlexTestCase {
         root.height(StyleValue.length(100))
         root.width(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)
@@ -233,8 +233,8 @@ class MeasureModeTests: FlexTestCase {
         root.height(StyleValue.length(100))
         root.width(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.insert(root_child0, at: 0)
 
         root.calculate(direction: Direction.ltr)

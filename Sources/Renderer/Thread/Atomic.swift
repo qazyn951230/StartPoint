@@ -28,12 +28,12 @@ final public class Atomic<Value> {
 
     public var value: Value {
         get {
-            return lock.scoped {
-                return _value
+            return lock.locking {
+                _value
             }
         }
         set {
-            lock.scoped {
+            lock.locking {
                 _value = newValue
             }
         }
@@ -43,17 +43,25 @@ final public class Atomic<Value> {
         _value = value
     }
 
+    @discardableResult
     public func replace(with value: Value) -> Value {
         return modify { _ in
             value
         }
     }
 
+    @discardableResult
     public func modify(_ method: (Value) throws -> Value) rethrows -> Value {
-        return try lock.scoped {
+        return try lock.locking {
             let old = _value
             _value = try method(_value)
             return old
         }
+    }
+}
+
+public extension Atomic where Value: OptionSet {
+    public func contains(_ member: Value.Element) -> Bool {
+        return value.contains(member)
     }
 }

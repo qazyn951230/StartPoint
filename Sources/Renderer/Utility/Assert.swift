@@ -45,12 +45,77 @@ struct Assert {
             pthread_setspecific(Assert.checkKey, &check)
         }
     }
-
-    @inline(__always)
-    static internal func mainThread() {
-        assert(Assert.checkMainThread && pthread_main_np() != 0,
-            "This method must be called on the main thread")
-    }
 }
 
+// ASDisplayNodeAssertMainThread
+func assertMainThread(file: StaticString = #file, line: UInt = #line) {
+    assert(Assert.checkMainThread || mainThread(),
+        "This method must be called on the main thread", file: file, line: line)
+}
 
+// ASDisplayNodeAssertThreadAffinity
+func assertThreadAffinity(element: Element, file: StaticString = #file, line: UInt = #line) {
+    assert(mainThread() || !element.loaded, "Incorrect element thread affinity -" +
+        "this method should not be called off the main thread after the element's view" +
+        "or layer have been created", file: file, line: line)
+}
+
+func assertFail(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
+    assert(false, message, file: file, line: line)
+}
+
+func assertNil(_ expression: @autoclosure () -> Any?, _ message: @autoclosure () -> String = "",
+               file: StaticString = #file, line: UInt = #line) {
+    assert(expression() == nil, message, file: file, line: line)
+}
+
+func assertNotNil(_ expression: @autoclosure () -> Any?, _ message: @autoclosure () -> String = "",
+                  file: StaticString = #file, line: UInt = #line) {
+    assert(expression() != nil, message, file: file, line: line)
+}
+
+func assertTrue(_ expression: @autoclosure () -> Bool, _ message: @autoclosure () -> String = "",
+                file: StaticString = #file, line: UInt = #line) {
+    assert(expression() == true, message, file: file, line: line)
+}
+
+func assertFalse(_ expression: @autoclosure () -> Bool, _ message: @autoclosure () -> String = "",
+                 file: StaticString = #file, line: UInt = #line) {
+    assert(expression() == false, message, file: file, line: line)
+}
+
+func assertEqual<T: Equatable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                               _ message: @autoclosure () -> String = "",
+                               file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() == expression2(), message, file: file, line: line)
+}
+
+func assertNotEqual<T: Equatable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                                  _ message: @autoclosure () -> String = "",
+                                  file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() != expression2(), message, file: file, line: line)
+}
+
+func assertLessThan<T: Comparable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                                   _ message: @autoclosure () -> String = "",
+                                   file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() < expression2(), message, file: file, line: line)
+}
+
+func assertGreaterThan<T: Comparable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                                      _ message: @autoclosure () -> String = "",
+                                      file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() > expression2(), message, file: file, line: line)
+}
+
+func assertLessThanOrEqual<T: Comparable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                                          _ message: @autoclosure () -> String = "",
+                                          file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() <= expression2(), message, file: file, line: line)
+}
+
+func assertGreaterThanOrEqual<T: Comparable>(_ expression1: @autoclosure () -> T, _ expression2: @autoclosure () -> T,
+                                             _ message: @autoclosure () -> String = "",
+                                             file: StaticString = #file, line: UInt = #line) {
+    assert(expression1() >= expression2(), message, file: file, line: line)
+}

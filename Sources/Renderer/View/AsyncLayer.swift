@@ -20,32 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+import QuartzCore
 
-open class FlexControl: UIControl, Flexed {
-    public let root = FlexLayout()
-
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialization()
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
-    }
-
-    open func initialization() {
-        backgroundColor = UIColor.white
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        flexLayout()
-    }
-
-    open func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
-    }
+// _ASDisplayLayer
+public final class AsyncLayer: CALayer {
+    weak var _element: Element?
+    var asynchronous = true
 }

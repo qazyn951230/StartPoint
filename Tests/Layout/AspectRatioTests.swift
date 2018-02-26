@@ -26,10 +26,10 @@ import XCTest
 // Generated from YGAspectRatioTest.cpp
 class AspectRatioTests: FlexTestCase {
 
-    func _measure(width: CGFloat, widthMode: MeasureMode, height: CGFloat, heightMode _: MeasureMode) -> CGSize {
-        let width: CGFloat = widthMode.isExactly ? width : 50
-        let height: CGFloat = widthMode.isExactly ? height : 50
-        return CGSize(width: width, height: height)
+    func _measure(width: Double, widthMode: MeasureMode, height: Double, heightMode _: MeasureMode) -> Size {
+        let width: Double = widthMode.isExactly ? width : 50
+        let height: Double = widthMode.isExactly ? height : 50
+        return Size(width: width, height: height)
     }
 
     // Generated from test: aspect_ratio_cross_defined
@@ -441,8 +441,8 @@ class AspectRatioTests: FlexTestCase {
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root_child0.aspectRatio(1)
         root.insert(root_child0, at: 0)
 

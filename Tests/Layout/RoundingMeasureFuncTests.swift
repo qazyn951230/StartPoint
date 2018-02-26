@@ -25,23 +25,23 @@ import XCTest
 
 // Generated from YGRoundingMeasureFuncTest.cpp
 class RoundingMeasureFuncTests: FlexTestCase {
-    func _measureFloor(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
-        return CGSize(width: 10.2, height: 10.2)
+    func _measureFloor(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+        return Size(width: 10.2, height: 10.2)
     }
 
-    func _measureCeil(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
-        return CGSize(width: 10.5, height: 10.5)
+    func _measureCeil(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+        return Size(width: 10.5, height: 10.5)
     }
 
-    func _measureFractial(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
-        return CGSize(width: 0.5, height: 0.5)
+    func _measureFractial(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+        return Size(width: 0.5, height: 0.5)
     }
 
     // Generated from test: rounding_feature_with_custom_measure_func_floor
     func testRoundingFeatureWithCustomMeasureFuncFloor() { let root = FlexLayout()
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureFloor
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureFloor
         root.insert(root_child0, at: 0)
 
         FlexStyle.scale = 0.0
@@ -83,8 +83,8 @@ class RoundingMeasureFuncTests: FlexTestCase {
     // Generated from test: rounding_feature_with_custom_measure_func_ceil
     func testRoundingFeatureWithCustomMeasureFuncCeil() { let root = FlexLayout()
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measureCeil
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measureCeil
         root.insert(root_child0, at: 0)
 
         FlexStyle.scale = 1.0
@@ -98,9 +98,9 @@ class RoundingMeasureFuncTests: FlexTestCase {
     // Generated from test: rounding_feature_with_custom_measure_and_fractial_matching_scale
     func testRoundingFeatureWithCustomMeasureAndFractialMatchingScale() { let root = FlexLayout()
 
-        let root_child0 = MeasureLayout()
+        let root_child0 = FlexLayout()
         root_child0.position(left: StyleValue.length(73.625))
-        root_child0._measure = _measureFractial
+        root_child0.measureSelf = _measureFractial
         root.insert(root_child0, at: 0)
 
         FlexStyle.scale = 2.0

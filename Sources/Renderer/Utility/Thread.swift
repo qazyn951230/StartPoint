@@ -22,7 +22,10 @@
 
 import Darwin
 
-@inline(__always)
-public func mainThread() -> Bool {
+// The pthread_main_np() function returns
+// 1 if the calling thread is the initial thread,
+// 0 if the calling thread is not the initial thread, and
+// -1 if the thread's initialization has not yet completed.
+internal func mainThread() -> Bool {
     return pthread_main_np() != 0
 }

@@ -20,9 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import CoreGraphics
-import UIKit
-
 public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
     case length(Double)
     case percentage(Double)
@@ -219,12 +216,6 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         case .column, .columnReverse:
             return top + bottom
         }
-    }
-
-    // FIXME: leading != left
-    public var edgeInsets: UIEdgeInsets {
-        return UIEdgeInsets.zero //(top: CGFloat(top), left: CGFloat(leading ?? left),
-        // bottom: CGFloat(bottom), right: CGFloat(trailing ?? right))
     }
 
     public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {

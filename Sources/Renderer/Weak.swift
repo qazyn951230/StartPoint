@@ -20,32 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
+final class Weak<T: AnyObject & Equatable>: Equatable {
+    weak var value: T?
 
-open class FlexCollectionViewCell: UICollectionViewCell, Flexed {
-    public let root = FlexLayout()
-
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialization()
+    init(_ value: T) {
+        self.value = value
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
+    static func ==(lhs: Weak<T>, rhs: Weak<T>) -> Bool {
+        return lhs.value == rhs.value
+    }
+}
+
+final class WeakHash<T: AnyObject & Hashable>: Hashable {
+    weak var value: T?
+    let hashValue: Int
+
+    init(_ value: T) {
+        self.value = value
+        hashValue = value.hashValue
     }
 
-    open func initialization() {
-        backgroundColor = UIColor.white
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        flexLayout()
-    }
-
-    open func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
+    static func ==(lhs: WeakHash<T>, rhs: WeakHash<T>) -> Bool {
+        return lhs.value == rhs.value
     }
 }

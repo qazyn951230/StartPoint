@@ -21,31 +21,50 @@
 // SOFTWARE.
 
 import UIKit
+import QuartzCore
 
-open class FlexCollectionReusableView: UICollectionReusableView, Flexed {
-    public let root = FlexLayout()
+open class LayerComponent<T: CALayer, State: ComponentState>: BasicComponent<State> {
+    public internal(set) var layer: T
 
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialization()
+    public init(layer: T) {
+        self.layer = layer
+        super.init(framed: true)
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
+    public convenience init() {
+        self.init(layer: T.init())
     }
 
-    open func initialization() {
-        backgroundColor = UIColor.white
+    public override func apply(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
+        layer.frame = CGRect(x: x, y: y, width: width, height: height)
     }
 
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-        flexLayout()
+    override func build(in view: UIView) {
+        let this = T.init()
+        view.layer.addSublayer(this)
+        super.build(in: view)
+    }
+}
+
+public extension LayerComponent {
+    @discardableResult
+    public func backgroundColor(_ value: CGColor?) -> Self {
+        layer.backgroundColor = value
+        return self
     }
 
-    open func flexLayout() {
-        root.layout(width: bounds.width, height: bounds.height)
-        root.apply()
+    @discardableResult
+    public func backgroundColor(_ value: UIColor?) -> Self {
+        layer.backgroundColor = value?.cgColor
+        return self
+    }
+
+    public func backgroundColor(hex: UInt32) -> Self {
+#if os(iOS)
+        layer.backgroundColor = UIColor.hex(hex).cgColor
+#else
+        layer.backgroundColor = CGColor.hex(hex)
+#endif
+        return self
     }
 }

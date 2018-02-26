@@ -23,11 +23,14 @@
 import Foundation
 
 final class FlexBox {
+    // gCurrentGenerationCount
     static var totalGeneration: Int64 = 0
 
     var position: LayoutPosition = LayoutPosition.zero
-    var width: Double = Double.nan // dimensions
-    var height: Double = Double.nan // dimensions
+
+    // dimensions
+    var width: Double = Double.nan
+    var height: Double = Double.nan
 
     var margin: LayoutInsets = LayoutInsets.zero
     var padding: LayoutInsets = LayoutInsets.zero
@@ -35,28 +38,36 @@ final class FlexBox {
 
     var direction: Direction = Direction.inherit
 
+    // generationCount
+    var generation: Int64 = 0
+    var computedFlexBasis: Double = Double.nan
+    var hasOverflow = false
+
+    // measuredDimensions
     var measuredWidth: Double = Double.nan
     var measuredHeight: Double = Double.nan
-    var resolvedWidth: StyleValue = StyleValue.auto // resolvedDimensions
-    var resolvedHeight: StyleValue = StyleValue.auto // resolvedDimensions
 
-    var hasOverflow = false
-    var generation: Int64 = 0
+    // resolvedDimensions
+    var resolvedWidth: StyleValue = StyleValue.auto
+    var resolvedHeight: StyleValue = StyleValue.auto
 
     var top: Double {
         return position.top
     }
+
     var bottom: Double {
         return position.bottom
     }
+
     var left: Double {
         return position.left
     }
+
     var right: Double {
         return position.right
     }
 
-    func reset() {
+    func invalidate() {
         position = .zero
         margin = .zero
         padding = .zero

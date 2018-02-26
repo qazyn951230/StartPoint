@@ -24,10 +24,10 @@
 import XCTest
 
 class TextTests: FlexTestCase {
-    var measureCount: CGFloat = 0
+    var measureCount: Double = 0
 
-    func _measure(width _: CGFloat, widthMode _: MeasureMode, height _: CGFloat, heightMode _: MeasureMode) -> CGSize {
-        return CGSize(width: 100 * measureCount, height: 20)
+    func _measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
+        return Size(width: 100 * measureCount, height: 20)
     }
 
     func testTextContentChanged() {
@@ -35,8 +35,8 @@ class TextTests: FlexTestCase {
         root.width(StyleValue.length(300))
         root.height(StyleValue.length(100))
 
-        let root_child0 = MeasureLayout()
-        root_child0._measure = _measure
+        let root_child0 = FlexLayout()
+        root_child0.measureSelf = _measure
         root.append(root_child0)
 
         measureCount = 1
@@ -48,7 +48,7 @@ class TextTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.height, 100)
 
         measureCount = 2
-        root_child0.markDirty()
+        root_child0._markDirty()
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root_child0.box.left, 0)

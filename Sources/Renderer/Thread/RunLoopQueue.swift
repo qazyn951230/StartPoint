@@ -22,18 +22,6 @@
 
 import Foundation
 
-class Weak<T: AnyObject & Equatable>: Equatable {
-    weak var value: T?
-
-    init(_ value: T) {
-        self.value = value
-    }
-
-    static func ==(lhs: Weak<T>, rhs: Weak<T>) -> Bool {
-        return lhs.value == rhs.value
-    }
-}
-
 public class RunLoopQueue<T: AnyObject & Equatable> {
     let runLoop: CFRunLoop
     let handler: ((T?, Bool) -> Void)?

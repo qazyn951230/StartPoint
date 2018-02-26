@@ -22,6 +22,10 @@
 
 #import "Object.h"
 
-NSString *addressWithObject(id object) {
+NSString *stringAddress(id object) {
     return [NSString stringWithFormat:@"%p", (__bridge void *)object];
+}
+
+size_t longAddress(id object) {
+    return (size_t)((__bridge void *)object);
 }

@@ -22,24 +22,42 @@
 
 import UIKit
 
-// https://github.com/dzenbot/DZNSegmentedControl/blob/master/Source/DZNSegmentedControl.m
-public final class SegmentedControl: FlexControl {
-    private var buttons: [UIButton] = []
+public typealias TableComponent = BasicTableComponent<UITableView, ComponentState>
+//public typealias TableCellComponent = BasicTableCellComponent<UITableViewCell>
+//
+//open class BasicTableCellComponent<Cell: UITableViewCell>: Component<Cell>, Identified {
+//    open var identifier: String {
+//        return "BasicTableCellComponent"
+//    }
+//
+//    open var height: CGFloat {
+//        // layout.layout()
+//        return 0 // layout.frame.height
+//    }
+//
+//    public init(style: UITableViewCellStyle = .default) {
+//        let id = self.identifier
+//        super.init {
+//            Cell.init(style: style, reuseIdentifier: id)
+//        }
+//    }
+//
+//    @discardableResult
+//    open func buildView() -> Cell {
+//        assertMainThread()
+//        let this = _buildView()
+//        let content = this.contentView
+//        subComponents?.forEach {
+//            $0.build(in: content)
+//        }
+//        return this
+//    }
+//}
 
-    public var selectedSegmentIndex: Int = 0 {
-        didSet {
-            buttons.forEachIndex { (button, index) in
-                button.isSelected = index == selectedSegmentIndex
-            }
+open class BasicTableComponent<Table: UITableView, State: ComponentState>: Component<Table, State> {
+    public init(style: UITableViewStyle = .grouped) {
+        super.init {
+            Table.init(frame: .zero, style: style)
         }
-    }
-
-    public override func initialization() {
-        root.margin(vertical: 2).flexDirection(.row).justifyContent(.spaceBetween)
-    }
-
-    public func setTitle(_ title: NSAttributedString?, forSegmentAt index: Int) {
-        let button = buttons.object(at: index)
-        button?.setAttributedTitle(title, for: .normal)
     }
 }

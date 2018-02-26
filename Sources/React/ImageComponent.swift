@@ -20,11 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import UIKit
 
-NS_ASSUME_NONNULL_BEGIN
+public typealias ImageComponent = Component<UIImageView, ComponentState>
 
-NSString *stringAddress(id object);
-size_t longAddress(id object);
+public extension Component where View: UIImageView {
+    @discardableResult
+    public func image(_ value: UIImage?) -> Self {
+        view?.image = value
+        layout.markDirty()
+        return self
+    }
 
-NS_ASSUME_NONNULL_END
+    @discardableResult
+    public func highlightedImage(_ value: UIImage?) -> Self {
+        view?.highlightedImage = value
+        layout.markDirty()
+        return self
+    }
+}
