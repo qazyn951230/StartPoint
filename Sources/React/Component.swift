@@ -23,25 +23,42 @@
 import UIKit
 import QuartzCore
 
-public typealias ViewComponent = Component<UIView, ComponentState>
+public typealias ViewComponent = Component<UIView>
 
-open class Component<View: UIView, State: ComponentState>: BasicComponent<State> {
+open class Component<View: UIView>: BasicComponent {
     public internal(set) var view: View?
     public internal(set) var creator: (() -> View)?
 
-    public convenience init() {
-        self.init {
-            View.init(frame: .zero)
+    override var frame: CGRect {
+        didSet {
+            if mainThread(), let view = self.view {
+                view.frame = frame
+            } else {
+                pendingState.frame = frame
+            }
         }
     }
 
-    public init(creator: @escaping () -> View) {
-        self.creator = creator
-        super.init(framed: true)
+    public init(children: [BasicComponent] = []) {
+        super.init(framed: true, children: children)
     }
 
-    public override func apply(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        view?.frame = CGRect(x: x, y: y, width: width, height: height)
+    public init(children: [BasicComponent], creator: @escaping () -> View) {
+        self.creator = creator
+        super.init(framed: true, children: children)
+    }
+
+    deinit {
+        creator = nil
+        if let view = self.view {
+            if mainThread() {
+                view.removeFromSuperview()
+            } else {
+                DispatchQueue.main.async {
+                    view.removeFromSuperview()
+                }
+            }
+        }
     }
 
     @discardableResult
@@ -49,34 +66,64 @@ open class Component<View: UIView, State: ComponentState>: BasicComponent<State>
         assertMainThread()
         let this = _buildView()
         view?.addSubview(this)
-        subComponents?.forEach {
+        children.forEach {
             $0.build(in: this)
         }
         return this
     }
 
-    override func build(in view: UIView) {
+    public override func build(in view: UIView) {
         assertMainThread()
         let this = _buildView()
-        view.addSubview(this)
-        subComponents?.forEach {
+        if let superview = this.superview {
+            if superview != view {
+                this.removeFromSuperview()
+                view.addSubview(this)
+            }
+        } else {
+            view.addSubview(this)
+        }
+        children.forEach {
             $0.build(in: this)
         }
+    }
+
+    func _createView() -> View {
+        assertMainThread()
+        if let view = self.view {
+            return view
+        }
+        let this = creator?() ?? View.init(frame: .zero)
+//        if let container = this as? ComponentContainer {
+//            container.component = self
+//        } else {
+//            this._component = self
+//        }
+        self.view = this
+        return this
     }
 
     func _buildView() -> View {
-        let this = creator?() ?? View.init(frame: .zero)
-        self.view = this
+        let this = _createView()
         _pendingState?.apply(view: this)
         return this
     }
-}
 
-public extension Component {
+    override func buildView() -> UIView {
+        return _buildView()
+    }
+
+#if DEBUG
+    public override func debugMode() {
+        backgroundColor(UIColor.random)
+        super.debugMode()
+    }
+#endif
+
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
-        if mainThread() {
-            view?.backgroundColor = value
+        if mainThread(), let view = view {
+            view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
         }
@@ -86,10 +133,79 @@ public extension Component {
     @discardableResult
     public func backgroundColor(hex: UInt32) -> Self {
         let value = UIColor.hex(hex)
-        if mainThread() {
-            view?.backgroundColor = value
+        if mainThread(), let view = view {
+            view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func cornerRadius(_ value: CGFloat) -> Self {
+        if mainThread(), let view = view {
+            view.layer.cornerRadius = value
+        } else {
+            pendingState.cornerRadius = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func borderColor(cgColor value: CGColor?) -> Self {
+        if mainThread(), let view = view {
+            view.layer.borderColor = value
+        } else {
+            pendingState.borderColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func borderColor(_ value: UIColor?) -> Self {
+        return borderColor(cgColor: value?.cgColor)
+    }
+
+    @discardableResult
+    public func borderColor(hex value: UInt32) -> Self {
+        return borderColor(cgColor: UIColor.hex(value).cgColor)
+    }
+
+    @discardableResult
+    public func borderWidth(_ value: CGFloat) -> Self {
+        if mainThread(), let view = view {
+            view.layer.borderWidth = value
+        } else {
+            pendingState.borderWidth = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func border(color: UIColor?, width: CGFloat) -> Self {
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.borderColor = color?.cgColor
+            layer.borderWidth = width
+        } else {
+            let state = pendingState
+            state.borderColor = color?.cgColor
+            state.borderWidth = width
+        }
+        return self
+    }
+
+    @discardableResult
+    public func border(hex value: UInt32, width: CGFloat) -> Self {
+        let color = UIColor.hex(value).cgColor
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.borderColor = color
+            layer.borderWidth = width
+        } else {
+            let state = pendingState
+            state.borderColor = color
+            state.borderWidth = width
         }
         return self
     }

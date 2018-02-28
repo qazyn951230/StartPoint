@@ -49,6 +49,12 @@ public extension UIColor {
     public static func hex(_ value: UInt32) -> UIColor {
         return hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
     }
+
+#if DEBUG
+    public static var random: UIColor {
+        return UIColor.hex(arc4random_uniform(0xFFFFFF))
+    }
+#endif
 }
 #else
 public extension NSColor {
@@ -67,15 +73,13 @@ public extension CGColor {
 #if os(iOS) && DEBUG
 extension UIView {
     public func randomBackgroundColor() {
-        let color = arc4random_uniform(0xFFFFFF)
-        backgroundColor = UIColor.hex(color)
+        backgroundColor = UIColor.random
     }
 }
 
 extension CALayer {
     public func randomBackgroundColor() {
-        let color = arc4random_uniform(0xFFFFFF)
-        backgroundColor = UIColor.hex(color).cgColor
+        backgroundColor = UIColor.random.cgColor
     }
 }
 #endif

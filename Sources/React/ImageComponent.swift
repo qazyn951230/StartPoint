@@ -22,20 +22,36 @@
 
 import UIKit
 
-public typealias ImageComponent = Component<UIImageView, ComponentState>
+public typealias ImageComponent = BasicImageComponent<UIImageView>
 
-public extension Component where View: UIImageView {
+open class BasicImageComponent<ImageView: UIImageView>: Component<ImageView> {
+    var _imageState: ImageComponentState?
+    public override var pendingState: ImageComponentState {
+        let state = _imageState ?? ImageComponentState()
+        if _imageState == nil {
+            _imageState = state
+            _pendingState = state
+        }
+        return state
+    }
+
     @discardableResult
     public func image(_ value: UIImage?) -> Self {
-        view?.image = value
-        layout.markDirty()
+        if mainThread(), let view = view {
+            view.image = value
+        } else {
+            pendingState.image = value
+        }
         return self
     }
 
     @discardableResult
     public func highlightedImage(_ value: UIImage?) -> Self {
-        view?.highlightedImage = value
-        layout.markDirty()
+        if mainThread(), let view = view {
+            view.highlightedImage = value
+        } else {
+            pendingState.highlightedImage = value
+        }
         return self
     }
 }

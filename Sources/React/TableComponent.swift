@@ -22,42 +22,59 @@
 
 import UIKit
 
-public typealias TableComponent = BasicTableComponent<UITableView, ComponentState>
-//public typealias TableCellComponent = BasicTableCellComponent<UITableViewCell>
-//
-//open class BasicTableCellComponent<Cell: UITableViewCell>: Component<Cell>, Identified {
-//    open var identifier: String {
-//        return "BasicTableCellComponent"
-//    }
-//
-//    open var height: CGFloat {
-//        // layout.layout()
-//        return 0 // layout.frame.height
-//    }
-//
-//    public init(style: UITableViewCellStyle = .default) {
-//        let id = self.identifier
-//        super.init {
-//            Cell.init(style: style, reuseIdentifier: id)
-//        }
-//    }
-//
-//    @discardableResult
-//    open func buildView() -> Cell {
-//        assertMainThread()
-//        let this = _buildView()
-//        let content = this.contentView
-//        subComponents?.forEach {
-//            $0.build(in: content)
-//        }
-//        return this
-//    }
-//}
+open class TableCellComponentState: ComponentState {
+    public var accessory: UITableViewCellAccessoryType {
+        get {
+            return _accessory ?? UITableViewCellAccessoryType.none
+        }
+        set {
+            _accessory = newValue
+        }
+    }
+    var _accessory: UITableViewCellAccessoryType?
 
-open class BasicTableComponent<Table: UITableView, State: ComponentState>: Component<Table, State> {
-    public init(style: UITableViewStyle = .grouped) {
-        super.init {
+    open override func apply(view: UIView) {
+        if let cell = view as? UITableViewCell {
+            apply(cell: cell)
+        } else {
+            super.apply(view: view)
+        }
+    }
+
+    open func apply(cell: UITableViewCell) {
+        if let accessory = _accessory {
+            cell.accessoryType = accessory
+        }
+        super.apply(view: cell)
+    }
+
+    open override func invalidate() {
+        _accessory = nil
+        super.invalidate()
+    }
+}
+
+open class TableCellComponent: Component<UIView>, Identified {
+    open var identifier: String {
+        return "TableCellComponent"
+    }
+
+    @discardableResult
+    open func buildView(in cell: UITableViewCell) -> UIView {
+        return super.buildView(in: cell.contentView)
+    }
+}
+
+public typealias TableComponent = BasicTableComponent<UITableView>
+
+open class BasicTableComponent<Table: UITableView>: Component<Table> {
+    public convenience init(style: UITableViewStyle = .grouped, children: [BasicComponent] = []) {
+        self.init(children: children) {
             Table.init(frame: .zero, style: style)
         }
+    }
+
+    public override init(children: [BasicComponent] = [], creator: @escaping () -> Table) {
+        super.init(children: children, creator: creator)
     }
 }

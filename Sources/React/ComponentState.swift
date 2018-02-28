@@ -22,8 +22,25 @@
 
 import UIKit
 
-public class ComponentState {
-    var dirty: Bool = false
+public protocol ComponentProperty {
+    var frame: CGRect { get }
+    var backgroundColor: UIColor? { get }
+    var clips: Bool { get }
+    var hidden: Bool { get }
+    var tintColor: UIColor { get }
+    var userInteractionEnabled: Bool { get }
+}
+
+open class ComponentState: ComponentProperty {
+    public var frame: CGRect {
+        get {
+            return _frame ?? CGRect.zero
+        }
+        set {
+            _frame = newValue
+        }
+    }
+    var _frame: CGRect?
 
     public var backgroundColor: UIColor? {
         get {
@@ -31,51 +48,161 @@ public class ComponentState {
         }
         set {
             _backgroundColor = newValue
-            dirty = true
         }
     }
     var _backgroundColor: UIColor??
+
+    public var clips: Bool {
+        get {
+            return _clips ?? false
+        }
+        set {
+            _clips = newValue
+        }
+    }
+    var _clips: Bool?
+
+    public var hidden: Bool {
+        get {
+            return _hidden ?? false
+        }
+        set {
+            _hidden = newValue
+        }
+    }
+    var _hidden: Bool?
+
+    public var tintColor: UIColor {
+        get {
+            return _tintColor ?? UIView().tintColor ?? UIColor.white
+        }
+        set {
+            _tintColor = newValue
+        }
+    }
+    var _tintColor: UIColor?
+
+    public var userInteractionEnabled: Bool {
+        get {
+            return _userInteractionEnabled ?? true
+        }
+        set {
+            _userInteractionEnabled = newValue
+        }
+    }
+    var _userInteractionEnabled: Bool?
+
+    // MARK: Layer properties
+    public var cornerRadius: CGFloat {
+        get {
+            return _cornerRadius ?? 0
+        }
+        set {
+            _cornerRadius = newValue
+        }
+    }
+    var _cornerRadius: CGFloat?
+
+    public var borderColor: CGColor? {
+        get {
+            return _borderColor ?? nil
+        }
+        set {
+            _borderColor = newValue
+        }
+    }
+    var _borderColor: CGColor??
+
+    public var borderWidth: CGFloat {
+        get {
+            return _borderWidth ?? 0
+        }
+        set {
+            _borderWidth = newValue
+        }
+    }
+    var _borderWidth: CGFloat?
 
     public required init() {
         // Do nothing.
     }
 
-    public func apply(view: UIView) {
+    open func apply(view: UIView) {
         assertMainThread()
-        guard dirty else {
-            return
+        let layer = view.layer
+        if let frame = _frame {
+            view.frame = frame
         }
         if let backgroundColor = _backgroundColor {
             view.backgroundColor = backgroundColor
         }
+        if let clips = _clips {
+            view.clipsToBounds = clips
+        }
+        if let hidden = _hidden {
+            view.isHidden = hidden
+        }
+        if let tintColor = _tintColor {
+            view.tintColor = tintColor
+        }
+        if let cornerRadius = _cornerRadius {
+            layer.cornerRadius = cornerRadius
+        }
+        if let borderColor = _borderColor {
+            layer.borderColor = borderColor
+        }
+        if let borderWidth = _borderWidth {
+            layer.borderWidth = borderWidth
+        }
         invalidate()
     }
 
-    public func apply(layer: CALayer) {
+    open func apply(layer: CALayer) {
         assertMainThread()
-        guard dirty else {
-            return
+        if let frame = _frame {
+            layer.frame = frame
         }
         if let backgroundColor = _backgroundColor {
             layer.backgroundColor = backgroundColor?.cgColor
         }
+        if let clips = _clips {
+            layer.masksToBounds = clips
+        }
+        if let hidden = _hidden {
+            layer.isHidden = hidden
+        }
+        if let cornerRadius = _cornerRadius {
+            layer.cornerRadius = cornerRadius
+        }
+        if let borderColor = _borderColor {
+            layer.borderColor = borderColor
+        }
+        if let borderWidth = _borderWidth {
+            layer.borderWidth = borderWidth
+        }
         invalidate()
     }
 
-    public func invalidate() {
+    open func invalidate() {
+        _frame = nil
         _backgroundColor = nil
-        dirty = false
+        _clips = nil
+        _hidden = nil
+        _tintColor = nil
+        _userInteractionEnabled = nil
+
+        _borderColor = nil
+        _borderWidth = nil
     }
 }
 
-public final class LabelComponentState: ComponentState {
+open class LabelComponentState: ComponentState {
     public var text: NSAttributedString? {
         get {
             return _text ?? nil
         }
         set {
             _text = newValue
-            dirty = true
         }
     }
     var _text: NSAttributedString??
@@ -86,12 +213,11 @@ public final class LabelComponentState: ComponentState {
         }
         set {
             _numberOfLines = newValue
-            dirty = true
         }
     }
     var _numberOfLines: Int?
 
-    public override func apply(view: UIView) {
+    open override func apply(view: UIView) {
         if let label = view as? UILabel {
             apply(label: label)
         } else {
@@ -99,7 +225,7 @@ public final class LabelComponentState: ComponentState {
         }
     }
 
-    public func apply(label: UILabel) {
+    open func apply(label: UILabel) {
         if let text = _text {
             label.attributedText = text
         }
@@ -108,16 +234,21 @@ public final class LabelComponentState: ComponentState {
         }
         super.apply(view: label)
     }
+
+    open override func invalidate() {
+        _text = nil
+        _numberOfLines = nil
+        super.invalidate()
+    }
 }
 
-public final class ImageComponentState: ComponentState {
+open class ImageComponentState: ComponentState {
     public var image: UIImage? {
         get {
             return _image ?? nil
         }
         set {
             _image = newValue
-            dirty = true
         }
     }
     var _image: UIImage??
@@ -128,12 +259,20 @@ public final class ImageComponentState: ComponentState {
         }
         set {
             _highlightedImage = newValue
-            dirty = true
         }
     }
     var _highlightedImage: UIImage??
 
-    public override func apply(view: UIView) {
+    public override var userInteractionEnabled: Bool {
+        get {
+            return _userInteractionEnabled ?? false
+        }
+        set {
+            _userInteractionEnabled = newValue
+        }
+    }
+
+    open override func apply(view: UIView) {
         if let imageView = view as? UIImageView {
             apply(imageView: imageView)
         } else {
@@ -141,7 +280,7 @@ public final class ImageComponentState: ComponentState {
         }
     }
 
-    public func apply(imageView: UIImageView) {
+    open func apply(imageView: UIImageView) {
         if let image = _image {
             imageView.image = image
         }
@@ -149,5 +288,21 @@ public final class ImageComponentState: ComponentState {
             imageView.highlightedImage = highlightedImage
         }
         super.apply(view: imageView)
+    }
+
+    open override func invalidate() {
+        _image = nil
+        _highlightedImage = nil
+        super.invalidate()
+    }
+}
+
+extension UIControlState: Hashable {
+    public var hashValue: Int {
+        return rawValue.hashValue
+    }
+
+    public static func ==(lhs: UIControlState, rhs: UIControlState) -> Bool {
+        return lhs.rawValue == rhs.rawValue
     }
 }

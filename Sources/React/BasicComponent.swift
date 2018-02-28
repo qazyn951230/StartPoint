@@ -24,30 +24,28 @@ import UIKit
 import QuartzCore
 import CoreGraphics
 
-open class BasicComponent<State: ComponentState> {
-    public internal(set) var subComponents: [BasicComponent]?
+open class BasicComponent: Hashable {
+    public let children: [BasicComponent]
     public let layout = FlexLayout()
 
     let framed: Bool
     var frame: CGRect = CGRect.zero
 
-    var _pendingState: State?
-    public var pendingState: State {
-        let state = _pendingState ?? State()
+    var _pendingState: ComponentState?
+    public var pendingState: ComponentState {
+        let state = _pendingState ?? ComponentState()
         if _pendingState == nil {
             _pendingState = state
         }
         return state
     }
 
-    init(framed: Bool) {
+    init(framed: Bool, children: [BasicComponent]) {
         self.framed = framed
-    }
-
-    public func addSubComponent(_ component: BasicComponent) {
-        subComponents = subComponents ?? []
-        subComponents?.append(component)
-        layout.append(component.layout)
+        self.children = children
+        for child in children {
+            layout.append(child.layout)
+        }
     }
 
     @discardableResult
@@ -64,37 +62,66 @@ open class BasicComponent<State: ComponentState> {
 
     public func layout(width: Double = .nan, height: Double = .nan) {
         layout.calculate(width: width, height: height, direction: .ltr)
-    }
-
-    public func apply() {
         apply(left: 0, top: 0)
     }
 
+    public func layout(within view: UIView) {
+        layout(width: Double(view.frame.width), height: Double(view.frame.height))
+    }
+
     func apply(left: Double, top: Double) {
+        // TODO: Flatten children
         var left = left
         var top = top
+        let frame = CGRect(x: CGFloat(left + layout.box.left), y: CGFloat(top + layout.box.top),
+            width: CGFloat(layout.box.width), height: CGFloat(layout.box.height))
+        self.frame = frame
         if framed {
-            apply(x: CGFloat(left + layout.box.position.left), y: CGFloat(top + layout.box.position.top),
-                width: CGFloat(layout.box.width), height: CGFloat(layout.box.height))
             left = 0
             top = 0
         } else {
-            left += layout.box.position.left
-            top += layout.box.position.top
+            left += layout.box.left
+            top += layout.box.top
         }
-        subComponents?.forEach {
+        children.forEach {
             $0.apply(left: left, top: top)
         }
     }
 
-    public func apply(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        // Do nothing.
-    }
-
-    func build(in view: UIView) {
+    public func build(in view: UIView) {
         assertMainThread()
-        subComponents?.forEach {
+        children.forEach {
             $0.build(in: view)
         }
+    }
+
+    public func build(to view: UIScrollView) {
+        assertMainThread()
+        build(in: view)
+        view.contentSize = frame.size
+    }
+
+    func buildView() -> UIView {
+        assertMainThread()
+        let view = UIView(frame: .zero)
+        build(in: view)
+        return view
+    }
+
+#if DEBUG
+    public func debugMode() {
+        children.forEach {
+            $0.debugMode()
+        }
+    }
+#endif
+
+    // MARK: - Hashable
+    public var hashValue: Int {
+        return stringAddress(self).hashValue
+    }
+
+    public static func ==(lhs: BasicComponent, rhs: BasicComponent) -> Bool {
+        return lhs === rhs
     }
 }

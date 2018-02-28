@@ -20,21 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-open class StackComponent: BasicComponent {
-    public init(children: [BasicComponent]) {
-        super.init(framed: false, children: children)
-    }
-
-    public convenience init(direction: FlexDirection, children: [BasicComponent]) {
-        self.init(children: children)
-        layout.flexDirection(direction)
-    }
-
-    public static func horizontal(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .row, children: child)
-    }
-
-    public static func vertical(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .column, children: child)
-    }
-}
+//import UIKit
+//import CoreGraphics
+//
+//public typealias ScrollComponent = BasicScrollComponent<UIScrollView>
+//
+//open class ScrollComponentState: ComponentState {
+//    public var contentSize: CGSize {
+//        get {
+//            return _contentSize ?? CGSize.zero
+//        }
+//        set {
+//            _contentSize = newValue
+//        }
+//    }
+//    var _contentSize: CGSize?
+//}
+//
+//open class BasicScrollComponent<Scroll: UIScrollView>: Component<Scroll> {
+//    var _scrollState: ScrollComponentState?
+//    public override var pendingState: ScrollComponentState {
+//        let state = _scrollState ?? ScrollComponentState()
+//        if _scrollState == nil {
+//            _scrollState = state
+//            _pendingState = state
+//        }
+//        return state
+//    }
+//
+//    public override func layout(width: Double, height: Double) {
+//        layout.width(.length(width)).height(.length(height))
+//        super.layout(width: width, height: height)
+//    }
+//}

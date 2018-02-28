@@ -22,7 +22,7 @@
 
 import Foundation
 
-public struct StartPoint {
+public struct PackageInfo {
     public static var bundle: Bundle? {
         return Bundle(identifier: "com.undev.StartPoint")
     }

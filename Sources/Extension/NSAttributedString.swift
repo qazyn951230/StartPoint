@@ -32,7 +32,8 @@ public extension NSAttributedString {
         return boundingSize(size: CGSize(width: .greatestFiniteMagnitude, height: height), options: options)
     }
 
-    public func boundingSize(size: CGSize, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
+    public func boundingSize(size: CGSize = CGSize.max(),
+                             options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingRect(with: size, options: options, context: nil).size
     }
 }

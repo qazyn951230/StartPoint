@@ -64,7 +64,7 @@ open class AppViewController<View:UIView>: UIViewController, UIGestureRecognizer
     }
 
     open func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {
-        let image = image ?? UIImage(named: "ic_arrow_back", in: StartPoint.bundle, compatibleWith: nil)
+        let image = image ?? UIImage(named: "ic_arrow_back", in: PackageInfo.bundle, compatibleWith: nil)
         return UIBarButtonItem(image: image, style: .plain, target: self,
             action: #selector(backBarItemAction(sender:)))
     }

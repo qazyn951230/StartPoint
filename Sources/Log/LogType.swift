@@ -88,7 +88,7 @@ public extension LogType {
     }
 
     public static func write(level: LogLevel, _ value: [Any], file: String, function: String, line: Int) {
-        guard level >= Self.level, value.count > 0 else {
+        guard level >= Self.level else {
             return
         }
         let message = format(level: level, array: value, separator: Self.separator)
@@ -106,7 +106,11 @@ public extension LogType {
         let d = dateFormatter.string(from: date)
         let u = URL(fileURLWithPath: file).lastPathComponent
         // MM [main] debug [foo.swift:18]foo() message
-        write(message: "\(d) [\(thread)] \(level.description) [\(u):\(line)]\(function)\n\(message)\n")
+        if message.isEmpty {
+            write(message: "\(d) [\(thread)] \(level.description) [\(u):\(line)]\(function)\n")
+        } else {
+            write(message: "\(d) [\(thread)] \(level.description) [\(u):\(line)]\(function)\n\(message)\n")
+        }
     }
 
     public static func format(level: LogLevel, _ value: Any, separator: String, expand: Bool = true) -> String {
@@ -132,12 +136,18 @@ public extension LogType {
     }
 
     public static func format(level: LogLevel, array: [Any], separator: String) -> String {
+        if array.isEmpty {
+            return String.empty
+        }
         return array.map {
             format(level: level, $0, separator: separator, expand: false)
         }.joined(separator: separator)
     }
 
     public static func format(level: LogLevel, dictionary: [AnyHashable: Any], separator: String) -> String {
+        if dictionary.isEmpty {
+            return String.empty
+        }
         return dictionary.map { (k, v) in
             return String(describing: k) + format(level: level, v, separator: separator, expand: false)
         }.joined(separator: separator)

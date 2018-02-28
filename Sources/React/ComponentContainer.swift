@@ -20,21 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-open class StackComponent: BasicComponent {
-    public init(children: [BasicComponent]) {
-        super.init(framed: false, children: children)
-    }
+import UIKit
+import QuartzCore
 
-    public convenience init(direction: FlexDirection, children: [BasicComponent]) {
-        self.init(children: children)
-        layout.flexDirection(direction)
-    }
+public protocol ComponentContainer: class {
+    weak var component: BasicComponent? { get set }
+}
 
-    public static func horizontal(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .row, children: child)
+private var X4CKjWv89vFWzSPC = "X4CKjWv89vFWzSPC"
+extension UIView {
+    var _component: BasicComponent? {
+        get {
+            let value: Weak<BasicComponent>? = self.associatedObject(key: &X4CKjWv89vFWzSPC)
+            return value?.value
+        }
+        set {
+            let value: Weak<BasicComponent>? = newValue.map(Weak.init)
+            self.setAssociatedObject(key: &X4CKjWv89vFWzSPC, object: value)
+        }
     }
+}
 
-    public static func vertical(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .column, children: child)
+extension CALayer {
+    var _component: BasicComponent? {
+        get {
+            let value: Weak<BasicComponent>? = self.associatedObject(key: &X4CKjWv89vFWzSPC)
+            return value?.value
+        }
+        set {
+            let value: Weak<BasicComponent>? = newValue.map(Weak.init)
+            self.setAssociatedObject(key: &X4CKjWv89vFWzSPC, object: value)
+        }
     }
 }

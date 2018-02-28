@@ -23,48 +23,215 @@
 import UIKit
 import QuartzCore
 
-open class LayerComponent<T: CALayer, State: ComponentState>: BasicComponent<State> {
-    public internal(set) var layer: T
+public typealias LayerComponent = BasicLayerComponent<CALayer>
 
-    public init(layer: T) {
-        self.layer = layer
-        super.init(framed: true)
+open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
+    public internal(set) var layer: Layer?
+    public internal(set) var creator: (() -> Layer)?
+
+    private let _children: [BasicLayerComponent]
+
+    override var frame: CGRect {
+        didSet {
+            if mainThread(), let layer = self.layer {
+                layer.frame = frame
+            } else {
+                pendingState.frame = frame
+            }
+        }
     }
 
-    public convenience init() {
-        self.init(layer: T.init())
+    public init(children: [BasicComponent] = []) {
+        _children = children.flatMap {
+            $0 as? BasicLayerComponent
+        }
+        super.init(framed: true, children: children)
     }
 
-    public override func apply(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        layer.frame = CGRect(x: x, y: y, width: width, height: height)
+    public init(children: [BasicComponent], creator: @escaping () -> Layer) {
+        self.creator = creator
+        _children = children.flatMap {
+            $0 as? BasicLayerComponent
+        }
+        super.init(framed: true, children: children)
     }
 
-    override func build(in view: UIView) {
-        let this = T.init()
-        view.layer.addSublayer(this)
-        super.build(in: view)
+    deinit {
+        creator = nil
+        if let layer = self.layer {
+            if mainThread() {
+                layer.removeFromSuperlayer()
+            } else {
+                DispatchQueue.main.async {
+                    layer.removeFromSuperlayer()
+                }
+            }
+        }
     }
-}
 
-public extension LayerComponent {
     @discardableResult
-    public func backgroundColor(_ value: CGColor?) -> Self {
-        layer.backgroundColor = value
-        return self
+    open func buildLayer(in layer: CALayer?) -> Layer {
+        assertMainThread()
+        let this = _buildLayer()
+        layer?.addSublayer(this)
+        _children.forEach {
+            $0.build(in: this)
+        }
+        return this
     }
+
+    public func build(in layer: CALayer) {
+        assertMainThread()
+        let this = _buildLayer()
+        if let superlayer = this.superlayer {
+            if superlayer != layer {
+                this.removeFromSuperlayer()
+                layer.addSublayer(this)
+            }
+        } else {
+            layer.addSublayer(this)
+        }
+        _children.forEach {
+            $0.build(in: this)
+        }
+    }
+
+    public override func build(in view: UIView) {
+        assertMainThread()
+        let this = _buildLayer()
+        let layer = view.layer
+        if let superlayer = this.superlayer {
+            if superlayer != layer {
+                this.removeFromSuperlayer()
+                layer.addSublayer(this)
+            }
+        } else {
+            layer.addSublayer(this)
+        }
+        _children.forEach {
+            $0.build(in: this)
+        }
+    }
+
+    func _createLayer() -> Layer {
+        assertMainThread()
+        if let layer = self.layer {
+            return layer
+        }
+        let this = creator?() ?? Layer.init()
+//        if let container = this as? ComponentContainer {
+//            container.component = self
+//        } else {
+//            this._component = self
+//        }
+        self.layer = this
+        return this
+    }
+
+    func _buildLayer() -> Layer {
+        let this = _createLayer()
+        _pendingState?.apply(layer: this)
+        return this
+    }
+
+    override func buildView() -> UIView {
+        let view = super.buildView()
+        build(in: view)
+        return view
+    }
+
+#if DEBUG
+    public override func debugMode() {
+        backgroundColor(UIColor.random)
+        super.debugMode()
+    }
+#endif
 
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
-        layer.backgroundColor = value?.cgColor
+        if mainThread(), let layer = layer {
+            layer.backgroundColor = value?.cgColor
+        } else {
+            pendingState.backgroundColor = value
+        }
         return self
     }
 
+    @discardableResult
     public func backgroundColor(hex: UInt32) -> Self {
-#if os(iOS)
-        layer.backgroundColor = UIColor.hex(hex).cgColor
-#else
-        layer.backgroundColor = CGColor.hex(hex)
-#endif
+        let value = UIColor.hex(hex)
+        if mainThread(), let layer = layer {
+            layer.backgroundColor = value.cgColor
+        } else {
+            pendingState.backgroundColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func cornerRadius(_ value: CGFloat) -> Self {
+        if mainThread(), let layer = layer {
+            layer.cornerRadius = value
+        } else {
+            pendingState.cornerRadius = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func borderColor(cgColor value: CGColor?) -> Self {
+        if mainThread(), let layer = layer {
+            layer.borderColor = value
+        } else {
+            pendingState.borderColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func borderColor(_ value: UIColor?) -> Self {
+        return borderColor(cgColor: value?.cgColor)
+    }
+
+    @discardableResult
+    public func borderColor(hex value: UInt32) -> Self {
+        return borderColor(cgColor: UIColor.hex(value).cgColor)
+    }
+
+    @discardableResult
+    public func borderWidth(_ value: CGFloat) -> Self {
+        if mainThread(), let layer = layer {
+            layer.borderWidth = value
+        } else {
+            pendingState.borderWidth = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func border(color: UIColor?, width: CGFloat) -> Self {
+        if mainThread(), let layer = layer {
+            layer.borderColor = color?.cgColor
+            layer.borderWidth = width
+        } else {
+            let state = pendingState
+            state.borderColor = color?.cgColor
+            state.borderWidth = width
+        }
+        return self
+    }
+
+    @discardableResult
+    public func border(hex value: UInt32, width: CGFloat) -> Self {
+        let color = UIColor.hex(value).cgColor
+        if mainThread(), let layer = layer {
+            layer.borderColor = color
+            layer.borderWidth = width
+        } else {
+            let state = pendingState
+            state.borderColor = color
+            state.borderWidth = width
+        }
         return self
     }
 }

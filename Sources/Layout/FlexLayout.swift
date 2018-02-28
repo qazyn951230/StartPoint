@@ -255,6 +255,22 @@ open class FlexLayout: Equatable {
         return self
     }
 
+    // YGNodeCalculateLayout
+    public func calculate(width: Double = .nan, height: Double = .nan, direction: Direction = .ltr) {
+        FlexBox.totalGeneration += 1
+        resolveDimensions()
+        let (_width, widthMode) = layoutMode(size: width, resolvedSize: box.resolvedWidth,
+            maxSize: style.computedMaxWidth, direction: .row)
+        let (_height, heightMode) = layoutMode(size: height, resolvedSize: box.resolvedHeight,
+            maxSize: style.computedMaxHeight, direction: .column)
+        let success = layoutInternal(width: _width, height: _height, widthMode: widthMode, heightMode: heightMode,
+            parentWidth: width, parentHeight: height, direction: direction, layout: true, reason: "initial")
+        if success {
+            setPosition(direction: style.direction, mainSize: width, crossSize: height, parentWidth: width)
+            roundPosition(scale: FlexStyle.scale, absoluteLeft: 0, absoluteTop: 0)
+        }
+    }
+
     open func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         return measureSelf?(width, widthMode, height, heightMode) ?? Size.zero
     }

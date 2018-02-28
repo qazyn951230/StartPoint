@@ -20,21 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-open class StackComponent: BasicComponent {
-    public init(children: [BasicComponent]) {
-        super.init(framed: false, children: children)
-    }
+import QuartzCore
 
-    public convenience init(direction: FlexDirection, children: [BasicComponent]) {
-        self.init(children: children)
-        layout.flexDirection(direction)
-    }
-
-    public static func horizontal(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .row, children: child)
-    }
-
-    public static func vertical(child: BasicComponent...) -> StackComponent {
-        return StackComponent(direction: .column, children: child)
-    }
+public final class ComponentLayer: CALayer, ComponentContainer {
+    public weak var component: BasicComponent? = nil
 }
