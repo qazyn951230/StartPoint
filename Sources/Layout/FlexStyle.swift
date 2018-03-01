@@ -257,52 +257,46 @@ public class FlexStyle: Equatable {
         }
     }
 
-    // YGNodeLeadingMargin
+    // getLeadingMargin | YGNodeLeadingMargin
     @inline(__always)
     func leadingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.leading(direction: direction)
-        let result = value.resolve(by: width)
-        return result > 0 ? result : 0
+        return value.resolve(by: width)
     }
 
     // YGNodeTrailingMargin
     @inline(__always)
     func trailingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.trailing(direction: direction)
-        let result = value.resolve(by: width)
-        return result > 0 ? result : 0
+        return value.resolve(by: width)
     }
 
     // YGNodeLeadingPadding
     @inline(__always)
     func leadingPadding(for direction: FlexDirection, width: Double) -> Double {
         let value = padding.leading(direction: direction)
-        let result = value.resolve(by: width)
-        return result > 0 ? result : 0
+        return value.resolve(by: width)
     }
 
     // YGNodeTrailingPadding
     @inline(__always)
     func trailingPadding(for direction: FlexDirection, width: Double) -> Double {
         let value = padding.trailing(direction: direction)
-        let result = value.resolve(by: width)
-        return result > 0 ? result : 0
+        return value.resolve(by: width)
     }
 
     // YGNodeLeadingBorder
     @inline(__always)
     func leadingBorder(for direction: FlexDirection) -> Double {
         let value = border.leading(direction: direction)
-        let result = value.resolve(by: 0)
-        return result > 0 ? result : 0
+        return value.resolve(by: 0)
     }
 
     // YGNodeTrailingBorder
     @inline(__always)
     func trailingBorder(for direction: FlexDirection) -> Double {
         let value = border.trailing(direction: direction)
-        let result = value.resolve(by: 0)
-        return result > 0 ? result : 0
+        return value.resolve(by: 0)
     }
 
     // YGNodePaddingAndBorderForAxis
@@ -323,7 +317,7 @@ public class FlexStyle: Equatable {
         return trailingPadding(for: direction, width: width) + trailingBorder(for: direction)
     }
 
-    // YGNodeMarginForAxis
+    // getMarginForAxis | YGNodeMarginForAxis
     @inline(__always)
     func totalOuterSize(for direction: FlexDirection, width: Double) -> Double {
         return leadingMargin(for: direction, width: width) + trailingMargin(for: direction, width: width)
