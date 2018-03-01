@@ -82,20 +82,6 @@ public class BasicLabelComponent<Label: UILabel>: Component<Label> {
     }
 
     @discardableResult
-    public func text(string: String?, font: UIFont? = nil, color: UIColor = UIColor.black) -> Self {
-        let value = AttributedString.create(string)?.color(color)
-            .font(font ?? UIFont.systemFont(ofSize: 17)).done()
-        return text(value)
-    }
-
-    @discardableResult
-    public func text(string: String?, size: CGFloat, color: UIColor = UIColor.black) -> Self {
-        let value = AttributedString.create(string)?.color(color)
-            .font(UIFont.systemFont(ofSize: size)).done()
-        return text(value)
-    }
-
-    @discardableResult
     public func multiLine(_ value: Bool = true) -> Self {
         lines = value ? 0 : 1
         if mainThread(), let view = view {

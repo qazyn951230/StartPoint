@@ -248,4 +248,17 @@ public class AttributedString {
     public static func create(_ string: String?) -> AttributedString? {
         return string.map(AttributedString.init)
     }
+
+    public static func create(_ string: String?, size: CGFloat, color: UIColor, weight: FontWeight = .regular)
+            -> NSAttributedString? {
+        guard let value = string else {
+            return nil
+        }
+        return AttributedString(value).systemFont(size).color(color).done()
+    }
+
+    public static func create(_ string: String?, size: CGFloat, hex: UInt32, weight: FontWeight = .regular)
+            -> NSAttributedString? {
+        return create(string, size: size, color: UIColor.hex(hex))
+    }
 }

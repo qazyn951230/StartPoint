@@ -45,14 +45,26 @@ open class OverlayComponent: BasicComponent {
         primary.apply(left: left, top: top)
         let width = primary.frame.width
         let height = primary.frame.height
-        background?.layout(width: width, height: height)
-        overlay?.layout(width: width, height: height)
+        if background?.children.isEmpty == true {
+            background?.frame = primary.frame
+        } else {
+            background?.layout(width: width, height: height)
+        }
+        if overlay?.children.isEmpty == true {
+            overlay?.frame = primary.frame
+        } else {
+            overlay?.layout(width: width, height: height)
+        }
     }
 
     public override func layout(width: Double = .nan, height: Double = .nan) {
         primary.layout(width: width, height: height)
-        background?.layout(width: width, height: height)
-        overlay?.layout(width: width, height: height)
+        if background?.children.isEmpty != true {
+            background?.layout(width: width, height: height)
+        }
+        if overlay?.children.isEmpty != true {
+            overlay?.layout(width: width, height: height)
+        }
     }
 
     public func buildView(in tableCell: UITableViewCell) {
