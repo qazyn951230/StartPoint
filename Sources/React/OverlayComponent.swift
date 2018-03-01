@@ -43,15 +43,10 @@ open class OverlayComponent: BasicComponent {
 
     override func apply(left: Double, top: Double) {
         primary.apply(left: left, top: top)
-        let width = Double(primary.frame.width)
-        let height = Double(primary.frame.height)
+        let width = primary.frame.width
+        let height = primary.frame.height
         background?.layout(width: width, height: height)
         overlay?.layout(width: width, height: height)
-//        background?.apply(left: left, top: top)
-//        overlay?.apply(left: left, top: top)
-        // FIXME: Apply frame
-//        background?.frame = primary.frame
-//        overlay?.frame = primary.frame
     }
 
     public override func layout(width: Double = .nan, height: Double = .nan) {

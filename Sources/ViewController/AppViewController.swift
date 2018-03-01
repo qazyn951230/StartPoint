@@ -22,15 +22,15 @@
 
 import UIKit
 
-open class AppViewController<View:UIView>: UIViewController, UIGestureRecognizerDelegate {
+open class AppViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate {
     open var backBarItem: UIBarButtonItem? = nil
 
-    public private(set) var basicView: View? = nil
+    public private(set) var rootView: View? = nil
     public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer? = nil
 
     open override func loadView() {
-        basicView = createView()
-        view = basicView
+        rootView = createView()
+        view = rootView
     }
 
     open override func viewDidLoad() {

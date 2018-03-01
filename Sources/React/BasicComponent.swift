@@ -29,7 +29,7 @@ open class BasicComponent: Hashable {
     public let layout = FlexLayout()
 
     let framed: Bool
-    var frame: CGRect = CGRect.zero
+    var frame: Rect = Rect.zero
 
     var _pendingState: ComponentState?
     public var pendingState: ComponentState {
@@ -73,8 +73,8 @@ open class BasicComponent: Hashable {
         // TODO: Flatten children
         var left = left
         var top = top
-        let frame = CGRect(x: CGFloat(left + layout.box.left), y: CGFloat(top + layout.box.top),
-            width: CGFloat(layout.box.width), height: CGFloat(layout.box.height))
+        let frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
+            width: layout.box.width, height: layout.box.height)
         self.frame = frame
         if framed {
             left = 0
@@ -98,7 +98,7 @@ open class BasicComponent: Hashable {
     public func build(to view: UIScrollView) {
         assertMainThread()
         build(in: view)
-        view.contentSize = frame.size
+        view.contentSize = frame.cgSize
     }
 
     func buildView() -> UIView {

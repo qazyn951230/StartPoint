@@ -31,12 +31,12 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
 
     private let _children: [BasicLayerComponent]
 
-    override var frame: CGRect {
+    override var frame: Rect {
         didSet {
             if mainThread(), let layer = self.layer {
-                layer.frame = frame
+                layer.frame = frame.cgRect
             } else {
-                pendingState.frame = frame
+                pendingState.frame = frame.cgRect
             }
         }
     }

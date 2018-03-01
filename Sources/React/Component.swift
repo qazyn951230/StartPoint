@@ -29,12 +29,12 @@ open class Component<View: UIView>: BasicComponent {
     public internal(set) var view: View?
     public internal(set) var creator: (() -> View)?
 
-    override var frame: CGRect {
+    override var frame: Rect {
         didSet {
             if mainThread(), let view = self.view {
-                view.frame = frame
+                view.frame = frame.cgRect
             } else {
-                pendingState.frame = frame
+                pendingState.frame = frame.cgRect
             }
         }
     }
