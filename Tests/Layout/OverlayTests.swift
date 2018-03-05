@@ -108,4 +108,50 @@ class OverlayTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.width, 100)
         XCTAssertEqual(root_child0.box.height, 100)
     }
+
+    func testRightAutoMargin() {
+        let root = FlexLayout()
+        root.flexDirection(.row)
+
+        let root_child0 = FlexLayout()
+        root_child0.width(.length(44))
+        root_child0.height(.length(44))
+        root_child0.margin(right: .auto)
+        root.append(root_child0)
+
+        let root_child1 = FlexLayout()
+        root_child1.width(.length(44))
+        root_child1.height(.length(44))
+        root.append(root_child1)
+
+        root.calculate(width: 100, height: 100, direction: .ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 100)
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 44)
+        XCTAssertEqual(root_child0.box.height, 44)
+        XCTAssertEqual(root_child1.box.left, 56)
+        XCTAssertEqual(root_child1.box.top, 0)
+        XCTAssertEqual(root_child1.box.width, 44)
+        XCTAssertEqual(root_child1.box.height, 44)
+
+        root.calculate(width: 100, height: 100, direction: .rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 100)
+        XCTAssertEqual(root_child0.box.left, 44)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 44)
+        XCTAssertEqual(root_child0.box.height, 44)
+        XCTAssertEqual(root_child1.box.left, 0)
+        XCTAssertEqual(root_child1.box.top, 0)
+        XCTAssertEqual(root_child1.box.width, 44)
+        XCTAssertEqual(root_child1.box.height, 44)
+    }
 }
