@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,24 @@
 import UIKit
 import QuartzCore
 import CoreGraphics
+import Dispatch
 
 open class BasicComponent: Hashable {
     public let children: [BasicComponent]
     public let layout = FlexLayout()
 
     let framed: Bool
-    var frame: Rect = Rect.zero
+    var _frame: Rect = Rect.zero
+
+    public var frame: CGRect {
+        return _frame.cgRect
+    }
+
+    var _tap: ((BasicComponent) -> Void)?
+
+    open var overrideTouches: Bool {
+        return _tap != nil
+    }
 
     var _pendingState: ComponentState?
     public var pendingState: ComponentState {
@@ -75,7 +86,7 @@ open class BasicComponent: Hashable {
         var top = top
         let frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
             width: layout.box.width, height: layout.box.height)
-        self.frame = frame
+        self._frame = frame
         if framed {
             left = 0
             top = 0
@@ -98,7 +109,7 @@ open class BasicComponent: Hashable {
     public func build(to view: UIScrollView) {
         assertMainThread()
         build(in: view)
-        view.contentSize = frame.cgSize
+        view.contentSize = _frame.cgSize
     }
 
     func buildView() -> UIView {
@@ -115,6 +126,31 @@ open class BasicComponent: Hashable {
         }
     }
 #endif
+
+    // MARK: - Touch
+    open func tap(_ method: @escaping (BasicComponent) -> Void) {
+        _tap = method
+    }
+
+    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+    }
+
+    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+    }
+
+    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let tap = _tap
+        let this = self
+        DispatchQueue.main.async {
+            tap?(this)
+        }
+    }
+
+    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+    }
 
     // MARK: - Hashable
     public var hashValue: Int {

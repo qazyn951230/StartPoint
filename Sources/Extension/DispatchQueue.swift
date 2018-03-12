@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import Dispatch
+import Foundation
 
-NS_ASSUME_NONNULL_BEGIN
-
-NSString *stringAddress(id object);
-size_t longAddress(id object);
-
-NS_ASSUME_NONNULL_END
+extension DispatchQueue {
+    func apply(iterations: Int, work: @escaping (Int) -> Void) {
+        __dispatch_apply(iterations, self, work)
+    }
+}

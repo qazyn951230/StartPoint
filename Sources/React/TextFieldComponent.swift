@@ -22,17 +22,63 @@
 
 import UIKit
 
-public typealias LabelComponent = BasicLabelComponent<UILabel>
+public typealias TextFieldComponent = BasicTextFieldComponent<UITextField>
 
-open class BasicLabelComponent<Label: UILabel>: Component<Label> {
+open class TextFieldComponentState: ComponentState {
+    public var text: NSAttributedString? {
+        get {
+            return _text ?? nil
+        }
+        set {
+            _text = newValue
+        }
+    }
+    var _text: NSAttributedString??
+
+    public var placeholder: NSAttributedString? {
+        get {
+            return _placeholder ?? nil
+        }
+        set {
+            _placeholder = newValue
+        }
+    }
+    var _placeholder: NSAttributedString??
+
+    open override func apply(view: UIView) {
+        if let textField = view as? UITextField {
+            apply(textField: textField)
+        } else {
+            super.apply(view: view)
+        }
+    }
+
+    open func apply(textField: UITextField) {
+        if let text = _text {
+            textField.attributedText = text
+        }
+        if let placeholder = _placeholder {
+            textField.attributedPlaceholder = placeholder
+        }
+        super.apply(view: textField)
+    }
+
+    open override func invalidate() {
+        _text = nil
+        _placeholder = nil
+        super.invalidate()
+    }
+}
+
+open class BasicTextFieldComponent<TextField: UITextField>: Component<TextField> {
     var text: NSAttributedString?
-    var lines: Int = 0
+    var placeholder: NSAttributedString?
 
-    var _labelState: LabelComponentState?
-    public override var pendingState: LabelComponentState {
-        let state = _labelState ?? LabelComponentState()
-        if _labelState == nil {
-            _labelState = state
+    var _textFieldState: TextFieldComponentState?
+    public override var pendingState: TextFieldComponentState {
+        let state = _textFieldState ?? TextFieldComponentState()
+        if _textFieldState == nil {
+            _textFieldState = state
             _pendingState = state
         }
         return state
@@ -43,30 +89,19 @@ open class BasicLabelComponent<Label: UILabel>: Component<Label> {
         layout.measureSelf = measure
     }
 
-    public override init(children: [BasicComponent], creator: @escaping () -> Label) {
+    public override init(children: [BasicComponent], creator: @escaping () -> TextField) {
         super.init(children: children, creator: creator)
         layout.measureSelf = measure
     }
 
     func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
-        if let text = text {
+        // FIXME: Text field size > label size ?
+        if let text = text ?? placeholder {
             let size = CGSize(width: width, height: height)
-            let options: NSStringDrawingOptions = lines < 1 ? [.usesLineFragmentOrigin] : []
-            // TODO: Ceil the size, not the cgsize
+            let options: NSStringDrawingOptions = []
             return Size(cgSize: text.boundingSize(size: size, options: options).ceiled)
         }
         return Size.zero
-    }
-
-    @discardableResult
-    public func numberOfLines(_ value: Int) -> Self {
-        if mainThread(), let view = view {
-            view.numberOfLines = value
-        } else {
-            pendingState.numberOfLines = value
-        }
-        layout.markDirty()
-        return self
     }
 
     @discardableResult
@@ -82,12 +117,12 @@ open class BasicLabelComponent<Label: UILabel>: Component<Label> {
     }
 
     @discardableResult
-    public func multiLine(_ value: Bool = true) -> Self {
-        lines = value ? 0 : 1
+    public func placeholder(_ value: NSAttributedString?) -> Self {
+        placeholder = value
         if mainThread(), let view = view {
-            view.numberOfLines = lines
+            view.attributedPlaceholder = value
         } else {
-            pendingState.numberOfLines = lines
+            pendingState.placeholder = value
         }
         layout.markDirty()
         return self

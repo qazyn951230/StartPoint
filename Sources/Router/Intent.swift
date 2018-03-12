@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,9 @@ public protocol IntentSource {
 }
 
 public protocol IntentTarget: IntentSource {
-    static func create(intent: Intent) -> Self
     var intent: Intent? { get set }
+    func prepare(for intent: Intent) -> UIViewController
+    static func create() -> Self
 }
 
 private var tr0gSJaB = "tr0gSJaB"
@@ -53,6 +54,10 @@ public extension IntentTarget where Self: UIViewController {
         }
     }
 
+    public func prepare(for intent: Intent) -> UIViewController {
+        return self
+    }
+
     public func finishIntent(result: IntentResult? = nil) {
         intent?.end(for: result)
         setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)
@@ -64,6 +69,15 @@ public enum IntentResult {
     case message(Any)
     case canceled
     case failure(Error)
+
+    public var isSuccess: Bool {
+        switch self {
+        case .success, .message:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 public class Intent {
@@ -89,23 +103,23 @@ public class Intent {
     }
 
     public func start(in source: IntentSource) {
-        var destination = target.create(intent: self)
+        var destination = target.create()
         destination.intent = self
-        let controller = destination.intentController
+        let controller = destination.prepare(for: self)
         targetController = controller
         push = Intent.display(source: source.intentController, target: controller, method: method)
     }
 
     public func start(with controller: UIViewController) {
-        var destination = target.create(intent: self)
+        var destination = target.create()
         destination.intent = self
-        let t = destination.intentController
+        let t = destination.prepare(for: self)
         targetController = t
         push = Intent.display(source: controller, target: t, method: method)
     }
 
     public func transition(_ function: (IntentTarget) -> Void) {
-        var destination = target.create(intent: self)
+        var destination = target.create()
         destination.intent = self
         function(destination)
     }

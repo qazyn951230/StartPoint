@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,20 @@
 import UIKit
 import QuartzCore
 
-public typealias ViewComponent = Component<UIView>
+public typealias ViewComponent = Component<ComponentView>
 
 open class Component<View: UIView>: BasicComponent {
     public internal(set) var view: View?
     public internal(set) var creator: (() -> View)?
 
-    override var frame: Rect {
+    var _loaded: [(Component<View>, View) -> Void]?
+
+    override var _frame: Rect {
         didSet {
             if mainThread(), let view = self.view {
-                view.frame = frame.cgRect
+                view.frame = _frame.cgRect
             } else {
-                pendingState.frame = frame.cgRect
+                pendingState.frame = _frame.cgRect
             }
         }
     }
@@ -51,13 +53,18 @@ open class Component<View: UIView>: BasicComponent {
     deinit {
         creator = nil
         if let view = self.view {
-            if mainThread() {
+            runOnMain {
                 view.removeFromSuperview()
-            } else {
-                DispatchQueue.main.async {
-                    view.removeFromSuperview()
-                }
             }
+        }
+    }
+
+    public func loaded(then method: @escaping (Component<View>, View) -> Void) {
+        if mainThread(), let view = self.view {
+            method(self, view)
+        } else {
+            _loaded = _loaded ?? []
+            _loaded?.append(method)
         }
     }
 
@@ -94,18 +101,28 @@ open class Component<View: UIView>: BasicComponent {
             return view
         }
         let this = creator?() ?? View.init(frame: .zero)
-//        if let container = this as? ComponentContainer {
-//            container.component = self
-//        } else {
-//            this._component = self
-//        }
+        // TODO: Release the creator?
+        creator = nil
+        if let container = this as? ComponentContainer {
+            container.component = self
+        } else {
+            this._component = self
+        }
         self.view = this
         return this
     }
 
     func _buildView() -> View {
+        assertMainThread()
         let this = _createView()
         _pendingState?.apply(view: this)
+        if let methods = _loaded {
+            methods.forEach {
+                $0(self, this)
+            }
+        }
+        // TODO: Release the loaded methods?
+        _loaded = nil
         return this
     }
 
@@ -206,6 +223,36 @@ open class Component<View: UIView>: BasicComponent {
             let state = pendingState
             state.borderColor = color
             state.borderWidth = width
+        }
+        return self
+    }
+
+    @discardableResult
+    public func shadow(opacity: Float, radius: CGFloat, offset: CGSize, color: UIColor?) -> Self {
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.shadowOpacity = opacity
+            layer.shadowRadius = radius
+            layer.shadowOffset = offset
+            layer.shadowColor = color?.cgColor
+        } else {
+            let state = pendingState
+            state.shadowOpacity = opacity
+            state.shadowRadius = radius
+            state.shadowOffset = offset
+            state.shadowColor = color?.cgColor
+        }
+        return self
+    }
+
+    @discardableResult
+    public func shadowPath(_ value: CGPath?) -> Self {
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.shadowPath = value
+        } else {
+            let state = pendingState
+            state.shadowPath = value
         }
         return self
     }

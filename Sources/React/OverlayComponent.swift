@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,15 +43,15 @@ open class OverlayComponent: BasicComponent {
 
     override func apply(left: Double, top: Double) {
         primary.apply(left: left, top: top)
-        let width = primary.frame.width
-        let height = primary.frame.height
+        let width = primary._frame.width
+        let height = primary._frame.height
         if background?.children.isEmpty == true {
-            background?.frame = primary.frame
+            background?._frame = primary._frame
         } else {
             background?.layout(width: width, height: height)
         }
         if overlay?.children.isEmpty == true {
-            overlay?.frame = primary.frame
+            overlay?._frame = primary._frame
         } else {
             overlay?.layout(width: width, height: height)
         }

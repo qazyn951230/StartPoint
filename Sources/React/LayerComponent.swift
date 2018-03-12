@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,12 +31,12 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
 
     private let _children: [BasicLayerComponent]
 
-    override var frame: Rect {
+    override var _frame: Rect {
         didSet {
             if mainThread(), let layer = self.layer {
-                layer.frame = frame.cgRect
+                layer.frame = _frame.cgRect
             } else {
-                pendingState.frame = frame.cgRect
+                pendingState.frame = _frame.cgRect
             }
         }
     }

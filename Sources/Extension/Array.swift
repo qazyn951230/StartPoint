@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,5 +26,15 @@ public extension Array {
             return nil
         }
         return self[index]
+    }
+
+    public mutating func append(nil element: Element?) {
+        if let object = element {
+            append(object)
+        }
+    }
+
+    public static func from(_ value: Element?...) -> Array<Element> {
+        return value.flatMap(Function.this)
     }
 }

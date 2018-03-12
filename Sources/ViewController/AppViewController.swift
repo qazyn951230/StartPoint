@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,5 +71,15 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
 
     open func createView() -> View {
         return View(frame: .zero)
+    }
+}
+
+public extension AppViewController where View: UIScrollView {
+    public func adjustsViewInsets(_ adjusts: Bool) {
+        if #available(iOS 11.0, *) {
+            rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = adjusts
+        }
     }
 }

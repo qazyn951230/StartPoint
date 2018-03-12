@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,5 +36,13 @@ open class StackComponent: BasicComponent {
 
     public static func vertical(child: BasicComponent...) -> StackComponent {
         return StackComponent(direction: .column, children: child)
+    }
+
+    public static func horizontal(any: BasicComponent?...) -> StackComponent {
+        return StackComponent(direction: .row, children: any.flatMap(Function.this))
+    }
+
+    public static func vertical(any: BasicComponent?...) -> StackComponent {
+        return StackComponent(direction: .column, children: any.flatMap(Function.this))
     }
 }

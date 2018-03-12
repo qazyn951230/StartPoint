@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Dispatch
 import Darwin
 
 // The pthread_main_np() function returns
@@ -28,4 +29,13 @@ import Darwin
 // -1 if the thread's initialization has not yet completed.
 internal func mainThread() -> Bool {
     return pthread_main_np() != 0
+}
+
+// ASPerformBlockOnMainThread
+public func runOnMain(_ method: @escaping () -> Void) {
+    if mainThread() {
+        method()
+    } else {
+        DispatchQueue.main.async(execute: method)
+    }
 }

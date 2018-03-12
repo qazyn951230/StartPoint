@@ -20,11 +20,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import UIKit
 
-NS_ASSUME_NONNULL_BEGIN
+open class TableCellComponentState: ComponentState {
+    public var accessory: UITableViewCellAccessoryType {
+        get {
+            return _accessory ?? UITableViewCellAccessoryType.none
+        }
+        set {
+            _accessory = newValue
+        }
+    }
+    var _accessory: UITableViewCellAccessoryType?
 
-NSString *stringAddress(id object);
-size_t longAddress(id object);
+    open override func apply(view: UIView) {
+        if let cell = view as? UITableViewCell {
+            apply(cell: cell)
+        } else {
+            super.apply(view: view)
+        }
+    }
 
-NS_ASSUME_NONNULL_END
+    open func apply(cell: UITableViewCell) {
+        if let accessory = _accessory {
+            cell.accessoryType = accessory
+        }
+        super.apply(view: cell)
+    }
+
+    open override func invalidate() {
+        _accessory = nil
+        super.invalidate()
+    }
+}
+
+open class TableCellComponent: Component<UIView>, Identified {
+    open var identifier: String {
+        return ComponentTableViewCell.identifier
+    }
+
+    open func build(in cell: UITableViewCell) {
+        super.build(in: cell.contentView)
+    }
+}

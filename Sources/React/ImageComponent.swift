@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,19 @@ open class BasicImageComponent<ImageView: UIImageView>: Component<ImageView> {
             view.image = value
         } else {
             pendingState.image = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func sizedImage(_ value: UIImage?) -> Self {
+        if mainThread(), let view = view {
+            view.image = value
+        } else {
+            pendingState.image = value
+        }
+        if let size = value?.size {
+            layout.size(size)
         }
         return self
     }

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,26 @@
 // SOFTWARE.
 
 import UIKit
+import CoreGraphics
+import QuartzCore
 
 public protocol ComponentProperty {
+    // UIView
     var frame: CGRect { get }
     var backgroundColor: UIColor? { get }
     var clips: Bool { get }
     var hidden: Bool { get }
     var tintColor: UIColor { get }
     var userInteractionEnabled: Bool { get }
+    // CALayer
+    var cornerRadius: CGFloat { get }
+    var borderColor: CGColor? { get }
+    var borderWidth: CGFloat { get }
+    var shadowOpacity: Float { get }
+    var shadowRadius: CGFloat { get }
+    var shadowOffset: CGSize { get }
+    var shadowColor: CGColor? { get }
+    var shadowPath: CGPath? { get }
 }
 
 open class ComponentState: ComponentProperty {
@@ -123,6 +135,56 @@ open class ComponentState: ComponentProperty {
     }
     var _borderWidth: CGFloat?
 
+    public var shadowOpacity: Float {
+        get {
+            return _shadowOpacity ?? 0
+        }
+        set {
+            _shadowOpacity = newValue
+        }
+    }
+    var _shadowOpacity: Float?
+
+    public var shadowRadius: CGFloat {
+        get {
+            return _shadowRadius ?? 0
+        }
+        set {
+            _shadowRadius = newValue
+        }
+    }
+    var _shadowRadius: CGFloat?
+
+    public var shadowOffset: CGSize {
+        get {
+            return _shadowOffset ?? CGSize.zero
+        }
+        set {
+            _shadowOffset = newValue
+        }
+    }
+    var _shadowOffset: CGSize?
+
+    public var shadowColor: CGColor? {
+        get {
+            return _shadowColor ?? nil
+        }
+        set {
+            _shadowColor = newValue
+        }
+    }
+    var _shadowColor: CGColor??
+
+    public var shadowPath: CGPath? {
+        get {
+            return _shadowPath ?? nil
+        }
+        set {
+            _shadowPath = newValue
+        }
+    }
+    var _shadowPath: CGPath??
+
     public required init() {
         // Do nothing.
     }
@@ -154,6 +216,21 @@ open class ComponentState: ComponentProperty {
         if let borderWidth = _borderWidth {
             layer.borderWidth = borderWidth
         }
+        if let shadowOpacity = _shadowOpacity {
+            layer.shadowOpacity = shadowOpacity
+        }
+        if let shadowRadius = _shadowRadius {
+            layer.shadowRadius = shadowRadius
+        }
+        if let shadowOffset = _shadowOffset {
+            layer.shadowOffset = shadowOffset
+        }
+        if let shadowColor = _shadowColor {
+            layer.shadowColor = shadowColor
+        }
+        if let shadowPath = _shadowPath {
+            layer.shadowPath = shadowPath
+        }
         invalidate()
     }
 
@@ -180,6 +257,21 @@ open class ComponentState: ComponentProperty {
         if let borderWidth = _borderWidth {
             layer.borderWidth = borderWidth
         }
+        if let shadowOpacity = _shadowOpacity {
+            layer.shadowOpacity = shadowOpacity
+        }
+        if let shadowRadius = _shadowRadius {
+            layer.shadowRadius = shadowRadius
+        }
+        if let shadowOffset = _shadowOffset {
+            layer.shadowOffset = shadowOffset
+        }
+        if let shadowColor = _shadowColor {
+            layer.shadowColor = shadowColor
+        }
+        if let shadowPath = _shadowPath {
+            layer.shadowPath = shadowPath
+        }
         invalidate()
     }
 
@@ -191,8 +283,14 @@ open class ComponentState: ComponentProperty {
         _tintColor = nil
         _userInteractionEnabled = nil
 
+        _cornerRadius = nil
         _borderColor = nil
         _borderWidth = nil
+        _shadowOpacity = nil
+        _shadowRadius = nil
+        _shadowOffset = nil
+        _shadowColor = nil
+        _shadowPath = nil
     }
 }
 

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -90,7 +90,6 @@ public typealias ButtonComponent = BasicButtonComponent<UIButton>
 open class BasicButtonComponent<Button: UIButton>: Component<Button> {
     let label: LabelComponent?
     let image: BasicComponent?
-    private var _tap: ((UIButton) -> Void)?
 
     public convenience init(type: UIButtonType = .custom, children: [BasicComponent] = []) {
         self.init(children: children) {
@@ -115,9 +114,11 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
     }
 
     deinit {
-        Log.debug(stringAddress(self))
-        // FIXME: Remove button target in main thread!
-        view?.removeTarget(self, action: nil, for: .touchUpInside)
+        if let button = view {
+            runOnMain { [this = self] in
+                button.removeTarget(this, action: nil, for: .touchUpInside)
+            }
+        }
     }
 
     var _buttonState: ButtonComponentState?
@@ -148,11 +149,27 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
             this.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
         _buttonState?.apply(button: this)
+        if let methods = _loaded {
+            methods.forEach {
+                $0(self, this)
+            }
+        }
+        // TODO: Release the loaded methods?
+        _loaded = nil
         return this
     }
 
     @objc open func tapAction(sender: UIButton) {
-        _tap?(sender)
+         _tap?(self)
+    }
+
+    open override func tap(_ method: @escaping (BasicComponent) -> Void) {
+        super.tap(method)
+        if mainThread(), let view = view {
+            view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
+        } else {
+            pendingState.tap = true
+        }
     }
 
     @discardableResult
@@ -259,19 +276,122 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
             _state.images = images
         }
         if states.contains(.normal) {
+            let size: CGSize = value?.size ?? CGSize.zero
+            image?.layout.size(size)
+            layout.size(size)
+        }
+        return self
+    }
+
+    @discardableResult
+    public func sizedImages(_ value: UIImage?) -> Self {
+        if mainThread(), let view = view {
+            view.setImage(value, for: .normal)
+            view.setImage(value, for: .selected)
+            view.setImage(value, for: .disabled)
+        } else {
+            let state = pendingState
+            var images: [UIControlState: UIImage?] = state.images
+            images[.normal] = value
+            images[.selected] = value
+            images[.disabled] = value
+            state.images = images
+        }
+        let size: CGSize = value?.size ?? CGSize.zero
+        image?.layout.size(size)
+        layout.size(size)
+        return self
+    }
+
+    @discardableResult
+    public func sizedImage(_ value: UIImage?, for state: UIControlState = .normal) -> Self {
+        if mainThread(), let view = view {
+            view.setImage(value, for: state)
+        } else {
+            let _state = pendingState
+            var images: [UIControlState: UIImage?] = _state.images
+            images[state] = value
+            _state.images = images
+        }
+        if state == UIControlState.normal {
+            let size: CGSize = value?.size ?? CGSize.zero
+            image?.layout.size(size)
+            layout.size(size)
+        }
+        return self
+    }
+
+    @discardableResult
+    public func sizedImage(_ value: UIImage?, states: UIControlState...) -> Self {
+        if mainThread(), let view = view {
+            for state in states {
+                view.setImage(value, for: state)
+            }
+        } else {
+            let _state = pendingState
+            var images: [UIControlState: UIImage?] = _state.images
+            for state in states {
+                images[state] = value
+            }
+            _state.images = images
+        }
+        if states.contains(.normal) {
             image?.layout.size(value?.size ?? CGSize.zero)
         }
         return self
     }
 
     @discardableResult
-    public func tap(_ method: @escaping (UIButton) -> Void) -> Self {
-        _tap = method
+    public func backgroundImages(_ value: UIImage?) -> Self {
         if mainThread(), let view = view {
-            view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
+            view.setBackgroundImage(value, for: .normal)
+            view.setBackgroundImage(value, for: .selected)
+            view.setBackgroundImage(value, for: .disabled)
         } else {
-            pendingState.tap = true
+            let state = pendingState
+            var images: [UIControlState: UIImage?] = state.backgroundImages
+            images[.normal] = value
+            images[.selected] = value
+            images[.disabled] = value
+            state.backgroundImages = images
         }
+//        image?.layout.size(value?.size ?? CGSize.zero)
+        return self
+    }
+
+    @discardableResult
+    public func backgroundImage(_ value: UIImage?, for state: UIControlState = .normal) -> Self {
+        if mainThread(), let view = view {
+            view.setBackgroundImage(value, for: state)
+        } else {
+            let _state = pendingState
+            var images: [UIControlState: UIImage?] = _state.backgroundImages
+            images[state] = value
+            _state.backgroundImages = images
+        }
+//        if state == UIControlState.normal {
+//            image?.layout.size(value?.size ?? CGSize.zero)
+//        }
+        return self
+    }
+
+    @discardableResult
+    public func backgroundImage(_ value: UIImage?, states: UIControlState...) -> Self {
+        if mainThread(), let view = view {
+            for state in states {
+                view.setBackgroundImage(value, for: state)
+            }
+        } else {
+            let _state = pendingState
+            var images: [UIControlState: UIImage?] = _state.backgroundImages
+            for state in states {
+                images[state] = value
+            }
+            _state.backgroundImages = images
+        }
+//        if states.contains(.normal) {
+//            image?.layout.size(value?.size ?? CGSize.zero)
+//        }
         return self
     }
 }
