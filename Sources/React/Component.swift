@@ -45,9 +45,10 @@ open class Component<View: UIView>: BasicComponent {
         super.init(framed: true, children: children)
     }
 
+    // TODO: convenience init?
     public init(children: [BasicComponent], creator: @escaping () -> View) {
-        self.creator = creator
         super.init(framed: true, children: children)
+        self.creator = creator
     }
 
     deinit {
@@ -71,7 +72,7 @@ open class Component<View: UIView>: BasicComponent {
     @discardableResult
     open func buildView(in view: UIView?) -> View {
         assertMainThread()
-        let this = _buildView()
+        let this = buildView()
         view?.addSubview(this)
         children.forEach {
             $0.build(in: this)
@@ -81,7 +82,12 @@ open class Component<View: UIView>: BasicComponent {
 
     public override func build(in view: UIView) {
         assertMainThread()
-        let this = _buildView()
+        let this = buildView()
+#if DEBUG
+        if _debug {
+            Log.debug(this)
+        }
+#endif
         if let superview = this.superview {
             if superview != view {
                 this.removeFromSuperview()
@@ -112,22 +118,22 @@ open class Component<View: UIView>: BasicComponent {
         return this
     }
 
-    func _buildView() -> View {
+    open func buildView() -> View {
         assertMainThread()
         let this = _createView()
-        _pendingState?.apply(view: this)
+        applyState(to: this)
         if let methods = _loaded {
             methods.forEach {
                 $0(self, this)
             }
         }
-        // TODO: Release the loaded methods?
         _loaded = nil
         return this
     }
 
-    override func buildView() -> UIView {
-        return _buildView()
+    open func applyState(to view: View) {
+        assertMainThread()
+        _pendingState?.apply(view: view)
     }
 
 #if DEBUG

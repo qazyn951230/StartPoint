@@ -78,6 +78,7 @@
 		AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */; };
 		AC96A8886C4B265CC0F26D64 /* Approximate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A90E1FFE0A0283FFA2EF /* Approximate.swift */; };
 		AC96A89C5095B176A30D61E3 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8D792053394063F1400 /* LogType.swift */; };
+		AC96A9077818502AD3929D77 /* TableDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */; };
 		AC96A9558E00CE299874823E /* FlexTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7DAB98F07172DF5C170 /* FlexTestCase.swift */; };
 		AC96A95E37503B8812972882 /* UIImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */; };
 		AC96A961D2413ABE7D375AE5 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FCF7D4FE5D5D091381 /* AlertController.swift */; };
@@ -284,6 +285,7 @@
 		AC96AE63B2574F0738BAC8A1 /* FlexDirectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexDirectionTests.swift; sourceTree = "<group>"; };
 		AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirtyMarkingTests.swift; sourceTree = "<group>"; };
 		AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultValuesTests.swift; sourceTree = "<group>"; };
+		AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableDataController.swift; sourceTree = "<group>"; };
 		AC96AE935E7E7ED1DDEE5C99 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
 		AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureModeTests.swift; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 				AC96A05651F2A36DE50AD01A /* ComponentContainer.swift */,
 				AC96ABCB4BAAB4012A8B8F3C /* TextFieldComponent.swift */,
 				AC96A73E7DB1CDDA02E4D058 /* TableCellComponent.swift */,
+				AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -933,6 +936,7 @@
 				AC96ADC13167B8A253E0B7A3 /* Thread.swift in Sources */,
 				AC96AA54CF513CEB2F8841AC /* TableCellComponent.swift in Sources */,
 				AC96AB697651BF7048F4EDA0 /* DispatchQueue.swift in Sources */,
+				AC96A9077818502AD3929D77 /* TableDataController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

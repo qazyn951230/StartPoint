@@ -31,25 +31,12 @@ open class BasicComponent: Hashable {
 
     let framed: Bool
     var _frame: Rect = Rect.zero
-
-    public var frame: CGRect {
-        return _frame.cgRect
-    }
-
     var _tap: ((BasicComponent) -> Void)?
-
-    open var overrideTouches: Bool {
-        return _tap != nil
-    }
-
     var _pendingState: ComponentState?
-    public var pendingState: ComponentState {
-        let state = _pendingState ?? ComponentState()
-        if _pendingState == nil {
-            _pendingState = state
-        }
-        return state
-    }
+
+#if DEBUG
+    var _debug = false
+#endif
 
     init(framed: Bool, children: [BasicComponent]) {
         self.framed = framed
@@ -57,6 +44,22 @@ open class BasicComponent: Hashable {
         for child in children {
             layout.append(child.layout)
         }
+    }
+
+    open var overrideTouches: Bool {
+        return _tap != nil
+    }
+
+    public var frame: CGRect {
+        return _frame.cgRect
+    }
+
+    public var pendingState: ComponentState {
+        let state = _pendingState ?? ComponentState()
+        if _pendingState == nil {
+            _pendingState = state
+        }
+        return state
     }
 
     @discardableResult
@@ -106,21 +109,16 @@ open class BasicComponent: Hashable {
         }
     }
 
+    // FIXME: Remove this method
     public func build(to view: UIScrollView) {
         assertMainThread()
         build(in: view)
         view.contentSize = _frame.cgSize
     }
 
-    func buildView() -> UIView {
-        assertMainThread()
-        let view = UIView(frame: .zero)
-        build(in: view)
-        return view
-    }
-
 #if DEBUG
     public func debugMode() {
+        _debug = true
         children.forEach {
             $0.debugMode()
         }

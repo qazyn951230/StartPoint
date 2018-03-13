@@ -133,7 +133,7 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
 
     public override func build(in view: UIView) {
         assertMainThread()
-        let this = _buildView()
+        let this = buildView()
         view.addSubview(this)
         for child in children {
             if child != label && child != image {
@@ -142,21 +142,11 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
         }
     }
 
-    override func _buildView() -> Button {
-        assertMainThread()
-        let this = _createView()
+    open override func applyState(to view: Button) {
         if _buttonState?.tap == true {
-            this.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
+            view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
-        _buttonState?.apply(button: this)
-        if let methods = _loaded {
-            methods.forEach {
-                $0(self, this)
-            }
-        }
-        // TODO: Release the loaded methods?
-        _loaded = nil
-        return this
+        super.applyState(to: view)
     }
 
     @objc open func tapAction(sender: UIButton) {

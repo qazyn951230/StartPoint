@@ -23,7 +23,7 @@
 import UIKit
 
 public protocol TableComponentDelegate: class {
-
+    func tableComponent(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 }
 
 public protocol TableComponentDataSource: class {
@@ -64,173 +64,12 @@ public extension TableComponentDataSource {
     }
 }
 
-public final class TableSectionDataMap {
-    public internal(set) var header: ViewComponent?
-    public internal(set) var headerTitle: String?
-    public internal(set) var footer: ViewComponent?
-    public internal(set) var footerTitle: String?
-    public internal(set) var item: [TableCellComponent] = []
-
-    public init(rows: Int) {
-        item.reserveCapacity(rows)
-    }
-
-    public var items: Int {
-        return item.count
-    }
-
-    public func append(cell: TableCellComponent) {
-        item.append(cell)
-    }
-
-    public func setHeader(_ component: ViewComponent?, or title: String?) {
-        header = component
-        if component == nil {
-            headerTitle = title
-        }
-    }
-
-    public func setFooter(_ component: ViewComponent?, or title: String?) {
-        footer = component
-        if component == nil {
-            footerTitle = title
-        }
-    }
-
-    internal func flatted() -> [BasicComponent] {
-        var array: [BasicComponent] = item
-        array.append(nil: header)
-        array.append(nil: footer)
-        return array
-    }
-}
-
-public final class TableDataMap {
-    public internal(set) var section: [TableSectionDataMap] = []
-    internal var width: CGFloat = 0
-
-    public var sections: Int {
-        return section.count
-    }
-
-    public init(sections: Int = 0) {
-        section.reserveCapacity(sections)
-    }
-
-    public func append(section: TableSectionDataMap) {
-        self.section.append(section)
-    }
-
-    public func items(in section: Int) -> Int {
-        return self.section[section].items
-    }
-
-    public func itemComponent(at indexPath: IndexPath) -> TableCellComponent {
-        let section = self.section.object(at: indexPath.section)
-        let item = section?.item.object(at: indexPath.row)
-        return item ?? TableCellComponent()
-    }
-
-    internal func flatted() -> [BasicComponent] {
-        return section.flatMap {
-            $0.flatted()
-        }
-    }
-}
-
-public final class TableDataController: NSObject, UITableViewDelegate, UITableViewDataSource {
-    let mainQueue: OperationQueue = OperationQueue.main
-    var currentMap: TableDataMap = TableDataMap()
-    var editingQueue: DispatchQueue? = nil
-
-    override init() {
-        super.init()
-        editingQueue = DispatchQueue(label: "com.start.point.data.controller." + stringAddress(self))
-    }
-
-    // TODO: reloadData with completion
-    public func reloadData(in table: TableComponent, dataSource: TableComponentDataSource) {
-        assertMainThread()
-        guard let view = table.view else {
-            return
-        }
-        let map = reloadSections(in: table, dataSource: dataSource)
-        map.width = view.frame.width
-        layoutSections(data: map, completion: TableDataController.prepareUpdate(this: self,
-            paddingMap: map, view: view))
-    }
-
-    internal func reloadSections(in table: TableComponent, dataSource: TableComponentDataSource) -> TableDataMap {
-        let sections = dataSource.numberOfSections(in: table)
-        let map = TableDataMap(sections: sections)
-        for i in 0..<sections {
-            let rows = dataSource.tableComponent(table, numberOfRowsIn: i)
-            let section = TableSectionDataMap(rows: rows)
-            for j in 0..<rows {
-                let k = IndexPath(item: j, section: i)
-                section.append(cell: dataSource.tableComponent(table, itemAt: k))
-            }
-            section.setHeader(dataSource.tableComponent(table, headerIn: i),
-                or: dataSource.tableComponent(table, headerTitleIn: i))
-            section.setFooter(dataSource.tableComponent(table, footerIn: i),
-                or: dataSource.tableComponent(table, footerTitleIn: i))
-            map.append(section: section)
-        }
-        return map
-    }
-
-    internal func layoutSections(data: TableDataMap, completion: @escaping () -> Void) {
-        let width = Double(data.width)
-        let array = data.flatted()
-        guard array.count > 0 else {
-            completion()
-            return
-        }
-        editingQueue?.async {
-            let queue = DispatchQueue.global(qos: .default)
-            queue.apply(iterations: array.count) { index in
-                let component: BasicComponent = array[index]
-                component.layout(width: width)
-            }
-            completion()
-        }
-    }
-
-    internal static func prepareUpdate(this: TableDataController, paddingMap: TableDataMap, view: UITableView)
-            -> () -> Void {
-        return {
-            this.mainQueue.addOperation {
-                this.currentMap = paddingMap
-                view.reloadData()
-            }
-        }
-    }
-
-    // MARK: UITableViewDataSource
-    @objc public func numberOfSections(in tableView: UITableView) -> Int {
-        return currentMap.sections
-    }
-
-    @objc public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentMap.items(in: section)
-    }
-
-    @objc public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let component = currentMap.itemComponent(at: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: component.identifier, for: indexPath)
-        component.build(in: cell)
-        return cell
-    }
-
-    @objc public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let component = currentMap.itemComponent(at: indexPath)
-        // FIXME: Table view cell separator?
-        return component.frame.height
-    }
-}
-
 open class TableComponent: Component<UITableView> {
-    public weak var delegate: TableComponentDelegate?
+    public weak var delegate: TableComponentDelegate? {
+        didSet {
+            dataController.delegate = delegate
+        }
+    }
     public weak var dataSource: TableComponentDataSource?
     public let dataController = TableDataController()
 
@@ -255,18 +94,17 @@ open class TableComponent: Component<UITableView> {
         }
     }
 
-    override func _buildView() -> UITableView {
-        let view = super._buildView()
+    open override func applyState(to view: UITableView) {
         view.delegate = dataController
         view.dataSource = dataController
-        return view
+        super.applyState(to: view)
     }
 
-    public func reloadData() {
+    public func reloadData(completion: (() -> Void)? = nil) {
         guard view != nil, let source = dataSource else {
             return
         }
-        dataController.reloadData(in: self, dataSource: source)
+        dataController.reloadData(in: self, dataSource: source, completion: completion)
     }
 }
 

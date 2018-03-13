@@ -134,12 +134,6 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
         return this
     }
 
-    override func buildView() -> UIView {
-        let view = super.buildView()
-        build(in: view)
-        return view
-    }
-
 #if DEBUG
     public override func debugMode() {
         backgroundColor(UIColor.random)

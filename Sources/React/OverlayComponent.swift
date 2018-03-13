@@ -43,41 +43,20 @@ open class OverlayComponent: BasicComponent {
 
     override func apply(left: Double, top: Double) {
         primary.apply(left: left, top: top)
-        let width = primary._frame.width
-        let height = primary._frame.height
-        if background?.children.isEmpty == true {
-            background?._frame = primary._frame
-        } else {
-            background?.layout(width: width, height: height)
+        let frame = primary._frame
+        if let background = self.background {
+            if background.children.isEmpty {
+                background._frame = frame
+            } else {
+                background.layout(width: frame.width, height: frame.height)
+            }
         }
-        if overlay?.children.isEmpty == true {
-            overlay?._frame = primary._frame
-        } else {
-            overlay?.layout(width: width, height: height)
+        if let overlay = self.overlay {
+            if overlay.children.isEmpty {
+                overlay._frame = frame
+            } else {
+                overlay.layout(width: frame.width, height: frame.height)
+            }
         }
-    }
-
-    public override func layout(width: Double = .nan, height: Double = .nan) {
-        primary.layout(width: width, height: height)
-        if background?.children.isEmpty != true {
-            background?.layout(width: width, height: height)
-        }
-        if overlay?.children.isEmpty != true {
-            overlay?.layout(width: width, height: height)
-        }
-    }
-
-    public func buildView(in tableCell: UITableViewCell) {
-        assertMainThread()
-        primary.build(in: tableCell.contentView)
-        tableCell.backgroundView = background?.buildView()
-        overlay?.build(in: tableCell.contentView)
-    }
-
-    public func buildView(in collectionCell: UICollectionViewCell) {
-        assertMainThread()
-        primary.build(in: collectionCell.contentView)
-        collectionCell.backgroundView = background?.buildView()
-        overlay?.build(in: collectionCell.contentView)
     }
 }

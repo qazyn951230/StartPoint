@@ -64,6 +64,7 @@ public enum DeviceVersion: Int {
     case version110
     case version111
     case version112
+    case version113
 
     public static func <(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
         return lhs.rawValue < rhs.rawValue
@@ -113,7 +114,9 @@ public struct Device {
             return DeviceVersion.version80
         }
         if v > 10.99 {
-            if v > 11.19 {
+            if v > 11.29 {
+                return DeviceVersion.version113
+            } else if v > 11.19 {
                 return DeviceVersion.version112
             } else if v > 11.09 {
                 return DeviceVersion.version111
@@ -158,6 +161,7 @@ public struct Device {
     public static let size: CGSize = UIScreen.main.bounds.size
     public static let width: CGFloat = size.width
     public static let height: CGFloat = size.height
+    public static let scale: CGFloat = UIScreen.main.scale
 
     public static var landscape: Bool {
         return UIDevice.current.orientation.isLandscape

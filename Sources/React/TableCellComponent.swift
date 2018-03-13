@@ -22,44 +22,53 @@
 
 import UIKit
 
-open class TableCellComponentState: ComponentState {
-    public var accessory: UITableViewCellAccessoryType {
-        get {
-            return _accessory ?? UITableViewCellAccessoryType.none
-        }
-        set {
-            _accessory = newValue
-        }
-    }
-    var _accessory: UITableViewCellAccessoryType?
-
-    open override func apply(view: UIView) {
-        if let cell = view as? UITableViewCell {
-            apply(cell: cell)
-        } else {
-            super.apply(view: view)
-        }
-    }
-
-    open func apply(cell: UITableViewCell) {
-        if let accessory = _accessory {
-            cell.accessoryType = accessory
-        }
-        super.apply(view: cell)
-    }
-
-    open override func invalidate() {
-        _accessory = nil
-        super.invalidate()
-    }
-}
+// UITableViewCellAccessoryType Table width => n
+// Cell                     2x          3x
+// none                     n           n
+// disclosureIndicator      n - 33      n - 38
+// detailDisclosureButton   n - 67      n - 72
+// checkmark                n - 39      n - 44
+// detailButton             n - 47      n - 52
 
 open class TableCellComponent: Component<UIView>, Identified {
+    internal static let offset: Double = Device.scale < 2.5 ? 0 : 5
+    public var accessory: UITableViewCellAccessoryType = .none
+
+    public override init(children: [BasicComponent] = []) {
+        super.init(children: children)
+        layout.margin(left: .length(15 + TableCellComponent.offset))
+    }
+
+    public override init(children: [BasicComponent] = [], creator: @escaping () -> UIView) {
+        super.init(children: children, creator: creator)
+        layout.margin(left: .length(15 + TableCellComponent.offset))
+    }
+
     open var identifier: String {
         return ComponentTableViewCell.identifier
     }
 
     open func build(in cell: UITableViewCell) {
+        assertMainThread()
         super.build(in: cell.contentView)
+        cell.accessoryType = accessory
+    }
+
+    @discardableResult
+    public func accessory(_ value: UITableViewCellAccessoryType) -> Self {
+        accessory = value
+        switch value {
+        case .none:
+            layout.margin(right: 0)
+        case .disclosureIndicator:
+            layout.margin(right: .length(33 + TableCellComponent.offset))
+        case .detailDisclosureButton:
+            layout.margin(right: .length(67 + TableCellComponent.offset))
+        case .checkmark:
+            layout.margin(right: .length(39 + TableCellComponent.offset))
+        case .detailButton:
+            layout.margin(right: .length(47 + TableCellComponent.offset))
+        }
+        return self
     }
 }
