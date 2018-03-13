@@ -25,7 +25,7 @@ import QuartzCore
 import CoreGraphics
 import Dispatch
 
-open class BasicComponent: Hashable {
+open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let children: [BasicComponent]
     public let layout = FlexLayout()
 
@@ -35,6 +35,7 @@ open class BasicComponent: Hashable {
     var _pendingState: ComponentState?
 
 #if DEBUG
+    public var name = String.empty
     var _debug = false
 #endif
 
@@ -60,6 +61,20 @@ open class BasicComponent: Hashable {
             _pendingState = state
         }
         return state
+    }
+
+    // CustomStringConvertible
+    open var description: String { // "BasicComponent:0xffffff"
+        return String(describing: type(of: self)) + ":" + stringAddress(self)
+    }
+
+    // CustomDebugStringConvertible
+    open var debugDescription: String { // "BasicComponent:0xffffff"
+#if DEBUG
+        return String(describing: type(of: self)) + "->" + name
+#else
+        return description
+#endif
     }
 
     @discardableResult
@@ -102,14 +117,11 @@ open class BasicComponent: Hashable {
         }
     }
 
-    public func build(in view: UIView) {
+    open func build(in view: UIView) {
         assertMainThread()
-        children.forEach {
-            $0.build(in: view)
-        }
     }
 
-    // FIXME: Remove this method
+    // FIXME: Remove or rename this method
     public func build(to view: UIScrollView) {
         assertMainThread()
         build(in: view)

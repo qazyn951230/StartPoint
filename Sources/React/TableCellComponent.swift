@@ -32,7 +32,8 @@ import UIKit
 
 open class TableCellComponent: Component<UIView>, Identified {
     internal static let offset: Double = Device.scale < 2.5 ? 0 : 5
-    public var accessory: UITableViewCellAccessoryType = .none
+    public private(set) var accessory: UITableViewCellAccessoryType = .none
+    public private(set) var selectionStyle: UITableViewCellSelectionStyle = .default
 
     public override init(children: [BasicComponent] = []) {
         super.init(children: children)
@@ -50,8 +51,22 @@ open class TableCellComponent: Component<UIView>, Identified {
 
     open func build(in cell: UITableViewCell) {
         assertMainThread()
-        super.build(in: cell.contentView)
+        if let view = self.view {
+            if view.superview != cell.contentView {
+                cell.contentView.subviews.forEach {
+                    $0.removeFromSuperview()
+                }
+                view.removeFromSuperview()
+                cell.contentView.addSubview(view)
+            }
+        } else {
+            cell.contentView.subviews.forEach {
+                $0.removeFromSuperview()
+            }
+            super.build(in: cell.contentView)
+        }
         cell.accessoryType = accessory
+        cell.selectionStyle = selectionStyle
     }
 
     @discardableResult
@@ -69,6 +84,12 @@ open class TableCellComponent: Component<UIView>, Identified {
         case .detailButton:
             layout.margin(right: .length(47 + TableCellComponent.offset))
         }
+        return self
+    }
+
+    @discardableResult
+    public func selectionStyle(_ value: UITableViewCellSelectionStyle) -> Self {
+        selectionStyle = value
         return self
     }
 }

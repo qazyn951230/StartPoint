@@ -34,7 +34,7 @@ open class OverlayComponent: BasicComponent {
         super.init(framed: false, children: [primary])
     }
 
-    public override func build(in view: UIView) {
+    open override func build(in view: UIView) {
         assertMainThread()
         background?.build(in: view)
         primary.build(in: view)

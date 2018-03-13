@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import UIKit
+
 open class StackComponent: BasicComponent {
     public init(children: [BasicComponent]) {
         super.init(framed: false, children: children)
@@ -44,5 +46,11 @@ open class StackComponent: BasicComponent {
 
     public static func vertical(any: BasicComponent?...) -> StackComponent {
         return StackComponent(direction: .column, children: any.flatMap(Function.this))
+    }
+
+    open override func build(in view: UIView) {
+        children.forEach {
+            $0.build(in: view)
+        }
     }
 }

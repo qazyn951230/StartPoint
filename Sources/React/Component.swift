@@ -69,25 +69,9 @@ open class Component<View: UIView>: BasicComponent {
         }
     }
 
-    @discardableResult
-    open func buildView(in view: UIView?) -> View {
+    open override func build(in view: UIView) {
         assertMainThread()
         let this = buildView()
-        view?.addSubview(this)
-        children.forEach {
-            $0.build(in: this)
-        }
-        return this
-    }
-
-    public override func build(in view: UIView) {
-        assertMainThread()
-        let this = buildView()
-#if DEBUG
-        if _debug {
-            Log.debug(this)
-        }
-#endif
         if let superview = this.superview {
             if superview != view {
                 this.removeFromSuperview()
@@ -96,8 +80,28 @@ open class Component<View: UIView>: BasicComponent {
         } else {
             view.addSubview(this)
         }
+    }
+
+    open func buildView() -> View {
+        assertMainThread()
+        if let v = self.view {
+            return v
+        }
+        let this = _createView()
+        applyState(to: this)
+        buildChildren(in: this)
+        if let methods = _loaded {
+            methods.forEach {
+                $0(self, this)
+            }
+        }
+        _loaded = nil
+        return this
+    }
+
+    open func buildChildren(in view: UIView){
         children.forEach {
-            $0.build(in: this)
+            $0.build(in: view)
         }
     }
 
@@ -107,7 +111,6 @@ open class Component<View: UIView>: BasicComponent {
             return view
         }
         let this = creator?() ?? View.init(frame: .zero)
-        // TODO: Release the creator?
         creator = nil
         if let container = this as? ComponentContainer {
             container.component = self
@@ -115,19 +118,6 @@ open class Component<View: UIView>: BasicComponent {
             this._component = self
         }
         self.view = this
-        return this
-    }
-
-    open func buildView() -> View {
-        assertMainThread()
-        let this = _createView()
-        applyState(to: this)
-        if let methods = _loaded {
-            methods.forEach {
-                $0(self, this)
-            }
-        }
-        _loaded = nil
         return this
     }
 

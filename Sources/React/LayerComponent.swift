@@ -96,7 +96,7 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
         }
     }
 
-    public override func build(in view: UIView) {
+    open override func build(in view: UIView) {
         assertMainThread()
         let this = _buildLayer()
         let layer = view.layer

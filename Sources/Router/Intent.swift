@@ -35,6 +35,7 @@ public protocol IntentSource {
 public protocol IntentTarget: IntentSource {
     var intent: Intent? { get set }
     func prepare(for intent: Intent) -> UIViewController
+    func finish(result: IntentResult?)
     static func create() -> Self
 }
 
@@ -58,8 +59,16 @@ public extension IntentTarget where Self: UIViewController {
         return self
     }
 
-    public func finishIntent(result: IntentResult? = nil) {
-        intent?.end(for: result)
+    public func finish(result: IntentResult? = nil) {
+        guard let intent = self.intent else {
+            if presentingViewController != nil {
+                dismiss(animated: true)
+            } else {
+                navigationController?.popViewController(animated: true)
+            }
+            return
+        }
+        intent.end(for: result)
         setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)
     }
 }

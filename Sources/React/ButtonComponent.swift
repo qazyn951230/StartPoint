@@ -131,13 +131,10 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
         return state
     }
 
-    public override func build(in view: UIView) {
-        assertMainThread()
-        let this = buildView()
-        view.addSubview(this)
+    open override func buildChildren(in view: UIView) {
         for child in children {
             if child != label && child != image {
-                child.build(in: this)
+                child.build(in: view)
             }
         }
     }
