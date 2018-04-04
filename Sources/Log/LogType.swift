@@ -97,7 +97,7 @@ public extension LogType {
     }
 
     public static func write(level: LogLevel, _ value: [Any?], file: String, function: String, line: Int) {
-        let array: [Any] = value.flatMap(Function.this)
+        let array: [Any] = value.compactMap(Function.this)
         write(level: level, array, file: file, function: function, line: line)
     }
 

@@ -41,11 +41,11 @@ open class StackComponent: BasicComponent {
     }
 
     public static func horizontal(any: BasicComponent?...) -> StackComponent {
-        return StackComponent(direction: .row, children: any.flatMap(Function.this))
+        return StackComponent(direction: .row, children: any.compactMap(Function.this))
     }
 
     public static func vertical(any: BasicComponent?...) -> StackComponent {
-        return StackComponent(direction: .column, children: any.flatMap(Function.this))
+        return StackComponent(direction: .column, children: any.compactMap(Function.this))
     }
 
     open override func build(in view: UIView) {

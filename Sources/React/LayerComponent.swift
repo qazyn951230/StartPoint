@@ -42,7 +42,7 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
     }
 
     public init(children: [BasicComponent] = []) {
-        _children = children.flatMap {
+        _children = children.compactMap {
             $0 as? BasicLayerComponent
         }
         super.init(framed: true, children: children)
@@ -50,7 +50,7 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
 
     public init(children: [BasicComponent], creator: @escaping () -> Layer) {
         self.creator = creator
-        _children = children.flatMap {
+        _children = children.compactMap {
             $0 as? BasicLayerComponent
         }
         super.init(framed: true, children: children)

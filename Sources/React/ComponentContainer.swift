@@ -24,7 +24,7 @@ import UIKit
 import QuartzCore
 
 public protocol ComponentContainer: class {
-    weak var component: BasicComponent? { get set }
+    var component: BasicComponent? { get set }
 }
 
 private var X4CKjWv89vFWzSPC = "X4CKjWv89vFWzSPC"

@@ -1,3 +1,3 @@
-github "Alamofire/Alamofire" "4.5.1"
+github "Alamofire/Alamofire" "4.7.1"
 github "SwiftyJSON/SwiftyJSON" "4.0.0"
-github "qazyn951230/RxSwift" "dc26d93d3c708e9770e01a3c4788909910e28286"
+github "qazyn951230/RxSwift" "b75020a1bc8908989df4befbfdf2108bc4a4a8a0"

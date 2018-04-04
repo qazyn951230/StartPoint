@@ -35,6 +35,6 @@ public extension Array {
     }
 
     public static func from(_ value: Element?...) -> Array<Element> {
-        return value.flatMap(Function.this)
+        return value.compactMap(Function.this)
     }
 }

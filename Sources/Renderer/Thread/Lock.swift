@@ -60,8 +60,8 @@ final public class UnfairLock: Locking {
     }
 
     deinit {
-        _lock.deinitialize()
-        _lock.deallocate(capacity: 1)
+        _lock.deinitialize(count: 1)
+        _lock.deallocate()
     }
 
     public func lock() {
@@ -101,8 +101,8 @@ final public class MutexLock: Locking {
         let status = pthread_mutex_destroy(mutex)
         assert(status == 0, "Unexpected pthread_mutex_destroy error code: \(status)")
 
-        mutex.deinitialize()
-        mutex.deallocate(capacity: 1)
+        mutex.deinitialize(count: 1)
+        mutex.deallocate()
     }
 
     public func lock() {

@@ -467,29 +467,29 @@
 		AC96A36E2E045004201B9825 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				AC96A342F409A0E293EB7804 /* StartPoint.h */,
-				AC96AC5EBC21F4B236B8210B /* Info.plist */,
 				BCA2A4611F3DA5BC007A772A /* Creatable.swift */,
 				BCA2A4621F3DA5BC007A772A /* Device.swift */,
+				BCA2A4541F3DA5BC007A772A /* Extension */,
 				BCA2A4631F3DA5BC007A772A /* Function.swift */,
 				AC96A70069177338DE20CAF5 /* Global.swift */,
-				AC96AA2C3CAEFA2436FB4D76 /* Queue.swift */,
-				BCA2A4541F3DA5BC007A772A /* Extension */,
+				AC96AC5EBC21F4B236B8210B /* Info.plist */,
 				AC96A24F6C74BC699B36ED75 /* JSON */,
 				AC96A551A949238107A409CF /* Layout */,
+				AC96A4EFF6F5C29B3FDD4DFA /* Log */,
 				AC96A930D7655D5526D140A9 /* ModeledView */,
 				BC16E7531F3EAB9800DDC894 /* Network */,
+				AC96A6E346C2C0DFF901CEF2 /* PackageInfo.swift */,
 				AC96A3838A39232719FECDB5 /* Permission */,
+				AC96AA2C3CAEFA2436FB4D76 /* Queue.swift */,
+				AC96A29D32606AE8F369DBB7 /* React */,
+				AC96A0C820BE78FDF5CE1C28 /* Renderer */,
 				AC96A12D115789E979840DE8 /* Router */,
+				AC96A2429CD251C00FABFCD1 /* SafeArea.swift */,
+				AC96A342F409A0E293EB7804 /* StartPoint.h */,
 				AC96AB8D7270ADC2BF83C7DE /* Text */,
 				BCA2A4591F3DA5BC007A772A /* View */,
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
 				BCA2A45B1F3DA5BC007A772A /* ViewModel */,
-				AC96A4EFF6F5C29B3FDD4DFA /* Log */,
-				AC96A6E346C2C0DFF901CEF2 /* PackageInfo.swift */,
-				AC96A2429CD251C00FABFCD1 /* SafeArea.swift */,
-				AC96A0C820BE78FDF5CE1C28 /* Renderer */,
-				AC96A29D32606AE8F369DBB7 /* React */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -785,7 +785,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Nan Yang";
 				TargetAttributes = {
 					BC6BA1A81F2DC08600772AA8 = {

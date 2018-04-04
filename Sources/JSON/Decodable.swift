@@ -57,7 +57,7 @@ public extension FailableNotation {
         guard let array = json.array else {
             return []
         }
-        return array.flatMap(Self.init)
+        return array.compactMap(Self.init)
     }
 }
 

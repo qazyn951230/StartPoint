@@ -112,14 +112,15 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
         }
         super.init(children: array, creator: creator)
     }
-
-    deinit {
-        if let button = view {
-            runOnMain { [this = self] in
-                button.removeTarget(this, action: nil, for: .touchUpInside)
-            }
-        }
-    }
+    
+    // TODO: Need remove target?
+//    deinit {
+//        if let button = view {
+//            runOnMain { [this = self] in
+//                button.removeTarget(this, action: nil, for: .touchUpInside)
+//            }
+//        }
+//    }
 
     var _buttonState: ButtonComponentState?
     public override var pendingState: ButtonComponentState {
