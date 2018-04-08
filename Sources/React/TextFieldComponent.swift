@@ -45,6 +45,46 @@ open class TextFieldComponentState: ComponentState {
     }
     var _placeholder: NSAttributedString??
 
+    public var clearButtonMode: UITextFieldViewMode {
+        get {
+            return _clearButtonMode ?? UITextFieldViewMode.never
+        }
+        set {
+            _clearButtonMode = newValue
+        }
+    }
+    var _clearButtonMode: UITextFieldViewMode?
+
+    public var keyboard: UIKeyboardType {
+        get {
+            return _keyboard ?? UIKeyboardType.default
+        }
+        set {
+            _keyboard = newValue
+        }
+    }
+    var _keyboard: UIKeyboardType?
+
+    public var returnKey: UIReturnKeyType {
+        get {
+            return _returnKey ?? UIReturnKeyType.default
+        }
+        set {
+            _returnKey = newValue
+        }
+    }
+    var _returnKey: UIReturnKeyType?
+
+    public var secure: Bool {
+        get {
+            return _secure ?? false
+        }
+        set {
+            _secure = newValue
+        }
+    }
+    var _secure: Bool?
+
     open override func apply(view: UIView) {
         if let textField = view as? UITextField {
             apply(textField: textField)
@@ -60,12 +100,29 @@ open class TextFieldComponentState: ComponentState {
         if let placeholder = _placeholder {
             textField.attributedPlaceholder = placeholder
         }
+        if let clearButtonMode = _clearButtonMode {
+            textField.clearButtonMode = clearButtonMode
+        }
+        if let keyboard = _keyboard {
+            textField.keyboardType = keyboard
+        }
+        if let returnKey = _returnKey {
+            textField.returnKeyType = returnKey
+        }
+        if let secure = _secure {
+            textField.isSecureTextEntry = secure
+        }
+
         super.apply(view: textField)
     }
 
     open override func invalidate() {
         _text = nil
         _placeholder = nil
+        _clearButtonMode = nil
+        _keyboard = nil
+        _clearButtonMode = nil
+        _secure = nil
         super.invalidate()
     }
 }
@@ -125,6 +182,46 @@ open class BasicTextFieldComponent<TextField: UITextField>: Component<TextField>
             pendingState.placeholder = value
         }
         layout.markDirty()
+        return self
+    }
+
+    @discardableResult
+    public func clearButtonMode(_ value: UITextFieldViewMode) -> Self {
+        if mainThread(), let view = view {
+            view.clearButtonMode = value
+        } else {
+            pendingState.clearButtonMode = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func keyboard(_ value: UIKeyboardType) -> Self {
+        if mainThread(), let view = view {
+            view.keyboardType = value
+        } else {
+            pendingState.keyboard = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func returnKey(_ value: UIReturnKeyType) -> Self {
+        if mainThread(), let view = view {
+            view.returnKeyType = value
+        } else {
+            pendingState.returnKey = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func secure(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.isSecureTextEntry = value
+        } else {
+            pendingState.secure = value
+        }
         return self
     }
 }
