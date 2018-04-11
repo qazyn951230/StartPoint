@@ -55,6 +55,10 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
         return _frame.cgRect
     }
 
+    public var bounds: CGRect {
+        return CGRect(origin: CGPoint.zero, size: _frame.cgSize)
+    }
+
     public var pendingState: ComponentState {
         let state = _pendingState ?? ComponentState()
         if _pendingState == nil {

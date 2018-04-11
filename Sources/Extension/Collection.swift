@@ -22,6 +22,9 @@
 
 public extension Collection {
     public func mapIndex<T>(_ transform: (Self.Element, Self.Index) throws -> T) rethrows -> [T] {
+        guard !isEmpty else {
+            return []
+        }
         var result = [T]()
         var i = startIndex
         repeat {
@@ -33,6 +36,9 @@ public extension Collection {
     }
 
     public func forEachIndex(_ body: (Self.Element, Self.Index) throws -> Void) rethrows {
+        guard !isEmpty else {
+            return
+        }
         var i = startIndex
         repeat {
             try body(self[i], i)

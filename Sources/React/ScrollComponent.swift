@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//import UIKit
-//import CoreGraphics
-//
-//public typealias ScrollComponent = BasicScrollComponent<UIScrollView>
-//
+import UIKit
+import CoreGraphics
+
+public typealias ScrollComponent = BasicScrollComponent<UIScrollView>
+
 //open class ScrollComponentState: ComponentState {
 //    public var contentSize: CGSize {
 //        get {
@@ -36,20 +36,23 @@
 //    }
 //    var _contentSize: CGSize?
 //}
-//
-//open class BasicScrollComponent<Scroll: UIScrollView>: Component<Scroll> {
+
+open class BasicScrollComponent<ScrollView: UIScrollView>: Component<ScrollView> {
 //    var _scrollState: ScrollComponentState?
-//    public override var pendingState: ScrollComponentState {
-//        let state = _scrollState ?? ScrollComponentState()
-//        if _scrollState == nil {
-//            _scrollState = state
-//            _pendingState = state
-//        }
-//        return state
-//    }
-//
-//    public override func layout(width: Double, height: Double) {
-//        layout.width(.length(width)).height(.length(height))
-//        super.layout(width: width, height: height)
-//    }
-//}
+////    public override var pendingState: ScrollComponentState {
+////        let state = _scrollState ?? ScrollComponentState()
+////        if _scrollState == nil {
+////            _scrollState = state
+////            _pendingState = state
+////        }
+////        return state
+////    }
+
+    open override func applyState(to view: ScrollView) {
+        let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicComponent) in
+            return result.union(next.frame)
+        }
+        view.contentSize = total.size
+        super.applyState(to: view)
+    }
+}

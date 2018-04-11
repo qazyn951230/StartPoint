@@ -84,6 +84,10 @@ public struct Rect: Equatable {
     public let width: Double
     public let height: Double
 
+    public var size: Size {
+        return Size(width: width, height: height)
+    }
+
     public var cgSize: CGSize {
         return CGSize(width: width, height: height)
     }

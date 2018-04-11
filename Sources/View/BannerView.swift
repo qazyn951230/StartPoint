@@ -201,8 +201,11 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         guard !manualScroll, infinite else {
             return
         }
-        let x = scrollView.contentOffset.x
         let width = scrollView.bounds.width
+        guard width > 0 else {
+            return
+        }
+        let x = scrollView.contentOffset.x
         if x >= (width * CGFloat(count) + width) {
             scrollView.contentOffset = CGPoint(x: width, y: 0)
         } else if x <= 0 {

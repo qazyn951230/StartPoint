@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import UIKit
+import CoreGraphics
+
 public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
     case length(Double)
     case percentage(Double)
@@ -216,6 +219,18 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         case .column, .columnReverse:
             return top + bottom
         }
+    }
+
+    public func edgeInsets(style: FlexStyle, size: Size) -> UIEdgeInsets {
+        let direction = style.direction == Direction.ltr ? FlexDirection.row : FlexDirection.rowReverse
+        let top = self.top.resolve(by: size.height)
+        let bottom = self.bottom.resolve(by: size.height)
+        let left = self.leading(direction: direction)
+            .resolve(by: size.width)
+        let right = self.trailing(direction: direction)
+            .resolve(by: size.width)
+        return UIEdgeInsets(top: CGFloat(top), left: CGFloat(left),
+            bottom: CGFloat(bottom), right: CGFloat(right))
     }
 
     public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {

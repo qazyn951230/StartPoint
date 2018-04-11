@@ -111,8 +111,9 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
             array = children
         }
         super.init(children: array, creator: creator)
+        layout.flexDirection(.row)
     }
-    
+
     // TODO: Need remove target?
 //    deinit {
 //        if let button = view {
@@ -145,10 +146,72 @@ open class BasicButtonComponent<Button: UIButton>: Component<Button> {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
         super.applyState(to: view)
+        let (title, image) = edgeInsets()
+        if label != nil {
+            view.titleEdgeInsets = title
+        }
+        if self.image != nil {
+            view.imageEdgeInsets = image
+        }
+        view.contentEdgeInsets = paddingEdgeInsets(for: self)
+    }
+
+    func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
+        let buttonSize: CGSize = frame.size
+        let titleSize: CGSize = label?.frame.size ?? CGSize.zero
+        let titleInsets = marginEdgeInsets(for: label)
+        let imageSize: CGSize = label?.frame.size ?? CGSize.zero
+        let imageInsets = marginEdgeInsets(for: label)
+        let padding = CGFloat(layout.style.totalPadding(for: .column, width: _frame.width))
+        let titleEdgeInsets: UIEdgeInsets
+        let imageEdgeInsets: UIEdgeInsets
+        switch layout.style.flexDirection {
+        case .row:
+            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top, left: titleInsets.left + imageInsets.left,
+                bottom: titleInsets.bottom, right: titleInsets.right - imageInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top, left: imageInsets.left - titleInsets.left,
+                bottom: imageInsets.bottom, right: imageInsets.right + titleInsets.right)
+        case .rowReverse:
+            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top,
+                left: titleInsets.left - imageSize.width - imageInsets.horizontal,
+                bottom: titleInsets.bottom, right: imageSize.width + titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top,
+                left: titleSize.width + imageSize.width + titleInsets.horizontal + imageInsets.left,
+                bottom: imageInsets.bottom, right: imageSize.width + imageInsets.right)
+        case .column:
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: titleInsets.left - imageSize.width,
+                bottom: titleSize.height - buttonSize.height + padding + titleInsets.bottom * 2,
+                right: titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageSize.height - buttonSize.height + padding + imageInsets.top * 2,
+                left: imageInsets.left, bottom: 0, right: imageInsets.right - titleSize.width)
+        case .columnReverse:
+            titleEdgeInsets = UIEdgeInsets(top: titleSize.height - buttonSize.height + padding + titleInsets.top * 2,
+                left: titleInsets.left - imageSize.width, bottom: 0, right: titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: imageInsets.left,
+                bottom: imageSize.height - buttonSize.height + padding + imageInsets.bottom * 2,
+                right: imageInsets.right - titleSize.width)
+        }
+        return (titleEdgeInsets, imageEdgeInsets)
+    }
+
+    func marginEdgeInsets(for component: BasicComponent?) -> UIEdgeInsets {
+        guard let component = component else {
+            return UIEdgeInsets.zero
+        }
+        let margin = component.layout.style.margin
+        return margin.edgeInsets(style: component.layout.style, size: component._frame.size)
+    }
+
+    func paddingEdgeInsets(for component: BasicComponent?) -> UIEdgeInsets {
+        guard let component = component else {
+            return UIEdgeInsets.zero
+        }
+        let padding = component.layout.style.padding
+        return padding.edgeInsets(style: component.layout.style, size: component._frame.size)
     }
 
     @objc open func tapAction(sender: UIButton) {
-         _tap?(self)
+        _tap?(self)
     }
 
     open override func tap(_ method: @escaping (BasicComponent) -> Void) {

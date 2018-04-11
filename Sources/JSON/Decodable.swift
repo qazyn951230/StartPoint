@@ -86,28 +86,28 @@ public extension RawNotation where RawValue == String {
 }
 
 // MARK: - Decodable object
-public func <|?<T:FailableNotation>(json: JSON, key: String) -> T? {
+public func <|?<T: FailableNotation>(json: JSON, key: String) -> T? {
     return T.init(from: json[key])
 }
 
-public func <|<T:Notation>(json: JSON, key: String) -> T {
+public func <|<T: Notation>(json: JSON, key: String) -> T {
     return T.init(from: json[key])
 }
 
-public func <|<T:StaticNotation>(json: JSON, key: String) -> T {
+public func <|<T: StaticNotation>(json: JSON, key: String) -> T {
     return T.create(from: json[key])
 }
 
-public func <|<T:RawRepresentable>(json: JSON, key: String) -> T? where T.RawValue == String {
+public func <|<T: RawRepresentable>(json: JSON, key: String) -> T? where T.RawValue == String {
     return T.init(rawValue: json[key].stringValue)
 }
 
-public func <|?<T:BaseNotation>(json: JSON, key: String) -> [T]? {
+public func <|?<T: BaseNotation>(json: JSON, key: String) -> [T]? {
     let objects = T.objects(from: json[key])
     return objects.count > 0 ? objects : nil
 }
 
-public func <|<T:BaseNotation>(json: JSON, key: String) -> [T] {
+public func <|<T: BaseNotation>(json: JSON, key: String) -> [T] {
     return T.objects(from: json[key])
 }
 
