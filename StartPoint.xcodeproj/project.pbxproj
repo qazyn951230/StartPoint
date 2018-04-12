@@ -47,6 +47,7 @@
 		AC96A4E666F920D40C04949C /* LayoutValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */; };
 		AC96A4FDC81F7F682F338B53 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E6DA3952501D318D1F /* Component.swift */; };
 		AC96A5219500EFFD0504EA92 /* RunLoopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A01C66B235CC8602B54C /* RunLoopQueue.swift */; };
+		AC96A5470AA8FFAD4030F123 /* ShapeComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */; };
 		AC96A5699350613957D8E4B1 /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96AF4CCDEEAB7B80A449DC /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96A5711AB4DFB855E692F2 /* InfiniteHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */; };
 		AC96A5713EF694C99473C010 /* OverlayComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB4769DE9FAB38DADC2C /* OverlayComponent.swift */; };
@@ -290,6 +291,7 @@
 		AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsets.swift; sourceTree = "<group>"; };
 		AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureModeTests.swift; sourceTree = "<group>"; };
 		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
+		AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeComponent.swift; sourceTree = "<group>"; };
 		AC96AF4CCDEEAB7B80A449DC /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		AC96AF82C7E003113F5EB468 /* StyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleTests.swift; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 				AC96ABCB4BAAB4012A8B8F3C /* TextFieldComponent.swift */,
 				AC96A73E7DB1CDDA02E4D058 /* TableCellComponent.swift */,
 				AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */,
+				AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -937,6 +940,7 @@
 				AC96AA54CF513CEB2F8841AC /* TableCellComponent.swift in Sources */,
 				AC96AB697651BF7048F4EDA0 /* DispatchQueue.swift in Sources */,
 				AC96A9077818502AD3929D77 /* TableDataController.swift in Sources */,
+				AC96A5470AA8FFAD4030F123 /* ShapeComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

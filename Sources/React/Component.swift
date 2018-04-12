@@ -99,12 +99,6 @@ open class Component<View: UIView>: BasicComponent {
         return this
     }
 
-    open func buildChildren(in view: UIView){
-        children.forEach {
-            $0.build(in: view)
-        }
-    }
-
     func _createView() -> View {
         assertMainThread()
         if let view = self.view {
@@ -124,6 +118,15 @@ open class Component<View: UIView>: BasicComponent {
     open func applyState(to view: View) {
         assertMainThread()
         _pendingState?.apply(view: view)
+    }
+
+    open func buildChildren(in view: UIView) {
+        if children.isEmpty {
+            return
+        }
+        children.forEach {
+            $0.build(in: view)
+        }
     }
 
 #if DEBUG
@@ -150,6 +153,27 @@ open class Component<View: UIView>: BasicComponent {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func tintColor(_ value: UIColor) -> Self {
+        if mainThread(), let view = view {
+            view.tintColor = value
+        } else {
+            pendingState.tintColor = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func tintColor(hex: UInt32) -> Self {
+        let value = UIColor.hex(hex)
+        if mainThread(), let view = view {
+            view.tintColor = value
+        } else {
+            pendingState.tintColor = value
         }
         return self
     }

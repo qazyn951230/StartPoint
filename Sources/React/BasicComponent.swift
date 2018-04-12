@@ -125,6 +125,10 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
         assertMainThread()
     }
 
+    open func build(in layer: CALayer) {
+        assertMainThread()
+    }
+
     // FIXME: Remove or rename this method
     public func build(to view: UIScrollView) {
         assertMainThread()

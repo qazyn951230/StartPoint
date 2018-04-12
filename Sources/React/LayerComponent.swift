@@ -29,6 +29,7 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
     public internal(set) var layer: Layer?
     public internal(set) var creator: (() -> Layer)?
 
+    var _loaded: [(BasicLayerComponent<Layer>, Layer) -> Void]?
     private let _children: [BasicLayerComponent]
 
     override var _frame: Rect {
@@ -69,37 +70,22 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
         }
     }
 
-    @discardableResult
-    open func buildLayer(in layer: CALayer?) -> Layer {
-        assertMainThread()
-        let this = _buildLayer()
-        layer?.addSublayer(this)
-        _children.forEach {
-            $0.build(in: this)
-        }
-        return this
-    }
-
-    public func build(in layer: CALayer) {
-        assertMainThread()
-        let this = _buildLayer()
-        if let superlayer = this.superlayer {
-            if superlayer != layer {
-                this.removeFromSuperlayer()
-                layer.addSublayer(this)
-            }
+    public func loaded(then method: @escaping (BasicLayerComponent<Layer>, Layer) -> Void) {
+        if mainThread(), let layer = self.layer {
+            method(self, layer)
         } else {
-            layer.addSublayer(this)
-        }
-        _children.forEach {
-            $0.build(in: this)
+            _loaded = _loaded ?? []
+            _loaded?.append(method)
         }
     }
 
     open override func build(in view: UIView) {
+        build(in: view.layer)
+    }
+
+    open override func build(in layer: CALayer) {
         assertMainThread()
-        let this = _buildLayer()
-        let layer = view.layer
+        let this = buildLayer()
         if let superlayer = this.superlayer {
             if superlayer != layer {
                 this.removeFromSuperlayer()
@@ -108,9 +94,23 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
         } else {
             layer.addSublayer(this)
         }
-        _children.forEach {
-            $0.build(in: this)
+    }
+
+    open func buildLayer() -> Layer {
+        assertMainThread()
+        if let l = self.layer {
+            return l
         }
+        let this = _createLayer()
+        applyState(to: this)
+        buildChildren(in: this)
+        if let methods = _loaded {
+            methods.forEach {
+                $0(self, this)
+            }
+        }
+        _loaded = nil
+        return this
     }
 
     func _createLayer() -> Layer {
@@ -119,19 +119,28 @@ open class BasicLayerComponent<Layer: CALayer>: BasicComponent {
             return layer
         }
         let this = creator?() ?? Layer.init()
-//        if let container = this as? ComponentContainer {
-//            container.component = self
-//        } else {
-//            this._component = self
-//        }
+        creator = nil
+        if let container = this as? ComponentContainer {
+            container.component = self
+        } else {
+            this._component = self
+        }
         self.layer = this
         return this
     }
 
-    func _buildLayer() -> Layer {
-        let this = _createLayer()
-        _pendingState?.apply(layer: this)
-        return this
+    open func applyState(to layer: Layer) {
+        assertMainThread()
+        _pendingState?.apply(layer: layer)
+    }
+
+    open func buildChildren(in layer: CALayer) {
+        if children.isEmpty {
+            return
+        }
+        children.forEach {
+            $0.build(in: layer)
+        }
     }
 
 #if DEBUG

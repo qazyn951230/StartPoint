@@ -54,6 +54,10 @@ public struct R {
         public static func ic_refresh() -> UIImage? {
             return _image(name: "ic_refresh")
         }
+        
+        public static func ic_chevron_right() -> UIImage? {
+            return _image(name: "ic_chevron_right")
+        }
 
         private static func _image(name: String) -> UIImage? {
             return UIImage(named: name, in: PackageInfo.bundle, compatibleWith: nil)
