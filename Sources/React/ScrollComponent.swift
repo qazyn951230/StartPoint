@@ -25,34 +25,136 @@ import CoreGraphics
 
 public typealias ScrollComponent = BasicScrollComponent<UIScrollView>
 
-//open class ScrollComponentState: ComponentState {
-//    public var contentSize: CGSize {
-//        get {
-//            return _contentSize ?? CGSize.zero
-//        }
-//        set {
-//            _contentSize = newValue
-//        }
-//    }
-//    var _contentSize: CGSize?
-//}
+open class ScrollComponentState: ComponentState {
+    public var contentSize: CGSize {
+        get {
+            return _contentSize ?? CGSize.zero
+        }
+        set {
+            _contentSize = newValue
+        }
+    }
+    var _contentSize: CGSize?
+
+    public var horizontalIndicator: Bool {
+        get {
+            return _horizontalIndicator ?? true
+        }
+        set {
+            _horizontalIndicator = newValue
+        }
+    }
+    var _horizontalIndicator: Bool?
+
+    public var verticalIndicator: Bool {
+        get {
+            return _verticalIndicator ?? true
+        }
+        set {
+            _verticalIndicator = newValue
+        }
+    }
+    var _verticalIndicator: Bool?
+
+    open override func apply(view: UIView) {
+        if let scrollView = view as? UIScrollView {
+            apply(scrollView: scrollView)
+        } else {
+            super.apply(view: view)
+        }
+    }
+
+    open func apply(scrollView: UIScrollView) {
+        if let contentSize = _contentSize {
+            scrollView.contentSize = contentSize
+        }
+        if let horizontalIndicator = _horizontalIndicator {
+            scrollView.showsHorizontalScrollIndicator = horizontalIndicator
+        }
+        if let verticalIndicator = _verticalIndicator {
+            scrollView.showsVerticalScrollIndicator = verticalIndicator
+        }
+        super.apply(view: scrollView)
+    }
+
+    open override func invalidate() {
+        _contentSize = nil
+        super.invalidate()
+    }
+}
 
 open class BasicScrollComponent<ScrollView: UIScrollView>: Component<ScrollView> {
-//    var _scrollState: ScrollComponentState?
-////    public override var pendingState: ScrollComponentState {
-////        let state = _scrollState ?? ScrollComponentState()
-////        if _scrollState == nil {
-////            _scrollState = state
-////            _pendingState = state
-////        }
-////        return state
-////    }
+    var _scrollState: ScrollComponentState?
+    public override var pendingState: ScrollComponentState {
+        let state = _scrollState ?? ScrollComponentState()
+        if _scrollState == nil {
+            _scrollState = state
+            _pendingState = state
+        }
+        return state
+    }
 
     open override func applyState(to view: ScrollView) {
-        let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicComponent) in
-            return result.union(next.frame)
+        if _scrollState?._contentSize == nil {
+            let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicComponent) in
+                return result.union(next.frame)
+            }
+            view.contentSize = total.size
         }
-        view.contentSize = total.size
         super.applyState(to: view)
+    }
+
+    @discardableResult
+    public func contentSize(_ value: CGSize) -> Self {
+        if mainThread(), let view = view {
+            view.contentSize = value
+        } else {
+            pendingState.contentSize = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func horizontalIndicator(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.showsHorizontalScrollIndicator = value
+        } else {
+            pendingState.horizontalIndicator = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func verticalIndicator(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.showsVerticalScrollIndicator = value
+        } else {
+            pendingState.verticalIndicator = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func indicator(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.showsHorizontalScrollIndicator = value
+            view.showsVerticalScrollIndicator = value
+        } else {
+            pendingState.horizontalIndicator = value
+            pendingState.verticalIndicator = value
+        }
+        return self
+    }
+
+    @discardableResult
+    public func indicator(horizontal: Bool, vertical: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.showsHorizontalScrollIndicator = horizontal
+            view.showsVerticalScrollIndicator = vertical
+        } else {
+            pendingState.horizontalIndicator = horizontal
+            pendingState.verticalIndicator = vertical
+        }
+        return self
     }
 }
