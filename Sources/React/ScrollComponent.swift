@@ -56,6 +56,16 @@ open class ScrollComponentState: ComponentState {
     }
     var _verticalIndicator: Bool?
 
+    public var pagingEnabled: Bool {
+        get {
+            return _pagingEnabled ?? false
+        }
+        set {
+            _pagingEnabled = newValue
+        }
+    }
+    var _pagingEnabled: Bool?
+
     open override func apply(view: UIView) {
         if let scrollView = view as? UIScrollView {
             apply(scrollView: scrollView)
@@ -154,6 +164,16 @@ open class BasicScrollComponent<ScrollView: UIScrollView>: Component<ScrollView>
         } else {
             pendingState.horizontalIndicator = horizontal
             pendingState.verticalIndicator = vertical
+        }
+        return self
+    }
+
+    @discardableResult
+    public func paging(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.isPagingEnabled = value
+        } else {
+            pendingState.pagingEnabled = value
         }
         return self
     }

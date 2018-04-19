@@ -248,19 +248,55 @@ open class Component<View: UIView>: BasicComponent {
     }
 
     @discardableResult
-    public func shadow(opacity: Float, radius: CGFloat, offset: CGSize, color: UIColor?) -> Self {
+    public func shadow(opacity: Float, radius: CGFloat, offset: CGSize, color: CGColor?) -> Self {
         if mainThread(), let view = view {
             let layer = view.layer
             layer.shadowOpacity = opacity
             layer.shadowRadius = radius
             layer.shadowOffset = offset
-            layer.shadowColor = color?.cgColor
+            layer.shadowColor = color
         } else {
             let state = pendingState
             state.shadowOpacity = opacity
             state.shadowRadius = radius
             state.shadowOffset = offset
-            state.shadowColor = color?.cgColor
+            state.shadowColor = color
+        }
+        return self
+    }
+
+    @discardableResult
+    public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, color: UIColor) -> Self {
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.shadowOpacity = alpha
+            layer.shadowRadius = blur
+            layer.shadowOffset = CGSize(width: x, height: y)
+            layer.shadowColor = color.cgColor
+        } else {
+            let state = pendingState
+            state.shadowOpacity = alpha
+            state.shadowRadius = blur
+            state.shadowOffset = CGSize(width: x, height: y)
+            state.shadowColor = color.cgColor
+        }
+        return self
+    }
+
+    @discardableResult
+    public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32) -> Self {
+        if mainThread(), let view = view {
+            let layer = view.layer
+            layer.shadowOpacity = alpha
+            layer.shadowRadius = blur
+            layer.shadowOffset = CGSize(width: x, height: y)
+            layer.shadowColor = UIColor.hex(hex).cgColor
+        } else {
+            let state = pendingState
+            state.shadowOpacity = alpha
+            state.shadowRadius = blur
+            state.shadowOffset = CGSize(width: x, height: y)
+            state.shadowColor = UIColor.hex(hex).cgColor
         }
         return self
     }

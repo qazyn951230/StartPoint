@@ -26,29 +26,29 @@ public protocol Identified {
     var identifier: String { get }
 }
 
-public protocol StaticIdentified {
+public protocol ClassIdentified {
     static var identifier: String { get }
 }
 
-public extension StaticIdentified {
+public extension ClassIdentified {
     public static var identifier: String {
         return String(describing: self)
     }
 }
 
-public extension StaticIdentified where Self: UITableViewCell {
+public extension ClassIdentified where Self: UITableViewCell {
     public static func register(to tableView: UITableView) {
         tableView.register(self, forCellReuseIdentifier: identifier)
     }
 }
 
-public extension StaticIdentified where Self: UICollectionViewCell {
+public extension ClassIdentified where Self: UICollectionViewCell {
     public static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forCellWithReuseIdentifier: identifier)
     }
 }
 
-public extension StaticIdentified where Self: UICollectionReusableView {
+public extension ClassIdentified where Self: UICollectionReusableView {
     public static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
                 withReuseIdentifier: identifier)
@@ -57,5 +57,5 @@ public extension StaticIdentified where Self: UICollectionReusableView {
     }
 }
 
-extension UIView: StaticIdentified { }
-extension UIViewController: StaticIdentified { }
+extension UIView: ClassIdentified { }
+extension UIViewController: ClassIdentified { }

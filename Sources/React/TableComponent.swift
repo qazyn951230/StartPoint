@@ -76,7 +76,7 @@ open class TableComponent: Component<UITableView> {
     public convenience init(style: UITableViewStyle = .grouped, children: [BasicComponent] = []) {
         self.init(children: children) {
             let view = UITableView(frame: .zero, style: style)
-            view.register(ComponentTableViewCell.self, forCellReuseIdentifier: ComponentTableViewCell.identifier)
+            ComponentTableViewCell.register(to: view)
             return view
         }
     }
@@ -98,9 +98,11 @@ open class TableComponent: Component<UITableView> {
         view.delegate = dataController
         view.dataSource = dataController
         super.applyState(to: view)
+        reloadData()
     }
 
     public func reloadData(completion: (() -> Void)? = nil) {
+        assertMainThread()
         guard view != nil, let source = dataSource else {
             return
         }
