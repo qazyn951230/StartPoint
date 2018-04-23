@@ -13,7 +13,6 @@
 		AC96A02355DFF1D8761B28D2 /* ManualLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9DBE440F563BF37EAC6 /* ManualLayout.swift */; };
 		AC96A030632CB44BBDCA4816 /* ElementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6FE951A1BB64A5BEDA2 /* ElementViewController.swift */; };
 		AC96A03C68AC602F9CFFC0D6 /* TraitCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A02DC40A1A6CE9F75E26 /* TraitCollection.swift */; };
-		AC96A03F7790B0E7E2C8E2DC /* CollectionCellComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A61A62683F68C70B7BF1 /* CollectionCellComponent.swift */; };
 		AC96A06E7C30FE53825B445F /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA2D9D6E6B73BEDBBC5C /* AttributedString.swift */; };
 		AC96A0846D10B136A2E8550C /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2B0420610F0F4CBC52C /* CGSize.swift */; };
 		AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */; };
@@ -94,7 +93,6 @@
 		AC96A9D9A02BA41500592F6E /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA36EE92A0C924EC81CC /* NSObject.swift */; };
 		AC96A9DEA6C646DB2A35DB0D /* FlexStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */; };
 		AC96AA00E47BA4850A65B2C0 /* BaselineLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A872C107A1AF67FFD8A6 /* BaselineLayout.swift */; };
-		AC96AA30E7A6B6146EDF0F90 /* CollectionReusableComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFC8F960E22E6C353DAD /* CollectionReusableComponent.swift */; };
 		AC96AA37353C5E5CB09983E6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF5249A705A624EC8255 /* SessionManager.swift */; };
 		AC96AA54CF513CEB2F8841AC /* TableCellComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A73E7DB1CDDA02E4D058 /* TableCellComponent.swift */; };
 		AC96AA6714618BD919012CE8 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAF6CC5FFB07839B5A15 /* Permission.swift */; };
@@ -102,6 +100,7 @@
 		AC96AB46E6519A6C67A1E168 /* TextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE5EBD5B093C9633D7BA /* TextTests.swift */; };
 		AC96AB697651BF7048F4EDA0 /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A692552FC3A7CCD77301 /* DispatchQueue.swift */; };
 		AC96AB6986662F02971C94D4 /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A03D7883AFC28651386E /* Weak.swift */; };
+		AC96AB9FB8E38274F406A08D /* RecyclerComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A89E2714EF6980C0167E /* RecyclerComponent.swift */; };
 		AC96ABA0A87087889ACB0C06 /* FlexBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */; };
 		AC96ABA44B3474D24872EDE4 /* TableComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A81FC1124B5276C2F46A /* TableComponent.swift */; };
 		AC96ABC592AE1C3A0A83555E /* MeasureModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */; };
@@ -212,7 +211,6 @@
 		AC96A5C24B6B105C043B2099 /* LayerComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerComponent.swift; sourceTree = "<group>"; };
 		AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndroidNewsFeeds.swift; sourceTree = "<group>"; };
 		AC96A5E6DA3952501D318D1F /* Component.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
-		AC96A61A62683F68C70B7BF1 /* CollectionCellComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionCellComponent.swift; sourceTree = "<group>"; };
 		AC96A664648AA4B30AE21432 /* ButtonComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonComponent.swift; sourceTree = "<group>"; };
 		AC96A6865F9E9086CFC23A11 /* LocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermission.swift; sourceTree = "<group>"; };
 		AC96A692552FC3A7CCD77301 /* DispatchQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchQueue.swift; sourceTree = "<group>"; };
@@ -246,6 +244,7 @@
 		AC96A881F78BCDEBBF333943 /* Assert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayTests.swift; sourceTree = "<group>"; };
 		AC96A88DAF244E5EAAC1C668 /* ImageComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageComponent.swift; sourceTree = "<group>"; };
+		AC96A89E2714EF6980C0167E /* RecyclerComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecyclerComponent.swift; sourceTree = "<group>"; };
 		AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexAlgorithm.swift; sourceTree = "<group>"; };
 		AC96A8D792053394063F1400 /* LogType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
 		AC96A90E1FFE0A0283FFA2EF /* Approximate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Approximate.swift; sourceTree = "<group>"; };
@@ -301,7 +300,6 @@
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		AC96AF82C7E003113F5EB468 /* StyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleTests.swift; sourceTree = "<group>"; };
 		AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DimensionTests.swift; sourceTree = "<group>"; };
-		AC96AFC8F960E22E6C353DAD /* CollectionReusableComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionReusableComponent.swift; sourceTree = "<group>"; };
 		AC96AFCB44A6188AB237A221 /* FlexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexTests.swift; sourceTree = "<group>"; };
 		AC96AFE7F9D0E21E3963E89B /* CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		BC16E7541F3EAB9800DDC894 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
@@ -441,27 +439,26 @@
 		AC96A29D32606AE8F369DBB7 /* React */ = {
 			isa = PBXGroup;
 			children = (
-				AC96A5E6DA3952501D318D1F /* Component.swift */,
 				AC96A37F4922CCB61BDB2997 /* BasicComponent.swift */,
-				AC96A5C24B6B105C043B2099 /* LayerComponent.swift */,
-				AC96A6D3BCF3DB8BC2134433 /* LabelComponent.swift */,
-				AC96A88DAF244E5EAAC1C668 /* ImageComponent.swift */,
 				AC96A664648AA4B30AE21432 /* ButtonComponent.swift */,
-				AC96A81FC1124B5276C2F46A /* TableComponent.swift */,
-				AC96A7F9F536530BF5EF9AD8 /* StackComponent.swift */,
-				AC96AC568512717B29819623 /* ComponentState.swift */,
-				AC96A466AA73BC4166F8A33F /* ScrollComponent.swift */,
-				AC96AB4769DE9FAB38DADC2C /* OverlayComponent.swift */,
-				AC96A86F3C4C471D600AF91F /* ComponentLayer.swift */,
-				AC96A4EDE8CA864C6974402A /* ComponentView.swift */,
-				AC96A05651F2A36DE50AD01A /* ComponentContainer.swift */,
-				AC96ABCB4BAAB4012A8B8F3C /* TextFieldComponent.swift */,
-				AC96A73E7DB1CDDA02E4D058 /* TableCellComponent.swift */,
-				AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */,
-				AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */,
-				AC96A61A62683F68C70B7BF1 /* CollectionCellComponent.swift */,
 				AC96A782B6ECCFAB1EDFFAFD /* CollectionComponent.swift */,
-				AC96AFC8F960E22E6C353DAD /* CollectionReusableComponent.swift */,
+				AC96A5E6DA3952501D318D1F /* Component.swift */,
+				AC96A05651F2A36DE50AD01A /* ComponentContainer.swift */,
+				AC96A86F3C4C471D600AF91F /* ComponentLayer.swift */,
+				AC96AC568512717B29819623 /* ComponentState.swift */,
+				AC96A4EDE8CA864C6974402A /* ComponentView.swift */,
+				AC96A88DAF244E5EAAC1C668 /* ImageComponent.swift */,
+				AC96A6D3BCF3DB8BC2134433 /* LabelComponent.swift */,
+				AC96A5C24B6B105C043B2099 /* LayerComponent.swift */,
+				AC96AB4769DE9FAB38DADC2C /* OverlayComponent.swift */,
+				AC96A89E2714EF6980C0167E /* RecyclerComponent.swift */,
+				AC96A466AA73BC4166F8A33F /* ScrollComponent.swift */,
+				AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */,
+				AC96A7F9F536530BF5EF9AD8 /* StackComponent.swift */,
+				AC96A73E7DB1CDDA02E4D058 /* TableCellComponent.swift */,
+				AC96A81FC1124B5276C2F46A /* TableComponent.swift */,
+				AC96AE91A9B1097C5E1FA42B /* TableDataController.swift */,
+				AC96ABCB4BAAB4012A8B8F3C /* TextFieldComponent.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -950,9 +947,8 @@
 				AC96AB697651BF7048F4EDA0 /* DispatchQueue.swift in Sources */,
 				AC96A9077818502AD3929D77 /* TableDataController.swift in Sources */,
 				AC96A5470AA8FFAD4030F123 /* ShapeComponent.swift in Sources */,
-				AC96A03F7790B0E7E2C8E2DC /* CollectionCellComponent.swift in Sources */,
 				AC96A2F23AB49E42E75DF6D9 /* CollectionComponent.swift in Sources */,
-				AC96AA30E7A6B6146EDF0F90 /* CollectionReusableComponent.swift in Sources */,
+				AC96AB9FB8E38274F406A08D /* RecyclerComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

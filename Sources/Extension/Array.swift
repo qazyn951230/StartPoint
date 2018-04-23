@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 public extension Array {
+    // TODO: Move to RandomAccessCollection or MutableCollection
     public func object(at index: Int) -> Element? {
         guard index >= self.startIndex && index < self.endIndex else {
             return nil
@@ -28,12 +29,21 @@ public extension Array {
         return self[index]
     }
 
+    // TODO: Move to RangeReplaceableCollection
+    public mutating func insert(nil element: Element?, at index: Int) {
+        if let object = element {
+            insert(object, at: index)
+        }
+    }
+
+    // TODO: Move to RangeReplaceableCollection
     public mutating func append(nil element: Element?) {
         if let object = element {
             append(object)
         }
     }
 
+    // TODO: Move to Sequence
     public static func from(_ value: Element?...) -> Array<Element> {
         return value.compactMap(Function.this)
     }

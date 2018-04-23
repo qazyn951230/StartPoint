@@ -35,7 +35,7 @@ public extension Reactive where Base: UIImagePickerController {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:))
         return delegate.methodInvoked(selector)
             .map { object in
-                if object.count > 1, let result = object[1] as? [String: Any] {
+                if let result = object.object(at: 1) as? [String: Any] {
                     return result
                 } else {
                     throw RxCocoaError.castingError(object: object, targetType: [String: Any].self)

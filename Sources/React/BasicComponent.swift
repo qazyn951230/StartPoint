@@ -56,7 +56,7 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
     }
 
     public var bounds: CGRect {
-        return CGRect(origin: CGPoint.zero, size: _frame.cgSize)
+        return frame.setOrigin(.zero)
     }
 
     public var pendingState: ComponentState {
@@ -171,11 +171,11 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
     }
 
     // MARK: - Hashable
-    public var hashValue: Int {
+    open var hashValue: Int {
         return stringAddress(self).hashValue
     }
 
     public static func ==(lhs: BasicComponent, rhs: BasicComponent) -> Bool {
-        return lhs === rhs
+        return lhs.hashValue == rhs.hashValue
     }
 }

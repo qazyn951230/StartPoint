@@ -104,6 +104,7 @@ public final class TableDataController: NSObject, UITableViewDelegate, UITableVi
     weak var delegate: TableComponentDelegate?
 
     override init() {
+        // editingQueue can not init here
         super.init()
         editingQueue = DispatchQueue(label: "com.start.point.data.controller." + stringAddress(self))
     }
@@ -142,7 +143,7 @@ public final class TableDataController: NSObject, UITableViewDelegate, UITableVi
     internal func layoutSections(data: TableDataMap, completion: @escaping () -> Void) {
         let width = Double(data.width)
         let array = data.flatted()
-        guard array.count > 0 else {
+        guard array.isNotEmpty else {
             completion()
             return
         }

@@ -21,6 +21,10 @@
 // SOFTWARE.
 
 public extension Collection {
+    public var isNotEmpty: Bool {
+        return !isEmpty
+    }
+
     public func mapIndex<T>(_ transform: (Self.Element, Self.Index) throws -> T) rethrows -> [T] {
         guard !isEmpty else {
             return []
@@ -44,5 +48,13 @@ public extension Collection {
             try body(self[i], i)
             i = index(after: i)
         } while i < endIndex
+    }
+}
+
+public extension Sequence where Element: Hashable {
+    public var hashValue: Int {
+        return reduce(0) { (result: Int, next: Element) in
+            result & next.hashValue
+        }
     }
 }
