@@ -26,7 +26,8 @@ public typealias LabelComponent = BasicLabelComponent<UILabel>
 
 open class BasicLabelComponent<Label: UILabel>: Component<Label> {
     var text: NSAttributedString?
-    var lines: Int = 0
+    var lines: Int = 1
+    var autoLines: Bool = false
 
     var _labelState: LabelComponentState?
     public override var pendingState: LabelComponentState {
@@ -49,17 +50,27 @@ open class BasicLabelComponent<Label: UILabel>: Component<Label> {
     }
 
     func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
-        if let text = text {
-            let size = CGSize(width: width, height: height)
-            let options: NSStringDrawingOptions = lines < 1 ? [.usesLineFragmentOrigin] : []
-            // TODO: Ceil the size, not the cgsize
-            return Size(cgSize: text.boundingSize(size: size, options: options).ceiled)
+        guard let text = text else {
+            return Size.zero
         }
-        return Size.zero
+        let w = width.isNaN ? Double.greatestFiniteMagnitude : width
+        let h = height.isNaN ? Double.greatestFiniteMagnitude : height
+        let size = CGSize(width: w, height: h)
+        let options: NSStringDrawingOptions = autoLines ? [.usesLineFragmentOrigin] : []
+        // TODO: Ceil the size, not the cgsize
+        var textSize: CGSize = text.boundingSize(size: size, options: options)
+        if autoLines {
+            return Size(cgSize: textSize.ceiled)
+        } else {
+            // FIXME: multi-line text size
+            textSize = textSize.setHeight(textSize.height * CGFloat(lines))
+            return Size(cgSize: textSize.ceiled)
+        }
     }
 
     @discardableResult
     public func numberOfLines(_ value: Int) -> Self {
+        lines = value
         if mainThread(), let view = view {
             view.numberOfLines = value
         } else {
@@ -84,6 +95,7 @@ open class BasicLabelComponent<Label: UILabel>: Component<Label> {
     @discardableResult
     public func multiLine(_ value: Bool = true) -> Self {
         lines = value ? 0 : 1
+        autoLines = value
         if mainThread(), let view = view {
             view.numberOfLines = lines
         } else {
