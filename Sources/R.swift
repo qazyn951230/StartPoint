@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
@@ -20,19 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
 import UIKit
 
-public struct PackageInfo {
-    public static var bundle: Bundle? {
-        return Bundle(identifier: "com.undev.StartPoint")
+public struct R {
+    public struct image {
+        public static func ic_arrow_back() -> UIImage? {
+            return _image(name: "ic_arrow_back")
+        }
+
+        public static func ic_check() -> UIImage? {
+            return _image(name: "ic_check")
+        }
+
+        public static func ic_close() -> UIImage? {
+            return _image(name: "ic_close")
+        }
+
+        public static func ic_more_horiz() -> UIImage? {
+            return _image(name: "ic_more_horiz")
+        }
+
+        public static func ic_more_vert() -> UIImage? {
+            return _image(name: "ic_more_vert")
+        }
+
+        public static func ic_refresh() -> UIImage? {
+            return _image(name: "ic_refresh")
+        }
+
+        public static func ic_chevron_right() -> UIImage? {
+            return _image(name: "ic_chevron_right")
+        }
+
+        private static func _image(name: String) -> UIImage? {
+            return UIImage(named: name, in: PackageInfo.bundle, compatibleWith: nil)
+        }
     }
-}
-
-public func address(of object: Any) -> String {
-    return stringAddress(object)
-}
-
-public func address(of object: CVarArg) -> String {
-    return String(format: "%p", object)
 }

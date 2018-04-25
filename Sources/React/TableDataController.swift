@@ -106,7 +106,7 @@ public final class TableDataController: NSObject, UITableViewDelegate, UITableVi
     override init() {
         // editingQueue can not init here
         super.init()
-        editingQueue = DispatchQueue(label: "com.start.point.data.controller." + stringAddress(self))
+        editingQueue = DispatchQueue(label: "com.start.point.data.controller." + address(of: self))
     }
 
     public func reloadData(in table: TableComponent, dataSource: TableComponentDataSource, completion: (() -> Void)?) {

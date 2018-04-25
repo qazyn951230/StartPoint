@@ -28,13 +28,26 @@ public enum IntentMethod {
     case modal
 }
 
+public enum ResolvedMethod {
+    case push
+    case modal
+
+    public var isPush: Bool {
+        return self == ResolvedMethod.push
+    }
+
+    public var isModal: Bool {
+        return self == ResolvedMethod.modal
+    }
+}
+
 public protocol IntentSource {
     var intentController: UIViewController { get }
 }
 
 public protocol IntentTarget: IntentSource {
     var intent: Intent? { get set }
-    func prepare(for intent: Intent) -> UIViewController
+    func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController
     func finish(result: IntentResult?)
     static func create() -> Self
 }
@@ -55,7 +68,7 @@ public extension IntentTarget where Self: UIViewController {
         }
     }
 
-    public func prepare(for intent: Intent) -> UIViewController {
+    public func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
         return self
     }
 
@@ -93,6 +106,7 @@ public class Intent {
     public let target: IntentTarget.Type
     public let method: IntentMethod
     public let completion: ((IntentResult) -> Void)?
+
     lazy var extras = [String: Any]()
     var push: Bool? = nil
     weak var targetController: UIViewController? = nil
@@ -111,20 +125,32 @@ public class Intent {
         return extras[key]
     }
 
+    public func stringExtra(key: String) -> String? {
+        return extras[key] as? String
+    }
+
+    public func doubleExtra(key: String) -> Double? {
+        return extras[key] as? Double
+    }
+
+    public func intExtra(key: String) -> Int? {
+        return extras[key] as? Int
+    }
+
     public func start(in source: IntentSource) {
-        var destination = target.create()
-        destination.intent = self
-        let controller = destination.prepare(for: self)
-        targetController = controller
-        push = Intent.display(source: source.intentController, target: controller, method: method)
+        start(with: source.intentController)
     }
 
     public func start(with controller: UIViewController) {
-        var destination = target.create()
+        let resolved = (controller.navigationController != nil || controller is UINavigationController) ?
+            ResolvedMethod.push : ResolvedMethod.modal
+        var destination = self.target.create()
         destination.intent = self
-        let t = destination.prepare(for: self)
-        targetController = t
-        push = Intent.display(source: controller, target: t, method: method)
+        let target = destination.prepare(for: self, method: resolved)
+        assertFalse(resolved == ResolvedMethod.push && target is UINavigationController,
+            "Cannot push a UINavigationController")
+        targetController = target
+        display(source: controller, target: target, method: resolved)
     }
 
     public func transition(_ function: (IntentTarget) -> Void) {
@@ -147,26 +173,31 @@ public class Intent {
         }
     }
 
-    static func display(source: UIViewController, target: UIViewController, method: IntentMethod) -> Bool {
-        let push: Bool
+    func display(source: UIViewController, target: UIViewController, method: ResolvedMethod) {
         switch method {
         case .push:
-            push = true
-        case .modal:
-            push = false
-        case .auto:
-            push = (source.navigationController != nil || source is UINavigationController) &&
-                !(target is UINavigationController)
-        }
-        if push {
-            if let navigation = source as? UINavigationController {
+#if DEBUG
+            assertFalse(target is UINavigationController, "Cannot push a UINavigationController")
+            if let navigation = source.navigationController ?? (source as? UINavigationController) {
                 navigation.pushViewController(target, animated: true)
+                push = true
             } else {
-                source.navigationController?.pushViewController(target, animated: true)
+                source.present(target, animated: true)
+                push = false
             }
-        } else {
+#else
+            if let navigation = source.navigationController ?? (source as? UINavigationController),
+               !(target is UINavigationController) {
+                navigation.pushViewController(target, animated: true)
+                push = true
+            } else {
+                source.present(target, animated: true)
+                push = false
+            }
+#endif
+        case .modal:
             source.present(target, animated: true)
+            push = false
         }
-        return push
     }
 }

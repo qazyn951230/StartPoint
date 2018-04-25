@@ -133,7 +133,7 @@ open class Element: Hashable, CustomStringConvertible, CustomDebugStringConverti
 
     private var _onDidLoad: [(Element) -> Void]? = nil
     public var hashValue: Int {
-        return stringAddress(self).hashValue
+        return address(of: self).hashValue
     }
 
     public required init() {

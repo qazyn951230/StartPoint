@@ -55,7 +55,11 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 
     @objc open func backBarItemAction(sender: UIBarButtonItem) {
-        navigationController?.popViewController(animated: true)
+        if presentingViewController != nil {
+            dismiss(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
         viewDidBack()
     }
 
@@ -64,7 +68,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 
     open func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {
-        let image = image ?? UIImage(named: "ic_arrow_back", in: PackageInfo.bundle, compatibleWith: nil)
+        let image = image ?? R.image.ic_arrow_back()
         return UIBarButtonItem(image: image, style: .plain, target: self,
             action: #selector(backBarItemAction(sender:)))
     }

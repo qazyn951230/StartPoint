@@ -26,7 +26,7 @@ import CoreGraphics
 import Dispatch
 
 open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
-    public let children: [BasicComponent]
+    public internal(set) var children: [BasicComponent]
     public let layout = FlexLayout()
 
     let framed: Bool
@@ -42,9 +42,6 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
     init(framed: Bool, children: [BasicComponent]) {
         self.framed = framed
         self.children = children
-        for child in children {
-            layout.append(child.layout)
-        }
     }
 
     open var overrideTouches: Bool {
@@ -69,7 +66,7 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
 
     // CustomStringConvertible
     open var description: String { // "BasicComponent:0xffffff"
-        return String(describing: type(of: self)) + ":" + stringAddress(self)
+        return String(describing: type(of: self)) + ":" + address(of: self)
     }
 
     // CustomDebugStringConvertible
@@ -93,13 +90,25 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
         return self
     }
 
+    open func prepareLayout() {
+        for child in children {
+            layout.append(child.layout)
+            child.prepareLayout()
+        }
+    }
+
     public func layout(width: Double = .nan, height: Double = .nan) {
+        prepareLayout()
         layout.calculate(width: width, height: height, direction: .ltr)
-        apply(left: 0, top: 0)
+        applyLayout()
     }
 
     public func layout(within view: UIView) {
         layout(width: Double(view.frame.width), height: Double(view.frame.height))
+    }
+
+    open func applyLayout() {
+        apply(left: 0, top: 0)
     }
 
     func apply(left: Double, top: Double) {
@@ -172,7 +181,7 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
 
     // MARK: - Hashable
     open var hashValue: Int {
-        return stringAddress(self).hashValue
+        return address(of: self).hashValue
     }
 
     public static func ==(lhs: BasicComponent, rhs: BasicComponent) -> Bool {
