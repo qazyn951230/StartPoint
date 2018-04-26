@@ -91,6 +91,7 @@
 		AC96A971B402B448B1D55A57 /* AlignSelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85E0F923B9028631591 /* AlignSelfTests.swift */; };
 		AC96A9898940A338B170D0DF /* LayerElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4FF2D64481DF6DAD6A6 /* LayerElement.swift */; };
 		AC96A9AA25BD2810D5DE3EC2 /* AbsolutePositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26C55282021CFB56FEC /* AbsolutePositionTests.swift */; };
+		AC96A9B0228A9C20C9B2FD30 /* StatusBarWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */; };
 		AC96A9BDF9EABD173944E1C0 /* ComponentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC568512717B29819623 /* ComponentState.swift */; };
 		AC96A9BF694A844F697265E5 /* PendingStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1F3A3CF24D07E890A8C /* PendingStateManager.swift */; };
 		AC96A9C81938A244F20C6D66 /* FlexWrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */; };
@@ -211,6 +212,7 @@
 		AC96A5473FBE3CC634576A01 /* JustifyContentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustifyContentTests.swift; sourceTree = "<group>"; };
 		AC96A55A63B91C8BFDE20D31 /* FlexStyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexStyleTests.swift; sourceTree = "<group>"; };
 		AC96A56B8B82C3DC989BAD2A /* AsyncView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncView.swift; sourceTree = "<group>"; };
+		AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarWindow.swift; sourceTree = "<group>"; };
 		AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationPermission.swift; sourceTree = "<group>"; };
 		AC96A5C24B6B105C043B2099 /* LayerComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerComponent.swift; sourceTree = "<group>"; };
 		AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AndroidNewsFeeds.swift; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 				BCA2A45A1F3DA5BC007A772A /* View.swift */,
 				AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */,
 				AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */,
+				AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -961,6 +964,7 @@
 				AC96A353DC9E3C194BE1822C /* RecyclerComponent.swift in Sources */,
 				AC96A0E72242949988C972F9 /* RecyclerComponents.swift in Sources */,
 				AC96A1FDAE4E97C455C3FAB0 /* RecyclerDataController.swift in Sources */,
+				AC96A9B0228A9C20C9B2FD30 /* StatusBarWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

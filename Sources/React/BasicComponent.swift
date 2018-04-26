@@ -42,6 +42,9 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
     init(framed: Bool, children: [BasicComponent]) {
         self.framed = framed
         self.children = children
+        for child in children {
+            layout.append(child.layout)
+        }
     }
 
     open var overrideTouches: Bool {
@@ -90,15 +93,15 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
         return self
     }
 
-    open func prepareLayout() {
-        for child in children {
-            layout.append(child.layout)
-            child.prepareLayout()
-        }
-    }
+//    open func prepareLayout() {
+//        for child in children {
+//            layout.append(child.layout)
+//            child.prepareLayout()
+//        }
+//    }
 
     public func layout(width: Double = .nan, height: Double = .nan) {
-        prepareLayout()
+//        prepareLayout()
         layout.calculate(width: width, height: height, direction: .ltr)
         applyLayout()
     }
