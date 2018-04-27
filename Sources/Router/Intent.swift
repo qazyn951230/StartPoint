@@ -142,7 +142,8 @@ public class Intent {
     }
 
     public func start(with controller: UIViewController) {
-        let resolved = (controller.navigationController != nil || controller is UINavigationController) ?
+        let resolved = (method != IntentMethod.modal &&
+            (controller.navigationController != nil || controller is UINavigationController)) ?
             ResolvedMethod.push : ResolvedMethod.modal
         var destination = self.target.create()
         destination.intent = self

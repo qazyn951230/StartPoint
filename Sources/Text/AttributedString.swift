@@ -97,7 +97,6 @@ public class AttributedString {
         return setAttribute(key: NSAttributedStringKey.font, value: UIFont.systemFont(ofSize: size.value), range: range)
     }
 
-
     public func systemFont(_ size: LayoutValue, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
         if #available(iOS 8.2, *) {
             return setAttribute(key: NSAttributedStringKey.font,
@@ -165,6 +164,24 @@ public class AttributedString {
         t.shadowOffset = offset
         t.shadowBlurRadius = radius.value
         t.shadowColor = color
+        return setAttribute(key: NSAttributedStringKey.shadow, value: t, range: range)
+    }
+
+    public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, color: UIColor, range: NSRange? = nil)
+            -> AttributedString {
+        let t = NSShadow()
+        t.shadowOffset = CGSize(width: x, height: y)
+        t.shadowBlurRadius = blur
+        t.shadowColor = color.withAlphaComponent(alpha)
+        return setAttribute(key: NSAttributedStringKey.shadow, value: t, range: range)
+    }
+
+    public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32, range: NSRange? = nil)
+            -> AttributedString {
+        let t = NSShadow()
+        t.shadowOffset = CGSize(width: x, height: y)
+        t.shadowBlurRadius = blur
+        t.shadowColor = UIColor.hex(hex).withAlphaComponent(alpha)
         return setAttribute(key: NSAttributedStringKey.shadow, value: t, range: range)
     }
 

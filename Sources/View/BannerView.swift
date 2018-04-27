@@ -120,8 +120,8 @@ public final class BannerView: UIView, UIScrollViewDelegate {
 
     public func stopScroll() {
         timer?.invalidate()
-        let x = scrollView.bounds.width * CGFloat(index)
-        scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: false)
+//        let x = scrollView.bounds.width * CGFloat(index)
+//        scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: false)
     }
 
     public func scroll(to index: Int) {
@@ -169,7 +169,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         delegate.bannerView(self, configImageView: imageView1, at: count - 1)
         scrollView.addSubview(imageView1)
         imageViews.append(imageView1)
-        for i in 0 ..< count {
+        for i in 0..<count {
             let imageView = UIImageView(frame: CGRect(x: size.width * CGFloat(i + 1), y: 0, size: size))
             delegate.bannerView(self, configImageView: imageView, at: i)
             scrollView.addSubview(imageView)
@@ -223,11 +223,5 @@ public final class BannerView: UIView, UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         stopScroll()
         manualScroll = true
-    }
-
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if decelerate {
-            scrollViewDidEndDecelerating(scrollView)
-        }
     }
 }
