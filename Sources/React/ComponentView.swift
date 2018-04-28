@@ -39,35 +39,55 @@ public final class ComponentView: UIView, ComponentContainer {
         return object.frame.size
     }
 
-    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let object = component, object.overrideTouches else {
-            super.touchesBegan(touches, with: event)
-            return
+    public override func sizeToFit() {
+        guard let object = component else {
+            return super.sizeToFit()
         }
-        object.touchesBegan(touches, with: event)
+        object.layout()
+        frame = object.frame
+    }
+
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchDown)
+        if component?.dispatchTouchEvent(e) == false {
+            super.touchesBegan(touches, with: event)
+        }
     }
 
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let object = component, object.overrideTouches else {
+        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchMove)
+        if component?.dispatchTouchEvent(e) == false {
             super.touchesMoved(touches, with: event)
-            return
         }
-        object.touchesMoved(touches, with: event)
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let object = component, object.overrideTouches else {
+        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchUp)
+        if component?.dispatchTouchEvent(e) == false {
             super.touchesEnded(touches, with: event)
-            return
         }
-        object.touchesEnded(touches, with: event)
     }
 
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let object = component, object.overrideTouches else {
+        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchCancel)
+        if component?.dispatchTouchEvent(e) == false {
             super.touchesCancelled(touches, with: event)
-            return
         }
-        object.touchesCancelled(touches, with: event)
+    }
+
+    public func superTouchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+    }
+
+    public func superTouchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+    }
+
+    public func superTouchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+    }
+
+    public func superTouchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
     }
 }

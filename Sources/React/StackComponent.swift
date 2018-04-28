@@ -53,4 +53,11 @@ open class StackComponent: BasicComponent {
             $0.build(in: view)
         }
     }
+
+    open override func tap(_ method: @escaping (BasicComponent) -> Void) {
+        super.tap(method)
+        if let parent = closestViewComponent {
+            parent.registerTap(for: self)
+        }
+    }
 }

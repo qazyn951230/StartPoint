@@ -103,6 +103,17 @@ public struct Rect: Equatable {
         self.height = height
     }
 
+    public func contains(point: CGPoint) -> Bool {
+        guard width > 0 && height > 0 else {
+            return false
+        }
+        let px = Double(point.x)
+        let py = Double(point.y)
+        let maxX = x + width
+        let maxY = y + height
+        return x >= px && px <= maxX && y >= py && py <= maxY
+    }
+
     public static let zero = Rect(x: 0.0, y: 0.0, width: 0.0, height: 0.0)
 
     public static func ==(lhs: Rect, rhs: Rect) -> Bool {

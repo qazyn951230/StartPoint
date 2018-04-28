@@ -30,16 +30,7 @@ open class Component<View: UIView>: BasicComponent {
     public internal(set) var creator: (() -> View)?
 
     var _loaded: [(Component<View>, View) -> Void]?
-
-    override var _frame: Rect {
-        didSet {
-            if mainThread(), let view = self.view {
-                view.frame = _frame.cgRect
-            } else {
-                pendingState.frame = _frame.cgRect
-            }
-        }
-    }
+    var tapChildren: [BasicComponent]?
 
     public init(children: [BasicComponent] = []) {
         super.init(framed: true, children: children)
@@ -49,6 +40,20 @@ open class Component<View: UIView>: BasicComponent {
     public init(children: [BasicComponent], creator: @escaping () -> View) {
         super.init(framed: true, children: children)
         self.creator = creator
+    }
+
+    open override var overrideTouches: Bool {
+        return super.overrideTouches || tapChildren != nil
+    }
+
+    override var _frame: Rect {
+        didSet {
+            if mainThread(), let view = self.view {
+                view.frame = _frame.cgRect
+            } else {
+                pendingState.frame = _frame.cgRect
+            }
+        }
     }
 
     deinit {
@@ -135,6 +140,29 @@ open class Component<View: UIView>: BasicComponent {
         super.debugMode()
     }
 #endif
+
+    func registerTap(for child: BasicComponent) {
+        tapChildren = tapChildren ?? []
+        tapChildren?.append(child)
+    }
+
+    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        assertMainThread()
+        if let taps = tapChildren, let touch = touches.first {
+            // FIXME: children touch event
+            let point = touch.location(in: view)
+            let component = taps.first { component in
+                return component.frame.contains(point)
+            }
+            if let this = component, let tap = this._tap {
+                DispatchQueue.main.async {
+                    tap(this)
+                }
+                return
+            }
+        }
+        super.touchesEnded(touches, with: event)
+    }
 
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {

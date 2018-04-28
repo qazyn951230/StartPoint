@@ -83,6 +83,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
     }
 
     func initialization() {
+        scrollView.frame = bounds
         scrollView.delegate = self
         addSubview(scrollView)
         addSubview(pageControl)
@@ -100,8 +101,13 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         imageViews.forEachIndex { view, i in
             view.frame = CGRect(x: bounds.width * CGFloat(i), y: 0, size: bounds.size)
         }
-        scrollView.contentSize = CGSize(width: bounds.width * CGFloat(count + 2), height: bounds.height)
-        scrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
+        if infinite {
+            scrollView.contentSize = CGSize(width: bounds.width * CGFloat(count + 2), height: bounds.height)
+            scrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
+        } else {
+            scrollView.contentSize = bounds.size
+            scrollView.contentOffset = CGPoint.zero
+        }
     }
 
     public func startScroll(stopWhenValid: Bool = true) {
@@ -155,13 +161,14 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         }
         count = delegate.numberOfBanner(bannerView: self)
         infinite = count > 1
-        let size = scrollView.frame.size
+        let size = frame.size
         guard infinite else {
             let imageView0 = UIImageView(frame: CGRect(x: 0, y: 0, size: size))
             delegate.bannerView(self, configImageView: imageView0, at: 0)
             scrollView.addSubview(imageView0)
             imageViews.append(imageView0)
             scrollView.contentSize = bounds.size
+            scrollView.contentOffset = CGPoint.zero
             return
         }
         // First image view,  data index = count - 1

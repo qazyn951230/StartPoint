@@ -30,6 +30,7 @@
 		AC96A1FDAE4E97C455C3FAB0 /* RecyclerDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A77AD95B1EFAA33BE6C0 /* RecyclerDataController.swift */; };
 		AC96A216605B819AED84687E /* Element+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A434893D1C0999356C71 /* Element+UIView.swift */; };
 		AC96A22D2B9C0D6382E62C54 /* SizeOverflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A80AF565B4E890BC2AF9 /* SizeOverflowTests.swift */; };
+		AC96A243DAB4EAB3C75B38AC /* MotionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F3F80B8DC6E1B808A7 /* MotionEvent.swift */; };
 		AC96A24B7B7B740BA053A722 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE5D3A3D6C6A6C031B63 /* Router.swift */; };
 		AC96A2613771E4272D5C20C8 /* BorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */; };
 		AC96A270DCF9EC380399133A /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */; };
@@ -51,6 +52,7 @@
 		AC96A4E666F920D40C04949C /* LayoutValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */; };
 		AC96A4FDC81F7F682F338B53 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E6DA3952501D318D1F /* Component.swift */; };
 		AC96A5219500EFFD0504EA92 /* RunLoopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A01C66B235CC8602B54C /* RunLoopQueue.swift */; };
+		AC96A52E45DAE0C3C09B3A54 /* ComponentApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA6FF43854C4A178ACB1 /* ComponentApplication.swift */; };
 		AC96A5470AA8FFAD4030F123 /* ShapeComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF3F8868F5EA5FAD39E7 /* ShapeComponent.swift */; };
 		AC96A5699350613957D8E4B1 /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96AF4CCDEEAB7B80A449DC /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96A5711AB4DFB855E692F2 /* InfiniteHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */; };
@@ -81,6 +83,7 @@
 		AC96A8118D2718872E1D4E75 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */; };
 		AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A52C7185DF1BDD6F678C /* PaddingTests.swift */; };
 		AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */; };
+		AC96A8687F7BC6620CB11EE4 /* InputEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA46D8E18083FA5630E4 /* InputEvent.swift */; };
 		AC96A86B169E962BDDBEE539 /* R.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8F7A138D61BC5B15CBB /* R.swift */; };
 		AC96A8886C4B265CC0F26D64 /* Approximate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A90E1FFE0A0283FFA2EF /* Approximate.swift */; };
 		AC96A89C5095B176A30D61E3 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8D792053394063F1400 /* LogType.swift */; };
@@ -225,6 +228,7 @@
 		AC96A6D3BCF3DB8BC2134433 /* LabelComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelComponent.swift; sourceTree = "<group>"; };
 		AC96A6DDD008EA2E1B50A5E4 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		AC96A6E346C2C0DFF901CEF2 /* PackageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PackageInfo.swift; sourceTree = "<group>"; };
+		AC96A6F3F80B8DC6E1B808A7 /* MotionEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionEvent.swift; sourceTree = "<group>"; };
 		AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutValue.swift; sourceTree = "<group>"; };
 		AC96A6FE951A1BB64A5BEDA2 /* ElementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementViewController.swift; sourceTree = "<group>"; };
 		AC96A70069177338DE20CAF5 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
@@ -267,8 +271,10 @@
 		AC96AA2D9D6E6B73BEDBBC5C /* AttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedString.swift; sourceTree = "<group>"; };
 		AC96AA31A616833F79C3128B /* LogDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		AC96AA36EE92A0C924EC81CC /* NSObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
+		AC96AA46D8E18083FA5630E4 /* InputEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputEvent.swift; sourceTree = "<group>"; };
 		AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlexLayout+Setter.swift"; sourceTree = "<group>"; };
 		AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputedPaddingTests.swift; sourceTree = "<group>"; };
+		AC96AA6FF43854C4A178ACB1 /* ComponentApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentApplication.swift; sourceTree = "<group>"; };
 		AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexLayout.swift; sourceTree = "<group>"; };
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
@@ -469,6 +475,9 @@
 				AC96AEB54DE4898BAA3EC1FA /* RecyclerComponent.swift */,
 				AC96A159FF795BB9E34DF7FC /* RecyclerComponents.swift */,
 				AC96A77AD95B1EFAA33BE6C0 /* RecyclerDataController.swift */,
+				AC96AA46D8E18083FA5630E4 /* InputEvent.swift */,
+				AC96A6F3F80B8DC6E1B808A7 /* MotionEvent.swift */,
+				AC96AA6FF43854C4A178ACB1 /* ComponentApplication.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -965,6 +974,9 @@
 				AC96A0E72242949988C972F9 /* RecyclerComponents.swift in Sources */,
 				AC96A1FDAE4E97C455C3FAB0 /* RecyclerDataController.swift in Sources */,
 				AC96A9B0228A9C20C9B2FD30 /* StatusBarWindow.swift in Sources */,
+				AC96A8687F7BC6620CB11EE4 /* InputEvent.swift in Sources */,
+				AC96A243DAB4EAB3C75B38AC /* MotionEvent.swift in Sources */,
+				AC96A52E45DAE0C3C09B3A54 /* ComponentApplication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
