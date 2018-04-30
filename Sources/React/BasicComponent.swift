@@ -212,9 +212,19 @@ open class BasicComponent: Hashable, CustomStringConvertible, CustomDebugStringC
     }
 
     public func onTouchEvent(_ event: MotionEvent) -> Bool {
-        Log.debug("foobar")
-        return _tap != nil
-//        return false
+        guard let tap = _tap else {
+            return false
+        }
+        switch event.action {
+        case .touchUp:
+            let sender = self
+            DispatchQueue.main.async {
+                tap(sender)
+            }
+        default:
+            break
+        }
+        return true
     }
 
     func _hitTest(point: CGPoint, event: UIEvent?) -> BasicComponent? {

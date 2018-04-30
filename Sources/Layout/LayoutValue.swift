@@ -111,7 +111,7 @@ public struct Rect: Equatable {
         let py = Double(point.y)
         let maxX = x + width
         let maxY = y + height
-        return x >= px && px <= maxX && y >= py && py <= maxY
+        return x <= px && px <= maxX && y <= py && py <= maxY
     }
 
     public static let zero = Rect(x: 0.0, y: 0.0, width: 0.0, height: 0.0)
