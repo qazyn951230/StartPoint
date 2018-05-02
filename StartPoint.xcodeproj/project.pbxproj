@@ -18,6 +18,7 @@
 		AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD573371F6C2338CFBB7 /* RelayoutTests.swift */; };
 		AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4B8CA1524BB5D64E63A /* RoundingMeasureFuncTests.swift */; };
 		AC96A0E72242949988C972F9 /* RecyclerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A159FF795BB9E34DF7FC /* RecyclerComponents.swift */; };
+		AC96A0F3FEF4033AB26145E3 /* WebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC43E9E297FB3F8CDCCB /* WebBridge.swift */; };
 		AC96A0FC23AC0E924A53FA61 /* ManualLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6D19F42865264963109 /* ManualLayoutTests.swift */; };
 		AC96A10782B5489C55A4A4AA /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A70069177338DE20CAF5 /* Global.swift */; };
 		AC96A13FD8709CB560D49271 /* JustifyContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5473FBE3CC634576A01 /* JustifyContentTests.swift */; };
@@ -286,6 +287,7 @@
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC1B60D8F80412C7A1A0 /* Element.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPermission.swift; sourceTree = "<group>"; };
+		AC96AC43E9E297FB3F8CDCCB /* WebBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebBridge.swift; sourceTree = "<group>"; };
 		AC96AC568512717B29819623 /* ComponentState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentState.swift; sourceTree = "<group>"; };
 		AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteHeightTests.swift; sourceTree = "<group>"; };
 		AC96AC5EBC21F4B236B8210B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
 				BCA2A45B1F3DA5BC007A772A /* ViewModel */,
 				AC96A8F7A138D61BC5B15CBB /* R.swift */,
+				AC96AC43E9E297FB3F8CDCCB /* WebBridge.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -977,6 +980,7 @@
 				AC96A8687F7BC6620CB11EE4 /* InputEvent.swift in Sources */,
 				AC96A243DAB4EAB3C75B38AC /* MotionEvent.swift in Sources */,
 				AC96A52E45DAE0C3C09B3A54 /* ComponentApplication.swift in Sources */,
+				AC96A0F3FEF4033AB26145E3 /* WebBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
