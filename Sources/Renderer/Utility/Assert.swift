@@ -54,10 +54,10 @@ func assertMainThread(file: StaticString = #file, line: UInt = #line) {
 }
 
 // ASDisplayNodeAssertThreadAffinity
-func assertThreadAffinity(element: Element, file: StaticString = #file, line: UInt = #line) {
-    assert(mainThread() || !element.loaded, "Incorrect element thread affinity -" +
-        "this method should not be called off the main thread after the element's view" +
-        "or layer have been created", file: file, line: line)
+func assertThreadAffinity(for element: BasicElement, file: StaticString = #file, line: UInt = #line) {
+    assert(!element.loaded || Assert.checkMainThread || mainThread(),
+        "This method must be called on the main thread after element's view or layer has been created",
+        file: file, line: line)
 }
 
 func assertFail(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
