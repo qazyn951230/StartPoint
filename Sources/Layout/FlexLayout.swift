@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import CoreGraphics
+import UIKit
+
 open class FlexLayout: Equatable {
     // MARK: Public properties
     public let style: FlexStyle = FlexStyle()
+    public internal(set) weak var view: LayoutView?
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
     public internal(set) var dirty: Bool = false
@@ -41,8 +45,16 @@ open class FlexLayout: Equatable {
     var cachedMeasurements: [LayoutCache] = [] // performLayout == false
     var lineIndex = 0
 
-    public required init() {
-        // Do nothing.
+    public required init(view: LayoutView? = nil) {
+        self.view = view
+        if view?.measureSelf == true {
+            measureSelf = view?.measure
+        }
+        layoutType = measureSelf == nil ? .default : .text
+    }
+
+    public var frame: CGRect {
+        return CGRect(x: box.left, y: box.top, width: box.width, height: box.height)
     }
 
     // YGResolveFlexGrow
@@ -185,6 +197,19 @@ open class FlexLayout: Equatable {
         _markDirty()
     }
 
+    public func append(view: LayoutView) -> FlexLayout {
+        let layout = FlexLayout(view: view)
+        append(layout)
+        return layout
+    }
+
+    @discardableResult
+    public func bind(view: LayoutView) -> Self {
+        self.view = view
+        measureSelf = view.measureSelf ? view.measure : nil
+        return self
+    }
+
     // YGNodeInsertChild
     public func insert(_ child: FlexLayout, at index: Int) {
         guard child.parent == nil else {
@@ -253,6 +278,65 @@ open class FlexLayout: Equatable {
     public func append(to layout: FlexLayout) -> Self {
         layout.append(self)
         return self
+    }
+
+    public func apply(to view: LayoutView? = nil) {
+        apply(to: view, left: 0, top: 0)
+    }
+
+    open func apply(to view: LayoutView?, left: Double, top: Double) {
+        var left = left
+        var top = top
+        if let view = view ?? self.view {
+            let rect = CGRect(x: left + box.left, y: top + box.top, width: box.width, height: box.height)
+            view.frame = rect
+            left = 0
+            top = 0
+        } else {
+            left += box.left
+            top += box.top
+        }
+        children.forEach {
+            $0.apply(to: nil, left: left, top: top)
+        }
+    }
+
+#if DEBUG
+    public func debugApply(root: UIView) {
+        for child in children {
+            debugApply(layout: child, parent: root)
+        }
+    }
+
+    public func debugApply(layout: FlexLayout, parent: UIView) {
+        let item: UIView
+        if let view: UIView = layout.view as? UIView {
+            if let superview = view.superview {
+                if superview != parent {
+                    view.removeFromSuperview()
+                    parent.addSubview(view)
+                }
+            } else {
+                parent.addSubview(view)
+            }
+            item = view
+        } else {
+            item = UIView()
+            parent.addSubview(item)
+        }
+        item.frame = layout.frame
+        item.randomBackgroundColor()
+        layout.children.forEach {
+            debugApply(layout: $0, parent: item)
+        }
+    }
+#endif
+
+    public func layout(width: CGFloat?, height: CGFloat?) {
+        let width: Double = width.map(Double.init) ?? Double.nan
+        let height: Double = height.map(Double.init) ?? Double.nan
+        let direction: Direction = style.direction == .inherit ? .ltr : style.direction
+        calculate(width: width, height: height, direction: direction)
     }
 
     // YGNodeCalculateLayout
