@@ -27,13 +27,12 @@ import Dispatch
 
 open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let layout = FlexLayout()
-    public internal(set) var children: [BasicElement]
-    public private(set) weak var owner: BasicElement?
 
     let framed: Bool
     var _frame: Rect = Rect.zero
     var _tap: ((BasicElement) -> Void)?
     var _pendingState: ElementState?
+    var registered = false
 
 #if DEBUG
     public var name = String.empty
@@ -88,31 +87,73 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
     // CustomDebugStringConvertible
     open var debugDescription: String { // "BasicElement:0xffffff"
-#if DEBUG
-        return String(describing: type(of: self)) + "->" + name
-#else
-        return description
-#endif
+        return String(describing: type(of: self)) + ":" + address(of: self)
     }
 
+    // MARK: - Managing the Responder Chain
+    open var next: BasicElement? {
+        return owner
+    }
+
+    // MARK: - Responding to Touch Events
+    func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
+        if let element = hitTest(point: event.location, event: nil) {
+            if element.onTouchEvent(event) {
+                return true
+            } else {
+                var next = element.next
+                while next != nil {
+                    if next?.onTouchEvent(event) == true {
+                        return true
+                    }
+                    next = element.next
+                }
+            }
+        }
+        return false
+    }
+
+    public func onTouchEvent(_ event: TouchEvent) -> Bool {
+        guard let tap = _tap else {
+            return false
+        }
+        switch event.action {
+        case .touchUp:
+            let sender = self
+            DispatchQueue.main.async {
+                tap(sender)
+            }
+        default:
+            break
+        }
+        return true
+    }
+
+    // MARK: - Create a View Object
+    open func build(in view: UIView) {
+        assertMainThread()
+    }
+
+    open func build(in layer: CALayer) {
+        assertMainThread()
+    }
+
+    // FIXME: Remove or rename this method
+    public func build(to view: UIScrollView) {
+        assertMainThread()
+        build(in: view)
+        view.contentSize = _frame.cgSize
+    }
+
+    // MARK: - Managing the Element Hierarchy
+    public private(set) weak var owner: BasicElement?
+    public internal(set) var children: [BasicElement]
     var root: BasicElement {
         var parent = owner
         while parent != nil {
             parent = parent?.owner
         }
         return owner ?? self
-    }
-
-    @discardableResult
-    public func then(_ method: (BasicElement) -> Void) -> Self {
-        method(self)
-        return self
-    }
-
-    @discardableResult
-    public func layout(_ method: (FlexLayout) -> Void) -> Self {
-        method(layout)
-        return self
     }
 
     public func addElement(_ element: BasicElement) {
@@ -177,139 +218,28 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         owner?.removeElement(self)
     }
 
-    func _removeFromOwner() {
+    // MARK: - Observing Element-Related Changes
+    func _removeFromOwner() { // For remove element directly
         owner = nil
     }
 
-    public func layout(width: Double = .nan, height: Double = .nan) {
+    // MARK: - Measuring in Flex Layout
+    @discardableResult
+    public func layout(_ method: (FlexLayout) -> Void) -> Self {
+        method(layout)
+        return self
+    }
+
+    public func layout(origin: Point = Point.zero, width: Double = .nan, height: Double = .nan) {
         layout.calculate(width: width, height: height, direction: .ltr)
-        applyLayout()
+        calculateFrame(left: origin.x, top: origin.y)
     }
 
     public func layout(within view: UIView) {
         layout(width: Double(view.frame.width), height: Double(view.frame.height))
     }
 
-    open func applyLayout() {
-        apply(left: 0, top: 0)
-    }
-
-    func apply(left: Double, top: Double) {
-        // TODO: Flatten children
-        var left = left
-        var top = top
-        let frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
-            width: layout.box.width, height: layout.box.height)
-        self._frame = frame
-        if framed {
-            left = 0
-            top = 0
-        } else {
-            left += layout.box.left
-            top += layout.box.top
-        }
-        children.forEach {
-            $0.apply(left: left, top: top)
-        }
-    }
-
-    open func build(in view: UIView) {
-        assertMainThread()
-    }
-
-    open func build(in layer: CALayer) {
-        assertMainThread()
-    }
-
-    // FIXME: Remove or rename this method
-    public func build(to view: UIScrollView) {
-        assertMainThread()
-        build(in: view)
-        view.contentSize = _frame.cgSize
-    }
-
-#if DEBUG
-    public func debugMode() {
-        _debug = true
-        children.forEach {
-            $0.debugMode()
-        }
-    }
-#endif
-
-    open var interactive: Bool {
-        return true
-    }
-
-    open var alpha: Double {
-        return 1.0
-    }
-
-    var enableHitTest: Bool {
-        return interactive && alpha > 0.01
-    }
-
-    public func dispatchTouchEvent(_ event: MotionEvent) -> Bool {
-        if let element = _hitTest(point: event.location, event: nil) {
-            if element.onTouchEvent(event) {
-                return true
-            } else {
-                var next = element.nextTarget
-                while next != nil {
-                    if next?.onTouchEvent(event) == true {
-                        return true
-                    }
-                    next = element.nextTarget
-                }
-            }
-        }
-        return false
-    }
-
-    open var nextTarget: BasicElement? {
-        return owner
-    }
-
-    public func onTouchEvent(_ event: MotionEvent) -> Bool {
-        guard let tap = _tap else {
-            return false
-        }
-        switch event.action {
-        case .touchUp:
-            let sender = self
-            DispatchQueue.main.async {
-                tap(sender)
-            }
-        default:
-            break
-        }
-        return true
-    }
-
-    func _hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
-        guard enableHitTest else {
-            return nil
-        }
-        return hitTest(point: point, event: event)
-    }
-
-    open func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
-        guard pointInside(point, event: event) else {
-            return nil
-        }
-        for child in children {
-            let p = convert(point, to: child)
-            if let c = child.hitTest(point: p, event: event) {
-                return c
-            }
-        }
-        return self
-    }
-
-    open func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
-        return _frame.contains(point: point)
-    }
-
+    // MARK: - Converting Between Element Coordinate Systems
     public func convert(_ point: CGPoint, from element: BasicElement?) -> CGPoint {
         guard let root = element ?? element?.root else {
             return CGPoint.zero
@@ -373,31 +303,101 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return false
     }
 
+    // MARK: - Hit Testing in a Element
+    var enableHitTest: Bool {
+        return interactive && alpha > 0.01
+    }
+
+    open func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
+        guard pointInside(point, event: event) && enableHitTest else {
+            return nil
+        }
+        for child in children {
+            let p = convert(point, to: child)
+            if let c = child.hitTest(point: p, event: event) {
+                return c
+            }
+        }
+        return self
+    }
+
+    open func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
+        return _frame.contains(point: point)
+    }
+
+    public func apply() {
+        // Do nothing.
+    }
+
+    public func registerPendingState() {
+        if registered {
+            return
+        }
+        PendingStateManager.share.register(element: self)
+    }
+
+    func calculateFrame(left: Double, top: Double) {
+        var left = left
+        var top = top
+        let frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
+            width: layout.box.width, height: layout.box.height)
+        if _frame != frame {
+            _frame = frame
+        }
+        if framed {
+            left = 0
+            top = 0
+        } else {
+            left += layout.box.left
+            top += layout.box.top
+        }
+        children.forEach {
+            $0.calculateFrame(left: left, top: top)
+        }
+    }
+
+#if DEBUG
+    public func debugMode() {
+        _debug = true
+        children.forEach {
+            $0.debugMode()
+        }
+    }
+#endif
+
+    open var interactive: Bool {
+        return true
+    }
+
+    open var alpha: Double {
+        return 1.0
+    }
+
     // MARK: - Touch
     open func tap(_ method: @escaping (BasicElement) -> Void) {
         _tap = method
     }
 
-    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        assertMainThread()
-    }
-
-    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        assertMainThread()
-    }
-
-    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        assertMainThread()
-        let tap = _tap
-        let this = self
-        DispatchQueue.main.async {
-            tap?(this)
-        }
-    }
-
-    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        assertMainThread()
-    }
+//    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        assertMainThread()
+//    }
+//
+//    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        assertMainThread()
+//    }
+//
+//    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        assertMainThread()
+//        let tap = _tap
+//        let this = self
+//        DispatchQueue.main.async {
+//            tap?(this)
+//        }
+//    }
+//
+//    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        assertMainThread()
+//    }
 
     // MARK: - Hashable
     open var hashValue: Int {
@@ -405,6 +405,6 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     public static func ==(lhs: BasicElement, rhs: BasicElement) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+        return lhs === rhs
     }
 }

@@ -22,42 +22,26 @@
 
 @testable import StartPoint
 import XCTest
+import Dispatch
 
-class BasicElementTests: ElementTestCase {
-    func testCreateOffThread() {
-        var element: TestElement?
-        runOffThread {
-            element = TestElement()
-        }
-        XCTAssertNotNil(element)
+final class TestElement: BasicElement {
+    init(children: [BasicElement] = []) {
+        super.init(framed: false, children: children)
+    }
+}
+
+class ElementTestCase: XCTestCase {
+    var queue = DispatchQueue(label: "com.undev.testQueue")
+
+    override func setUp() {
+        super.setUp()
+        queue = DispatchQueue(label: "com.undev.testQueue")
     }
 
-    func testAddElement() {
-        let parent = TestElement()
-        parent.addElement(parent)
-        XCTAssertNil(parent.owner)
-
-        let child = TestElement()
-        parent.addElement(child)
-        XCTAssertEqual(child.owner, parent as TestElement?)
-
-        let parent2 = TestElement()
-        parent2.addElement(child)
-        XCTAssertEqual(child.owner, parent2 as TestElement?)
-        XCTAssertEqual(parent.children.count, 0)
-    }
-
-    func testAddElementNoRetainCycle() {
-        weak var parent: TestElement?
-        weak var child: TestElement?
-        withExtendedLifetime((TestElement(), TestElement())) { (t: (TestElement, TestElement)) in
-            t.0.addElement(t.1)
-            parent = t.0
-            child = t.1
-            XCTAssertNotNil(parent)
-            XCTAssertNotNil(child)
-        }
-        XCTAssertNil(parent)
-        XCTAssertNil(child)
+    func runOffThread(_ method: @escaping () -> Void) {
+        let group = DispatchGroup()
+        queue.async(group: group, execute: method)
+        let result = group.wait(timeout: .distantFuture)
+        XCTAssertEqual(result, DispatchTimeoutResult.success)
     }
 }

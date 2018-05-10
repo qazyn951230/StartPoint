@@ -22,5 +22,80 @@
 
 import UIKit
 
-open class ElementController<Element: BasicElement> {
+open class ElementController<View: UIView, E: Element<View>>: UIViewController, UIGestureRecognizerDelegate {
+    open var backBarItem: UIBarButtonItem?
+
+    public private(set) var rootElement: E?
+    public private(set) var rootView: View?
+    public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer?
+
+    var size = Size.zero
+
+    open func initialization() {
+        if let count = navigationController?.viewControllers.count, count > 1 {
+            backBarItem = createBackBarItem()
+            navigationItem.leftBarButtonItem = backBarItem
+            if let recognizer = navigationController?.interactivePopGestureRecognizer {
+                recognizer.delegate = self
+                recognizer.addTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+                interactivePopGestureRecognizer = recognizer
+            }
+        }
+    }
+
+    open override func loadView() {
+        super.loadView()
+        size = Size(cgSize: view.frame.size)
+        rootElement = createElement()
+        rootView = rootElement?.buildView()
+        view = rootView
+    }
+
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        initialization()
+    }
+
+    open func viewDidBack() {
+        interactivePopGestureRecognizer?.removeTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+    }
+
+    open override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        rootElement?.layout(width: size.width, height: size.height)
+    }
+
+    @objc open func backBarItemAction(sender: UIBarButtonItem) {
+        if presentingViewController != nil {
+            dismiss(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+        viewDidBack()
+    }
+
+    @objc open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
+        viewDidBack()
+    }
+
+    open func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {
+        let image = image ?? R.image.ic_arrow_back()
+        return UIBarButtonItem(image: image, style: .plain, target: self,
+            action: #selector(backBarItemAction(sender:)))
+    }
+
+    open func createElement() -> E {
+        fatalError("Subclass mast override this function.")
+    }
 }
+
+// FIXME: AdjustsScrollViewInsets in Element
+//public extension ElementController where View: UIScrollView {
+//    public func adjustsViewInsets(_ adjusts: Bool) {
+//        if #available(iOS 11.0, *) {
+//            rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never
+//        } else {
+//            automaticallyAdjustsScrollViewInsets = adjusts
+//        }
+//    }
+//}

@@ -43,6 +43,7 @@ open class Element<View: UIView>: BasicElement {
     public override var loaded: Bool {
         return view != nil
     }
+
     override var _view: UIView? {
         return view
     }
@@ -61,6 +62,7 @@ open class Element<View: UIView>: BasicElement {
                 view.frame = _frame.cgRect
             } else {
                 pendingState.frame = _frame.cgRect
+                registerPendingState()
             }
         }
     }
@@ -161,9 +163,22 @@ open class Element<View: UIView>: BasicElement {
         return this
     }
 
+    public override func apply() {
+        if let view = self.view {
+            applyState(to: view)
+        }
+    }
+
     open func applyState(to view: View) {
         assertMainThread()
         _pendingState?.apply(view: view)
+    }
+
+    public override func registerPendingState() {
+        if view == nil {
+            return
+        }
+        super.registerPendingState()
     }
 
     open func buildChildren(in view: UIView) {
@@ -190,6 +205,7 @@ extension Element {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
+            registerPendingState()
         }
         return self
     }
@@ -201,6 +217,7 @@ extension Element {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
+            registerPendingState()
         }
         return self
     }
@@ -211,6 +228,7 @@ extension Element {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
+            registerPendingState()
         }
         return self
     }
@@ -222,6 +240,7 @@ extension Element {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
+            registerPendingState()
         }
         return self
     }
@@ -232,6 +251,7 @@ extension Element {
             view.layer.cornerRadius = value
         } else {
             pendingState.cornerRadius = value
+            registerPendingState()
         }
         return self
     }
@@ -242,6 +262,7 @@ extension Element {
             view.layer.borderColor = value
         } else {
             pendingState.borderColor = value
+            registerPendingState()
         }
         return self
     }
@@ -262,6 +283,7 @@ extension Element {
             view.layer.borderWidth = value
         } else {
             pendingState.borderWidth = value
+            registerPendingState()
         }
         return self
     }
@@ -276,6 +298,7 @@ extension Element {
             let state = pendingState
             state.borderColor = color?.cgColor
             state.borderWidth = width
+            registerPendingState()
         }
         return self
     }
@@ -291,6 +314,7 @@ extension Element {
             let state = pendingState
             state.borderColor = color
             state.borderWidth = width
+            registerPendingState()
         }
         return self
     }
@@ -309,6 +333,7 @@ extension Element {
             state.shadowRadius = radius
             state.shadowOffset = offset
             state.shadowColor = color
+            registerPendingState()
         }
         return self
     }
@@ -327,6 +352,7 @@ extension Element {
             state.shadowRadius = blur
             state.shadowOffset = CGSize(width: x, height: y)
             state.shadowColor = color.cgColor
+            registerPendingState()
         }
         return self
     }
@@ -345,6 +371,7 @@ extension Element {
             state.shadowRadius = blur
             state.shadowOffset = CGSize(width: x, height: y)
             state.shadowColor = UIColor.hex(hex).cgColor
+            registerPendingState()
         }
         return self
     }
@@ -357,6 +384,7 @@ extension Element {
         } else {
             let state = pendingState
             state.shadowPath = value
+            registerPendingState()
         }
         return self
     }

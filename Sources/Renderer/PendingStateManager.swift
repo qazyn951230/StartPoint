@@ -20,44 +20,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import StartPoint
-import XCTest
+import Dispatch
 
-class BasicElementTests: ElementTestCase {
-    func testCreateOffThread() {
-        var element: TestElement?
-        runOffThread {
-            element = TestElement()
+public final class PendingStateManager {
+    let lock = Lock.make()
+    var elements: [BasicElement] = []
+    var scheduling = false
+
+    public static let share = PendingStateManager()
+
+    public func register(element: BasicElement) {
+        assertTrue(element.loaded)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
-        XCTAssertNotNil(element)
+        if element.registered {
+            return
+        }
+        Log.debug(element)
+        elements.append(element)
+        element.registered = true
+        schedule()
     }
 
-    func testAddElement() {
-        let parent = TestElement()
-        parent.addElement(parent)
-        XCTAssertNil(parent.owner)
-
-        let child = TestElement()
-        parent.addElement(child)
-        XCTAssertEqual(child.owner, parent as TestElement?)
-
-        let parent2 = TestElement()
-        parent2.addElement(child)
-        XCTAssertEqual(child.owner, parent2 as TestElement?)
-        XCTAssertEqual(parent.children.count, 0)
+    func schedule() {
+        if scheduling {
+            return
+        }
+        scheduling = true
+        DispatchQueue.main.async { [weak self] in
+            self?.flush()
+        }
     }
 
-    func testAddElementNoRetainCycle() {
-        weak var parent: TestElement?
-        weak var child: TestElement?
-        withExtendedLifetime((TestElement(), TestElement())) { (t: (TestElement, TestElement)) in
-            t.0.addElement(t.1)
-            parent = t.0
-            child = t.1
-            XCTAssertNotNil(parent)
-            XCTAssertNotNil(child)
+    func flush() {
+        assertMainThread()
+        lock.lock()
+        let array = elements
+        elements.removeAll()
+        scheduling = false
+        lock.unlock()
+        Log.debug("Count: \(array.count)")
+        for item in array {
+            item.registered = false
+            item.apply()
+            Log.debug("Current: \(item)")
         }
-        XCTAssertNil(parent)
-        XCTAssertNil(child)
     }
 }

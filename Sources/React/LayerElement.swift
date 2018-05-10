@@ -145,9 +145,23 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         return this
     }
 
+    public override func apply() {
+        assertMainThread()
+        if let layer = self.layer {
+            applyState(to: layer)
+        }
+    }
+
     open func applyState(to layer: Layer) {
         assertMainThread()
         _pendingState?.apply(layer: layer)
+    }
+
+    public override func registerPendingState() {
+        if layer == nil {
+            return
+        }
+        super.registerPendingState()
     }
 
     open func buildChildren(in layer: CALayer) {
@@ -165,13 +179,16 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         super.debugMode()
     }
 #endif
+}
 
+extension BasicLayerElement {
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
         if mainThread(), let layer = layer {
             layer.backgroundColor = value?.cgColor
         } else {
             pendingState.backgroundColor = value
+            registerPendingState()
         }
         return self
     }
@@ -183,6 +200,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             layer.backgroundColor = value.cgColor
         } else {
             pendingState.backgroundColor = value
+            registerPendingState()
         }
         return self
     }
@@ -193,6 +211,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             layer.cornerRadius = value
         } else {
             pendingState.cornerRadius = value
+            registerPendingState()
         }
         return self
     }
@@ -203,6 +222,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             layer.borderColor = value
         } else {
             pendingState.borderColor = value
+            registerPendingState()
         }
         return self
     }
@@ -223,6 +243,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             layer.borderWidth = value
         } else {
             pendingState.borderWidth = value
+            registerPendingState()
         }
         return self
     }
@@ -236,6 +257,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             let state = pendingState
             state.borderColor = color?.cgColor
             state.borderWidth = width
+            registerPendingState()
         }
         return self
     }
@@ -250,6 +272,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             let state = pendingState
             state.borderColor = color
             state.borderWidth = width
+            registerPendingState()
         }
         return self
     }

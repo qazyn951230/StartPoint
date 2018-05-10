@@ -23,20 +23,20 @@
 import UIKit
 import CoreGraphics
 
-public enum MotionAction {
+public enum TouchAction {
     case touchDown
     case touchUp
     case touchMove
     case touchCancel
 }
 
-public struct MotionEvent {
+public struct TouchEvent {
     let touches: Set<UITouch>
     let event: UIEvent?
-    let action: MotionAction
+    let action: TouchAction
     let location: CGPoint
 
-    init(view: UIView, touches: Set<UITouch>, event: UIEvent?, action: MotionAction) {
+    init(view: UIView, touches: Set<UITouch>, event: UIEvent?, action: TouchAction) {
         location = touches.first?.location(in: view) ?? CGPoint.zero
         self.touches = touches
         self.event = event

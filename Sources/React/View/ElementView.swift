@@ -48,28 +48,28 @@ public final class ElementView: UIView, ElementContainer {
     }
 
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchDown)
+        let e = TouchEvent(view: self, touches: touches, event: event, action: .touchDown)
         if element?.dispatchTouchEvent(e) == false {
             super.touchesBegan(touches, with: event)
         }
     }
 
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchMove)
+        let e = TouchEvent(view: self, touches: touches, event: event, action: .touchMove)
         if element?.dispatchTouchEvent(e) == false {
             super.touchesMoved(touches, with: event)
         }
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchUp)
+        let e = TouchEvent(view: self, touches: touches, event: event, action: .touchUp)
         if element?.dispatchTouchEvent(e) == false {
             super.touchesEnded(touches, with: event)
         }
     }
 
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let e = MotionEvent(view: self, touches: touches, event: event, action: .touchCancel)
+        let e = TouchEvent(view: self, touches: touches, event: event, action: .touchCancel)
         if element?.dispatchTouchEvent(e) == false {
             super.touchesCancelled(touches, with: event)
         }

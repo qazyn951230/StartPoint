@@ -160,8 +160,8 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
         let buttonSize: CGSize = frame.size
         let titleSize: CGSize = label?.frame.size ?? CGSize.zero
         let titleInsets = marginEdgeInsets(for: label)
-        let imageSize: CGSize = label?.frame.size ?? CGSize.zero
-        let imageInsets = marginEdgeInsets(for: label)
+        let imageSize: CGSize = image?.frame.size ?? CGSize.zero
+        let imageInsets = marginEdgeInsets(for: image)
         let padding = CGFloat(layout.style.totalPadding(for: .column, width: _frame.width))
         let titleEdgeInsets: UIEdgeInsets
         let imageEdgeInsets: UIEdgeInsets

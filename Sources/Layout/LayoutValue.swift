@@ -78,6 +78,26 @@ public struct Size: Equatable {
     }
 }
 
+public struct Point: Equatable {
+    public let x: Double
+    public let y: Double
+
+    public init(x: Double, y: Double) {
+        self.x = x
+        self.y = y
+    }
+
+    public init(cgPoint: CGPoint) {
+        self.init(x: Double(cgPoint.x), y: Double(cgPoint.y))
+    }
+
+    public static var zero = Point(x: 0, y: 0)
+
+    public static func ==(lhs: Point, rhs: Point) -> Bool {
+        return lhs.x ~~ rhs.x && lhs.y ~~ rhs.y
+    }
+}
+
 public struct Rect: Equatable {
     public let x: Double
     public let y: Double
