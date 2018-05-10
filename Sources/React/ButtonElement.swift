@@ -85,19 +85,11 @@ open class ButtonElementState: ElementState {
     }
 }
 
-public typealias ButtonElement = BasicButtonElement<UIButton>
-
-open class BasicButtonElement<Button: UIButton>: Element<Button> {
+open class ButtonElement: Element<UIButton> {
     let label: LabelElement?
     let image: BasicElement?
 
-    public convenience init(type: UIButtonType = .custom, children: [BasicElement] = []) {
-        self.init(children: children) {
-            Button(type: type)
-        }
-    }
-
-    public override init(children: [BasicElement] = [], creator: @escaping () -> Button) {
+    public override init(children: [BasicElement]) {
         let array: [BasicElement]
         if children.isEmpty {
             let _label = LabelElement()
@@ -110,18 +102,16 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             image = nil
             array = children
         }
-        super.init(children: array, creator: creator)
+        super.init(children: array)
         layout.flexDirection(.row)
     }
 
-    // TODO: Need remove target?
-//    deinit {
-//        if let button = view {
-//            runOnMain { [this = self] in
-//                button.removeTarget(this, action: nil, for: .touchUpInside)
-//            }
-//        }
-//    }
+    public convenience init(type: UIButtonType = .custom, children: [BasicElement] = []) {
+        self.init(children: children)
+        creator = {
+            UIButton(type: type)
+        }
+    }
 
     var _buttonState: ButtonElementState?
     public override var pendingState: ButtonElementState {
@@ -141,7 +131,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
         }
     }
 
-    open override func applyState(to view: Button) {
+    open override func applyState(to view: UIButton) {
         if _buttonState?.tap == true {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
@@ -251,6 +241,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             var titles: [UIControlState: NSAttributedString?] = _state.titles
             titles[state] = value
             _state.titles = titles
+            registerPendingState()
         }
         if state == UIControlState.normal {
             label?.text(value)
@@ -271,6 +262,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
                 titles[state] = value
             }
             _state.titles = titles
+            registerPendingState()
         }
         if states.contains(.normal) {
             label?.text(value)
@@ -291,6 +283,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             images[.selected] = value
             images[.disabled] = value
             state.images = images
+            registerPendingState()
         }
         image?.layout.size(value?.size ?? CGSize.zero)
         return self
@@ -305,6 +298,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             var images: [UIControlState: UIImage?] = _state.images
             images[state] = value
             _state.images = images
+            registerPendingState()
         }
         if state == UIControlState.normal {
             image?.layout.size(value?.size ?? CGSize.zero)
@@ -325,6 +319,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
                 images[state] = value
             }
             _state.images = images
+            registerPendingState()
         }
         if states.contains(.normal) {
             let size: CGSize = value?.size ?? CGSize.zero
@@ -347,6 +342,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             images[.selected] = value
             images[.disabled] = value
             state.images = images
+            registerPendingState()
         }
         let size: CGSize = value?.size ?? CGSize.zero
         image?.layout.size(size)
@@ -363,6 +359,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             var images: [UIControlState: UIImage?] = _state.images
             images[state] = value
             _state.images = images
+            registerPendingState()
         }
         if state == UIControlState.normal {
             let size: CGSize = value?.size ?? CGSize.zero
@@ -385,6 +382,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
                 images[state] = value
             }
             _state.images = images
+            registerPendingState()
         }
         if states.contains(.normal) {
             image?.layout.size(value?.size ?? CGSize.zero)
@@ -405,6 +403,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             images[.selected] = value
             images[.disabled] = value
             state.backgroundImages = images
+            registerPendingState()
         }
 //        image?.layout.size(value?.size ?? CGSize.zero)
         return self
@@ -419,6 +418,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
             var images: [UIControlState: UIImage?] = _state.backgroundImages
             images[state] = value
             _state.backgroundImages = images
+            registerPendingState()
         }
 //        if state == UIControlState.normal {
 //            image?.layout.size(value?.size ?? CGSize.zero)
@@ -439,6 +439,7 @@ open class BasicButtonElement<Button: UIButton>: Element<Button> {
                 images[state] = value
             }
             _state.backgroundImages = images
+            registerPendingState()
         }
 //        if states.contains(.normal) {
 //            image?.layout.size(value?.size ?? CGSize.zero)

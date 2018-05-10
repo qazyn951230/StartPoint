@@ -73,16 +73,17 @@ open class TableElement: Element<UITableView> {
     public weak var dataSource: TableElementDataSource?
     public let dataController = TableDataController()
 
+    public override init(children: [BasicElement] = []) {
+        super.init(children: children)
+    }
+
     public convenience init(style: UITableViewStyle = .grouped, children: [BasicElement] = []) {
-        self.init(children: children) {
+        self.init(children: children)
+        creator = {
             let view = UITableView(frame: .zero, style: style)
             ElementTableViewCell.register(to: view)
             return view
         }
-    }
-
-    public override init(children: [BasicElement] = [], creator: @escaping () -> UITableView) {
-        super.init(children: children, creator: creator)
     }
 
     deinit {

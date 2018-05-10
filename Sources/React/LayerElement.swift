@@ -38,6 +38,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
                 layer.frame = _frame.cgRect
             } else {
                 pendingState.frame = _frame.cgRect
+                registerPendingState()
             }
         }
     }

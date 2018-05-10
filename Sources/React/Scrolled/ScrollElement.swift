@@ -113,13 +113,16 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         }
         super.applyState(to: view)
     }
+}
 
+extension BasicScrollElement {
     @discardableResult
     public func contentSize(_ value: CGSize) -> Self {
         if mainThread(), let view = view {
             view.contentSize = value
         } else {
             pendingState.contentSize = value
+            registerPendingState()
         }
         return self
     }
@@ -130,6 +133,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
             view.showsHorizontalScrollIndicator = value
         } else {
             pendingState.horizontalIndicator = value
+            registerPendingState()
         }
         return self
     }
@@ -140,6 +144,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
             view.showsVerticalScrollIndicator = value
         } else {
             pendingState.verticalIndicator = value
+            registerPendingState()
         }
         return self
     }
@@ -152,6 +157,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         } else {
             pendingState.horizontalIndicator = value
             pendingState.verticalIndicator = value
+            registerPendingState()
         }
         return self
     }
@@ -164,6 +170,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         } else {
             pendingState.horizontalIndicator = horizontal
             pendingState.verticalIndicator = vertical
+            registerPendingState()
         }
         return self
     }
@@ -174,6 +181,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
             view.isPagingEnabled = value
         } else {
             pendingState.pagingEnabled = value
+            registerPendingState()
         }
         return self
     }

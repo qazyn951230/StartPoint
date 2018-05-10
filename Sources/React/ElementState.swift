@@ -31,7 +31,7 @@ public protocol ElementProperty {
     var clips: Bool { get }
     var hidden: Bool { get }
     var tintColor: UIColor { get }
-    var userInteractionEnabled: Bool { get }
+    var interactive: Bool { get }
     // CALayer
     var cornerRadius: CGFloat { get }
     var borderColor: CGColor? { get }
@@ -94,15 +94,15 @@ open class ElementState: ElementProperty {
     }
     var _tintColor: UIColor?
 
-    public var userInteractionEnabled: Bool {
+    public var interactive: Bool {
         get {
-            return _userInteractionEnabled ?? true
+            return _interactive ?? true
         }
         set {
-            _userInteractionEnabled = newValue
+            _interactive = newValue
         }
     }
-    var _userInteractionEnabled: Bool?
+    var _interactive: Bool?
 
     // MARK: Layer properties
     public var cornerRadius: CGFloat {
@@ -281,7 +281,7 @@ open class ElementState: ElementProperty {
         _clips = nil
         _hidden = nil
         _tintColor = nil
-        _userInteractionEnabled = nil
+        _interactive = nil
 
         _cornerRadius = nil
         _borderColor = nil
@@ -291,107 +291,6 @@ open class ElementState: ElementProperty {
         _shadowOffset = nil
         _shadowColor = nil
         _shadowPath = nil
-    }
-}
-
-open class LabelElementState: ElementState {
-    public var text: NSAttributedString? {
-        get {
-            return _text ?? nil
-        }
-        set {
-            _text = newValue
-        }
-    }
-    var _text: NSAttributedString??
-
-    public var numberOfLines: Int {
-        get {
-            return _numberOfLines ?? 1
-        }
-        set {
-            _numberOfLines = newValue
-        }
-    }
-    var _numberOfLines: Int?
-
-    open override func apply(view: UIView) {
-        if let label = view as? UILabel {
-            apply(label: label)
-        } else {
-            super.apply(view: view)
-        }
-    }
-
-    open func apply(label: UILabel) {
-        if let text = _text {
-            label.attributedText = text
-        }
-        if let numberOfLines = _numberOfLines {
-            label.numberOfLines = numberOfLines
-        }
-        super.apply(view: label)
-    }
-
-    open override func invalidate() {
-        _text = nil
-        _numberOfLines = nil
-        super.invalidate()
-    }
-}
-
-open class ImageElementState: ElementState {
-    public var image: UIImage? {
-        get {
-            return _image ?? nil
-        }
-        set {
-            _image = newValue
-        }
-    }
-    var _image: UIImage??
-
-    public var highlightedImage: UIImage? {
-        get {
-            return _highlightedImage ?? nil
-        }
-        set {
-            _highlightedImage = newValue
-        }
-    }
-    var _highlightedImage: UIImage??
-
-    public override var userInteractionEnabled: Bool {
-        get {
-            return _userInteractionEnabled ?? false
-        }
-        set {
-            _userInteractionEnabled = newValue
-        }
-    }
-
-    open override func apply(view: UIView) {
-        if let imageView = view as? UIImageView {
-            apply(imageView: imageView)
-        } else {
-            super.apply(view: view)
-        }
-    }
-
-    open func apply(imageView: UIImageView) {
-        if let image = _image {
-            imageView.image = image
-        }
-        if let highlightedImage = _highlightedImage {
-            imageView.highlightedImage = highlightedImage
-        }
-        super.apply(view: imageView)
-    }
-
-    open override func invalidate() {
-        _image = nil
-        _highlightedImage = nil
-        super.invalidate()
     }
 }
 

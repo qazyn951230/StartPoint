@@ -22,8 +22,6 @@
 
 import UIKit
 
-public typealias TextFieldElement = BasicTextFieldElement<UITextField>
-
 open class TextFieldElementState: ElementState {
     public var text: NSAttributedString? {
         get {
@@ -127,7 +125,7 @@ open class TextFieldElementState: ElementState {
     }
 }
 
-open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
+open class TextFieldElement: Element<UITextField> {
     var text: NSAttributedString?
     var placeholder: NSAttributedString?
 
@@ -143,11 +141,6 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
-        layout.measureSelf = measure
-    }
-
-    public override init(children: [BasicElement], creator: @escaping () -> TextField) {
-        super.init(children: children, creator: creator)
         layout.measureSelf = measure
     }
 
@@ -168,6 +161,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.attributedText = value
         } else {
             pendingState.text = value
+            registerPendingState()
         }
         layout.markDirty()
         return self
@@ -180,6 +174,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.attributedPlaceholder = value
         } else {
             pendingState.placeholder = value
+            registerPendingState()
         }
         layout.markDirty()
         return self
@@ -191,6 +186,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.clearButtonMode = value
         } else {
             pendingState.clearButtonMode = value
+            registerPendingState()
         }
         return self
     }
@@ -201,6 +197,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.keyboardType = value
         } else {
             pendingState.keyboard = value
+            registerPendingState()
         }
         return self
     }
@@ -211,6 +208,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.returnKeyType = value
         } else {
             pendingState.returnKey = value
+            registerPendingState()
         }
         return self
     }
@@ -221,6 +219,7 @@ open class BasicTextFieldElement<TextField: UITextField>: Element<TextField> {
             view.isSecureTextEntry = value
         } else {
             pendingState.secure = value
+            registerPendingState()
         }
         return self
     }

@@ -22,9 +22,53 @@
 
 import UIKit
 
-public typealias LabelElement = BasicLabelElement<UILabel>
+open class LabelElementState: ElementState {
+    public var text: NSAttributedString? {
+        get {
+            return _text ?? nil
+        }
+        set {
+            _text = newValue
+        }
+    }
+    var _text: NSAttributedString??
 
-open class BasicLabelElement<Label: UILabel>: Element<Label> {
+    public var numberOfLines: Int {
+        get {
+            return _numberOfLines ?? 1
+        }
+        set {
+            _numberOfLines = newValue
+        }
+    }
+    var _numberOfLines: Int?
+
+    open override func apply(view: UIView) {
+        if let label = view as? UILabel {
+            apply(label: label)
+        } else {
+            super.apply(view: view)
+        }
+    }
+
+    open func apply(label: UILabel) {
+        if let text = _text {
+            label.attributedText = text
+        }
+        if let numberOfLines = _numberOfLines {
+            label.numberOfLines = numberOfLines
+        }
+        super.apply(view: label)
+    }
+
+    open override func invalidate() {
+        _text = nil
+        _numberOfLines = nil
+        super.invalidate()
+    }
+}
+
+open class LabelElement: Element<UILabel> {
     var text: NSAttributedString?
     var lines: Int = 1
     var autoLines: Bool = false
@@ -41,11 +85,6 @@ open class BasicLabelElement<Label: UILabel>: Element<Label> {
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
-        layout.measureSelf = measure
-    }
-
-    public override init(children: [BasicElement], creator: @escaping () -> Label) {
-        super.init(children: children, creator: creator)
         layout.measureSelf = measure
     }
 
@@ -75,6 +114,7 @@ open class BasicLabelElement<Label: UILabel>: Element<Label> {
             view.numberOfLines = value
         } else {
             pendingState.numberOfLines = value
+            registerPendingState()
         }
         layout.markDirty()
         return self
@@ -87,6 +127,7 @@ open class BasicLabelElement<Label: UILabel>: Element<Label> {
             view.attributedText = value
         } else {
             pendingState.text = value
+            registerPendingState()
         }
         layout.markDirty()
         return self
@@ -100,6 +141,7 @@ open class BasicLabelElement<Label: UILabel>: Element<Label> {
             view.numberOfLines = lines
         } else {
             pendingState.numberOfLines = lines
+            registerPendingState()
         }
         layout.markDirty()
         return self

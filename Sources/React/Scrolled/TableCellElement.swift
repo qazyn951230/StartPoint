@@ -40,11 +40,6 @@ open class TableCellElement: Element<UIView>, Identified {
         layout.margin(left: .length(15 + TableCellElement.offset))
     }
 
-    public override init(children: [BasicElement] = [], creator: @escaping () -> UIView) {
-        super.init(children: children, creator: creator)
-        layout.margin(left: .length(15 + TableCellElement.offset))
-    }
-
     open var identifier: String {
         return ElementTableViewCell.identifier
     }

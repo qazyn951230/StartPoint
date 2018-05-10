@@ -45,7 +45,8 @@ public final class RecyclerElement: Element<UICollectionView> {
 
     public override init(children: [BasicElement] = []) {
         let viewLayout = dataController
-        super.init(children: children) {
+        super.init(children: children)
+        creator = {
             let view = UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
             ElementCollectionViewCell.register(to: view)
             ElementCollectionReusableView.register(to: view)

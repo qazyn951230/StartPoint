@@ -36,7 +36,8 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
 #if DEBUG
     public var name = String.empty
-    var _debug = false
+    var debug = false
+    var debugView: UIView?
 #endif
 
     init(framed: Bool, children: [BasicElement]) {
@@ -68,10 +69,12 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return false
     }
 
+    // For convenience
     var _view: UIView? {
         return nil
     }
 
+    // For convenience
     var _layer: CALayer? {
         return nil
     }
@@ -103,10 +106,11 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
             } else {
                 var next = element.next
                 while next != nil {
+                    Log.debug(any: next)
                     if next?.onTouchEvent(event) == true {
                         return true
                     }
-                    next = element.next
+                    next = next?.next
                 }
             }
         }
@@ -132,7 +136,44 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     // MARK: - Create a View Object
     open func build(in view: UIView) {
         assertMainThread()
+#if DEBUG
+        if debug {
+            let this = debugBuildView()
+            if let superview = this.superview {
+                if superview != view {
+                    this.removeFromSuperview()
+                    view.addSubview(this)
+                }
+            } else {
+                view.addSubview(this)
+            }
+        } else {
+            children.forEach {
+                $0.build(in: view)
+            }
+        }
+#else
+        children.forEach {
+            $0.build(in: view)
+        }
+#endif
     }
+
+#if DEBUG
+    func debugBuildView() -> UIView {
+        assertMainThread()
+        if let v = debugView {
+            return v
+        }
+        let this = UIView()
+        _pendingState?.apply(view: this)
+        this.randomBackgroundColor()
+        children.forEach {
+            $0.build(in: this)
+        }
+        return this
+    }
+#endif
 
     open func build(in layer: CALayer) {
         assertMainThread()
@@ -144,6 +185,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         build(in: view)
         view.contentSize = _frame.cgSize
     }
+
+    // MARK: - Configuring the Event-Related Behavior
+    public var interactive: Bool = false
+    public var alpha: Double = 1.0
 
     // MARK: - Managing the Element Hierarchy
     public private(set) weak var owner: BasicElement?
@@ -358,46 +403,18 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
 #if DEBUG
     public func debugMode() {
-        _debug = true
+        debug = true
         children.forEach {
             $0.debugMode()
         }
     }
 #endif
 
-    open var interactive: Bool {
-        return true
-    }
-
-    open var alpha: Double {
-        return 1.0
-    }
-
     // MARK: - Touch
     open func tap(_ method: @escaping (BasicElement) -> Void) {
         _tap = method
+        interactive = true
     }
-
-//    open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        assertMainThread()
-//    }
-//
-//    open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        assertMainThread()
-//    }
-//
-//    open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        assertMainThread()
-//        let tap = _tap
-//        let this = self
-//        DispatchQueue.main.async {
-//            tap?(this)
-//        }
-//    }
-//
-//    open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        assertMainThread()
-//    }
 
     // MARK: - Hashable
     open var hashValue: Int {

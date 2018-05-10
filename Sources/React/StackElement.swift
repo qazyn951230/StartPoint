@@ -47,10 +47,4 @@ open class StackElement: BasicElement {
     public static func vertical(any: BasicElement?...) -> StackElement {
         return StackElement(direction: .column, children: any.compactMap(Function.this))
     }
-
-    open override func build(in view: UIView) {
-        children.forEach {
-            $0.build(in: view)
-        }
-    }
 }

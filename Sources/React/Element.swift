@@ -35,11 +35,6 @@ open class Element<View: UIView>: BasicElement {
         super.init(framed: true, children: children)
     }
 
-    public init(children: [BasicElement], creator: @escaping () -> View) {
-        super.init(framed: true, children: children)
-        self.creator = creator
-    }
-
     public override var loaded: Bool {
         return view != nil
     }
@@ -64,6 +59,12 @@ open class Element<View: UIView>: BasicElement {
                 pendingState.frame = _frame.cgRect
                 registerPendingState()
             }
+        }
+    }
+
+    public override var interactive: Bool {
+        didSet {
+            self.interactive(interactive)
         }
     }
 
@@ -384,6 +385,17 @@ extension Element {
         } else {
             let state = pendingState
             state.shadowPath = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func interactive(_ value: Bool) -> Self {
+        if mainThread(), let view = view {
+            view.isUserInteractionEnabled = value
+        } else {
+            pendingState.interactive = value
             registerPendingState()
         }
         return self

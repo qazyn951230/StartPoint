@@ -102,6 +102,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.path = value
         } else {
             pendingState.path = value
+            registerPendingState()
         }
         return self
     }
@@ -112,6 +113,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.path = value?.cgPath
         } else {
             pendingState.path = value?.cgPath
+            registerPendingState()
         }
         return self
     }
@@ -122,6 +124,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.fillColor = value
         } else {
             pendingState.fillColor = value
+            registerPendingState()
         }
         return self
     }
@@ -138,6 +141,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.fillColor = value
         } else {
             pendingState.fillColor = value
+            registerPendingState()
         }
         return self
     }
@@ -148,6 +152,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.strokeColor = value
         } else {
             pendingState.strokeColor = value
+            registerPendingState()
         }
         return self
     }
@@ -164,6 +169,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
             layer.strokeColor = value
         } else {
             pendingState.strokeColor = value
+            registerPendingState()
         }
         return self
     }

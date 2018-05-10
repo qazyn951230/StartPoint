@@ -22,10 +22,64 @@
 
 import UIKit
 
-public typealias ImageElement = BasicImageElement<UIImageView>
+open class ImageElementState: ElementState {
+    public var image: UIImage? {
+        get {
+            return _image ?? nil
+        }
+        set {
+            _image = newValue
+        }
+    }
+    var _image: UIImage??
 
-open class BasicImageElement<ImageView: UIImageView>: Element<ImageView> {
+    public var highlightedImage: UIImage? {
+        get {
+            return _highlightedImage ?? nil
+        }
+        set {
+            _highlightedImage = newValue
+        }
+    }
+    var _highlightedImage: UIImage??
+
+    public override var interactive: Bool {
+        get {
+            return _interactive ?? false
+        }
+        set {
+            _interactive = newValue
+        }
+    }
+
+    open override func apply(view: UIView) {
+        if let imageView = view as? UIImageView {
+            apply(imageView: imageView)
+        } else {
+            super.apply(view: view)
+        }
+    }
+
+    open func apply(imageView: UIImageView) {
+        if let image = _image {
+            imageView.image = image
+        }
+        if let highlightedImage = _highlightedImage {
+            imageView.highlightedImage = highlightedImage
+        }
+        super.apply(view: imageView)
+    }
+
+    open override func invalidate() {
+        _image = nil
+        _highlightedImage = nil
+        super.invalidate()
+    }
+}
+
+open class ImageElement: Element<UIImageView> {
     var _imageState: ImageElementState?
+
     public override var pendingState: ImageElementState {
         let state = _imageState ?? ImageElementState()
         if _imageState == nil {
@@ -41,6 +95,7 @@ open class BasicImageElement<ImageView: UIImageView>: Element<ImageView> {
             view.image = value
         } else {
             pendingState.image = value
+            registerPendingState()
         }
         return self
     }
@@ -51,6 +106,7 @@ open class BasicImageElement<ImageView: UIImageView>: Element<ImageView> {
             view.image = value
         } else {
             pendingState.image = value
+            registerPendingState()
         }
         if let size = value?.size {
             layout.size(size)
@@ -64,6 +120,7 @@ open class BasicImageElement<ImageView: UIImageView>: Element<ImageView> {
             view.highlightedImage = value
         } else {
             pendingState.highlightedImage = value
+            registerPendingState()
         }
         return self
     }
