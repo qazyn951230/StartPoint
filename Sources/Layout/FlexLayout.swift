@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-open class FlexLayout: Equatable {
+public class FlexLayout: Equatable {
     // MARK: Public properties
     public let style: FlexStyle = FlexStyle()
     public internal(set) weak var parent: FlexLayout? = nil
@@ -195,6 +195,26 @@ open class FlexLayout: Equatable {
         children.insert(child, at: index)
         child.parent = self
         _markDirty()
+    }
+
+    public func replace<C>(_ subrange: Range<Int>, with newElements: C) where C.Element == FlexLayout, C: Collection {
+        guard subrange.lowerBound > -1 && subrange.upperBound <= children.count else {
+            return
+        }
+        let old: ArraySlice<FlexLayout> = children[subrange]
+        old.forEach { layout in
+            layout.invalidate()
+            layout.parent = nil
+        }
+        children.replaceSubrange(subrange, with: newElements)
+        newElements.forEach { new in
+            new.parent = self
+        }
+        _markDirty()
+    }
+
+    public func replaceAll<C>(_ newElements: C) where C.Element == FlexLayout, C: Collection {
+        replace(0..<children.count, with: newElements)
     }
 
     // YGNodeRemoveChild

@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ import XCTest
 
 // Generated from YGStyleTest.cpp
 class StyleTests: FlexTestCase {
-
     // Generated from test: copy_style_same
     func testCopyStyleSame() {
         let node0 = FlexLayout()
@@ -67,5 +66,24 @@ class StyleTests: FlexTestCase {
 
         node0.copyStyle(from: node1)
         XCTAssertFalse(node0.dirty)
+    }
+
+    // Generated from test: initialise_flexShrink_flexGrow
+    func testInitialiseFlexShrinkFlexGrow() {
+        let node0 = FlexLayout()
+        node0.flexShrink(1)
+        XCTAssertEqual(node0.style.flexShrink, 1)
+
+        node0.flexShrink(Double.nan)
+        node0.flexGrow(3)
+        // Default value is Zero, if flex shrink is not defined
+        XCTAssertEqual(node0.style.flexShrink, 0)
+        XCTAssertEqual(node0.style.flexGrow, 3)
+
+        node0.flexGrow(Double.nan)
+        node0.flexShrink(3)
+        // Default value is Zero, if flex grow is not defined
+        XCTAssertEqual(node0.style.flexGrow, 0)
+        XCTAssertEqual(node0.style.flexShrink, 3)
     }
 }

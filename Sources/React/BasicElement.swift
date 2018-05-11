@@ -270,7 +270,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
     // MARK: - Measuring in Flex Layout
     @discardableResult
-    public func layout(_ method: (FlexLayout) -> Void) -> Self {
+    public func style(_ method: (FlexLayout) -> Void) -> Self {
         method(layout)
         return self
     }

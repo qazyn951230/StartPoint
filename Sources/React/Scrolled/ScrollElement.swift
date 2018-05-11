@@ -95,6 +95,41 @@ open class ScrollElementState: ElementState {
 
 open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
     var _scrollState: ScrollElementState?
+
+    public let content: StackElement
+
+//    public override init(children: [BasicElement] = []) {
+//        content = StackElement(children: [])
+//            .layout { flex in
+//                flex.positionType(.absolute)
+//            }
+//        var array = children
+//        array.insert(content, at: 0)
+//        super.init(children: array)
+//    }
+
+    public init(content: StackElement) {
+#if DEBUG
+        if content.layout.style.positionType  != PositionType.absolute {
+            Log.warn("Scroll content \(content) should use absolute position type")
+        }
+#endif
+        self.content = content
+        super.init(children: [content])
+    }
+
+    public convenience init(children: [BasicElement] = [], direction: UICollectionViewScrollDirection? = nil) {
+        let content = StackElement(children: children)
+        if direction == UICollectionViewScrollDirection.horizontal {
+            content.layout.positionType(.absolute)
+                .flexDirection(.row).height(.match)
+        } else if direction == UICollectionViewScrollDirection.vertical {
+            content.layout.positionType(.absolute)
+                .flexDirection(.column).width(.match)
+        }
+        self.init(content: content)
+    }
+
     public override var pendingState: ScrollElementState {
         let state = _scrollState ?? ScrollElementState()
         if _scrollState == nil {
@@ -106,12 +141,20 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
 
     open override func applyState(to view: ScrollView) {
         if _scrollState?._contentSize == nil {
-            let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicElement) in
-                return result.union(next.frame)
-            }
-            view.contentSize = total.size
+            Log.debug(_frame, content._frame)
+            view.contentSize = content._frame.cgSize
+//            let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicElement) in
+//                return result.union(next.frame)
+//            }
+//            view.contentSize = total.size
         }
         super.applyState(to: view)
+    }
+
+    @discardableResult
+    public func contentStyle(_ method: (FlexLayout) -> Void) -> Self {
+        method(content.layout)
+        return self
     }
 }
 

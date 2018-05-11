@@ -515,7 +515,7 @@ extension FlexLayout {
             var totalFlexShrinkScaledFactors = 0.0
             var firstRelativeChild: FlexLayout? = nil
             var currentRelativeChild: FlexLayout? = nil
-            for child: FlexLayout in children[startOfLineIndex..<childCount] {
+            for child in children[startOfLineIndex..<childCount] {
                 if child.style.hidden {
                     endOfLineIndex += 1
                     continue
@@ -702,7 +702,7 @@ extension FlexLayout {
                 }
             }
             var numberOfAutoMarginsOnCurrentLine: Double = 0.0
-            for child: FlexLayout in children[startOfLineIndex..<endOfLineIndex] {
+            for child in children[startOfLineIndex..<endOfLineIndex] {
                 if child.style.relativeLayout {
                     if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
                         numberOfAutoMarginsOnCurrentLine += 1.0
@@ -736,7 +736,7 @@ extension FlexLayout {
             }
             var mainDim = leadingPaddingAndBorderMain + leadingMainDim
             var crossDim = 0.0
-            for child: FlexLayout in children[startOfLineIndex..<endOfLineIndex] {
+            for child in children[startOfLineIndex..<endOfLineIndex] {
                 if child.style.hidden {
                     continue
                 }
@@ -784,7 +784,7 @@ extension FlexLayout {
             crossDim = style.bound(axis: crossAxis, value: crossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize, width: parentWidth) - paddingAndBorderAxisCross
             // STEP 7: CROSS-AXIS ALIGNMENT
             if performLayout {
-                for child: FlexLayout in children[startOfLineIndex..<endOfLineIndex] {
+                for child in children[startOfLineIndex..<endOfLineIndex] {
                     if child.style.hidden {
                         continue
                     }
@@ -889,7 +889,7 @@ extension FlexLayout {
                 var maxAscentForCurrentLine = 0.0
                 var maxDescentForCurrentLine = 0.0
                 var ii = startIndex
-                for child: FlexLayout in children[startIndex..<children.count] {
+                for child in children[startIndex..<children.count] {
                     if child.style.hidden {
                         ii += 1
                         continue
@@ -917,7 +917,7 @@ extension FlexLayout {
                 endIndex = ii
                 lineHeight += crossDimLead
                 if performLayout {
-                    for child: FlexLayout in children[startIndex..<endIndex] {
+                    for child in children[startIndex..<endIndex] {
                         if child.style.hidden {
                             continue
                         }
@@ -965,7 +965,7 @@ extension FlexLayout {
             box.setMeasuredDimension(for: crossAxis, size: fmax(fmin(availableInnerCrossDim + paddingAndBorderAxisCross, style.bound(axis: crossAxis, value: totalLineCrossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize)), paddingAndBorderAxisCross))
         }
         if performLayout && style.flexWrap == FlexWrap.wrapReverse {
-            for child: FlexLayout in children {
+            for child in children {
                 if !child.style.absoluteLayout {
                     child.box.position[crossAxis] = box.measuredDimension(for: crossAxis) - child.box.position[crossAxis] - child.box.measuredDimension(for: crossAxis)
                 }
@@ -984,7 +984,7 @@ extension FlexLayout {
             let needsMainTrailingPos = mainAxis.reversed
             let needsCrossTrailingPos: Bool = crossAxis.reversed
             if needsMainTrailingPos || needsCrossTrailingPos {
-                for child: FlexLayout in children {
+                for child in children {
                     if child.style.hidden {
                         continue
                     }

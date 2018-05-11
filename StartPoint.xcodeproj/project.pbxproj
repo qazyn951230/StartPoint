@@ -104,6 +104,7 @@
 		AC96ABC592AE1C3A0A83555E /* MeasureModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */; };
 		AC96ABD23F5616B4AFB0958C /* CollectionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA57B29119FCA8B0BE81 /* CollectionElement.swift */; };
 		AC96ABD341001DE3CC043019 /* LabelElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6D3BCF3DB8BC2134433 /* LabelElement.swift */; };
+		AC96ABD4CB87B994B1E5AA82 /* TreeMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3D96DCB035B01301CE1 /* TreeMutationTests.swift */; };
 		AC96AC33D1BEF725DA0E61CB /* ElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFF5FC0D5B0CA9CF53D1 /* ElementTests.swift */; };
 		AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */; };
 		AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
@@ -197,6 +198,7 @@
 		AC96A34363AC9D8C94271FD0 /* RecyclerElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecyclerElement.swift; sourceTree = "<group>"; };
 		AC96A37F4922CCB61BDB2997 /* BasicElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicElement.swift; sourceTree = "<group>"; };
 		AC96A3C2520E78AF59EF5356 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
+		AC96A3D96DCB035B01301CE1 /* TreeMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeMutationTests.swift; sourceTree = "<group>"; };
 		AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		AC96A465CDAA8A64D61D2480 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		AC96A4A03497EA83043E8EEE /* ElementController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementController.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				AC96AE5EBD5B093C9633D7BA /* TextTests.swift */,
 				AC96A7DAB98F07172DF5C170 /* FlexTestCase.swift */,
 				AC96A7F2E225846BC0711282 /* OverlayTests.swift */,
+				AC96A3D96DCB035B01301CE1 /* TreeMutationTests.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -1043,6 +1046,7 @@
 				AC96ADAEC73129DDDE5E6D04 /* BasicElementTests.swift in Sources */,
 				AC96AD9FE9EA2D914F94BA80 /* TestElement.swift in Sources */,
 				AC96AC33D1BEF725DA0E61CB /* ElementTests.swift in Sources */,
+				AC96ABD4CB87B994B1E5AA82 /* TreeMutationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
