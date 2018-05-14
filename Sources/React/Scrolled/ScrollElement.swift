@@ -96,7 +96,7 @@ open class ScrollElementState: ElementState {
 open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
     var _scrollState: ScrollElementState?
 
-    public let content: StackElement
+    public private(set) var content: StackElement
 
 //    public override init(children: [BasicElement] = []) {
 //        content = StackElement(children: [])
@@ -141,12 +141,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
 
     open override func applyState(to view: ScrollView) {
         if _scrollState?._contentSize == nil {
-            Log.debug(_frame, content._frame)
             view.contentSize = content._frame.cgSize
-//            let total: CGRect = children.reduce(CGRect.zero) { (result: CGRect, next: BasicElement) in
-//                return result.union(next.frame)
-//            }
-//            view.contentSize = total.size
         }
         super.applyState(to: view)
     }
@@ -155,6 +150,20 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
     public func contentStyle(_ method: (FlexLayout) -> Void) -> Self {
         method(content.layout)
         return self
+    }
+
+    public func reloadData(content: StackElement) {
+        guard let view = self.view else {
+            return
+        }
+        if content != self.content {
+            content.layout.copy(from: self.content.layout)
+        }
+        content.layout(width: _frame.width, height: _frame.height)
+        view.contentSize = content._frame.cgSize
+        self.content.removeFromOwner()
+        content.build(in: view)
+        self.content = content
     }
 }
 

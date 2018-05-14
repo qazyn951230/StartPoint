@@ -220,4 +220,9 @@ public struct Function {
             $0 <= value
         }
     }
+
+    @inline(__always)
+    public static func print(_ value: Any) {
+        Swift.print(value)
+    }
 }

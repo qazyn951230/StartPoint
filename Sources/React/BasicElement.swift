@@ -275,9 +275,9 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return self
     }
 
-    public func layout(origin: Point = Point.zero, width: Double = .nan, height: Double = .nan) {
+    public func layout(width: Double = .nan, height: Double = .nan) {
         layout.calculate(width: width, height: height, direction: .ltr)
-        calculateFrame(left: origin.x, top: origin.y)
+        calculateFrame(left: 0, top: 0)
     }
 
     public func layout(within view: UIView) {

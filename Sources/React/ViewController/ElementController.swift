@@ -47,6 +47,7 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
         super.loadView()
         size = Size(cgSize: view.frame.size)
         rootElement = createElement()
+        rootElement?.layout(width: size.width, height: size.height)
         rootView = rootElement?.buildView()
         view = rootView
     }

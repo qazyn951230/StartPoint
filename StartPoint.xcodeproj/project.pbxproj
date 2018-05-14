@@ -29,6 +29,7 @@
 		AC96A243DAB4EAB3C75B38AC /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F3F80B8DC6E1B808A7 /* Event.swift */; };
 		AC96A24B7B7B740BA053A722 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE5D3A3D6C6A6C031B63 /* Router.swift */; };
 		AC96A2613771E4272D5C20C8 /* BorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB5A5E4425B7A412BD1A /* BorderTests.swift */; };
+		AC96A26241C2C63F97A8F1C4 /* RefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2D464D856E66D4B875E /* RefreshView.swift */; };
 		AC96A270DCF9EC380399133A /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */; };
 		AC96A2A6CC238CD41180A91E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC856B0EBD3CCD6A03B6 /* TableViewCell.swift */; };
 		AC96A2F15A160C65A3749ED6 /* RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */; };
@@ -194,6 +195,7 @@
 		AC96A2AF396B00CCEA2B44AD /* CGPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
 		AC96A2B0420610F0F4CBC52C /* CGSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
 		AC96A2BEB5B8FDC95696FC69 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		AC96A2D464D856E66D4B875E /* RefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshView.swift; sourceTree = "<group>"; };
 		AC96A342F409A0E293EB7804 /* StartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartPoint.h; sourceTree = "<group>"; };
 		AC96A34363AC9D8C94271FD0 /* RecyclerElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecyclerElement.swift; sourceTree = "<group>"; };
 		AC96A37F4922CCB61BDB2997 /* BasicElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicElement.swift; sourceTree = "<group>"; };
@@ -740,6 +742,7 @@
 				AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */,
 				AC96A11AAC7A6AD1B64EBFC6 /* PagingView.swift */,
 				AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */,
+				AC96A2D464D856E66D4B875E /* RefreshView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -992,6 +995,7 @@
 				AC96AF0890D0F9FD66CE462A /* PendingStateManager.swift in Sources */,
 				AC96AF2CB14F130041777456 /* List.swift in Sources */,
 				AC96A1189439808C1838393E /* ListSlice.swift in Sources */,
+				AC96A26241C2C63F97A8F1C4 /* RefreshView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
