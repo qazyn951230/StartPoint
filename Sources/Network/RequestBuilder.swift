@@ -25,8 +25,8 @@ import RxSwift
 import Dispatch
 import SwiftyJSON
 
-public class RequestBuilder {
-    public let url: String
+public final class RequestBuilder {
+    public private(set) var url: String
     public let method: HTTPMethod
     public private(set) var scheduler: SerialDispatchQueueScheduler = MainScheduler.instance
     public private(set) var queue: DispatchQueue = DispatchQueue.main
@@ -47,6 +47,12 @@ public class RequestBuilder {
     public init(url: String, method: HTTPMethod) {
         self.url = url
         self.method = method
+    }
+
+    public func path(_ value: String) -> RequestBuilder {
+        assertTrue(value.hasPrefix("/"), "Path \"\(value)\" should start with \"/\"")
+        url = url + value
+        return self
     }
 
     public func parameter(_ value: Any, key: String, log: Bool = true) -> RequestBuilder {
