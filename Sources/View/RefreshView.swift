@@ -62,7 +62,7 @@ public class RefreshView: UIView, Refresher {
     let bag = DisposeBag()
     weak var scrollView: UIScrollView?
     var contentOffset: Driver<CGPoint>?
-    var contentInset: Driver<UIEdgeInsets>?
+//    var contentInset: Driver<UIEdgeInsets>?
     var contentSize: Driver<CGSize>?
 
     var initOffset: CGPoint = CGPoint.zero
@@ -104,7 +104,7 @@ public class RefreshView: UIView, Refresher {
         content.layout(width: Double(frame.width))
         content.build(in: self)
         let height: CGFloat = content.frame.height
-        frame = CGRect(x: frame.minX, y: 0 - height, width: frame.width, height: height)
+        frame = CGRect(x: frame.minX, y: 0 - height - initInset.top, width: frame.width, height: height)
     }
 
     public override func willMove(toSuperview newSuperview: UIView?) {
@@ -112,6 +112,7 @@ public class RefreshView: UIView, Refresher {
         guard let scroll = newSuperview as? UIScrollView else {
             return
         }
+        scroll.alwaysBounceVertical = true
         scrollView = scroll
         addObserver(to: scroll)
         initInset = scroll.contentInset
@@ -126,13 +127,13 @@ public class RefreshView: UIView, Refresher {
         offset.drive(onNext: nextContentOffset)
             .disposed(by: bag)
 
-        let inset: Driver<UIEdgeInsets> = scrollView.rx
-            .observe(UIEdgeInsets.self, #keyPath(UIScrollView.contentInset))
-            .asDriver(onErrorJustReturn: UIEdgeInsets.zero)
-            .compactMap(Function.maybe)
-        contentInset = inset
-        inset.drive(onNext: nextContentInset)
-            .disposed(by: bag)
+//        let inset: Driver<UIEdgeInsets> = scrollView.rx
+//            .observe(UIEdgeInsets.self, #keyPath(UIScrollView.contentInset))
+//            .asDriver(onErrorJustReturn: UIEdgeInsets.zero)
+//            .compactMap(Function.maybe)
+//        contentInset = inset
+//        inset.drive(onNext: nextContentInset)
+//            .disposed(by: bag)
 
         let size: Driver<CGSize> = scrollView.rx
             .observe(CGSize.self, #keyPath(UIScrollView.contentSize))
@@ -144,29 +145,48 @@ public class RefreshView: UIView, Refresher {
     }
 
     func nextContentOffset(_ offset: CGPoint) {
-        Log.debug(offset)
-//        guard !isHidden && state != .disabled, let scroll = scrollView else {
-//            return
-//        }
-//        let currentY = offset.y
-//        let initY = 0 - initInset.top
-//        if currentY > initY { // Scroll down, header will never show.
-//            return
-//        }
-//        let height: CGFloat = frame.height > 0 ? frame.height : 1
-//        let fullY: CGFloat = initY - height
-//        let _percent: CGFloat = (initY - currentY) / height
-//        let percent = Double(inner(_percent, min: 0, max: 1))
-//        if scroll.isDragging {
-//
-//        } else {
-//
-//        }
+        assertMainThread()
+        guard !isHidden && state != .disabled, let scroll = scrollView else {
+            return
+        }
+        if state == .triggered {
+            var inset = scroll.contentInset
+            inset.top = max(-scroll.contentOffset.y, initInset.top)
+            inset.top = min(inset.top, frame.height + initInset.top)
+            scroll.contentInset = inset
+            return
+        }
+        let currentY = offset.y
+        let initY = 0 - initInset.top
+        if currentY > initY { // Scroll down, header will never show.
+            return
+        }
+        let height: CGFloat = frame.height > 0 ? frame.height : 1
+        let fullY: CGFloat = initY - height
+        if currentY <= fullY { // Full show
+            state = .progress(1)
+        } else {
+            if state.fulfill {
+                state = .triggered
+                let this = self
+                if let fn = action {
+                    DispatchQueue.main.async {
+                        fn(this)
+                    }
+                }
+            } else {
+                let percent: CGFloat = (initY - currentY) / height
+                state = .progress(Double(percent))
+            }
+        }
+        Log.debug(state)
     }
 
-    func nextContentInset(_ insets: UIEdgeInsets) {
-        Log.debug(insets)
-    }
+//    func nextContentInset(_ insets: UIEdgeInsets) {
+//        Log.debug(insets)
+//        initInset = insets
+//        frame = frame.setY(0 - frame.height - initInset.top)
+//    }
 
     func nextContentSize(_ size: CGSize) {
         Log.debug(size)
@@ -179,10 +199,6 @@ public class RefreshView: UIView, Refresher {
         } else {
             return scrollView.contentInset
         }
-    }
-
-    func setContentInset(for scrollView: UIScrollView, _ value: UIEdgeInsets) {
-        scrollView.contentInset = value
     }
 }
 

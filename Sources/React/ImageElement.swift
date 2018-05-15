@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class ImageElementState: ElementState {
+public class ImageElementState: ElementState {
     public var image: UIImage? {
         get {
             return _image ?? nil
@@ -52,7 +52,7 @@ open class ImageElementState: ElementState {
         }
     }
 
-    open override func apply(view: UIView) {
+    public override func apply(view: UIView) {
         if let imageView = view as? UIImageView {
             apply(imageView: imageView)
         } else {
@@ -60,7 +60,7 @@ open class ImageElementState: ElementState {
         }
     }
 
-    open func apply(imageView: UIImageView) {
+    public func apply(imageView: UIImageView) {
         if let image = _image {
             imageView.image = image
         }
@@ -70,7 +70,7 @@ open class ImageElementState: ElementState {
         super.apply(view: imageView)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _image = nil
         _highlightedImage = nil
         super.invalidate()
@@ -89,9 +89,10 @@ open class ImageElement: Element<UIImageView> {
         return state
     }
 
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func image(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.image = value
         } else {
             pendingState.image = value
@@ -102,7 +103,7 @@ open class ImageElement: Element<UIImageView> {
 
     @discardableResult
     public func sizedImage(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.image = value
         } else {
             pendingState.image = value
@@ -116,7 +117,7 @@ open class ImageElement: Element<UIImageView> {
 
     @discardableResult
     public func highlightedImage(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.highlightedImage = value
         } else {
             pendingState.highlightedImage = value

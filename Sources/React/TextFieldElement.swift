@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class TextFieldElementState: ElementState {
+public class TextFieldElementState: ElementState {
     public var text: NSAttributedString? {
         get {
             return _text ?? nil
@@ -83,7 +83,7 @@ open class TextFieldElementState: ElementState {
     }
     var _secure: Bool?
 
-    open override func apply(view: UIView) {
+    public override func apply(view: UIView) {
         if let textField = view as? UITextField {
             apply(textField: textField)
         } else {
@@ -91,7 +91,7 @@ open class TextFieldElementState: ElementState {
         }
     }
 
-    open func apply(textField: UITextField) {
+    public func apply(textField: UITextField) {
         if let text = _text {
             textField.attributedText = text
         }
@@ -114,7 +114,7 @@ open class TextFieldElementState: ElementState {
         super.apply(view: textField)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _text = nil
         _placeholder = nil
         _clearButtonMode = nil
@@ -125,7 +125,7 @@ open class TextFieldElementState: ElementState {
     }
 }
 
-open class TextFieldElement: Element<UITextField> {
+public class TextFieldElement: Element<UITextField> {
     var text: NSAttributedString?
     var placeholder: NSAttributedString?
 
@@ -154,10 +154,11 @@ open class TextFieldElement: Element<UITextField> {
         return Size.zero
     }
 
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func text(_ value: NSAttributedString?) -> Self {
         text = value
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.attributedText = value
         } else {
             pendingState.text = value
@@ -170,7 +171,7 @@ open class TextFieldElement: Element<UITextField> {
     @discardableResult
     public func placeholder(_ value: NSAttributedString?) -> Self {
         placeholder = value
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.attributedPlaceholder = value
         } else {
             pendingState.placeholder = value
@@ -182,7 +183,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func clearButtonMode(_ value: UITextFieldViewMode) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.clearButtonMode = value
         } else {
             pendingState.clearButtonMode = value
@@ -193,7 +194,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func keyboard(_ value: UIKeyboardType) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.keyboardType = value
         } else {
             pendingState.keyboard = value
@@ -204,7 +205,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func returnKey(_ value: UIReturnKeyType) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.returnKeyType = value
         } else {
             pendingState.returnKey = value
@@ -215,7 +216,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func secure(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.isSecureTextEntry = value
         } else {
             pendingState.secure = value

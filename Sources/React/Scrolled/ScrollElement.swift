@@ -170,7 +170,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
 extension BasicScrollElement {
     @discardableResult
     public func contentSize(_ value: CGSize) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.contentSize = value
         } else {
             pendingState.contentSize = value
@@ -181,7 +181,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func horizontalIndicator(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.showsHorizontalScrollIndicator = value
         } else {
             pendingState.horizontalIndicator = value
@@ -192,7 +192,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func verticalIndicator(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.showsVerticalScrollIndicator = value
         } else {
             pendingState.verticalIndicator = value
@@ -203,7 +203,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func indicator(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.showsHorizontalScrollIndicator = value
             view.showsVerticalScrollIndicator = value
         } else {
@@ -216,7 +216,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func indicator(horizontal: Bool, vertical: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.showsHorizontalScrollIndicator = horizontal
             view.showsVerticalScrollIndicator = vertical
         } else {
@@ -229,7 +229,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func paging(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.isPagingEnabled = value
         } else {
             pendingState.pagingEnabled = value

@@ -35,7 +35,7 @@ class ElementTests: ElementTestCase {
     func testLayoutSubelement() {
         let element = Element<UIView>()
         for _ in 0..<10 {
-            element.addElement(createElement())
+            element.addChild(createElement())
         }
         element.layout()
         let view = element.buildView()
@@ -47,7 +47,7 @@ class ElementTests: ElementTestCase {
     func testAsyncLayoutSubelement() {
         let element = Element<UIView>()
         for _ in 0..<10 {
-            element.addElement(createElement())
+            element.addChild(createElement())
         }
         runOffThread {
             element.layout()
@@ -96,7 +96,7 @@ class ElementTests: ElementTestCase {
     func testReLayoutSubelement() {
         let element = Element<UIView>()
         for _ in 0..<10 {
-            element.addElement(createElement())
+            element.addChild(createElement())
         }
         element.layout()
         let view = element.buildView()
@@ -115,7 +115,7 @@ class ElementTests: ElementTestCase {
     func testAsyncReLayoutSubelement() {
         let element = Element<UIView>()
         for _ in 0..<10 {
-            element.addElement(createElement())
+            element.addChild(createElement())
         }
         runOffThread {
             element.layout()

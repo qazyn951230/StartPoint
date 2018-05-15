@@ -25,7 +25,7 @@ import QuartzCore
 
 public typealias ShapeElement = BasicShapeElement<CAShapeLayer>
 
-open class ShapeElementState: ElementState {
+public class ShapeElementState: ElementState {
     public var path: CGPath? {
         get {
             return _path ?? nil
@@ -56,7 +56,7 @@ open class ShapeElementState: ElementState {
     }
     var _strokeColor: CGColor??
 
-    open override func apply(layer: CALayer) {
+    public override func apply(layer: CALayer) {
         if let shape = layer as? CAShapeLayer {
             apply(layer: shape)
         } else {
@@ -64,7 +64,7 @@ open class ShapeElementState: ElementState {
         }
     }
 
-    open func apply(layer: CAShapeLayer) {
+    public func apply(layer: CAShapeLayer) {
         if let path = _path {
             layer.path = path
         }
@@ -77,7 +77,7 @@ open class ShapeElementState: ElementState {
         super.apply(layer: layer)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _path = nil
         _fillColor = nil
         _strokeColor = nil
@@ -85,7 +85,7 @@ open class ShapeElementState: ElementState {
     }
 }
 
-open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeLayer> {
+public class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeLayer> {
     var _shapeState: ShapeElementState?
     public override var pendingState: ShapeElementState {
         let state = _shapeState ?? ShapeElementState()
@@ -96,9 +96,10 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
         return state
     }
 
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func path(_ value: CGPath?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.path = value
         } else {
             pendingState.path = value
@@ -109,7 +110,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
 
     @discardableResult
     public func path(_ value: UIBezierPath?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.path = value?.cgPath
         } else {
             pendingState.path = value?.cgPath
@@ -120,7 +121,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
 
     @discardableResult
     public func fillColor(_ value: CGColor?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.fillColor = value
         } else {
             pendingState.fillColor = value
@@ -137,7 +138,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
     @discardableResult
     public func fillColor(hex: UInt32) -> Self {
         let value = UIColor.hex(hex).cgColor
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.fillColor = value
         } else {
             pendingState.fillColor = value
@@ -148,7 +149,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
 
     @discardableResult
     public func strokeColor(_ value: CGColor?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.strokeColor = value
         } else {
             pendingState.strokeColor = value
@@ -165,7 +166,7 @@ open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeL
     @discardableResult
     public func strokeColor(hex: UInt32) -> Self {
         let value = UIColor.hex(hex).cgColor
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.strokeColor = value
         } else {
             pendingState.strokeColor = value

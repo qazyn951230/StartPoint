@@ -53,7 +53,7 @@ open class Element<View: UIView>: BasicElement {
 
     override var _frame: Rect {
         didSet {
-            if mainThread(), let view = self.view {
+            if Runner.isMain(), let view = self.view {
                 view.frame = _frame.cgRect
             } else {
                 pendingState.frame = _frame.cgRect
@@ -71,14 +71,14 @@ open class Element<View: UIView>: BasicElement {
     deinit {
         creator = nil
         if let view = self.view {
-            runOnMain {
+            Runner.onMain {
                 view.removeFromSuperview()
             }
         }
     }
 
     public func loaded(then method: @escaping (Element<View>, View) -> Void) {
-        if mainThread(), let view = self.view {
+        if Runner.isMain(), let view = self.view {
             method(self, view)
         } else {
             _loaded = _loaded ?? []
@@ -86,17 +86,17 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
-    public override func addElement(_ element: BasicElement) {
+    public override func addChild(_ element: BasicElement) {
         assertThreadAffinity(for: self)
         if let old = element.owner, old == self {
             return
         }
         let index = children.count
         let layerIndex = layersCount
-        insertElement(element, at: index, at: layerIndex, remove: nil)
+        insertChild(element, at: index, at: layerIndex, remove: nil)
     }
 
-    public override func insertElement(_ element: BasicElement, at index: Int) {
+    public override func insertChild(_ element: BasicElement, at index: Int) {
         assertThreadAffinity(for: self)
         guard index > -1 && index < children.count else {
             assertFail("Insert index illegal: \(index)")
@@ -110,8 +110,13 @@ open class Element<View: UIView>: BasicElement {
         } else {
             layerIndex = nil
         }
-        insertElement(element, at: index, at: layerIndex, remove: nil)
+        insertChild(element, at: index, at: layerIndex, remove: nil)
     }
+
+    // FIXME: insert view
+//    override func insertChild(_ element: BasicElement, at index: Int, at layerIndex: Int?,
+//                              remove oldElement: BasicElement?) {
+//    }
 
     override func _removeFromOwner() {
         super._removeFromOwner()
@@ -138,7 +143,7 @@ open class Element<View: UIView>: BasicElement {
         }
         let this = _createView()
         applyState(to: this)
-        buildChildren(in: this)
+        buildChildren()
         if let methods = _loaded {
             methods.forEach {
                 $0(self, this)
@@ -191,18 +196,23 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
+    open func buildChildren() {
+        if let view = self.view {
+            buildChildren(in: view)
+        }
+    }
+
 #if DEBUG
     public override func debugMode() {
         backgroundColor(UIColor.random)
         super.debugMode()
     }
 #endif
-}
 
-extension Element {
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
@@ -212,9 +222,21 @@ extension Element {
     }
 
     @discardableResult
-    public func backgroundColor(hex: UInt32) -> Self {
-        let value = UIColor.hex(hex)
-        if mainThread(), let view = view {
+    public func backgroundColor(hex value: UInt32) -> Self {
+        let value = UIColor.hex(value)
+        if Runner.isMain(), let view = view {
+            view.backgroundColor = value
+        } else {
+            pendingState.backgroundColor = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func backgroundColor(hex value: UInt32, alpha: CGFloat) -> Self {
+        let value = UIColor.hex(value, alpha: alpha)
+        if Runner.isMain(), let view = view {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
@@ -225,7 +247,7 @@ extension Element {
 
     @discardableResult
     public func tintColor(_ value: UIColor) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
@@ -237,7 +259,7 @@ extension Element {
     @discardableResult
     public func tintColor(hex: UInt32) -> Self {
         let value = UIColor.hex(hex)
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
@@ -248,7 +270,7 @@ extension Element {
 
     @discardableResult
     public func cornerRadius(_ value: CGFloat) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.layer.cornerRadius = value
         } else {
             pendingState.cornerRadius = value
@@ -259,7 +281,7 @@ extension Element {
 
     @discardableResult
     public func borderColor(cgColor value: CGColor?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.layer.borderColor = value
         } else {
             pendingState.borderColor = value
@@ -280,7 +302,7 @@ extension Element {
 
     @discardableResult
     public func borderWidth(_ value: CGFloat) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.layer.borderWidth = value
         } else {
             pendingState.borderWidth = value
@@ -291,7 +313,7 @@ extension Element {
 
     @discardableResult
     public func border(color: UIColor?, width: CGFloat) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.borderColor = color?.cgColor
             layer.borderWidth = width
@@ -307,7 +329,7 @@ extension Element {
     @discardableResult
     public func border(hex value: UInt32, width: CGFloat) -> Self {
         let color = UIColor.hex(value).cgColor
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.borderColor = color
             layer.borderWidth = width
@@ -322,7 +344,7 @@ extension Element {
 
     @discardableResult
     public func shadow(opacity: Float, radius: CGFloat, offset: CGSize, color: CGColor?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.shadowOpacity = opacity
             layer.shadowRadius = radius
@@ -341,7 +363,7 @@ extension Element {
 
     @discardableResult
     public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, color: UIColor) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.shadowOpacity = alpha
             layer.shadowRadius = blur
@@ -360,7 +382,7 @@ extension Element {
 
     @discardableResult
     public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.shadowOpacity = alpha
             layer.shadowRadius = blur
@@ -379,7 +401,7 @@ extension Element {
 
     @discardableResult
     public func shadowPath(_ value: CGPath?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             let layer = view.layer
             layer.shadowPath = value
         } else {
@@ -392,7 +414,7 @@ extension Element {
 
     @discardableResult
     public func interactive(_ value: Bool) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.isUserInteractionEnabled = value
         } else {
             pendingState.interactive = value

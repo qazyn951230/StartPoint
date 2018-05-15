@@ -88,7 +88,7 @@ open class TableElement: Element<UITableView> {
 
     deinit {
         if let table = view {
-            runOnMain {
+            Runner.onMain {
                 table.delegate = nil
                 table.dataSource = nil
             }

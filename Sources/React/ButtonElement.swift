@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class ButtonElementState: ElementState {
+public class ButtonElementState: ElementState {
     public var titles: [UIControlState: NSAttributedString?] {
         get {
             return _titles ?? [:]
@@ -55,7 +55,7 @@ open class ButtonElementState: ElementState {
 
     var tap = false
 
-    open override func apply(view: UIView) {
+    public override func apply(view: UIView) {
         if let button = view as? UIButton {
             apply(button: button)
         } else {
@@ -63,7 +63,7 @@ open class ButtonElementState: ElementState {
         }
     }
 
-    open func apply(button: UIButton) {
+    public func apply(button: UIButton) {
         _titles?.forEach { (state, title) in
             button.setAttributedTitle(title, for: state)
         }
@@ -76,7 +76,7 @@ open class ButtonElementState: ElementState {
         super.apply(view: button)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _titles = nil
         _images = nil
         _backgroundImages = nil
@@ -85,7 +85,7 @@ open class ButtonElementState: ElementState {
     }
 }
 
-open class ButtonElement: Element<UIButton> {
+public class ButtonElement: Element<UIButton> {
     let label: LabelElement?
     let image: BasicElement?
 
@@ -123,7 +123,7 @@ open class ButtonElement: Element<UIButton> {
         return state
     }
 
-    open override func buildChildren(in view: UIView) {
+    public override func buildChildren(in view: UIView) {
         for child in children {
             if child != label && child != image {
                 child.build(in: view)
@@ -131,7 +131,7 @@ open class ButtonElement: Element<UIButton> {
         }
     }
 
-    open override func applyState(to view: UIButton) {
+    public override func applyState(to view: UIButton) {
         if _buttonState?.tap == true {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
@@ -200,23 +200,24 @@ open class ButtonElement: Element<UIButton> {
         return padding.edgeInsets(style: element.layout.style, size: element._frame.size)
     }
 
-    @objc open func tapAction(sender: UIButton) {
+    @objc public func tapAction(sender: UIButton) {
         _tap?(self)
     }
 
-    open override func tap(_ method: @escaping (BasicElement) -> Void) {
+    public override func tap(_ method: @escaping (BasicElement) -> Void) {
         super.tap(method)
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         } else {
             pendingState.tap = true
         }
     }
 
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func titles(_ value: NSAttributedString?) -> Self {
         // TODO: Verify button state
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setAttributedTitle(value, for: .normal)
             view.setAttributedTitle(value, for: .selected)
             view.setAttributedTitle(value, for: .disabled)
@@ -234,7 +235,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func title(_ value: NSAttributedString?, for state: UIControlState = .normal) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setAttributedTitle(value, for: state)
         } else {
             let _state = pendingState
@@ -251,7 +252,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func title(_ value: NSAttributedString?, states: UIControlState...) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             for state in states {
                 view.setAttributedTitle(value, for: state)
             }
@@ -272,7 +273,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func images(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setImage(value, for: .normal)
             view.setImage(value, for: .selected)
             view.setImage(value, for: .disabled)
@@ -291,7 +292,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func image(_ value: UIImage?, for state: UIControlState = .normal) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setImage(value, for: state)
         } else {
             let _state = pendingState
@@ -308,7 +309,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func image(_ value: UIImage?, states: UIControlState...) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             for state in states {
                 view.setImage(value, for: state)
             }
@@ -331,7 +332,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func sizedImages(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setImage(value, for: .normal)
             view.setImage(value, for: .selected)
             view.setImage(value, for: .disabled)
@@ -352,7 +353,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func sizedImage(_ value: UIImage?, for state: UIControlState = .normal) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setImage(value, for: state)
         } else {
             let _state = pendingState
@@ -371,7 +372,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func sizedImage(_ value: UIImage?, states: UIControlState...) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             for state in states {
                 view.setImage(value, for: state)
             }
@@ -392,7 +393,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func backgroundImages(_ value: UIImage?) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setBackgroundImage(value, for: .normal)
             view.setBackgroundImage(value, for: .selected)
             view.setBackgroundImage(value, for: .disabled)
@@ -411,7 +412,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func backgroundImage(_ value: UIImage?, for state: UIControlState = .normal) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.setBackgroundImage(value, for: state)
         } else {
             let _state = pendingState
@@ -428,7 +429,7 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func backgroundImage(_ value: UIImage?, states: UIControlState...) -> Self {
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             for state in states {
                 view.setBackgroundImage(value, for: state)
             }

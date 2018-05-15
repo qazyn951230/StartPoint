@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class LabelElementState: ElementState {
+public class LabelElementState: ElementState {
     public var text: NSAttributedString? {
         get {
             return _text ?? nil
@@ -43,7 +43,17 @@ open class LabelElementState: ElementState {
     }
     var _numberOfLines: Int?
 
-    open override func apply(view: UIView) {
+    public var textAlignment: NSTextAlignment {
+        get {
+            return _textAlignment ?? NSTextAlignment.natural
+        }
+        set {
+            _textAlignment = newValue
+        }
+    }
+    var _textAlignment: NSTextAlignment?
+
+    public override func apply(view: UIView) {
         if let label = view as? UILabel {
             apply(label: label)
         } else {
@@ -51,24 +61,28 @@ open class LabelElementState: ElementState {
         }
     }
 
-    open func apply(label: UILabel) {
+    public func apply(label: UILabel) {
         if let text = _text {
             label.attributedText = text
         }
         if let numberOfLines = _numberOfLines {
             label.numberOfLines = numberOfLines
         }
+        if let textAlignment = _textAlignment {
+            label.textAlignment = textAlignment
+        }
         super.apply(view: label)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _text = nil
         _numberOfLines = nil
+        _textAlignment = nil
         super.invalidate()
     }
 }
 
-open class LabelElement: Element<UILabel> {
+public class LabelElement: Element<UILabel> {
     var text: NSAttributedString?
     var lines: Int = 1
     var autoLines: Bool = false
@@ -107,10 +121,11 @@ open class LabelElement: Element<UILabel> {
         }
     }
 
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func numberOfLines(_ value: Int) -> Self {
         lines = value
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.numberOfLines = value
         } else {
             pendingState.numberOfLines = value
@@ -123,7 +138,7 @@ open class LabelElement: Element<UILabel> {
     @discardableResult
     public func text(_ value: NSAttributedString?) -> Self {
         text = value
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.attributedText = value
         } else {
             pendingState.text = value
@@ -137,13 +152,24 @@ open class LabelElement: Element<UILabel> {
     public func multiLine(_ value: Bool = true) -> Self {
         lines = value ? 0 : 1
         autoLines = value
-        if mainThread(), let view = view {
+        if Runner.isMain(), let view = view {
             view.numberOfLines = lines
         } else {
             pendingState.numberOfLines = lines
             registerPendingState()
         }
         layout.markDirty()
+        return self
+    }
+
+    @discardableResult
+    public func textAlignment(_ value: NSTextAlignment) -> Self {
+        if Runner.isMain(), let view = view {
+            view.textAlignment = value
+        } else {
+            pendingState.textAlignment = value
+            registerPendingState()
+        }
         return self
     }
 }

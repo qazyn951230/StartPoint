@@ -34,7 +34,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
 
     override var _frame: Rect {
         didSet {
-            if mainThread(), let layer = self.layer {
+            if Runner.isMain(), let layer = self.layer {
                 layer.frame = _frame.cgRect
             } else {
                 pendingState.frame = _frame.cgRect
@@ -72,7 +72,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     deinit {
         creator = nil
         if let layer = self.layer {
-            if mainThread() {
+            if Runner.isMain() {
                 layer.removeFromSuperlayer()
             } else {
                 DispatchQueue.main.async {
@@ -83,7 +83,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     }
 
     public func loaded(then method: @escaping (BasicLayerElement<Layer>, Layer) -> Void) {
-        if mainThread(), let layer = self.layer {
+        if Runner.isMain(), let layer = self.layer {
             method(self, layer)
         } else {
             _loaded = _loaded ?? []
@@ -180,12 +180,11 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         super.debugMode()
     }
 #endif
-}
 
-extension BasicLayerElement {
+    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.backgroundColor = value?.cgColor
         } else {
             pendingState.backgroundColor = value
@@ -195,9 +194,21 @@ extension BasicLayerElement {
     }
 
     @discardableResult
-    public func backgroundColor(hex: UInt32) -> Self {
-        let value = UIColor.hex(hex)
-        if mainThread(), let layer = layer {
+    public func backgroundColor(hex value: UInt32) -> Self {
+        let value = UIColor.hex(value)
+        if Runner.isMain(), let layer = layer {
+            layer.backgroundColor = value.cgColor
+        } else {
+            pendingState.backgroundColor = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func backgroundColor(hex value: UInt32, alpha: CGFloat) -> Self {
+        let value = UIColor.hex(value, alpha: alpha)
+        if Runner.isMain(), let layer = layer {
             layer.backgroundColor = value.cgColor
         } else {
             pendingState.backgroundColor = value
@@ -208,7 +219,7 @@ extension BasicLayerElement {
 
     @discardableResult
     public func cornerRadius(_ value: CGFloat) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.cornerRadius = value
         } else {
             pendingState.cornerRadius = value
@@ -219,7 +230,7 @@ extension BasicLayerElement {
 
     @discardableResult
     public func borderColor(cgColor value: CGColor?) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.borderColor = value
         } else {
             pendingState.borderColor = value
@@ -240,7 +251,7 @@ extension BasicLayerElement {
 
     @discardableResult
     public func borderWidth(_ value: CGFloat) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.borderWidth = value
         } else {
             pendingState.borderWidth = value
@@ -251,7 +262,7 @@ extension BasicLayerElement {
 
     @discardableResult
     public func border(color: UIColor?, width: CGFloat) -> Self {
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.borderColor = color?.cgColor
             layer.borderWidth = width
         } else {
@@ -266,7 +277,7 @@ extension BasicLayerElement {
     @discardableResult
     public func border(hex value: UInt32, width: CGFloat) -> Self {
         let color = UIColor.hex(value).cgColor
-        if mainThread(), let layer = layer {
+        if Runner.isMain(), let layer = layer {
             layer.borderColor = color
             layer.borderWidth = width
         } else {

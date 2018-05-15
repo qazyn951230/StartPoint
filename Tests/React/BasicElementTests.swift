@@ -34,15 +34,15 @@ class BasicElementTests: ElementTestCase {
 
     func testAddElement() {
         let parent = TestElement()
-        parent.addElement(parent)
+        parent.addChild(parent)
         XCTAssertNil(parent.owner)
 
         let child = TestElement()
-        parent.addElement(child)
+        parent.addChild(child)
         XCTAssertEqual(child.owner, parent as TestElement?)
 
         let parent2 = TestElement()
-        parent2.addElement(child)
+        parent2.addChild(child)
         XCTAssertEqual(child.owner, parent2 as TestElement?)
         XCTAssertEqual(parent.children.count, 0)
     }
@@ -51,7 +51,7 @@ class BasicElementTests: ElementTestCase {
         weak var parent: TestElement?
         weak var child: TestElement?
         withExtendedLifetime((TestElement(), TestElement())) { (t: (TestElement, TestElement)) in
-            t.0.addElement(t.1)
+            t.0.addChild(t.1)
             parent = t.0
             child = t.1
             XCTAssertNotNil(parent)

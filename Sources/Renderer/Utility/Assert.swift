@@ -49,13 +49,13 @@ struct Assert {
 
 // ASDisplayNodeAssertMainThread
 func assertMainThread(file: StaticString = #file, line: UInt = #line) {
-    assert(Assert.checkMainThread || mainThread(),
+    assert(Assert.checkMainThread || Runner.isMain(),
         "This method must be called on the main thread", file: file, line: line)
 }
 
 // ASDisplayNodeAssertThreadAffinity
 func assertThreadAffinity(for element: BasicElement, file: StaticString = #file, line: UInt = #line) {
-    assert(!element.loaded || Assert.checkMainThread || mainThread(),
+    assert(!element.loaded || Assert.checkMainThread || Runner.isMain(),
         "This method must be called on the main thread after element's view or layer has been created",
         file: file, line: line)
 }

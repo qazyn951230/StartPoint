@@ -49,6 +49,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         }
     }
 
+    public convenience init(children: [BasicElement] = []) {
+        self.init(framed: false, children: children)
+    }
+
     public var frame: CGRect {
         return _frame.cgRect
     }
@@ -66,7 +70,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     public var loaded: Bool {
-        return false
+        return children.first(where: { $0.framed })?.loaded ?? false
     }
 
     // For convenience
@@ -201,28 +205,28 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return owner ?? self
     }
 
-    public func addElement(_ element: BasicElement) {
+    public func addChild(_ element: BasicElement) {
         if let old = element.owner, old == self {
             return
         }
         let index = children.count
-        insertElement(element, at: index, at: nil, remove: nil)
+        insertChild(element, at: index, at: nil, remove: nil)
     }
 
-    public func insertElement(_ element: BasicElement, at index: Int) {
+    public func insertChild(_ element: BasicElement, at index: Int) {
         guard index > -1 && index < children.count else {
             assertFail("Insert index illegal: \(index)")
             return
         }
         let index = children.count
-        insertElement(element, at: index, at: nil, remove: nil)
+        insertChild(element, at: index, at: nil, remove: nil)
     }
 
     // layered ✔， element.layered ✔ => ✔
     // layered ✔， element.layered ✘ => ✘
     // layered ✘， element.layered ✔ => ✔
     // layered ✘， element.layered ✘ => ✔
-    func insertElement(_ element: BasicElement, at index: Int, at layerIndex: Int?, remove oldElement: BasicElement?) {
+    func insertChild(_ element: BasicElement, at index: Int, at layerIndex: Int?, remove oldElement: BasicElement?) {
         assertFalse(layered && !element.layered, "A layer element cannot add a view element as subelement")
         assertEqual(children.count, layout.children.count)
         guard element != self else {

@@ -20,14 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import CoreGraphics
+
 infix operator ~~: ComparisonPrecedence
+infix operator <~: ComparisonPrecedence
+infix operator >~: ComparisonPrecedence
 
 public protocol Approximate {
     static func ~~(lhs: Self, rhs: Self) -> Bool
+    static func <~(lhs: Self, rhs: Self) -> Bool
+    static func >~(lhs: Self, rhs: Self) -> Bool
+}
+
+public extension Approximate where Self: Comparable {
+    public static func <~(lhs: Self, rhs: Self) -> Bool {
+        return lhs < rhs || lhs ~~ rhs
+    }
+
+    public static func >~(lhs: Self, rhs: Self) -> Bool {
+        return lhs > rhs || lhs ~~ rhs
+    }
 }
 
 extension Double: Approximate {
     public static func ~~(lhs: Double, rhs: Double) -> Bool {
+        if lhs.isNaN {
+            return rhs.isNaN
+        }
+        return abs(lhs - rhs) < 0.0001
+    }
+}
+
+extension CGFloat: Approximate {
+    public static func ~~(lhs: CGFloat, rhs: CGFloat) -> Bool {
         if lhs.isNaN {
             return rhs.isNaN
         }

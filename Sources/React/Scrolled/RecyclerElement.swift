@@ -56,7 +56,7 @@ public final class RecyclerElement: Element<UICollectionView> {
 
     deinit {
         if let collection = view {
-            runOnMain {
+            Runner.onMain {
                 collection.delegate = nil
                 collection.dataSource = nil
             }
