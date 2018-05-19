@@ -60,14 +60,14 @@ public class ImageElementState: ElementState {
         }
     }
 
-    public func apply(imageView: UIImageView) {
+    public func apply(imageView view: UIImageView) {
         if let image = _image {
-            imageView.image = image
+            view.image = image
         }
         if let highlightedImage = _highlightedImage {
-            imageView.highlightedImage = highlightedImage
+            view.highlightedImage = highlightedImage
         }
-        super.apply(view: imageView)
+        super.apply(view: view)
     }
 
     public override func invalidate() {

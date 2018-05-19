@@ -58,13 +58,13 @@ public class ShapeElementState: ElementState {
 
     public override func apply(layer: CALayer) {
         if let shape = layer as? CAShapeLayer {
-            apply(layer: shape)
+            apply(shapeLayer: shape)
         } else {
             super.apply(layer: layer)
         }
     }
 
-    public func apply(layer: CAShapeLayer) {
+    public func apply(shapeLayer layer: CAShapeLayer) {
         if let path = _path {
             layer.path = path
         }

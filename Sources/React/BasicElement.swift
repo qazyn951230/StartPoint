@@ -29,7 +29,14 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     public let layout = FlexLayout()
 
     let framed: Bool
-    var _frame: Rect = Rect.zero
+    var _frame: Rect = Rect.zero {
+        didSet {
+            _bounds = _frame.setOrigin(.zero)
+        }
+    }
+    var _bounds: Rect = Rect.zero
+    var _center: Point = Point.zero
+
     var _tap: ((BasicElement) -> Void)?
     var _pendingState: ElementState?
     var registered = false
@@ -58,7 +65,11 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     public var bounds: CGRect {
-        return CGRect(origin: CGPoint.zero, size: _frame.cgSize)
+        return _bounds.cgRect
+    }
+
+    public var center: CGPoint {
+        return _center.cgPoint
     }
 
     public var pendingState: ElementState {
@@ -103,14 +114,13 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Responding to Touch Events
-    func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
+    open func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
         if let element = hitTest(point: event.location, event: nil) {
             if element.onTouchEvent(event) {
                 return true
             } else {
                 var next = element.next
                 while next != nil {
-                    Log.debug(any: next)
                     if next?.onTouchEvent(event) == true {
                         return true
                     }
@@ -121,7 +131,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return false
     }
 
-    public func onTouchEvent(_ event: TouchEvent) -> Bool {
+    open func onTouchEvent(_ event: TouchEvent) -> Bool {
         guard let tap = _tap else {
             return false
         }
@@ -353,12 +363,12 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Hit Testing in a Element
-    var enableHitTest: Bool {
+    open var enableHitTest: Bool {
         return interactive && alpha > 0.01
     }
 
     open func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
-        guard pointInside(point, event: event) && enableHitTest else {
+        guard enableHitTest && pointInside(point, event: event) else {
             return nil
         }
         for child in children {
@@ -371,7 +381,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     open func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
-        return _frame.contains(point: point)
+        return _bounds.contains(point: point)
     }
 
     public func apply() {

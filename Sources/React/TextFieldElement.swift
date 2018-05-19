@@ -83,6 +83,16 @@ public class TextFieldElementState: ElementState {
     }
     var _secure: Bool?
 
+    public var textAlignment: NSTextAlignment {
+        get {
+            return _textAlignment ?? NSTextAlignment.natural
+        }
+        set {
+            _textAlignment = newValue
+        }
+    }
+    var _textAlignment: NSTextAlignment?
+
     public override func apply(view: UIView) {
         if let textField = view as? UITextField {
             apply(textField: textField)
@@ -91,27 +101,29 @@ public class TextFieldElementState: ElementState {
         }
     }
 
-    public func apply(textField: UITextField) {
+    public func apply(textField view: UITextField) {
         if let text = _text {
-            textField.attributedText = text
+            view.attributedText = text
         }
         if let placeholder = _placeholder {
-            textField.attributedPlaceholder = placeholder
+            view.attributedPlaceholder = placeholder
         }
         if let clearButtonMode = _clearButtonMode {
-            textField.clearButtonMode = clearButtonMode
+            view.clearButtonMode = clearButtonMode
         }
         if let keyboard = _keyboard {
-            textField.keyboardType = keyboard
+            view.keyboardType = keyboard
         }
         if let returnKey = _returnKey {
-            textField.returnKeyType = returnKey
+            view.returnKeyType = returnKey
         }
         if let secure = _secure {
-            textField.isSecureTextEntry = secure
+            view.isSecureTextEntry = secure
         }
-
-        super.apply(view: textField)
+        if let textAlignment = _textAlignment {
+            view.textAlignment = textAlignment
+        }
+        super.apply(view: view)
     }
 
     public override func invalidate() {
@@ -121,6 +133,7 @@ public class TextFieldElementState: ElementState {
         _keyboard = nil
         _clearButtonMode = nil
         _secure = nil
+        _textAlignment = nil
         super.invalidate()
     }
 }
@@ -220,6 +233,17 @@ public class TextFieldElement: Element<UITextField> {
             view.isSecureTextEntry = value
         } else {
             pendingState.secure = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func textAlignment(_ value: NSTextAlignment) -> Self {
+        if Runner.isMain(), let view = view {
+            view.textAlignment = value
+        } else {
+            pendingState.textAlignment = value
             registerPendingState()
         }
         return self

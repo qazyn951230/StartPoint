@@ -37,12 +37,10 @@ public final class RequestBuilder {
 
     public private(set) var debug = false
 
-#if DEBUG
-    public private(set) var logKeys = [String]()
+    // Debug
     public private(set) var file: String = String.empty
     public private(set) var function: String = String.empty
     public private(set) var line: Int = 0
-#endif
 
     public init(url: String, method: HTTPMethod) {
         self.url = url
@@ -55,17 +53,12 @@ public final class RequestBuilder {
         return self
     }
 
-    public func parameter(_ value: Any, key: String, log: Bool = true) -> RequestBuilder {
+    public func parameter(_ value: Any, key: String) -> RequestBuilder {
         parameters[key] = value
-#if DEBUG
-        if log {
-            logKeys.append(key)
-        }
-#endif
         return self
     }
 
-    public func parameters(_ value: [String: Any], append: Bool = true, log: Bool = true) -> RequestBuilder {
+    public func parameters(_ value: [String: Any], append: Bool = true) -> RequestBuilder {
         if append {
             for (k, v) in value {
                 self.parameters[k] = v
@@ -73,25 +66,15 @@ public final class RequestBuilder {
         } else {
             self.parameters = value
         }
-#if DEBUG
-        if log {
-            logKeys.append(contentsOf: value.keys)
-        }
-#endif
         return self
     }
 
-    public func header(_ value: String, key: String, log: Bool = true) -> RequestBuilder {
+    public func header(_ value: String, key: String) -> RequestBuilder {
         headers[key] = value
-#if DEBUG
-        if log {
-            logKeys.append(key)
-        }
-#endif
         return self
     }
 
-    public func headers(_ value: [String: String], append: Bool = true, log: Bool = true) -> RequestBuilder {
+    public func headers(_ value: [String: String], append: Bool = true) -> RequestBuilder {
         if append {
             for (k, v) in value {
                 self.headers[k] = v
@@ -99,11 +82,6 @@ public final class RequestBuilder {
         } else {
             self.headers = value
         }
-#if DEBUG
-        if log {
-            logKeys.append(contentsOf: value.keys)
-        }
-#endif
         return self
     }
 
@@ -134,11 +112,9 @@ public final class RequestBuilder {
     }
 
     public func debug(file: String, function: String, line: Int) -> RequestBuilder {
-#if DEBUG
         self.file = file
         self.function = function
         self.line = line
-#endif
         return self
     }
 

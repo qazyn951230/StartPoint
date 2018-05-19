@@ -24,8 +24,6 @@ import Dispatch
 import Darwin
 import Foundation
 
-public typealias Runnable = () -> Void
-
 public final class Runner {
     public let queue: DispatchQueue
 
@@ -43,19 +41,19 @@ public final class Runner {
     }
 
     @discardableResult
-    public func sync(_ method: @escaping Runnable) -> Runner {
+    public func sync(_ method: @escaping () -> Void) -> Runner {
         queue.sync(execute: method)
         return self
     }
 
     @discardableResult
-    public func async(_ method: @escaping Runnable) -> Runner {
+    public func async(_ method: @escaping () -> Void) -> Runner {
         queue.async(execute: method)
         return self
     }
 
     @discardableResult
-    public func async(after: TimeInterval, _ method: @escaping Runnable) -> Runner {
+    public func async(after: TimeInterval, _ method: @escaping () -> Void) -> Runner {
         queue.asyncAfter(deadline: DispatchTime.now() + after, execute: method)
         return self
     }
@@ -73,7 +71,7 @@ public final class Runner {
         return Runner(DispatchQueue.main)
     }
 
-    public static func onMain(_ method: @escaping Runnable) {
+    public static func onMain(_ method: @escaping () -> Void) {
         if Runner.isMain() {
             method()
         } else {
@@ -81,11 +79,11 @@ public final class Runner {
         }
     }
 
-    public static func main(method: @escaping Runnable) {
+    public static func main(method: @escaping () -> Void) {
         DispatchQueue.main.async(execute: method)
     }
 
-    public static func main(after: TimeInterval, _ method: @escaping Runnable) {
+    public static func main(after: TimeInterval, _ method: @escaping () -> Void) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + after, execute: method)
     }
 }

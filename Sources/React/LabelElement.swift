@@ -61,17 +61,17 @@ public class LabelElementState: ElementState {
         }
     }
 
-    public func apply(label: UILabel) {
+    public func apply(label view: UILabel) {
         if let text = _text {
-            label.attributedText = text
+            view.attributedText = text
         }
         if let numberOfLines = _numberOfLines {
-            label.numberOfLines = numberOfLines
+            view.numberOfLines = numberOfLines
         }
         if let textAlignment = _textAlignment {
-            label.textAlignment = textAlignment
+            view.textAlignment = textAlignment
         }
-        super.apply(view: label)
+        super.apply(view: view)
     }
 
     public override func invalidate() {

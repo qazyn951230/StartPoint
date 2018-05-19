@@ -63,17 +63,17 @@ public class ButtonElementState: ElementState {
         }
     }
 
-    public func apply(button: UIButton) {
+    public func apply(button view: UIButton) {
         _titles?.forEach { (state, title) in
-            button.setAttributedTitle(title, for: state)
+            view.setAttributedTitle(title, for: state)
         }
         _images?.forEach { (state, image) in
-            button.setImage(image, for: state)
+            view.setImage(image, for: state)
         }
         _backgroundImages?.forEach { (state, image) in
-            button.setBackgroundImage(image, for: state)
+            view.setBackgroundImage(image, for: state)
         }
-        super.apply(view: button)
+        super.apply(view: view)
     }
 
     public override func invalidate() {
