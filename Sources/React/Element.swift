@@ -68,6 +68,12 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
+    public override var alpha: Double {
+        didSet {
+            self.alpha(alpha)
+        }
+    }
+
     deinit {
         creator = nil
         if let view = self.view {
@@ -418,6 +424,17 @@ open class Element<View: UIView>: BasicElement {
             view.isUserInteractionEnabled = value
         } else {
             pendingState.interactive = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func alpha(_ value: Double) -> Self {
+        if Runner.isMain(), let view = view {
+            view.alpha = CGFloat(value)
+        } else {
+            pendingState.alpha = value
             registerPendingState()
         }
         return self

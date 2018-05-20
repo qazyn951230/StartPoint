@@ -43,6 +43,12 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
+    public override var alpha: Double {
+        didSet {
+            self.alpha(alpha)
+        }
+    }
+
     public init(children: [BasicElement] = []) {
         _children = children.compactMap {
             $0 as? BasicLayerElement
@@ -284,6 +290,17 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             let state = pendingState
             state.borderColor = color
             state.borderWidth = width
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func alpha(_ value: Double) -> Self {
+        if Runner.isMain(), let layer = layer {
+            layer.opacity = Float(value)
+        } else {
+            pendingState.alpha = value
             registerPendingState()
         }
         return self

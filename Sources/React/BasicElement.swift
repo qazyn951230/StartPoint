@@ -201,7 +201,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Configuring the Event-Related Behavior
-    public var interactive: Bool = false
+    public var interactive: Bool = true
     public var alpha: Double = 1.0
 
     // MARK: - Managing the Element Hierarchy
@@ -372,7 +372,12 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
             return nil
         }
         for child in children {
-            let p = convert(point, to: child)
+            let p: CGPoint
+            if framed {
+                p = CGPoint(x: point.x - CGFloat(child._frame.x), y: point.y - CGFloat(child._frame.y))
+            } else {
+                p = CGPoint(x: point.x - CGFloat(child._frame.x - _frame.x), y: point.y - CGFloat(child._frame.y - _frame.y))
+            }
             if let c = child.hitTest(point: p, event: event) {
                 return c
             }

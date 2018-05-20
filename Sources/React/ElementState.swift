@@ -32,6 +32,7 @@ public protocol ElementProperty {
     var hidden: Bool { get }
     var tintColor: UIColor { get }
     var interactive: Bool { get }
+    var alpha: Double { get }
     // CALayer
     var cornerRadius: CGFloat { get }
     var borderColor: CGColor? { get }
@@ -103,6 +104,16 @@ open class ElementState: ElementProperty {
         }
     }
     var _interactive: Bool?
+
+    public var alpha: Double {
+        get {
+            return _alpha ?? 1.0
+        }
+        set {
+            _alpha = newValue
+        }
+    }
+    var _alpha: Double?
 
     // MARK: Layer properties
     public var cornerRadius: CGFloat {
@@ -207,6 +218,12 @@ open class ElementState: ElementProperty {
         if let tintColor = _tintColor {
             view.tintColor = tintColor
         }
+        if let interactive = _interactive {
+            view.isUserInteractionEnabled = interactive
+        }
+        if let alpha = _alpha {
+            view.alpha = CGFloat(alpha)
+        }
         if let cornerRadius = _cornerRadius {
             layer.cornerRadius = cornerRadius
         }
@@ -248,6 +265,9 @@ open class ElementState: ElementProperty {
         if let hidden = _hidden {
             layer.isHidden = hidden
         }
+        if let alpha = _alpha {
+            layer.opacity = Float(alpha)
+        }
         if let cornerRadius = _cornerRadius {
             layer.cornerRadius = cornerRadius
         }
@@ -282,6 +302,7 @@ open class ElementState: ElementProperty {
         _hidden = nil
         _tintColor = nil
         _interactive = nil
+        _alpha = nil
 
         _cornerRadius = nil
         _borderColor = nil
