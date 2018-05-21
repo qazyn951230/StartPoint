@@ -294,6 +294,14 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         calculateFrame(left: 0, top: 0)
     }
 
+    public func layout(width: CGFloat, height: CGFloat) {
+        layout(width: Double(width), height: Double(height))
+    }
+
+    public func layout(width: Int, height: Int) {
+        layout(width: Double(width), height: Double(height))
+    }
+
     public func layout(within view: UIView) {
         layout(width: Double(view.frame.width), height: Double(view.frame.height))
     }

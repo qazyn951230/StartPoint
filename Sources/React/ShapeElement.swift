@@ -85,7 +85,7 @@ public class ShapeElementState: ElementState {
     }
 }
 
-public class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeLayer> {
+open class BasicShapeElement<ShapeLayer: CAShapeLayer>: BasicLayerElement<ShapeLayer> {
     var _shapeState: ShapeElementState?
     public override var pendingState: ShapeElementState {
         let state = _shapeState ?? ShapeElementState()

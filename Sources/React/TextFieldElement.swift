@@ -239,7 +239,7 @@ public final class TextFieldDelegate: NSObject, UITextFieldDelegate {
     }
 }
 
-public class TextFieldElement: Element<UITextField> {
+open class TextFieldElement: Element<UITextField> {
     var text: NSAttributedString?
     var placeholder: NSAttributedString?
 
@@ -274,7 +274,7 @@ public class TextFieldElement: Element<UITextField> {
         return Size.zero
     }
 
-    public override func buildView() -> UITextField {
+    open override func buildView() -> UITextField {
         assertMainThread()
         let view = super.buildView()
         view.delegate = _delegate

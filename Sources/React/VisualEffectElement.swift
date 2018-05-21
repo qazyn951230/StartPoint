@@ -22,21 +22,7 @@
 
 import UIKit
 
-public final class VisualEffectElementState: ElementState {
-}
-
-public final class VisualEffectElement: Element<UIVisualEffectView> {
-    var _visualEffectState: VisualEffectElementState?
-
-    public override var pendingState: VisualEffectElementState {
-        let state = _visualEffectState ?? VisualEffectElementState()
-        if _visualEffectState == nil {
-            _visualEffectState = state
-            _pendingState = state
-        }
-        return state
-    }
-
+open class VisualEffectElement: Element<UIVisualEffectView> {
     public init(effect: UIVisualEffect, children: [BasicElement] = []) {
         super.init(children: children)
         creator = {
@@ -44,7 +30,7 @@ public final class VisualEffectElement: Element<UIVisualEffectView> {
         }
     }
 
-    public override func buildChildren() {
+    open override func buildChildren() {
         if let view = self.view {
             super.buildChildren(in: view.contentView)
         }

@@ -82,7 +82,7 @@ public class LabelElementState: ElementState {
     }
 }
 
-public class LabelElement: Element<UILabel> {
+open class LabelElement: Element<UILabel> {
     var text: NSAttributedString?
     var lines: Int = 1
     var autoLines: Bool = false

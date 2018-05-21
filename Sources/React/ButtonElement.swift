@@ -85,7 +85,7 @@ public class ButtonElementState: ElementState {
     }
 }
 
-public class ButtonElement: Element<UIButton> {
+open class ButtonElement: Element<UIButton> {
     let label: LabelElement?
     let image: BasicElement?
 
@@ -123,7 +123,7 @@ public class ButtonElement: Element<UIButton> {
         return state
     }
 
-    public override func buildChildren(in view: UIView) {
+    open override func buildChildren(in view: UIView) {
         for child in children {
             if child != label && child != image {
                 child.build(in: view)
@@ -131,7 +131,7 @@ public class ButtonElement: Element<UIButton> {
         }
     }
 
-    public override func applyState(to view: UIButton) {
+    open override func applyState(to view: UIButton) {
         if _buttonState?.tap == true {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
@@ -204,7 +204,7 @@ public class ButtonElement: Element<UIButton> {
         _tap?(self)
     }
 
-    public override func tap(_ method: @escaping (BasicElement) -> Void) {
+    open override func tap(_ method: @escaping (BasicElement) -> Void) {
         super.tap(method)
         if Runner.isMain(), let view = view {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
