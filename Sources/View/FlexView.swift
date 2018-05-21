@@ -22,12 +22,41 @@
 
 import UIKit
 
-public protocol Creatable {
-    static func create() -> Self
-}
+open class FlexView: UIView {
+    public let root: BasicElement = BasicElement()
 
-public extension Creatable where Self: UIViewController {
-    public static func create() -> Self {
-        return self.init(nibName: nil, bundle: nil)
+    open override var bounds: CGRect {
+        didSet {
+            root.layout.size(bounds.size)
+        }
+    }
+
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        initialization()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialization()
+    }
+
+    open func initialization() {
+        // Do nothing.
+    }
+
+    open func layout() {
+        root.layout()
+        root.build(in: self)
+    }
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        layout()
+    }
+
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        root.layout(width: Double(size.width), height: Double(size.height))
+        return root._frame.cgSize
     }
 }

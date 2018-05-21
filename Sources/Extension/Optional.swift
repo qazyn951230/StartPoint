@@ -28,3 +28,33 @@ extension Optional {
         }
     }
 }
+
+extension Optional where Wrapped: Comparable {
+    public static func <(lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+        if let left = lhs, let right = rhs {
+            return left < right
+        }
+        return false
+    }
+
+    public static func <=(lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+        if let left = lhs, let right = rhs {
+            return left <= right
+        }
+        return false
+    }
+
+    public static func >=(lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+        if let left = lhs, let right = rhs {
+            return left >= right
+        }
+        return false
+    }
+
+    public static func >(lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+        if let left = lhs, let right = rhs {
+            return left > right
+        }
+        return false
+    }
+}

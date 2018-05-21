@@ -138,6 +138,107 @@ public class TextFieldElementState: ElementState {
     }
 }
 
+public enum TextFieldElementEndEditingReason {
+    case committed
+    case unknown
+
+    @available(iOS 10.0, *)
+    public init(reason: UITextFieldDidEndEditingReason) {
+        switch reason {
+        case .committed:
+            self = .committed
+        default:
+            self = .unknown
+        }
+    }
+}
+
+public protocol TextFieldElementDelegate: class {
+    func textFieldShouldBeginEditing(_ textField: TextFieldElement) -> Bool
+    func textFieldDidBeginEditing(_ textField: TextFieldElement)
+    func textFieldShouldEndEditing(_ textField: TextFieldElement) -> Bool
+    func textField(_ textField: TextFieldElement, didEndEditing reason: TextFieldElementEndEditingReason)
+    func textField(_ textField: TextFieldElement, shouldReplaceTo string: String, in range: Range<String.Index>) -> Bool
+    func textFieldShouldClear(_ textField: TextFieldElement) -> Bool
+    func textFieldShouldReturn(_ textField: TextFieldElement) -> Bool
+}
+
+public extension TextFieldElementDelegate {
+    public func textFieldShouldBeginEditing(_ textField: TextFieldElement) -> Bool {
+        return true
+    }
+
+    func textFieldDidBeginEditing(_ textField: TextFieldElement) {
+        // Do nothing.
+    }
+
+    func textFieldShouldEndEditing(_ textField: TextFieldElement) -> Bool {
+        return true
+    }
+
+    func textField(_ textField: TextFieldElement, didEndEditing reason: TextFieldElementEndEditingReason) {
+        // Do nothing.
+    }
+
+    func textField(_ textField: TextFieldElement, shouldReplaceTo string: String, in range: Range<String.Index>) -> Bool {
+        return true
+    }
+
+    func textFieldShouldClear(_ textField: TextFieldElement) -> Bool {
+        return true
+    }
+
+    func textFieldShouldReturn(_ textField: TextFieldElement) -> Bool {
+        return true
+    }
+}
+
+public final class TextFieldDelegate: NSObject, UITextFieldDelegate {
+    public weak var delegate: TextFieldElement?
+
+    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldBeginEditing(textField) ?? true
+    }
+
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        assertMainThread()
+        delegate?.textFieldDidBeginEditing(textField)
+    }
+
+    public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldEndEditing(textField) ?? true
+    }
+
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        assertMainThread()
+        delegate?.textFieldDidEndEditing(textField)
+    }
+
+    @available(iOS 10.0, *)
+    public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        assertMainThread()
+        delegate?.textFieldDidEndEditing(textField, reason: reason)
+    }
+
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
+        assertMainThread()
+        return delegate?.textField(textField, shouldChangeCharactersIn: range, replacementString: string) ?? true
+    }
+
+    public func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldClear(textField) ?? true
+    }
+
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldReturn(textField) ?? true
+    }
+}
+
 public class TextFieldElement: Element<UITextField> {
     var text: NSAttributedString?
     var placeholder: NSAttributedString?
@@ -152,9 +253,15 @@ public class TextFieldElement: Element<UITextField> {
         return state
     }
 
+    private let _delegate: TextFieldDelegate = TextFieldDelegate()
+    public weak var delegate: TextFieldElementDelegate?
+    public var validation: ((String) -> Bool)?
+    public var returnAction: (() -> Bool)?
+
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
         layout.measureSelf = measure
+        _delegate.delegate = self
     }
 
     func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
@@ -165,6 +272,70 @@ public class TextFieldElement: Element<UITextField> {
             return Size(cgSize: text.boundingSize(size: size, options: options).ceiled)
         }
         return Size.zero
+    }
+
+    public override func buildView() -> UITextField {
+        assertMainThread()
+        let view = super.buildView()
+        view.delegate = _delegate
+        return view
+    }
+
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldBeginEditing(self) ?? true
+    }
+
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        assertMainThread()
+        delegate?.textFieldDidBeginEditing(self)
+    }
+
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldEndEditing(self) ?? true
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        assertMainThread()
+        delegate?.textField(self, didEndEditing: .committed)
+    }
+
+    @available(iOS 10.0, *)
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        assertMainThread()
+        delegate?.textField(self, didEndEditing: TextFieldElementEndEditingReason(reason: reason))
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String) -> Bool {
+        assertMainThread()
+        guard let delegate = self.delegate else {
+            return true
+        }
+        var value = textField.text ?? String.empty
+        let start = value.index(value.startIndex, offsetBy: range.location)
+        let end = value.index(start, offsetBy: range.length)
+        let range: Range<String.Index> = start..<end
+        value.replaceSubrange(range, with: string)
+        if let fn = validation {
+            return fn(value)
+        }
+        return delegate.textField(self, shouldReplaceTo: value, in: range)
+    }
+
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        return delegate?.textFieldShouldClear(self) ?? true
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        assertMainThread()
+        if let fn = returnAction {
+            return fn()
+        }
+        return delegate?.textFieldShouldReturn(self) ?? true
     }
 
     // MARK: - Configuring a Element’s Visual Appearance

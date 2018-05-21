@@ -22,7 +22,7 @@
 
 import UIKit
 
-open class AppViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate {
+open class AppViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate, IntentTarget {
     open var backBarItem: UIBarButtonItem? = nil
 
     public private(set) var rootView: View? = nil
@@ -31,15 +31,6 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     open override func loadView() {
         rootView = createView()
         view = rootView
-    }
-
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-        initialization()
-    }
-
-    open func viewDidBack() {
-        interactivePopGestureRecognizer?.removeTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
     }
 
     open func initialization() {
@@ -54,12 +45,17 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         }
     }
 
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        initialization()
+    }
+
+    open func viewDidBack() {
+        interactivePopGestureRecognizer?.removeTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+    }
+
     @objc open func backBarItemAction(sender: UIBarButtonItem) {
-        if presentingViewController != nil {
-            dismiss(animated: true)
-        } else {
-            navigationController?.popViewController(animated: true)
-        }
+        finish()
         viewDidBack()
     }
 

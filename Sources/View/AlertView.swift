@@ -22,84 +22,68 @@
 
 import UIKit
 
-open class FlexView: UIView {
-    public let root: BasicElement = BasicElement(framed: false, children: [])
+open class BasicAlertView: Hashable {
+    public var view: UIView?
+    public let root: BasicElement
 
-    open override var bounds: CGRect {
-        didSet {
-            root.layout.size(bounds.size)
+    public init() {
+        root = BasicElement().style { flex in
+            flex.size(Device.size).alignItems(.center).justifyContent(.center)
         }
     }
 
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialization()
+    public var hashValue: Int {
+        return address(of: self).hashValue
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialization()
-    }
-
-    open func initialization() {
+    open func buildView() {
         // Do nothing.
     }
 
-    open func layout() {
-        root.layout()
-        root.build(in: self)
-    }
-
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        layout()
-    }
-
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        root.layout(width: Double(size.width), height: Double(size.height))
-        return root._frame.cgSize
-    }
-}
-
-open class BasicAlertView: FlexView {
-    open override func initialization() {
-        frame = CGRect(origin: .zero, size: Device.size)
-        root.layout.size(Device.size).alignItems(.center).justifyContent(.center)
-        backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
-    }
-
-    public func show(in view: UIView, animated: Bool = true) {
-        if animated {
-            alpha = 0
-            view.addSubview(self)
-            UIView.animate(withDuration: 0.3) { [weak self] in
-                self?.alpha = 1
-            }
-        } else {
-            view.addSubview(self)
+    public func show(animated: Bool = true) {
+        if view == nil {
+            buildView()
         }
-    }
-
-    public func show(inWindow view: UIView, animated: Bool = true) {
-        guard let window = view.window else {
+        guard let view = view else {
             return
         }
-        show(in: window, animated: animated)
-    }
-
-    public func show(in controller: UIViewController, animated: Bool = true) {
-        show(in: controller.view, animated: animated)
+        let window = BasicAlertView.alertWindow()
+        window.makeKeyAndVisible()
+        BasicAlertView.alerts.append(self)
+        if animated {
+            view.alpha = 0
+            window.addSubview(view)
+            UIView.animate(withDuration: 0.3) {
+                view.alpha = 1
+            }
+        } else {
+            window.addSubview(view)
+        }
     }
 
     public func dismiss(animated: Bool = true) {
+        guard let view = view else {
+            return
+        }
         if animated {
-            UIView.animate(withDuration: 0.3, animations: { [weak self] in
-                self?.alpha = 0
-            }, completion: { [weak self] _ in
-                self?.removeFromSuperview()
+            UIView.animate(withDuration: 0.3, animations: {
+                view.alpha = 0
+            }, completion: { _ in
+                view.removeFromSuperview()
+                if BasicAlertView.window?.subviews.count < 1 {
+                    BasicAlertView.window = nil
+                    BasicAlertView.alerts.removeAll()
+                }
             })
         } else {
-            removeFromSuperview()
+            view.removeFromSuperview()
+            if BasicAlertView.window?.subviews.count < 1 {
+                BasicAlertView.window = nil
+                BasicAlertView.alerts.removeAll()
+            }
+        }
+        if let index = BasicAlertView.alerts.index(of: self) {
+            BasicAlertView.alerts.remove(at: index)
         }
     }
 
@@ -111,41 +95,60 @@ open class BasicAlertView: FlexView {
 //        case `default`
 //        case transparent
 //    }
+
+    public private(set) static var window: UIWindow?
+    private static var alerts: [BasicAlertView] = []
+
+    public static func alertWindow() -> UIWindow {
+        if let old = window {
+            return old
+        }
+        let new = UIWindow(frame: UIScreen.main.bounds)
+        new.windowLevel = UIWindowLevelAlert
+        new.backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
+        window = new
+        return new
+    }
+
+    public static func ==(lhs: BasicAlertView, rhs: BasicAlertView) -> Bool {
+        return lhs === rhs
+    }
 }
 
-public final class AlertView: BasicAlertView {
-    var content: BasicElement = BasicElement()
-//    let content: Element<UIVisualEffectView> = {
-//        let element = Element<UIVisualEffectView>()
-//        element.creator = {
-//            let effect: UIBlurEffect
-//            if #available(iOS 10.0, *) {
-//                effect = UIBlurEffect(style: .regular)
-//            } else {
-//                effect = UIBlurEffect(style: .light)
-//            }
-//            return UIVisualEffectView(effect: effect)
-//        }
-//        return element
-//    }()
-    var buttons: BasicElement?
-
-    public override func initialization() {
-        super.initialization()
+public final class StartAlertView: BasicAlertView {
+    let content: VisualEffectElement = {
         let effect = UIBlurEffect(style: .light)
-        let _content = VisualEffectElement(effect: effect)
+        return VisualEffectElement(effect: effect)
             .cornerRadius(14)
             .backgroundColor(UIColor(white: 1.0, alpha: 0.8))
             .style { flex in
-                flex.width(.percentage(0.72)).minWidth(float: 250)
+                flex.width(.percentage(72)).minWidth(float: 250)
                     .alignItems(.center)
             }
-        root.addChild(_content)
-        content = _content
+    }()
+//    let content: Element<UIView> = {
+//        return Element<UIView>()
+//            .cornerRadius(14)
+//            .backgroundColor(UIColor(white: 1.0, alpha: 0.8))
+//            .style { flex in
+//                flex.width(.percentage(72)).minWidth(float: 250)
+//                    .alignItems(.center)
+//            }
+//    }()
+    var buttons: BasicElement?
+
+    public override init() {
+        super.init()
+        root.addChild(content)
+    }
+
+    public override func buildView() {
+        root.layout()
+        view = content.buildView()
     }
 
     @discardableResult
-    public func title(_ value: NSAttributedString) -> AlertView {
+    public func title(_ value: NSAttributedString) -> StartAlertView {
         content.layout.padding(top: 19)
         let label = LabelElement().text(value).multiLine()
             .textAlignment(.center)
@@ -157,14 +160,14 @@ public final class AlertView: BasicAlertView {
     }
 
     @discardableResult
-    public func title(_ value: String) -> AlertView {
+    public func title(_ value: String) -> StartAlertView {
         let text = AttributedString(value).color(UIColor.black)
             .systemFont(17, weight: .semibold).done()
         return title(text)
     }
 
     @discardableResult
-    public func text(_ value: NSAttributedString) -> AlertView {
+    public func text(_ value: NSAttributedString) -> StartAlertView {
         content.layout.padding(top: 19)
         let label = LabelElement().text(value).multiLine()
             .textAlignment(.center)
@@ -176,20 +179,20 @@ public final class AlertView: BasicAlertView {
     }
 
     @discardableResult
-    public func text(_ value: String) -> AlertView {
+    public func text(_ value: String) -> StartAlertView {
         let _text = AttributedString(value).color(UIColor.black)
             .systemFont(13).done()
         return text(_text)
     }
 
     @discardableResult
-    public func action(_ value: NSAttributedString) -> AlertView {
+    public func action(_ value: NSAttributedString) -> StartAlertView {
         let button = ButtonElement().title(value)
         return addButton(button)
     }
 
     @discardableResult
-    func addButton(_ value: ButtonElement) -> AlertView {
+    func addButton(_ value: ButtonElement) -> StartAlertView {
         value.layout.flex(1).height(float: 44)
         buttonsElement().addChild(value)
         return self
