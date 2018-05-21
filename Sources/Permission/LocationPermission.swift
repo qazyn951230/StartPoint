@@ -35,9 +35,7 @@ public class RxLocationManagerDelegateProxy: DelegateProxy<CLLocationManager, CL
     }
 
     public class func registerKnownImplementations() {
-        self.register {
-            RxLocationManagerDelegateProxy(locationManager: $0)
-        }
+        self.register { RxLocationManagerDelegateProxy(locationManager: $0) }
     }
 }
 
@@ -78,11 +76,9 @@ public struct LocationPermission: PermissionItem {
             .do(onNext: { $0.requestWhenInUseAuthorization() })
             .flatMap { (manager: CLLocationManager) in
                 manager.rx.didChangeAuthorization
-            }
-            .skipWhile { (status: CLAuthorizationStatus) in
+            }.skipWhile { (status: CLAuthorizationStatus) in
                 status == CLAuthorizationStatus.notDetermined
-            }
-            .take(1)
+            }.take(1)
             .map(LocationPermission.normalize)
             .asDriver(onErrorJustReturn: Permission.denied)
     }

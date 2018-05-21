@@ -34,6 +34,7 @@ public enum PermissionType {
     case camera
     case location
     case notification(NotificationOptions)
+    case contact
 
     var item: PermissionItem {
         switch self {
@@ -45,11 +46,13 @@ public enum PermissionType {
             return LocationPermission()
         case .notification(let options):
             return NotificationPermission(options: options)
+        case .contact:
+            return ContactPermission()
         }
     }
 }
 
-// https://github.com/delba/Permission
+// Inspired by https://github.com/delba/Permission
 public enum Permission {
     case notDetermined
     case authorized
