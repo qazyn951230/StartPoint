@@ -54,14 +54,17 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
             $0 as? BasicLayerElement
         }
         super.init(framed: true, children: children)
+        interactive = false
     }
 
+    // TODO: Remove this
     public init(children: [BasicElement], creator: @escaping () -> Layer) {
         self.creator = creator
         _children = children.compactMap {
             $0 as? BasicLayerElement
         }
         super.init(framed: true, children: children)
+        interactive = false
     }
 
     public override var loaded: Bool {
@@ -88,22 +91,25 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
-    public func loaded(then method: @escaping (BasicLayerElement<Layer>, Layer) -> Void) {
-        if Runner.isMain(), let layer = self.layer {
-            method(self, layer)
-        } else {
-            _loaded = _loaded ?? []
-            _loaded?.append(method)
-        }
-    }
-
     override func _removeFromOwner() {
         super._removeFromOwner()
         layer?.removeFromSuperlayer()
     }
 
+    public func onLayerLoaded(then method: @escaping (BasicLayerElement<Layer>) -> Void) {
+        onLoaded { basic in
+            assertMainThread()
+            if let view = basic as? BasicLayerElement<Layer> {
+                method(view)
+            }
+        }
+    }
+
     open override func build(in view: UIView) {
         build(in: view.layer)
+        let methods = _onLoaded
+        _onLoaded.removeAll()
+        methods.forEach { $0(self) }
     }
 
     open override func build(in layer: CALayer) {
@@ -127,12 +133,9 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         let this = _createLayer()
         applyState(to: this)
         buildChildren(in: this)
-        if let methods = _loaded {
-            methods.forEach {
-                $0(self, this)
-            }
-        }
-        _loaded = nil
+//        let methods = _onLoaded
+//        _onLoaded.removeAll()
+//        methods.forEach { $0(self) }
         return this
     }
 

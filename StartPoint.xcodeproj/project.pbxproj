@@ -906,10 +906,10 @@
 			};
 			buildConfigurationList = BC6BA1A31F2DC08600772AA8 /* Build configuration list for PBXProject "StartPoint" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = zh-CN;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
+				zh-CN,
 			);
 			mainGroup = BC6BA19F1F2DC08600772AA8;
 			productRefGroup = BC6BA1AA1F2DC08700772AA8 /* Products */;

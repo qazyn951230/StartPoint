@@ -188,11 +188,11 @@ public final class StartAlertView: BasicAlertView {
     @discardableResult
     public func action(_ value: NSAttributedString) -> StartAlertView {
         let button = ButtonElement().title(value)
-        return addButton(button)
+        return self.button(button)
     }
 
     @discardableResult
-    func addButton(_ value: ButtonElement) -> StartAlertView {
+    public func button(_ value: ButtonElement) -> StartAlertView {
         value.layout.flex(1).height(float: 44)
         buttonsElement().addChild(value)
         return self

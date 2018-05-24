@@ -29,8 +29,6 @@ open class Element<View: UIView>: BasicElement {
     public internal(set) var view: View?
     public internal(set) var creator: (() -> View)?
 
-    var _loaded: [(Element<View>, View) -> Void]?
-
     public init(children: [BasicElement] = []) {
         super.init(framed: true, children: children)
     }
@@ -83,15 +81,6 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
-    public func loaded(then method: @escaping (Element<View>, View) -> Void) {
-        if Runner.isMain(), let view = self.view {
-            method(self, view)
-        } else {
-            _loaded = _loaded ?? []
-            _loaded?.append(method)
-        }
-    }
-
     public override func addChild(_ element: BasicElement) {
         assertThreadAffinity(for: self)
         if let old = element.owner, old == self {
@@ -129,6 +118,15 @@ open class Element<View: UIView>: BasicElement {
         view?.removeFromSuperview()
     }
 
+    public func onViewLoaded(then method: @escaping (Element<View>) -> Void) {
+        onLoaded { basic in
+            assertMainThread()
+            if let view = basic as? Element<View> {
+                method(view)
+            }
+        }
+    }
+
     open override func build(in view: UIView) {
         assertMainThread()
         let this = buildView()
@@ -140,6 +138,9 @@ open class Element<View: UIView>: BasicElement {
         } else {
             view.addSubview(this)
         }
+        let methods = _onLoaded
+        _onLoaded.removeAll()
+        methods.forEach { $0(self) }
     }
 
     open func buildView() -> View {
@@ -150,12 +151,9 @@ open class Element<View: UIView>: BasicElement {
         let this = _createView()
         applyState(to: this)
         buildChildren()
-        if let methods = _loaded {
-            methods.forEach {
-                $0(self, this)
-            }
-        }
-        _loaded = nil
+//        let methods = _onLoaded
+//        _onLoaded.removeAll()
+//        methods.forEach { $0(self) }
         return this
     }
 
@@ -414,6 +412,18 @@ open class Element<View: UIView>: BasicElement {
             let state = pendingState
             state.shadowPath = value
             registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func onLoadedShadowPath<View>(_ method: @escaping (Element<View>) -> UIBezierPath) -> Self {
+        onLoaded { basic in
+            guard let view = basic as? Element<View> else {
+                return
+            }
+            let path = method(view)
+            view.shadowPath(path.cgPath)
         }
         return self
     }

@@ -24,6 +24,7 @@ import UIKit
 import QuartzCore
 import CoreGraphics
 import Dispatch
+import RxSwift
 
 open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let layout = FlexLayout()
@@ -113,6 +114,15 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return owner
     }
 
+    var _onLoaded: [(BasicElement) -> Void] = []
+    public func onLoaded(then method: @escaping (BasicElement) -> Void) {
+        if Runner.isMain(), loaded {
+            method(self)
+        } else {
+            _onLoaded.append(method)
+        }
+    }
+
     // MARK: - Responding to Touch Events
     open func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
         if let element = hitTest(point: event.location, event: nil) {
@@ -171,6 +181,9 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
             $0.build(in: view)
         }
 #endif
+        let methods = _onLoaded
+        _onLoaded.removeAll()
+        methods.forEach { $0(self) }
     }
 
 #if DEBUG

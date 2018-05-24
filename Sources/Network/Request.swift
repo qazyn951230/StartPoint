@@ -30,7 +30,7 @@ extension Request: ReactiveCompatible {
 }
 
 extension Reactive where Base: DataRequest {
-    public func response<T:DataResponseSerializerProtocol>(serializer: T, queue: DispatchQueue? = nil)
+    public func response<T: DataResponseSerializerProtocol>(serializer: T, queue: DispatchQueue? = nil)
             -> Observable<(DataResponse<T.SerializedObject>, T.SerializedObject)> {
         return Observable<(DataResponse<T.SerializedObject>, T.SerializedObject)>.create { observer in
             var request: DataRequest = self.base

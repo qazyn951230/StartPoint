@@ -119,12 +119,9 @@ public final class RequestBuilder {
     }
 
     public func build(session: SessionManager = SessionManager.default) -> Observable<DataRequest> {
-        func _build(build: RequestBuilder) -> DataRequest {
-            return session.request(build.url, method: build.method, parameters: build.parameters,
-                encoding: build.encoding, headers: build.headers)
-        }
-
-        return Observable<RequestBuilder>.just(self, scheduler: scheduler)
-            .map(_build)
+        let parameters: [String: Any]? = self.parameters.isEmpty ? nil : self.parameters
+        let headers: [String: String]? = self.headers.isEmpty ? nil : self.headers
+        return session.rx.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+            .subscribeOn(scheduler)
     }
 }
