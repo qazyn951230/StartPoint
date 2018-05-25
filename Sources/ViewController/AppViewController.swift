@@ -72,6 +72,10 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     open func createView() -> View {
         return View(frame: .zero)
     }
+
+    open func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
+        return self
+    }
 }
 
 public extension AppViewController where View: UIScrollView {

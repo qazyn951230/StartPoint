@@ -100,7 +100,7 @@ open class StartWebController: AppViewController<WKWebView> {
             .distinctUntilChanged()
     }
 
-    open func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
+    open override func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
         if let text = intent.stringExtra(key: StartWebController.intentUrlKey),
            let url = URL(string: text) {
             initUrl = url
@@ -119,13 +119,13 @@ open class StartWebController: AppViewController<WKWebView> {
         return UINavigationController(rootViewController: self)
     }
 
-    open static func intent(url: String) -> Intent {
-        let intent = Intent(target: StartWebController.self)
+    open class func intent(url: String) -> Intent {
+        let intent = Intent(target: self)
         intent.add(extra: url, key: intentUrlKey)
         return intent
     }
 
-    open static func createAsRoot() -> StartWebController {
+    open class func createAsRoot() -> Self {
         let web = create()
         let close = StartPoint.R.image.ic_arrow_back()
         web.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: web,
