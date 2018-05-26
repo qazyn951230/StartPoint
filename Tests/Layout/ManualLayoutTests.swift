@@ -22,69 +22,325 @@
 
 @testable import StartPoint
 import XCTest
+import UIKit
+import CoreGraphics
 
 class ManualLayoutTests: XCTestCase {
-    func layout(container size: CGSize? = nil) -> Layout {
-        return Layout(for: UIView(frame: .zero), container: size)
+    func layout(size: CGSize? = nil) -> Layout {
+        return Layout(view: UIView(frame: .zero), parentSize: size)
+    }
+
+    func layout(width: CGFloat, height: CGFloat) -> Layout {
+        return layout(size: CGSize(width: width, height: height))
     }
 
     func testBasicLayout() {
-        let root = layout()
-        XCTAssertEqual(root.computedX, 0)
-        XCTAssertEqual(root.computedY, 0)
-        XCTAssertEqual(root.computedWidth, 0)
-        XCTAssertEqual(root.computedHeight, 0)
-
-        _ = root.left(10).right(10).top(10).bottom(10)
-        XCTAssertEqual(root.computedX, 10)
-        XCTAssertEqual(root.computedY, 10)
-        XCTAssertEqual(root.computedWidth, 0)
-        XCTAssertEqual(root.computedHeight, 0)
-
-        let root1 = layout(container: CGSize(width: 100, height: 100))
-            .left(10).right(10).top(10).bottom(10)
-        XCTAssertEqual(root1.computedX, 10)
-        XCTAssertEqual(root1.computedY, 10)
-        XCTAssertEqual(root1.computedWidth, 80)
-        XCTAssertEqual(root1.computedHeight, 80)
-
-        let root2 = layout()
-            .left(10).top(10).width(80).height(80)
-        XCTAssertEqual(root2.computedX, 10)
-        XCTAssertEqual(root2.computedY, 10)
-        XCTAssertEqual(root2.computedWidth, 80)
-        XCTAssertEqual(root2.computedHeight, 80)
-
-        let root3 = layout(container: CGSize(width: 100, height: 100))
-            .right().top().width(40).height(40)
-        XCTAssertEqual(root3.computedX, 60)
-        XCTAssertEqual(root3.computedY, 0)
-        XCTAssertEqual(root3.computedWidth, 40)
-        XCTAssertEqual(root3.computedHeight, 40)
+        let object = layout()
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 0)
+        XCTAssertEqual(frame.height, 0)
     }
 
-    func testRowLayout() {
-        let first = UIView(frame: .zero)
-        Layout(for: first).width(50).height(50).apply()
-        let second = UIView(frame: .zero)
-        Layout(for: second, containerWidth: 200).right().width(50).height(50).apply()
-        let third = UIView(frame: .zero)
-        Layout(for: third, containerWidth: 200).left(to: first, edge: .right)
-            .width(0, to: second, edge: .left).height(50).apply()
+    func testBasicLayout2() {
+        let object = layout(width: 100, height: 100)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 100)
+        XCTAssertEqual(frame.height, 100)
+    }
 
-        XCTAssertEqual(first.frame.origin.x, 0)
-        XCTAssertEqual(first.frame.origin.y, 0)
-        XCTAssertEqual(first.frame.size.width, 50)
-        XCTAssertEqual(first.frame.size.height, 50)
+    func testBasicLayout3() {
+        let object = layout(width: 100, height: 100).left(10)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 10)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 90)
+        XCTAssertEqual(frame.height, 100)
 
-        XCTAssertEqual(second.frame.origin.x, 150)
-        XCTAssertEqual(second.frame.origin.y, 0)
-        XCTAssertEqual(second.frame.size.width, 50)
-        XCTAssertEqual(second.frame.size.height, 50)
+        let object1 = layout(width: 100, height: 100).left(0.1)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 10)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 90)
+        XCTAssertEqual(frame1.height, 100)
+    }
 
-        XCTAssertEqual(third.frame.origin.x, 50)
-        XCTAssertEqual(third.frame.origin.y, 0)
-        XCTAssertEqual(third.frame.size.width, 100)
-        XCTAssertEqual(third.frame.size.height, 50)
+    func testBasicLayout4() {
+        let object = layout(width: 100, height: 100).right(10)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 90)
+        XCTAssertEqual(frame.height, 100)
+
+        let object1 = layout(width: 100, height: 100).right(0.1)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 90)
+        XCTAssertEqual(frame1.height, 100)
+    }
+
+    func testBasicLayout5() {
+        let object = layout(width: 100, height: 100).top(10)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 10)
+        XCTAssertEqual(frame.width, 100)
+        XCTAssertEqual(frame.height, 90)
+
+        let object1 = layout(width: 100, height: 100).top(0.1)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 10)
+        XCTAssertEqual(frame1.width, 100)
+        XCTAssertEqual(frame1.height, 90)
+    }
+
+    func testBasicLayout6() {
+        let object = layout(width: 100, height: 100).bottom(10)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 100)
+        XCTAssertEqual(frame.height, 90)
+
+        let object1 = layout(width: 100, height: 100).bottom(0.1)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 100)
+        XCTAssertEqual(frame1.height, 90)
+    }
+
+    func testBasicLayout7() {
+        let object = layout(width: 100, height: 100).left(10).right(10)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 10)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 80)
+        XCTAssertEqual(frame.height, 100)
+
+        let object1 = layout(width: 100, height: 100).top(10).bottom(10)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 10)
+        XCTAssertEqual(frame1.width, 100)
+        XCTAssertEqual(frame1.height, 80)
+
+        let object2 = layout(width: 100, height: 100).left(10).right(10)
+            .top(10).bottom(10)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 10)
+        XCTAssertEqual(frame2.minY, 10)
+        XCTAssertEqual(frame2.width, 80)
+        XCTAssertEqual(frame2.height, 80)
+    }
+
+    func testRelativeLeftLayout() {
+        let other = UIView(frame: CGRect(x: 50, y: 50, width: 50, height: 50))
+        let object = layout(width: 100, height: 100).left(10, to: other, edge: .left)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 40)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 60)
+        XCTAssertEqual(frame.height, 100)
+
+        let object1 = layout(width: 100, height: 100).left(10, to: other, edge: .right)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 90)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 10)
+        XCTAssertEqual(frame1.height, 100)
+
+        let object2 = layout(width: 100, height: 100).left(10, from: other, edge: .left)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 60)
+        XCTAssertEqual(frame2.minY, 0)
+        XCTAssertEqual(frame2.width, 40)
+        XCTAssertEqual(frame2.height, 100)
+
+        let object3 = layout(width: 100, height: 100).left(10, from: other, edge: .right)
+        object3.apply()
+        let frame3: CGRect = object3.view.frame
+        XCTAssertEqual(frame3.minX, 110)
+        XCTAssertEqual(frame3.minY, 0)
+        XCTAssertEqual(frame3.width, 0)
+        XCTAssertEqual(frame3.height, 100)
+    }
+
+    func testRelativeRightLayout() {
+        let other = UIView(frame: CGRect(x: 50, y: 50, width: 50, height: 50))
+        let object = layout(width: 100, height: 100).right(10, to: other, edge: .left)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 40)
+        XCTAssertEqual(frame.height, 100)
+
+        let object1 = layout(width: 100, height: 100).right(10, to: other, edge: .right)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 90)
+        XCTAssertEqual(frame1.height, 100)
+
+        let object2 = layout(width: 100, height: 100).right(10, from: other, edge: .left)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 0)
+        XCTAssertEqual(frame2.minY, 0)
+        XCTAssertEqual(frame2.width, 60)
+        XCTAssertEqual(frame2.height, 100)
+
+        let object3 = layout(width: 100, height: 100).right(10, from: other, edge: .right)
+        object3.apply()
+        let frame3: CGRect = object3.view.frame
+        XCTAssertEqual(frame3.minX, 0)
+        XCTAssertEqual(frame3.minY, 0)
+        XCTAssertEqual(frame3.width, 110)
+        XCTAssertEqual(frame3.height, 100)
+    }
+
+    func testRelativeTopLayout() {
+        let other = UIView(frame: CGRect(x: 50, y: 50, width: 50, height: 50))
+        let object = layout(width: 100, height: 100).top(10, to: other, edge: .top)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 40)
+        XCTAssertEqual(frame.width, 100)
+        XCTAssertEqual(frame.height, 60)
+
+        let object1 = layout(width: 100, height: 100).top(10, to: other, edge: .bottom)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 90)
+        XCTAssertEqual(frame1.width, 100)
+        XCTAssertEqual(frame1.height, 10)
+
+        let object2 = layout(width: 100, height: 100).top(10, from: other, edge: .top)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 0)
+        XCTAssertEqual(frame2.minY, 60)
+        XCTAssertEqual(frame2.width, 100)
+        XCTAssertEqual(frame2.height, 40)
+
+        let object3 = layout(width: 100, height: 100).top(10, from: other, edge: .bottom)
+        object3.apply()
+        let frame3: CGRect = object3.view.frame
+        XCTAssertEqual(frame3.minX, 0)
+        XCTAssertEqual(frame3.minY, 110)
+        XCTAssertEqual(frame3.width, 100)
+        XCTAssertEqual(frame3.height, 0)
+    }
+
+    func testRelativeBottomLayout() {
+        let other = UIView(frame: CGRect(x: 50, y: 50, width: 50, height: 50))
+        let object = layout(width: 100, height: 100).bottom(10, to: other, edge: .top)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 100)
+        XCTAssertEqual(frame.height, 40)
+
+        let object1 = layout(width: 100, height: 100).bottom(10, to: other, edge: .bottom)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 100)
+        XCTAssertEqual(frame1.height, 90)
+
+        let object2 = layout(width: 100, height: 100).bottom(10, from: other, edge: .top)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 0)
+        XCTAssertEqual(frame2.minY, 0)
+        XCTAssertEqual(frame2.width, 100)
+        XCTAssertEqual(frame2.height, 60)
+
+        let object3 = layout(width: 100, height: 100).bottom(10, from: other, edge: .bottom)
+        object3.apply()
+        let frame3: CGRect = object3.view.frame
+        XCTAssertEqual(frame3.minX, 0)
+        XCTAssertEqual(frame3.minY, 0)
+        XCTAssertEqual(frame3.width, 100)
+        XCTAssertEqual(frame3.height, 110)
+    }
+
+    func testRelativeLayout() {
+        let other = UIView(frame: CGRect(x: 50, y: 50, width: 50, height: 50))
+        let object = layout(width: 100, height: 100)
+            .left(10, to: other, edge: .left)
+            .right(10, to: other, edge: .right)
+            .top(10, to: other, edge: .top)
+            .bottom(10, to: other, edge: .bottom)
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 40)
+        XCTAssertEqual(frame.minY, 40)
+        XCTAssertEqual(frame.width, 50)
+        XCTAssertEqual(frame.height, 50)
+
+        let object1 = layout(width: 100, height: 100)
+            .left(10, from: other, edge: .left)
+            .right(10, from: other, edge: .right)
+            .top(10, from: other, edge: .top)
+            .bottom(10, from: other, edge: .bottom)
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 60)
+        XCTAssertEqual(frame1.minY, 60)
+        XCTAssertEqual(frame1.width, 50)
+        XCTAssertEqual(frame1.height, 50)
+
+        let object2 = layout(width: 100, height: 100)
+            .left(10, to: other, edge: .left)
+            .right(10, from: other, edge: .right)
+            .top(10, to: other, edge: .top)
+            .bottom(10, from: other, edge: .bottom)
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 40)
+        XCTAssertEqual(frame2.minY, 40)
+        XCTAssertEqual(frame2.width, 70)
+        XCTAssertEqual(frame2.height, 70)
+
+        let object3 = layout(width: 100, height: 100)
+            .left(10, from: other, edge: .left)
+            .right(10, to: other, edge: .right)
+            .top(10, from: other, edge: .top)
+            .bottom(10, to: other, edge: .bottom)
+        object3.apply()
+        let frame3: CGRect = object3.view.frame
+        XCTAssertEqual(frame3.minX, 60)
+        XCTAssertEqual(frame3.minY, 60)
+        XCTAssertEqual(frame3.width, 30)
+        XCTAssertEqual(frame3.height, 30)
     }
 }

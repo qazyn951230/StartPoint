@@ -74,8 +74,8 @@ public class PagingView: UIView, UIScrollViewDelegate {
         if #available(iOS 11.0, *) {
             insets += safeAreaInsets
         }
-        Layout(for: scrollView).left(insets.left).top(insets.top)
-            .right(insets.right).bottom(insets.bottom)
+        Layout(view: scrollView).left(float: insets.left).top(float: insets.top)
+            .right(float: insets.right).bottom(float: insets.bottom)
             .apply()
         for (index, view) in pagingViews {
             view.frame = CGRect(x: scrollView.bounds.width * CGFloat(index), y: 0, size: scrollView.bounds.size)
