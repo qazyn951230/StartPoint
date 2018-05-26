@@ -23,11 +23,13 @@
 import UIKit
 import CoreGraphics
 
-public enum LayoutEdge {
+public enum LayoutAttribute {
     case left
     case right
     case top
     case bottom
+    case width
+    case height
 }
 
 public protocol LayoutView: class {
@@ -39,7 +41,7 @@ public protocol LayoutView: class {
 }
 
 extension LayoutView {
-    func resolve(edge: LayoutEdge) -> Double {
+    func resolve(edge: LayoutAttribute) -> Double {
         let value: CGFloat
         switch edge {
         case .left:
@@ -50,6 +52,10 @@ extension LayoutView {
             value = frame.minY
         case .bottom:
             value = frame.maxY
+        case .width:
+            value = frame.width
+        case .height:
+            value = frame.height
         }
         return Double(value)
     }
@@ -115,12 +121,32 @@ public class Layout {
     }
 
     public func width(_ value: StyleValue) -> Layout {
-        self.bottom = value
+        self.width = value
         return self
     }
 
     public func height(_ value: StyleValue) -> Layout {
-        self.bottom = value
+        self.height = value
+        return self
+    }
+
+    public func vertical(_ value: StyleValue) -> Layout {
+        top = value
+        bottom = value
+        return self
+    }
+
+    public func horizontal(_ value: StyleValue) -> Layout {
+        left = value
+        right = value
+        return self
+    }
+
+    public func allEdge(_ value: StyleValue) -> Layout {
+        top = value
+        bottom = value
+        left = value
+        right = value
         return self
     }
 
@@ -144,17 +170,48 @@ public class Layout {
         return self
     }
 
+    public func vertical(float value: CGFloat) -> Layout {
+        let object: StyleValue = .length(Double(value))
+        top = object
+        bottom = object
+        return self
+    }
+
+    public func horizontal(float value: CGFloat) -> Layout {
+        let object: StyleValue = .length(Double(value))
+        left = object
+        right = object
+        return self
+    }
+
+    public func allEdge(float value: CGFloat) -> Layout {
+        let object: StyleValue = .length(Double(value))
+        top = object
+        bottom = object
+        left = object
+        right = object
+        return self
+    }
+
+    public func allEdge(_ value: UIEdgeInsets) -> Layout {
+        top = .length(Double(value.top))
+        bottom = .length(Double(value.bottom))
+        left = .length(Double(value.left))
+        right = .length(Double(value.right))
+        return self
+    }
+
     public func width(float value: CGFloat) -> Layout {
-        self.bottom = .length(Double(value))
+        self.width = .length(Double(value))
         return self
     }
 
     public func height(float value: CGFloat) -> Layout {
-        self.bottom = .length(Double(value))
+        self.height = .length(Double(value))
         return self
     }
 
-    public func left(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func left(_ value: StyleValue, to view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case width = StyleValue.auto {
@@ -172,7 +229,7 @@ public class Layout {
         return self
     }
 
-    public func right(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func right(_ value: StyleValue, to view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case width = StyleValue.auto {
@@ -190,7 +247,7 @@ public class Layout {
         return self
     }
 
-    public func top(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func top(_ value: StyleValue, to view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case height = StyleValue.auto {
@@ -208,7 +265,7 @@ public class Layout {
         return self
     }
 
-    public func bottom(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func bottom(_ value: StyleValue, to view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case height = StyleValue.auto {
@@ -226,43 +283,7 @@ public class Layout {
         return self
     }
 
-//    public func width(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
-//        switch value {
-//        case .auto:
-//            if case width = StyleValue.auto {
-//                self.bottom = .length(view.resolve(edge: edge))
-//            } else {
-//                self.bottom = .auto
-//            }
-//        case let .length(length):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value + length)
-//        case let .percentage(percentage):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value * percentage / 100)
-//        }
-//        return self
-//    }
-//
-//    public func height(_ value: StyleValue, to view: LayoutView, edge: LayoutEdge) -> Layout {
-//        switch value {
-//        case .auto:
-//            if case width = StyleValue.auto {
-//                self.bottom = .length(view.resolve(edge: edge))
-//            } else {
-//                self.bottom = .auto
-//            }
-//        case let .length(length):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value + length)
-//        case let .percentage(percentage):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value * percentage / 100)
-//        }
-//        return self
-//    }
-
-    public func left(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func left(_ value: StyleValue, from view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case width = StyleValue.auto {
@@ -280,7 +301,7 @@ public class Layout {
         return self
     }
 
-    public func right(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func right(_ value: StyleValue, from view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case width = StyleValue.auto {
@@ -298,7 +319,7 @@ public class Layout {
         return self
     }
 
-    public func top(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func top(_ value: StyleValue, from view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case height = StyleValue.auto {
@@ -316,7 +337,7 @@ public class Layout {
         return self
     }
 
-    public func bottom(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
+    public func bottom(_ value: StyleValue, from view: LayoutView, edge: LayoutAttribute) -> Layout {
         switch value {
         case .auto:
             if case height = StyleValue.auto {
@@ -334,41 +355,33 @@ public class Layout {
         return self
     }
 
-//    public func width(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
-//        switch value {
-//        case .auto:
-//            if case width = StyleValue.auto {
-//                self.bottom = .length(view.resolve(edge: edge))
-//            } else {
-//                self.bottom = .auto
-//            }
-//        case let .length(length):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value + length)
-//        case let .percentage(percentage):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value * percentage / 100)
-//        }
-//        return self
-//    }
-//
-//    public func height(_ value: StyleValue, from view: LayoutView, edge: LayoutEdge) -> Layout {
-//        switch value {
-//        case .auto:
-//            if case width = StyleValue.auto {
-//                self.bottom = .length(view.resolve(edge: edge))
-//            } else {
-//                self.bottom = .auto
-//            }
-//        case let .length(length):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value + length)
-//        case let .percentage(percentage):
-//            let value: Double = view.resolve(edge: edge)
-//            self.bottom = .length(value * percentage / 100)
-//        }
-//        return self
-//    }
+    public func width(_ value: StyleValue, view: LayoutView, edge: LayoutAttribute) -> Layout {
+        switch value {
+        case .auto:
+            self.width = .auto
+        case let .length(length):
+            let value: Double = view.resolve(edge: edge)
+            self.width = .length(value + length)
+        case let .percentage(percentage):
+            let value: Double = view.resolve(edge: edge)
+            self.width = .length(value * percentage / 100)
+        }
+        return self
+    }
+
+    public func height(_ value: StyleValue, view: LayoutView, edge: LayoutAttribute) -> Layout {
+        switch value {
+        case .auto:
+            self.height = .auto
+        case let .length(length):
+            let value: Double = view.resolve(edge: edge)
+            self.height = .length(value + length)
+        case let .percentage(percentage):
+            let value: Double = view.resolve(edge: edge)
+            self.height = .length(value * percentage / 100)
+        }
+        return self
+    }
 
     public func size(_ value: CGSize) -> Layout {
         width = .length(Double(value.width))
@@ -393,9 +406,11 @@ public class Layout {
         var _width: Double = width.resolve(by: pWidth)
         var _height: Double = height.resolve(by: pHeight)
 
+        let _right: Double = right.resolve(by: pWidth)
+        let _bottom: Double = bottom.resolve(by: pHeight)
+
         if _width.isNaN {
             _width = pWidth
-            let _right: Double = right.resolve(by: pWidth)
             if !_left.isNaN {
                 _width -= _left
             }
@@ -403,15 +418,20 @@ public class Layout {
                 _width -= _right
             }
         }
+        if _left.isNaN {
+            _left = pWidth - _width - _right
+        }
         if _height.isNaN {
             _height = pHeight
-            let _bottom: Double = bottom.resolve(by: pHeight)
             if !_top.isNaN {
                 _height -= _top
             }
             if !_bottom.isNaN {
                 _height -= _bottom
             }
+        }
+        if _top.isNaN {
+            _top = pHeight - _height - _bottom
         }
 
         _left = _left.isNaN ? 0 : _left
