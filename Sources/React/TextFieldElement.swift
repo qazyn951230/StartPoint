@@ -311,9 +311,6 @@ open class TextFieldElement: Element<UITextField> {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                           replacementString string: String) -> Bool {
         assertMainThread()
-        guard let delegate = self.delegate else {
-            return true
-        }
         var value = textField.text ?? String.empty
         let start = value.index(value.startIndex, offsetBy: range.location)
         let end = value.index(start, offsetBy: range.length)
@@ -321,6 +318,9 @@ open class TextFieldElement: Element<UITextField> {
         value.replaceSubrange(range, with: string)
         if let fn = validation {
             return fn(value)
+        }
+        guard let delegate = self.delegate else {
+            return true
         }
         return delegate.textField(self, shouldReplaceTo: value, in: range)
     }

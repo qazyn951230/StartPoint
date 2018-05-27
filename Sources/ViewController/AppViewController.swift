@@ -28,26 +28,35 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     public private(set) var rootView: View? = nil
     public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer? = nil
 
-    open override func loadView() {
-        rootView = createView()
-        view = rootView
+    open var shouldLoadBackBarItem: Bool {
+        guard let count = navigationController?.viewControllers.count else {
+            return false
+        }
+        return count > 1
+    }
+
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        initialization()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialization()
     }
 
     open func initialization() {
-        if let count = navigationController?.viewControllers.count, count > 1 {
-            backBarItem = createBackBarItem()
-            navigationItem.leftBarButtonItem = backBarItem
-            if let recognizer = navigationController?.interactivePopGestureRecognizer {
-                recognizer.delegate = self
-                recognizer.addTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
-                interactivePopGestureRecognizer = recognizer
-            }
-        }
+        // Do nothing.
     }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
-        initialization()
+        loadBackBarItem()
+    }
+
+    open override func loadView() {
+        rootView = createView()
+        view = rootView
     }
 
     open func viewDidBack() {
@@ -61,6 +70,19 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
 
     @objc open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
         viewDidBack()
+    }
+
+    open func loadBackBarItem() {
+        guard shouldLoadBackBarItem else {
+            return
+        }
+        backBarItem = createBackBarItem()
+        navigationItem.leftBarButtonItem = backBarItem
+        if let recognizer = navigationController?.interactivePopGestureRecognizer {
+            recognizer.delegate = self
+            recognizer.addTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+            interactivePopGestureRecognizer = recognizer
+        }
     }
 
     open func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {

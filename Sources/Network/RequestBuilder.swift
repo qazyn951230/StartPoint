@@ -47,17 +47,20 @@ public final class RequestBuilder {
         self.method = method
     }
 
+    @discardableResult
     public func path(_ value: String) -> RequestBuilder {
         assertTrue(value.hasPrefix("/"), "Path \"\(value)\" should start with \"/\"")
         url = url + value
         return self
     }
 
+    @discardableResult
     public func parameter(_ value: Any, key: String) -> RequestBuilder {
         parameters[key] = value
         return self
     }
 
+    @discardableResult
     public func parameters(_ value: [String: Any], append: Bool = true) -> RequestBuilder {
         if append {
             for (k, v) in value {
@@ -69,11 +72,13 @@ public final class RequestBuilder {
         return self
     }
 
+    @discardableResult
     public func header(_ value: String, key: String) -> RequestBuilder {
         headers[key] = value
         return self
     }
 
+    @discardableResult
     public func headers(_ value: [String: String], append: Bool = true) -> RequestBuilder {
         if append {
             for (k, v) in value {
@@ -85,32 +90,38 @@ public final class RequestBuilder {
         return self
     }
 
+    @discardableResult
     public func encoding(_ value: URLEncoding) -> RequestBuilder {
         self.encoding = value
         return self
     }
 
+    @discardableResult
     public func encoding(custom value: ParameterEncoding) -> RequestBuilder {
         self.encoding = value
         return self
     }
 
+    @discardableResult
     public func encoding(json value: JSONEncoding) -> RequestBuilder {
         self.encoding = value
         return self
     }
 
+    @discardableResult
     public func scheduler(_ value: SerialDispatchQueueScheduler, queue: DispatchQueue) -> RequestBuilder {
         self.scheduler = value
         self.queue = queue
         return self
     }
 
+    @discardableResult
     public func debug(_ value: Bool = true) -> RequestBuilder {
         self.debug = value
         return self
     }
 
+    @discardableResult
     public func debug(file: String, function: String, line: Int) -> RequestBuilder {
         self.file = file
         self.function = function

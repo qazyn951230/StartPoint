@@ -72,6 +72,7 @@
 		AC96A77066BBFAF4F4A4FB1E /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26B6278FF9FEB3803D5 /* Object.m */; };
 		AC96A7918E55CEAC35D5CBD6 /* NodeChildTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4A2070B519A0B214291 /* NodeChildTests.swift */; };
 		AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFCB44A6188AB237A221 /* FlexTests.swift */; };
+		AC96A7C9E288B5B11C6A68E7 /* CollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A44925FEFE942EB0AE91 /* CollectionTests.swift */; };
 		AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */; };
 		AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */; };
 		AC96A7D6DFA6B94A1B605775 /* ElementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4A03497EA83043E8EEE /* ElementController.swift */; };
@@ -212,6 +213,7 @@
 		AC96A3C2520E78AF59EF5356 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		AC96A3D96DCB035B01301CE1 /* TreeMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TreeMutationTests.swift; sourceTree = "<group>"; };
 		AC96A3F4F49E8D473EAA9DEF /* BannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		AC96A44925FEFE942EB0AE91 /* CollectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionTests.swift; sourceTree = "<group>"; };
 		AC96A465CDAA8A64D61D2480 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		AC96A46B8B71C16C26CBE55F /* RunLoopQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunLoopQueue.swift; sourceTree = "<group>"; };
 		AC96A4A03497EA83043E8EEE /* ElementController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementController.swift; sourceTree = "<group>"; };
@@ -514,6 +516,7 @@
 				AC96AB8D6DC9B61E9FD00A87 /* Router */,
 				AC96A566939DBC0E67587FEC /* JSON */,
 				AC96ABAE9E0E01AD5A5A59C4 /* React */,
+				AC96A48C2C2CDB1F8620071E /* Extension */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -563,6 +566,14 @@
 				AC96AC5D3212FC05F7BB00A7 /* ContactPermission.swift */,
 			);
 			path = Permission;
+			sourceTree = "<group>";
+		};
+		AC96A48C2C2CDB1F8620071E /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				AC96A44925FEFE942EB0AE91 /* CollectionTests.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		AC96A4EFF6F5C29B3FDD4DFA /* Log */ = {
@@ -906,10 +917,10 @@
 			};
 			buildConfigurationList = BC6BA1A31F2DC08600772AA8 /* Build configuration list for PBXProject "StartPoint" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = zh-CN;
+			developmentRegion = "zh-CN";
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				zh-CN,
+				"zh-CN",
 			);
 			mainGroup = BC6BA19F1F2DC08600772AA8;
 			productRefGroup = BC6BA1AA1F2DC08700772AA8 /* Products */;
@@ -1111,6 +1122,7 @@
 				AC96AD9FE9EA2D914F94BA80 /* TestElement.swift in Sources */,
 				AC96AC33D1BEF725DA0E61CB /* ElementTests.swift in Sources */,
 				AC96ABD4CB87B994B1E5AA82 /* TreeMutationTests.swift in Sources */,
+				AC96A7C9E288B5B11C6A68E7 /* CollectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

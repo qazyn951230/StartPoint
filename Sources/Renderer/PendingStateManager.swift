@@ -38,7 +38,6 @@ public final class PendingStateManager {
         if element.registered {
             return
         }
-        Log.debug(element)
         elements.append(element)
         element.registered = true
         schedule()
@@ -61,11 +60,9 @@ public final class PendingStateManager {
         elements.removeAll()
         scheduling = false
         lock.unlock()
-        Log.debug("Count: \(array.count)")
         for item in array {
             item.registered = false
             item.apply()
-            Log.debug("Current: \(item)")
         }
     }
 }

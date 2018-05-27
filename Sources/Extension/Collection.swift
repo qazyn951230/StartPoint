@@ -49,6 +49,67 @@ public extension Collection {
             i = index(after: i)
         } while i < endIndex
     }
+
+    public func split(upTo count: Int) -> [Self.SubSequence] {
+        guard isNotEmpty && count > 0 else {
+            return []
+        }
+        var result: [Self.SubSequence] = []
+        var start = startIndex
+        var end = index(start, offsetBy: count)
+        while true {
+            if end < endIndex {
+                let seq: Self.SubSequence = self[start..<end]
+                result.append(seq)
+                if index(after: end) > endIndex {
+                    break
+                }
+            } else {
+                let seq: Self.SubSequence = self[start..<endIndex]
+                result.append(seq)
+                break
+            }
+            start = end
+            end = index(start, offsetBy: count)
+        }
+        return result
+    }
+}
+
+public extension String {
+    public func split(upTo count: Int) -> [Substring] {
+        guard isNotEmpty && count > 0 else {
+            return []
+        }
+        var result: [Substring] = []
+        var start = startIndex
+        var _end = index(start, offsetBy: count, limitedBy: endIndex)
+        if _end == nil {
+            return [self[start..<endIndex]]
+        }
+        while true {
+            guard let end = _end else {
+                break
+            }
+            if end < endIndex {
+                let seq: Substring = self[start..<end]
+                result.append(seq)
+                if index(after: end) > endIndex {
+                    break
+                }
+            } else {
+                let seq: Substring = self[start..<endIndex]
+                result.append(seq)
+                break
+            }
+            start = end
+            _end = index(start, offsetBy: count, limitedBy: endIndex)
+            if _end == nil && end < endIndex {
+                _end = endIndex
+            }
+        }
+        return result
+    }
 }
 
 public extension Sequence where Element: Hashable {
