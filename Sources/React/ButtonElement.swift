@@ -326,7 +326,6 @@ open class ButtonElement: Element<UIButton> {
         }
         let size: CGSize = value?.size ?? CGSize.zero
         image?.layout.size(size)
-        layout.size(size)
         return self
     }
 
@@ -344,7 +343,6 @@ open class ButtonElement: Element<UIButton> {
         if state == UIControlState.normal {
             let size: CGSize = value?.size ?? CGSize.zero
             image?.layout.size(size)
-            layout.size(size)
         }
         return self
     }
