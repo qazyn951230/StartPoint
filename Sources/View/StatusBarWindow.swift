@@ -83,10 +83,4 @@ public final class StatusBarWindow: UIWindow {
             max(result, next.zPosition)
         }
     }
-
-//    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let view = super.hitTest(point, with: event)
-//        Log.debug(any: self, view)
-//        return view
-//    }
 }

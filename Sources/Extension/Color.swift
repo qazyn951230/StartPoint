@@ -28,26 +28,38 @@ import AppKit
 import CoreGraphics
 import QuartzCore
 
+@inline(__always)
 fileprivate func convert(_ value: UInt32) -> CGFloat {
     return CGFloat(value) / CGFloat(255.0)
 }
 
+@inline(__always)
 fileprivate func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
     let value = value < 0xFFFFFFFF ? value : 0xFFFFFFFF
-    var a: UInt32 = 0xFF
-    if value > 0x00FFFFFF {
-        a = (value & 0xFF000000) >> 24
-    }
+    let a: UInt32 = (value > 0x00FFFFFF) ? ((value & 0xFF000000) >> 24) : 0xFF
     let r = (value & 0x00FF0000) >> 16
     let g = (value & 0x0000FF00) >> 8
     let b = (value & 0x000000FF)
     return creator(convert(r), convert(g), convert(b), convert(a))
 }
 
+@inline(__always)
+fileprivate func hexColor<T>(_ value: UInt32, alpha: CGFloat, creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
+    let value = value < 0xFFFFFF ? value : 0xFFFFFF
+    let r = (value & 0x00FF0000) >> 16
+    let g = (value & 0x0000FF00) >> 8
+    let b = (value & 0x000000FF)
+    return creator(convert(r), convert(g), convert(b), alpha)
+}
+
 #if os(iOS)
 public extension UIColor {
     public static func hex(_ value: UInt32) -> UIColor {
         return hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
+    }
+
+    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+        return hexColor(value, alpha: alpha, creator: UIColor.init(red:green:blue:alpha:))
     }
 
 #if DEBUG
@@ -61,11 +73,19 @@ public extension NSColor {
     public static func hex(value: UInt32) -> NSColor {
         return hexColor(hex, creator: NSColor.init(red:green:blue:alpha:))
     }
+
+    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+        return hexColor(value, alpha: alpha, creator: NSColor.init(red:green:blue:alpha:))
+    }
 }
 
 public extension CGColor {
     public static func hex(value: UInt32) -> CGColor {
         return hexColor(hex, creator: CGColor.init(red:green:blue:alpha:))
+    }
+
+    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+        return hexColor(value, alpha: alpha, creator: CGColor.init(red:green:blue:alpha:))
     }
 }
 #endif

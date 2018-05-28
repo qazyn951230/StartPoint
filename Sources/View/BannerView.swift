@@ -96,8 +96,8 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         super.layoutSubviews()
         scrollView.frame = bounds
         let size = pageControl.sizeThatFits(bounds.size)
-        Layout(for: pageControl, container: bounds.size)
-            .right().bottom().size(size).apply()
+        Layout(view: pageControl).right().bottom()
+            .size(size).apply()
         imageViews.forEachIndex { view, i in
             view.frame = CGRect(x: bounds.width * CGFloat(i), y: 0, size: bounds.size)
         }

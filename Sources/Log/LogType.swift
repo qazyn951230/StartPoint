@@ -30,8 +30,6 @@ public protocol LogType {
     static var destinations: [LogDestination] { get set }
     static var separator: String { get }
 
-    static func write(level: LogLevel, _ value: Any, file: String, function: String, line: Int)
-    static func write(level: LogLevel, _ value: Any?, file: String, function: String, line: Int)
     static func write(level: LogLevel, _ value: [Any], file: String, function: String, line: Int)
     static func write(level: LogLevel, _ value: [Any?], file: String, function: String, line: Int)
 
@@ -59,31 +57,6 @@ public extension LogType {
             destinations.forEach {
                 $0.write(message: message)
             }
-        }
-    }
-
-    public static func write(level: LogLevel, _ value: Any, file: String, function: String, line: Int) {
-        guard level >= Self.level else {
-            return
-        }
-        let message = format(level: level, value, separator: Self.separator)
-        var thread: String = Thread.current.name ?? Thread.current.description
-        if thread.isEmpty {
-            if Thread.isMainThread {
-                thread = "main"
-            } else if let queue: OperationQueue = OperationQueue.current {
-                thread = queue.name ?? queue.underlyingQueue?.label ?? "unnamed"
-            }
-            if thread.isEmpty {
-                thread = Thread.current.description
-            }
-        }
-        write(level: level, message: message, thread: thread, date: Date(), file: file, function: function, line: line)
-    }
-
-    public static func write(level: LogLevel, _ value: Any?, file: String, function: String, line: Int) {
-        if let v = value {
-            write(level: level, v, file: file, function: function, line: line)
         }
     }
 

@@ -29,6 +29,18 @@ public struct R {
             return _image(name: "ic_arrow_back")
         }
 
+        public static func ic_arrow_downward() -> UIImage? {
+            return _image(name: "ic_arrow_downward")
+        }
+
+        public static func ic_arrow_forward() -> UIImage? {
+            return _image(name: "ic_arrow_forward")
+        }
+
+        public static func ic_arrow_upward() -> UIImage? {
+            return _image(name: "ic_arrow_upward")
+        }
+
         public static func ic_check() -> UIImage? {
             return _image(name: "ic_check")
         }
@@ -47,6 +59,10 @@ public struct R {
 
         public static func ic_refresh() -> UIImage? {
             return _image(name: "ic_refresh")
+        }
+
+        public static func ic_chevron_left() -> UIImage? {
+            return _image(name: "ic_chevron_left")
         }
 
         public static func ic_chevron_right() -> UIImage? {

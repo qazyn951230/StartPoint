@@ -22,61 +22,47 @@
 
 import Dispatch
 
-final class WeakSet<T: AnyObject & Hashable> {
-    var set: Set<WeakHash<T>> = Set()
+public final class PendingStateManager {
+    let lock = Lock.make()
+    var elements: [BasicElement] = []
+    var scheduling = false
 
-    func insert(_ value: T) {
-        set.insert(WeakHash(value))
-    }
+    public static let share = PendingStateManager()
 
-    func forEach(_ body: (T) throws -> Void) rethrows {
-        try set.forEach { (object: WeakHash<T>) in
-            if let value = object.value {
-                try body(value)
-            }
+    public func register(element: BasicElement) {
+        assertTrue(element.loaded)
+        lock.lock()
+        defer {
+            lock.unlock()
         }
-    }
-}
-
-// ASPendingStateController
-final class PendingStateManager {
-    static var shared: PendingStateManager = PendingStateManager()
-
-    private let lock = MutexLock()
-    private var set = WeakSet<Element>()
-    private var pendingFlush = false
-
-    private init() {
-        // Do nothing
+        if element.registered {
+            return
+        }
+        elements.append(element)
+        element.registered = true
+        schedule()
     }
 
-    func register(element: Element) {
-        assert(element.loaded, "Expected display node to be loaded before it " +
-            "was registered with PendingStateManager.")
-        lock.locking {
-            set.insert(element)
+    func schedule() {
+        if scheduling {
+            return
+        }
+        scheduling = true
+        DispatchQueue.main.async { [weak self] in
+            self?.flush()
         }
     }
 
     func flush() {
         assertMainThread()
         lock.lock()
-        let set = self.set
-        self.set = WeakSet()
-        pendingFlush = false
+        let array = elements
+        elements.removeAll()
+        scheduling = false
         lock.unlock()
-        set.forEach {
-            $0.applyPendingState()
-        }
-    }
-
-    func scheduleFlush() {
-        guard !pendingFlush else {
-            return
-        }
-        pendingFlush = true
-        DispatchQueue.main.async {
-            PendingStateManager.shared.flush()
+        for item in array {
+            item.registered = false
+            item.apply()
         }
     }
 }

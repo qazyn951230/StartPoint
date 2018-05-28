@@ -78,6 +78,30 @@ public struct Size: Equatable {
     }
 }
 
+public struct Point: Equatable {
+    public let x: Double
+    public let y: Double
+
+    public init(x: Double, y: Double) {
+        self.x = x
+        self.y = y
+    }
+
+    public init(cgPoint: CGPoint) {
+        self.init(x: Double(cgPoint.x), y: Double(cgPoint.y))
+    }
+
+    public var cgPoint: CGPoint {
+        return CGPoint(x: x, y: y)
+    }
+
+    public static var zero = Point(x: 0, y: 0)
+
+    public static func ==(lhs: Point, rhs: Point) -> Bool {
+        return lhs.x ~~ rhs.x && lhs.y ~~ rhs.y
+    }
+}
+
 public struct Rect: Equatable {
     public let x: Double
     public let y: Double
@@ -103,6 +127,30 @@ public struct Rect: Equatable {
         self.height = height
     }
 
+    public var minX: Double {
+        return x
+    }
+
+    public var midX: Double {
+        return x + width / 2
+    }
+
+    public var maxX: Double {
+        return x + width
+    }
+
+    public var minY: Double {
+        return y
+    }
+
+    public var midY: Double {
+        return y + width / 2
+    }
+
+    public var maxY: Double {
+        return y + width
+    }
+
     public func contains(point: CGPoint) -> Bool {
         guard width > 0 && height > 0 else {
             return false
@@ -112,6 +160,38 @@ public struct Rect: Equatable {
         let maxX = x + width
         let maxY = y + height
         return x <= px && px <= maxX && y <= py && py <= maxY
+    }
+
+    public func setSize(_ value: Size) -> Rect {
+        return Rect(x: x, y: y, width: value.width, height: value.height)
+    }
+
+    public func setSize(width: Double, height: Double) -> Rect {
+        return Rect(x: x, y: y, width: width, height: height)
+    }
+
+    public func setOrigin(_ value: Point) -> Rect {
+        return Rect(x: value.x, y: value.y, width: width, height: height)
+    }
+
+    public func setOrigin(x: Double, y: Double) -> Rect {
+        return Rect(x: x, y: y, width: width, height: height)
+    }
+
+    public func setWidth(_ value: Double) -> Rect {
+        return Rect(x: x, y: y, width: value, height: height)
+    }
+
+    public func setHeight(_ value: Double) -> Rect {
+        return Rect(x: x, y: y, width: width, height: value)
+    }
+
+    public func setX(_ value: Double) -> Rect {
+        return Rect(x: value, y: y, width: width, height: height)
+    }
+
+    public func setY(_ value: Double) -> Rect {
+        return Rect(x: x, y: value, width: width, height: height)
     }
 
     public static let zero = Rect(x: 0.0, y: 0.0, width: 0.0, height: 0.0)

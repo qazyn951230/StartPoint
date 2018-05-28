@@ -45,11 +45,10 @@ public protocol IntentSource {
     var intentController: UIViewController { get }
 }
 
-public protocol IntentTarget: IntentSource {
+public protocol IntentTarget: IntentSource, Creatable {
     var intent: Intent? { get set }
     func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController
     func finish(result: IntentResult?)
-    static func create() -> Self
 }
 
 private var tr0gSJaB = "tr0gSJaB"

@@ -222,6 +222,26 @@ open class FlexLayout: Equatable {
         _markDirty()
     }
 
+    public func replace<C>(_ subrange: Range<Int>, with newElements: C) where C.Element == FlexLayout, C: Collection {
+        guard subrange.lowerBound > -1 && subrange.upperBound <= children.count else {
+            return
+        }
+        let old: ArraySlice<FlexLayout> = children[subrange]
+        old.forEach { layout in
+            layout.invalidate()
+            layout.parent = nil
+        }
+        children.replaceSubrange(subrange, with: newElements)
+        newElements.forEach { new in
+            new.parent = self
+        }
+        _markDirty()
+    }
+
+    public func replaceAll<C>(_ newElements: C) where C.Element == FlexLayout, C: Collection {
+        replace(0..<children.count, with: newElements)
+    }
+
     // YGNodeRemoveChild
     public func remove(_ child: FlexLayout) {
         guard children.count > 0 else {

@@ -80,4 +80,20 @@ public extension CGRect {
     public func setOrigin(x: LayoutValue, y: LayoutValue) -> CGRect {
         return CGRect(x: x.value, y: y.value, width: width, height: height)
     }
+
+    public func setWidth(_ value: LayoutValue) -> CGRect {
+        return CGRect(x: origin.x, y: origin.y, width: value.value, height: size.height)
+    }
+
+    public func setHeight(_ value: LayoutValue) -> CGRect {
+        return CGRect(x: origin.x, y: origin.y, width: size.width, height: value.value)
+    }
+
+    public func setX(_ value: LayoutValue) -> CGRect {
+        return CGRect(x: value.value, y: origin.y, width: size.width, height: size.height)
+    }
+
+    public func setY(_ value: LayoutValue) -> CGRect {
+        return CGRect(x: origin.x, y: value.value, width: size.width, height: size.height)
+    }
 }

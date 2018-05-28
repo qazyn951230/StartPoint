@@ -24,9 +24,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy, UIImagePickerControllerDelegate {
+public final class RxImagePickerDelegateProxy: DelegateProxy<UIImagePickerController, UINavigationControllerDelegate>,
+    DelegateProxyType, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     public init(imagePicker: UIImagePickerController) {
-        super.init(navigationController: imagePicker)
+        super.init(parentObject: imagePicker, delegateProxy: RxImagePickerDelegateProxy.self)
+    }
+
+    public static func registerKnownImplementations() {
+        RxImagePickerDelegateProxy.register { RxImagePickerDelegateProxy(imagePicker: $0) }
     }
 }
 

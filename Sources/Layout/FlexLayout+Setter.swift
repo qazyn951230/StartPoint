@@ -116,7 +116,9 @@ public extension FlexLayout {
     @discardableResult
     public func flexGrow(_ value: Double) -> Self {
         if (style.flexGrow != value) {
-            style.flexGrow = value
+            // Flex default is Flex.None => flexGrow default is 0
+            let resolved = value.isNaN ? 0: value
+            style.flexGrow = resolved
             _markDirty()
         }
         return self
@@ -125,7 +127,9 @@ public extension FlexLayout {
     @discardableResult
     public func flexShrink(_ value: Double) -> Self {
         if (style.flexShrink != value) {
-            style.flexShrink = value
+            // Flex default is Flex.None => flexShrink default is 0
+            let resolved = value.isNaN ? 0: value
+            style.flexShrink = resolved
             _markDirty()
         }
         return self

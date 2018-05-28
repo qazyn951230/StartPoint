@@ -20,25 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct Creatable<T> {
-    private var _value: T? = nil
-    let creator: (() -> T)
+import UIKit
 
-    init(create: @escaping () -> T) {
-        creator = create
-    }
+public protocol Creatable {
+    static func create() -> Self
+}
 
-    mutating func object() -> T {
-        if let v = _value {
-            return v
-        } else {
-            let t = creator()
-            _value = t
-            return t
-        }
-    }
-
-    mutating func delete() {
-        _value = nil
+public extension Creatable where Self: UIViewController {
+    public static func create() -> Self {
+        return self.init(nibName: nil, bundle: nil)
     }
 }
