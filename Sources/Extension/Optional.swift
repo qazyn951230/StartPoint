@@ -82,3 +82,12 @@ public extension Optional where Wrapped: BinaryInteger {
     }
 }
 
+public extension Optional where Wrapped == String {
+    public var orEmpty: String {
+        if let value = self {
+            return value
+        }
+        return String.empty
+    }
+}
+
