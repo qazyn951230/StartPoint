@@ -122,6 +122,7 @@
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
 		AC96ACF5A55DA28EEAA4C9D7 /* StartLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFEC484673FEBC3FDF5B /* StartLabel.swift */; };
 		AC96AD0B363703B4490B9200 /* MinMaxDimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */; };
+		AC96AD12589AF1B9280EC2ED /* BasicElement+rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF4B432D33BD882CB458 /* BasicElement+rx.swift */; };
 		AC96AD1E2405F3F8CC7B9D67 /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3CE4AD79F58DDB5E59 /* Optional.swift */; };
 		AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */; };
 		AC96AD9FE9EA2D914F94BA80 /* TestElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3D2C1F8432D3994DBE /* TestElement.swift */; };
@@ -334,6 +335,7 @@
 		AC96AF06C020E079FE7145FA /* MeasureModeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureModeTests.swift; sourceTree = "<group>"; };
 		AC96AF2E79625C539F0F7E98 /* AppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppViewController.swift; sourceTree = "<group>"; };
 		AC96AF3F8868F5EA5FAD39E7 /* ShapeElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeElement.swift; sourceTree = "<group>"; };
+		AC96AF4B432D33BD882CB458 /* BasicElement+rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicElement+rx.swift"; sourceTree = "<group>"; };
 		AC96AF4CCDEEAB7B80A449DC /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		AC96AF5249A705A624EC8255 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		AC96AF82C7E003113F5EB468 /* StyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleTests.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 				AC96AC83BDD35D46748896B8 /* Scrolled */,
 				AC96AAE2F759AB36B3AE9A83 /* ViewController */,
 				AC96A533FD00FAFBFB66ED82 /* VisualEffectElement.swift */,
+				AC96AF2B64A315BFB169EA2E /* Reactive */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -721,6 +724,14 @@
 				AC96AD4E29076F962CA734EB /* StartWebController.swift */,
 			);
 			path = ViewController;
+			sourceTree = "<group>";
+		};
+		AC96AF2B64A315BFB169EA2E /* Reactive */ = {
+			isa = PBXGroup;
+			children = (
+				AC96AF4B432D33BD882CB458 /* BasicElement+rx.swift */,
+			);
+			path = Reactive;
 			sourceTree = "<group>";
 		};
 		BC16E7531F3EAB9800DDC894 /* Network */ = {
@@ -1067,6 +1078,7 @@
 				AC96A6ABCC1C9E90F75DB922 /* Creatable.swift in Sources */,
 				AC96A552F4B28D501AA4ADB0 /* AttributedString.swift in Sources */,
 				AC96AA8241BC807A2B9AA28D /* ContactPermission.swift in Sources */,
+				AC96AD12589AF1B9280EC2ED /* BasicElement+rx.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
