@@ -27,28 +27,90 @@ extension SessionManager: ReactiveCompatible {
     // Do nothing.
 }
 
+public protocol ReactiveRequest {
+    func resume()
+    func cancel()
+    func response(queue: DispatchQueue?, completionHandler: @escaping (DefaultDataResponse) -> Void) -> Self
+}
+
+extension DataRequest: ReactiveRequest {
+    // Do nothing.
+}
+
 public extension Reactive where Base: SessionManager {
-    public func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
-                        encoding: ParameterEncoding = URLEncoding.default, headers: HTTPHeaders? = nil)
-            -> Observable<DataRequest> {
-        return Observable<DataRequest>.create { observer in
-            let manager: SessionManager = self.base
-            let request: DataRequest = manager.request(url, method: method, parameters: parameters,
-                encoding: encoding, headers: headers)
+    public func request<Request>(request: Request) -> Observable<Request>
+        where Request: ReactiveRequest {
+        let manager: SessionManager = self.base
+        let start = manager.startRequestsImmediately
+        return Observable<Request>.create { observer in
             observer.on(.next(request))
-            request.response { response in
+            _ = request.response(queue: nil) { response in
                 if let error = response.error {
                     observer.on(.error(error))
                 } else {
                     observer.on(.completed)
                 }
             }
-            if !manager.startRequestsImmediately {
+            if !start {
                 request.resume()
             }
             return Disposables.create {
                 request.cancel()
             }
         }
+    }
+
+    public func request<Request>(creator: @escaping (SessionManager) throws -> Request) -> Observable<Request>
+        where Request: ReactiveRequest {
+        return Observable.just(base)
+            .map(creator)
+    }
+
+    public func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>) -> Observable<Request>
+        where Request: ReactiveRequest {
+        return Observable.just(base)
+            .flatMap(creator)
+    }
+
+    public func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
+                        encoding: ParameterEncoding = URLEncoding.default, headers: HTTPHeaders? = nil)
+            -> Observable<DataRequest> {
+        return request { manager in
+            return manager.request(url, method: method, parameters: parameters,
+                encoding: encoding, headers: headers)
+        }
+    }
+
+    public func upload(formData: @escaping (MultipartFormData) -> Void,
+                       with urlRequest: URLRequestConvertible) -> Observable<UploadRequest> {
+        let manager: SessionManager = self.base
+        return Observable<UploadRequest>.create { observer in
+            manager.upload(multipartFormData: formData, with: urlRequest) { result in
+                switch result {
+                case let .success(request, _, _):
+                    observer.on(.next(request))
+                    observer.on(.completed)
+                case let .failure(error):
+                    observer.on(.error(error))
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
+    public func upload(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
+                       formData: @escaping (MultipartFormData) -> Void,
+                       encoding: ParameterEncoding = URLEncoding.default,
+                       headers: HTTPHeaders? = nil) -> Observable<UploadRequest> {
+        func fn(manager: SessionManager) throws -> Observable<UploadRequest> {
+            let request = manager.request(url, method: method, parameters: parameters,
+                encoding: encoding, headers: headers)
+            guard let urlRequest = request.request else {
+                throw NSError(domain: "com.undev.start.point", code: 404)
+            }
+            return manager.rx.upload(formData: formData, with: urlRequest)
+        }
+
+        return request(creator: fn)
     }
 }

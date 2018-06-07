@@ -109,6 +109,11 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func upload(data: @escaping (MultipartFormData) -> Void) -> RequestBuilder {
+        return self
+    }
+
+    @discardableResult
     public func scheduler(_ value: SerialDispatchQueueScheduler, queue: DispatchQueue) -> RequestBuilder {
         self.scheduler = value
         self.queue = queue

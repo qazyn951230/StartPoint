@@ -59,17 +59,16 @@ public extension UIImagePickerController {
     public static func rxController(_ picker: UIImagePickerController, in viewController: UIViewController,
                                     animated: Bool = true) -> Observable<UIImagePickerController> {
         return Observable<UIImagePickerController>.create { observer in
-            viewController.present(picker, animated: animated)
-            observer.on(.next(picker))
-
-            let disposable = picker.rx
-                .didCancel
+           let disposable = picker.rx.didCancel
                 .subscribe(onNext: {
-                picker.dismiss(animated: animated)
-            })
+                    picker.dismiss(animated: animated)
+                })
             let disposable2 = Disposables.create {
                 picker.dismiss(animated: animated)
             }
+
+            viewController.present(picker, animated: animated)
+            observer.on(.next(picker))
             return Disposables.create(disposable, disposable2)
         }
     }

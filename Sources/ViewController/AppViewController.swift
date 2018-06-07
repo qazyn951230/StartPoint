@@ -29,7 +29,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer? = nil
 
 #if DEBUG
-    var viewLoaded = false
+    var _viewLoaded = false
 #endif
 
     open var shouldLoadBackBarItem: Bool {
@@ -43,7 +43,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialization()
 #if DEBUG
-        assertFalse(viewLoaded, "view should not load when initialization")
+        assertFalse(_viewLoaded, "view should not load when initialization")
 #endif
     }
 
@@ -51,7 +51,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(coder: aDecoder)
         initialization()
 #if DEBUG
-        assertFalse(viewLoaded, "view should not load when initialization")
+        assertFalse(_viewLoaded, "view should not load when initialization")
 #endif
     }
 
@@ -66,7 +66,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
 
     open override func loadView() {
 #if DEBUG
-        viewLoaded = true
+        _viewLoaded = true
 #endif
         rootView = createView()
         view = rootView
