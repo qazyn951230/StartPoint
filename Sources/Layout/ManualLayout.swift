@@ -383,10 +383,22 @@ public class Layout {
         return self
     }
 
-    public func size(_ value: CGSize) -> Layout {
-        width = .length(Double(value.width))
-        height = .length(Double(value.height))
+    public func size(width: Double, height: Double) -> Layout {
+        self.width = .length(width)
+        self.height = .length(height)
         return self
+    }
+
+    public func size(width: Int, height: Int) -> Layout {
+        return size(width: Double(width), height: Double(height))
+    }
+
+    public func size(width: CGFloat, height: CGFloat) -> Layout {
+        return size(width: Double(width), height: Double(height))
+    }
+
+    public func size(_ value: CGSize) -> Layout {
+        return size(width: value.width, height: value.height)
     }
 
     public func fitSize(_ value: CGSize? = nil) -> Layout {
@@ -396,6 +408,34 @@ public class Layout {
             view.sizeToFit()
             return size(view.frame.size)
         }
+    }
+
+    public func center() -> Layout {
+        return centerX().centerY()
+    }
+
+    public func centerX() -> Layout {
+        let pWidth = parentSize.width
+        let width = self.width.resolve(by: pWidth)
+        guard !width.isNaN && width > 0 else {
+            return self
+        }
+        let _left = left.resolve(by: pWidth).normalize()
+        let _right = right.resolve(by: pWidth).normalize()
+        left = StyleValue.length(_left + ((pWidth - width - _left - _right) / 2))
+        return self
+    }
+
+    public func centerY() -> Layout {
+        let pHeight = parentSize.height
+        let height = self.height.resolve(by: pHeight)
+        guard !height.isNaN && height > 0 else {
+            return self
+        }
+        let _top = top.resolve(by: pHeight).normalize()
+        let _bottom = bottom.resolve(by: pHeight).normalize()
+        top = StyleValue.length(_top + ((pHeight - height - _top - _bottom) / 2))
+        return self
     }
 
     public func apply() {

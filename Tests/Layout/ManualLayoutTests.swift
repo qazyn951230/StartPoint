@@ -497,4 +497,88 @@ class ManualLayoutTests: XCTestCase {
         XCTAssertEqual(frame3.width, 100)
         XCTAssertEqual(frame3.height, 25)
     }
+
+    func testCenterX() {
+        let object = layout(width: 100, height: 100)
+            .size(width: 50, height: 30)
+            .centerX()
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 25)
+        XCTAssertEqual(frame.minY, 0)
+        XCTAssertEqual(frame.width, 50)
+        XCTAssertEqual(frame.height, 30)
+
+        let other1 = UIView(frame: CGRect(x: 100, y: 100, width: 100, height: 100))
+        let object1 = layout(width: 200, height: 200)
+            .right(0, to: other1, edge: .left)
+            .size(width: 50, height: 30)
+            .centerX()
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 25)
+        XCTAssertEqual(frame1.minY, 0)
+        XCTAssertEqual(frame1.width, 50)
+        XCTAssertEqual(frame1.height, 30)
+
+        let other2 = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        let object2 = layout(width: 200, height: 200)
+            .left(0, from: other2, edge: .right)
+            .size(width: 50, height: 30)
+            .centerX()
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 125)
+        XCTAssertEqual(frame2.minY, 0)
+        XCTAssertEqual(frame2.width, 50)
+        XCTAssertEqual(frame2.height, 30)
+    }
+
+    func testCenterY() {
+        let object = layout(width: 100, height: 100)
+            .size(width: 30, height: 50)
+            .centerY()
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 0)
+        XCTAssertEqual(frame.minY, 25)
+        XCTAssertEqual(frame.width, 30)
+        XCTAssertEqual(frame.height, 50)
+
+        let other1 = UIView(frame: CGRect(x: 100, y: 100, width: 100, height: 100))
+        let object1 = layout(width: 200, height: 200)
+            .bottom(0, to: other1, edge: .top)
+            .size(width: 30, height: 50)
+            .centerY()
+        object1.apply()
+        let frame1: CGRect = object1.view.frame
+        XCTAssertEqual(frame1.minX, 0)
+        XCTAssertEqual(frame1.minY, 25)
+        XCTAssertEqual(frame1.width, 30)
+        XCTAssertEqual(frame1.height, 50)
+
+        let other2 = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        let object2 = layout(width: 200, height: 200)
+            .top(0, from: other2, edge: .bottom)
+            .size(width: 30, height: 50)
+            .centerY()
+        object2.apply()
+        let frame2: CGRect = object2.view.frame
+        XCTAssertEqual(frame2.minX, 0)
+        XCTAssertEqual(frame2.minY, 125)
+        XCTAssertEqual(frame2.width, 30)
+        XCTAssertEqual(frame2.height, 50)
+    }
+
+    func testCenter() {
+        let object = layout(width: 100, height: 100)
+            .size(width: 50, height: 50)
+            .center()
+        object.apply()
+        let frame: CGRect = object.view.frame
+        XCTAssertEqual(frame.minX, 25)
+        XCTAssertEqual(frame.minY, 25)
+        XCTAssertEqual(frame.width, 50)
+        XCTAssertEqual(frame.height, 50)
+    }
 }
