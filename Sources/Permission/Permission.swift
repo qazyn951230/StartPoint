@@ -34,7 +34,9 @@ public enum PermissionType {
     case camera
     case location
     case notification(NotificationOptions)
+#if ContactPermissionEnable
     case contact
+#endif
 
     var item: PermissionItem {
         switch self {
@@ -46,8 +48,10 @@ public enum PermissionType {
             return LocationPermission()
         case .notification(let options):
             return NotificationPermission(options: options)
+#if ContactPermissionEnable
         case .contact:
             return ContactPermission()
+#endif
         }
     }
 }
