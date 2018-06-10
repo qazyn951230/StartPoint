@@ -64,12 +64,14 @@ public extension Reactive where Base: SessionManager {
         where Request: ReactiveRequest {
         return Observable.just(base)
             .map(creator)
+            .flatMap(request(request:))
     }
 
     public func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>) -> Observable<Request>
         where Request: ReactiveRequest {
         return Observable.just(base)
             .flatMap(creator)
+            .flatMap(request(request:))
     }
 
     public func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
