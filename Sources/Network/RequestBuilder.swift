@@ -35,6 +35,8 @@ public final class RequestBuilder {
     public private(set) var headers = [String: String]()
     public private(set) var encoding: ParameterEncoding = URLEncoding.default
 
+    public private(set) var formData: (MultipartFormData) -> Void = Function.nothing
+
     public private(set) var debug = false
 
     // Debug
@@ -110,6 +112,7 @@ public final class RequestBuilder {
 
     @discardableResult
     public func upload(data: @escaping (MultipartFormData) -> Void) -> RequestBuilder {
+        formData = data
         return self
     }
 
@@ -138,6 +141,14 @@ public final class RequestBuilder {
         let parameters: [String: Any]? = self.parameters.isEmpty ? nil : self.parameters
         let headers: [String: String]? = self.headers.isEmpty ? nil : self.headers
         return session.rx.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+            .subscribeOn(scheduler)
+    }
+
+    public func upload(session: SessionManager = SessionManager.default) -> Observable<UploadRequest> {
+        let parameters: [String: Any]? = self.parameters.isEmpty ? nil : self.parameters
+        let headers: [String: String]? = self.headers.isEmpty ? nil : self.headers
+        return session.rx.upload(url, method: method, parameters: parameters, formData: formData,
+                encoding: encoding, headers: headers)
             .subscribeOn(scheduler)
     }
 }
