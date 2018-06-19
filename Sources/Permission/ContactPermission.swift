@@ -20,9 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
-#if ContactPermissionEnable
-
+#if PermissionEnable && ContactPermissionEnable
 import Contacts
 import AddressBook
 import RxSwift
@@ -81,5 +79,4 @@ public struct ContactPermission: PermissionItem {
         }
     }
 }
-
-#endif
+#endif // PermissionEnable && ContactPermissionEnable

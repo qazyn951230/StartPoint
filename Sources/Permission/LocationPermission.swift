@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if PermissionEnable && LocationPermissionEnable
 import CoreLocation
 import RxSwift
 import RxCocoa
@@ -94,3 +95,4 @@ public struct LocationPermission: PermissionItem {
         }
     }
 }
+#endif // PermissionEnable && LocationPermissionEnable

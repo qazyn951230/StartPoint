@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if PermissionEnable && CameraPermissionEnable
 import Photos
 import RxSwift
 import RxCocoa
@@ -51,3 +52,4 @@ public struct PhotoPermission: PermissionItem {
         }
     }
 }
+#endif // PermissionEnable && CameraPermissionEnable

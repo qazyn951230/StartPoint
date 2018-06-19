@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if PermissionEnable
 import Foundation
 import RxSwift
 import RxCocoa
@@ -30,28 +31,36 @@ public protocol PermissionItem {
 }
 
 public enum PermissionType {
+#if CameraPermissionEnable
     case photo
     case camera
+#endif // CameraPermissionEnable
+#if LocationPermissionEnable
     case location
+#endif // LocationPermissionEnable
     case notification(NotificationOptions)
 #if ContactPermissionEnable
     case contact
-#endif
+#endif // ContactPermissionEnable
 
     var item: PermissionItem {
         switch self {
+#if CameraPermissionEnable
         case .photo:
             return PhotoPermission()
         case .camera:
             return CameraPermission()
-        case .location:
+#endif // CameraPermissionEnable
+#if LocationPermissionEnable
+            case .location:
             return LocationPermission()
+#endif // LocationPermissionEnable
         case .notification(let options):
             return NotificationPermission(options: options)
 #if ContactPermissionEnable
-        case .contact:
+            case .contact:
             return ContactPermission()
-#endif
+#endif // ContactPermissionEnable
         }
     }
 }
@@ -82,3 +91,4 @@ public enum Permission {
         }
     }
 }
+#endif // PermissionEnable
