@@ -324,8 +324,7 @@ open class ButtonElement: Element<UIButton> {
             state.images = images
             registerPendingState()
         }
-        let size: CGSize = value?.size ?? CGSize.zero
-        image?.layout.size(size)
+        image?.layout.size(value?.size ?? CGSize.zero)
         return self
     }
 
@@ -341,8 +340,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if state == UIControlState.normal {
-            let size: CGSize = value?.size ?? CGSize.zero
-            image?.layout.size(size)
+            image?.layout.size(value?.size ?? CGSize.zero)
         }
         return self
     }

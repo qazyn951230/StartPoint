@@ -26,7 +26,7 @@ import RxSwift
 import RxCocoa
 
 open class StartWebController: AppViewController<WKWebView> {
-    public static let intentUrlKey = "StartWebControllerUrlKey"
+    public static let intentUrlKey = "StartWebControllerIntentUrlKey"
 
     public let bag = DisposeBag()
     public var initUrl: URL?
@@ -35,10 +35,6 @@ open class StartWebController: AppViewController<WKWebView> {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
-        if let url = initUrl {
-            let request = URLRequest(url: url)
-            rootView?.load(request)
-        }
         if let webView = rootView {
             webView.backgroundColor = UIColor.white
             titleDriver(webView: webView)
@@ -48,6 +44,10 @@ open class StartWebController: AppViewController<WKWebView> {
             goBackDriver(webView: webView)
                 .drive(onNext: setBackBarButton(canGoBack:))
                 .disposed(by: bag)
+            if let url = initUrl {
+                let request = URLRequest(url: url)
+                webView.load(request)
+            }
         }
     }
 
@@ -103,12 +103,14 @@ open class StartWebController: AppViewController<WKWebView> {
             initUrl = url
         }
         hidesBottomBarWhenPushed = true
+
         refreshBarItem = UIBarButtonItem(image: R.image.ic_refresh(), style: .plain,
             target: self, action: #selector(rightBarAction(button:)))
         navigationItem.rightBarButtonItem = refreshBarItem
         if method.isPush {
             return self
         }
+
         closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
             target: self, action: #selector(closeBarAction(button:)))
         return UINavigationController(rootViewController: self)

@@ -28,6 +28,10 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     public private(set) var rootView: View? = nil
     public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer? = nil
 
+#if DEBUG
+    var _viewLoaded = false
+#endif
+
     open var shouldLoadBackBarItem: Bool {
         guard let count = navigationController?.viewControllers.count else {
             return false
@@ -38,11 +42,17 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialization()
+#if DEBUG
+        assertFalse(_viewLoaded, "view should not load when initialization")
+#endif
     }
 
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialization()
+#if DEBUG
+        assertFalse(_viewLoaded, "view should not load when initialization")
+#endif
     }
 
     open func initialization() {
@@ -55,6 +65,9 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 
     open override func loadView() {
+#if DEBUG
+        _viewLoaded = true
+#endif
         rootView = createView()
         view = rootView
     }

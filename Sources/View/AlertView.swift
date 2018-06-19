@@ -40,7 +40,12 @@ open class BasicAlertView: Hashable {
         // Do nothing.
     }
 
-    public func show(animated: Bool = true) {
+    // For FP
+    public func show() {
+        show(animated: true)
+    }
+
+    public func show(animated: Bool) {
         if view == nil {
             buildView()
         }
@@ -61,7 +66,12 @@ open class BasicAlertView: Hashable {
         }
     }
 
-    public func dismiss(animated: Bool = true) {
+    // For FP
+    public func dismiss() {
+        dismiss(animated: true)
+    }
+
+    public func dismiss(animated: Bool) {
         guard let view = view else {
             return
         }

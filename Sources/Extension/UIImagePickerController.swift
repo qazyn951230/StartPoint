@@ -24,16 +24,25 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy, UIImagePickerControllerDelegate {
+public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy,
+    UIImagePickerControllerDelegate {
     public init(imagePicker: UIImagePickerController) {
         super.init(navigationController: imagePicker)
+    }
+
+    public override class func registerKnownImplementations() {
+        RxImagePickerDelegateProxy.register { RxImagePickerDelegateProxy(imagePicker: $0) }
     }
 }
 
 public extension Reactive where Base: UIImagePickerController {
+    public var pickerDelegate: DelegateProxy<UINavigationController, UINavigationControllerDelegate> {
+        return RxImagePickerDelegateProxy.proxy(for: base)
+    }
+
     public var didFinishPickingMediaWithInfo: Observable<[String: Any]> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:))
-        return delegate.methodInvoked(selector)
+        return pickerDelegate.methodInvoked(selector)
             .map { object in
                 if let result = object.object(at: 1) as? [String: Any] {
                     return result
@@ -45,7 +54,7 @@ public extension Reactive where Base: UIImagePickerController {
 
     public var didCancel: Observable<Void> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerControllerDidCancel(_:))
-        return delegate.methodInvoked(selector)
+        return pickerDelegate.methodInvoked(selector)
             .map(Function.nothing)
     }
 }
@@ -54,17 +63,16 @@ public extension UIImagePickerController {
     public static func rxController(_ picker: UIImagePickerController, in viewController: UIViewController,
                                     animated: Bool = true) -> Observable<UIImagePickerController> {
         return Observable<UIImagePickerController>.create { observer in
-            viewController.present(picker, animated: animated)
-            observer.on(.next(picker))
-
-            let disposable = picker.rx
-                .didCancel
+            let disposable = picker.rx.didCancel
                 .subscribe(onNext: {
                 picker.dismiss(animated: animated)
             })
             let disposable2 = Disposables.create {
                 picker.dismiss(animated: animated)
             }
+
+            viewController.present(picker, animated: animated)
+            observer.on(.next(picker))
             return Disposables.create(disposable, disposable2)
         }
     }
