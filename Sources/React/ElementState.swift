@@ -33,6 +33,7 @@ public protocol ElementProperty {
     var tintColor: UIColor { get }
     var interactive: Bool { get }
     var alpha: Double { get }
+    var contentMode: UIViewContentMode { get }
     // CALayer
     var cornerRadius: CGFloat { get }
     var borderColor: CGColor? { get }
@@ -114,6 +115,16 @@ open class ElementState: ElementProperty {
         }
     }
     var _alpha: Double?
+
+    public var contentMode: UIViewContentMode {
+        get {
+            return _contentMode ?? UIViewContentMode.scaleToFill
+        }
+        set {
+            _contentMode = newValue
+        }
+    }
+    var _contentMode: UIViewContentMode?
 
     // MARK: Layer properties
     public var cornerRadius: CGFloat {
@@ -224,6 +235,10 @@ open class ElementState: ElementProperty {
         if let alpha = _alpha {
             view.alpha = CGFloat(alpha)
         }
+        if let contentMode = _contentMode {
+            view.contentMode = contentMode
+        }
+
         if let cornerRadius = _cornerRadius {
             layer.cornerRadius = cornerRadius
         }
@@ -303,6 +318,7 @@ open class ElementState: ElementProperty {
         _tintColor = nil
         _interactive = nil
         _alpha = nil
+        _contentMode = nil
 
         _cornerRadius = nil
         _borderColor = nil

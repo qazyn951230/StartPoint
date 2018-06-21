@@ -122,11 +122,12 @@ open class StartWebController: AppViewController<WKWebView> {
         return intent
     }
 
-    open class func createAsRoot() -> Self {
-        let web = create()
-        let close = StartPoint.R.image.ic_arrow_back()
-        web.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: web,
+    open class func createAsRoot(url: String?) -> Self {
+        let controller = create()
+        controller.initUrl = url.flatMap(URL.init(string:))
+        let close = R.image.ic_arrow_back()
+        controller.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: controller,
             action: #selector(backBarItemAction(sender:)))
-        return web
+        return controller
     }
 }
