@@ -86,8 +86,8 @@ public class ButtonElementState: ElementState {
 }
 
 open class ButtonElement: Element<UIButton> {
-    let label: LabelElement?
-    let image: BasicElement?
+    public let title: LabelElement?
+    public let image: BasicElement?
 
     public override init(children: [BasicElement]) {
         let array: [BasicElement]
@@ -95,10 +95,10 @@ open class ButtonElement: Element<UIButton> {
             let _label = LabelElement()
             let _image = ImageElement()
             array = [_label, _image]
-            label = _label
+            title = _label
             image = _image
         } else {
-            label = nil
+            title = nil
             image = nil
             array = children
         }
@@ -123,9 +123,23 @@ open class ButtonElement: Element<UIButton> {
         return state
     }
 
+    @discardableResult
+    public func titleStyle(_ method: (FlexLayout) -> Void) -> Self {
+        let layout = title?.layout
+        layout.maybe(method)
+        return self
+    }
+
+    @discardableResult
+    public func imageStyle(_ method: (FlexLayout) -> Void) -> Self {
+        let layout = image?.layout
+        layout.maybe(method)
+        return self
+    }
+
     open override func buildChildren(in view: UIView) {
         for child in children {
-            if child != label && child != image {
+            if child != title && child != image {
                 child.build(in: view)
             }
         }
@@ -137,7 +151,7 @@ open class ButtonElement: Element<UIButton> {
         }
         super.applyState(to: view)
         let (title, image) = edgeInsets()
-        if label != nil {
+        if self.title != nil {
             view.titleEdgeInsets = title
         }
         if self.image != nil {
@@ -148,8 +162,8 @@ open class ButtonElement: Element<UIButton> {
 
     func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
         let buttonSize: CGSize = frame.size
-        let titleSize: CGSize = label?.frame.size ?? CGSize.zero
-        let titleInsets = marginEdgeInsets(for: label)
+        let titleSize: CGSize = title?.frame.size ?? CGSize.zero
+        let titleInsets = marginEdgeInsets(for: title)
         let imageSize: CGSize = image?.frame.size ?? CGSize.zero
         let imageInsets = marginEdgeInsets(for: image)
         let padding = CGFloat(layout.style.totalPadding(for: .column, width: _frame.width))
@@ -224,7 +238,7 @@ open class ButtonElement: Element<UIButton> {
             titles[UIControlState.normal] = value
             state.titles = titles
         }
-        label?.text(value)
+        title?.text(value)
         return self
     }
 
@@ -240,7 +254,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if state == UIControlState.normal {
-            label?.text(value)
+            title?.text(value)
         }
         return self
     }
@@ -261,7 +275,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if states.contains(.normal) {
-            label?.text(value)
+            title?.text(value)
         }
         return self
     }

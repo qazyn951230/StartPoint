@@ -93,7 +93,7 @@ public class ProgressHUD: UIView {
                 self.indicatorView.startAnimating()
             })
         } else {
-            indicatorView.stopAnimating()
+            indicatorView.startAnimating()
         }
     }
 
