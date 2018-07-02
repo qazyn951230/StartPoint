@@ -70,7 +70,6 @@ public final class RecyclerElement: Element<UICollectionView> {
     }
 
     public func reload(to map: RecyclerFlexElement) {
-        map.layout.copy(from: layout)
         dataController.update(to: map, completion: nil)
     }
 }
