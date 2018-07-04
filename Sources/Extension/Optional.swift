@@ -89,5 +89,12 @@ public extension Optional where Wrapped == String {
         }
         return String.empty
     }
+
+    public var notEmpty: String? {
+        if let value = self {
+            return value.isEmpty ? nil : value
+        }
+        return nil
+    }
 }
 

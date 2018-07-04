@@ -449,4 +449,15 @@ open class Element<View: UIView>: BasicElement {
         }
         return self
     }
+
+    @discardableResult
+    public func contentMode(_ value: UIViewContentMode) -> Self {
+        if Runner.isMain(), let view = view {
+            view.contentMode = value
+        } else {
+            pendingState.contentMode = value
+            registerPendingState()
+        }
+        return self
+    }
 }

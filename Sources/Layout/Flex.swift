@@ -696,13 +696,15 @@ func inner<T: Comparable>(_ value: T, min: T, max: T) -> T {
     return Swift.max(Swift.min(value, max), min)
 }
 
-func inner<T: Comparable>(_ value: T, min: T?, max: T?) -> T {
-    var r = value
+func inner<T: Comparable>(_ value: T?, min: T?, max: T?) -> T? {
+    guard var result = value else {
+        return nil
+    }
     if let max = max {
-        r = Swift.min(r, max)
+        result = Swift.min(result, max)
     }
     if let min = min {
-        r = Swift.max(r, min)
+        result = Swift.max(result, min)
     }
-    return r
+    return result
 }

@@ -31,7 +31,12 @@ open class StartWebController: AppViewController<WKWebView> {
     public let bag = DisposeBag()
     public var initUrl: URL?
     public private(set) var closeBarItem: UIBarButtonItem?
-    public private(set) var refreshBarItem: UIBarButtonItem?
+    open var trackWebViewTitle: Bool = true
+
+    open override func createView() -> WKWebView {
+        let config = WKWebViewConfiguration()
+        return WKWebView(frame: CGRect.zero, configuration: config)
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +46,11 @@ open class StartWebController: AppViewController<WKWebView> {
                 .drive(onNext: { [weak self] value in
                     self?.navigationItem.title = value
                 }).disposed(by: bag)
-            goBackDriver(webView: webView)
-                .drive(onNext: setBackBarButton(canGoBack:))
-                .disposed(by: bag)
+            if trackWebViewTitle {
+                goBackDriver(webView: webView)
+                    .drive(onNext: setBackBarButton(canGoBack:))
+                    .disposed(by: bag)
+            }
             if let url = initUrl {
                 let request = URLRequest(url: url)
                 webView.load(request)
@@ -51,9 +58,49 @@ open class StartWebController: AppViewController<WKWebView> {
         }
     }
 
-    open override func createView() -> WKWebView {
-        let config = WKWebViewConfiguration()
-        return WKWebView(frame: CGRect.zero, configuration: config)
+    open override func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
+        if let text = intent.extra(key: StartWebController.intentUrlKey, of: String.self),
+           let url = URL(string: text) {
+            initUrl = url
+        }
+        hidesBottomBarWhenPushed = true
+        loadRefreshBarItem()
+        if method.isPush {
+            return self
+        }
+        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
+            target: self, action: #selector(closeBarAction(button:)))
+        return UINavigationController(rootViewController: self)
+    }
+
+    // MARK: Action
+    open override func backBarItemAction(sender: UIBarButtonItem) {
+        if let webView = rootView, webView.canGoBack {
+            webView.goBack()
+        } else {
+            super.backBarItemAction(sender: sender)
+        }
+    }
+
+    @objc open func closeBarAction(button: UIBarButtonItem) {
+        finish()
+    }
+
+    @objc open func refreshBarAction(button: UIBarButtonItem) {
+        rootView?.reload()
+    }
+
+    // MARK: Function
+    open func titleDriver(webView: WKWebView) -> Driver<String?> {
+        return webView.rx.observe(String.self, #keyPath(WKWebView.title))
+            .asDriver(onErrorJustReturn: nil)
+    }
+
+    open func goBackDriver(webView: WKWebView) -> Driver<Bool> {
+        return webView.rx.observe(Bool.self, #keyPath(WKWebView.canGoBack))
+            .asDriver(onErrorJustReturn: nil)
+            .compactMap(Function.maybe)
+            .distinctUntilChanged()
     }
 
     open func setBackBarButton(canGoBack: Bool) {
@@ -69,51 +116,10 @@ open class StartWebController: AppViewController<WKWebView> {
         }
     }
 
-    open override func backBarItemAction(sender: UIBarButtonItem) {
-        if let webView = rootView, webView.canGoBack {
-            webView.goBack()
-        } else {
-            super.backBarItemAction(sender: sender)
-        }
-    }
-
-    @objc open func closeBarAction(button: UIBarButtonItem) {
-        finish()
-    }
-
-    @objc open func rightBarAction(button: UIBarButtonItem) {
-        rootView?.reload()
-    }
-
-    open func titleDriver(webView: WKWebView) -> Driver<String?> {
-        return webView.rx.observe(String.self, #keyPath(WKWebView.title))
-            .asDriver(onErrorJustReturn: nil)
-    }
-
-    open func goBackDriver(webView: WKWebView) -> Driver<Bool> {
-        return webView.rx.observe(Bool.self, #keyPath(WKWebView.canGoBack))
-            .asDriver(onErrorJustReturn: nil)
-            .compactMap(Function.maybe)
-            .distinctUntilChanged()
-    }
-
-    open override func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
-        if let text = intent.stringExtra(key: StartWebController.intentUrlKey),
-           let url = URL(string: text) {
-            initUrl = url
-        }
-        hidesBottomBarWhenPushed = true
-
-        refreshBarItem = UIBarButtonItem(image: R.image.ic_refresh(), style: .plain,
-            target: self, action: #selector(rightBarAction(button:)))
+    open func loadRefreshBarItem() {
+        let refreshBarItem = UIBarButtonItem(image: R.image.ic_refresh(), style: .plain,
+            target: self, action: #selector(refreshBarAction(button:)))
         navigationItem.rightBarButtonItem = refreshBarItem
-        if method.isPush {
-            return self
-        }
-
-        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
-            target: self, action: #selector(closeBarAction(button:)))
-        return UINavigationController(rootViewController: self)
     }
 
     open class func intent(url: String) -> Intent {
@@ -122,11 +128,13 @@ open class StartWebController: AppViewController<WKWebView> {
         return intent
     }
 
-    open class func createAsRoot() -> Self {
-        let web = create()
-        let close = StartPoint.R.image.ic_arrow_back()
-        web.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: web,
+    open class func createAsRoot(url: String?) -> Self {
+        let controller = create()
+        controller.initUrl = url.flatMap(URL.init(string:))
+        let close = R.image.ic_arrow_back()
+        controller.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: controller,
             action: #selector(backBarItemAction(sender:)))
-        return web
+        controller.loadRefreshBarItem()
+        return controller
     }
 }

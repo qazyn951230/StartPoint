@@ -124,23 +124,25 @@ public class Intent {
         return extras[key]
     }
 
-    public func stringExtra(key: String) -> String? {
-        return extras[key] as? String
+    public func extra<T>(key: String) -> T? {
+        return extras[key] as? T
     }
 
-    public func doubleExtra(key: String) -> Double? {
-        return extras[key] as? Double
+    public func extra<T>(key: String, of type: T.Type) -> T? {
+        return extras[key] as? T
     }
 
-    public func intExtra(key: String) -> Int? {
-        return extras[key] as? Int
+    public func extra<T>(key: String, default: T) -> T {
+        return (extras[key] as? T) ?? `default`
     }
 
     public func start(in source: IntentSource) {
+        assertMainThread()
         start(with: source.intentController)
     }
 
     public func start(with controller: UIViewController) {
+        assertMainThread()
         let resolved = (method != IntentMethod.modal &&
             (controller.navigationController != nil || controller is UINavigationController)) ?
             ResolvedMethod.push : ResolvedMethod.modal
@@ -174,6 +176,7 @@ public class Intent {
     }
 
     func display(source: UIViewController, target: UIViewController, method: ResolvedMethod) {
+        assertMainThread()
         switch method {
         case .push:
 #if DEBUG

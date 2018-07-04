@@ -93,6 +93,36 @@ public class TextFieldElementState: ElementState {
     }
     var _textAlignment: NSTextAlignment?
 
+    public var font: UIFont? {
+        get {
+            return _font ?? nil
+        }
+        set {
+            _font = newValue
+        }
+    }
+    var _font: UIFont??
+
+    public var color: UIColor? {
+        get {
+            return _color ?? nil
+        }
+        set {
+            _color = newValue
+        }
+    }
+    var _color: UIColor??
+
+    public var textAttributes: [String: Any] {
+        get {
+            return _textAttributes ?? [:]
+        }
+        set {
+            _textAttributes = newValue
+        }
+    }
+    var _textAttributes: [String: Any]?
+
     public override func apply(view: UIView) {
         if let textField = view as? UITextField {
             apply(textField: textField)
@@ -123,6 +153,15 @@ public class TextFieldElementState: ElementState {
         if let textAlignment = _textAlignment {
             view.textAlignment = textAlignment
         }
+        if let font = _font {
+            view.font = font
+        }
+        if let color = _color {
+            view.textColor = color
+        }
+        if let textAttributes = _textAttributes {
+            view.defaultTextAttributes = textAttributes
+        }
         super.apply(view: view)
     }
 
@@ -134,6 +173,9 @@ public class TextFieldElementState: ElementState {
         _clearButtonMode = nil
         _secure = nil
         _textAlignment = nil
+        _font = nil
+        _color = nil
+        _textAttributes = nil
         super.invalidate()
     }
 }
@@ -309,7 +351,7 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-                          replacementString string: String) -> Bool {
+                   replacementString string: String) -> Bool {
         assertMainThread()
         var value = textField.text ?? String.empty
         let start = value.index(value.startIndex, offsetBy: range.location)
@@ -418,5 +460,58 @@ open class TextFieldElement: Element<UITextField> {
             registerPendingState()
         }
         return self
+    }
+
+    @discardableResult
+    public func font(_ value: UIFont?) -> Self {
+        if Runner.isMain(), let view = view {
+            view.font = value
+        } else {
+            pendingState.font = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func systemFont(size: CGFloat, weight: FontWeight = .regular) -> Self {
+        let font: UIFont
+        if #available(iOS 8.2, *) {
+            font = UIFont.systemFont(ofSize: size, weight: weight.weight)
+        } else {
+            font = UIFont.systemFont(ofSize: size)
+        }
+        return self.font(font)
+    }
+
+    @discardableResult
+    public func color(_ value: UIColor?) -> Self {
+        if Runner.isMain(), let view = view {
+            view.textColor = value
+        } else {
+            pendingState.color = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func textAttributes(_ value: [String: Any]) -> Self {
+        if Runner.isMain(), let view = view {
+            view.defaultTextAttributes = value
+        } else {
+            pendingState.textAttributes = value
+            registerPendingState()
+        }
+        return self
+    }
+
+    @discardableResult
+    public func textAttributes(template: AttributedString) -> Self {
+        var attributes: [String: Any] = [:]
+        for (key, value) in template.attributes {
+            attributes[key.rawValue] = value
+        }
+        return textAttributes(attributes)
     }
 }
