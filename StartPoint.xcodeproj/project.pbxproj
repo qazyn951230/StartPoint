@@ -1209,6 +1209,7 @@
 				);
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PermissionEnable CameraPermissionEnable LocationPermissionEnable";
 			};
 			name = Debug;
 		};
@@ -1222,6 +1223,7 @@
 				);
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PermissionEnable CameraPermissionEnable LocationPermissionEnable";
 			};
 			name = Release;
 		};

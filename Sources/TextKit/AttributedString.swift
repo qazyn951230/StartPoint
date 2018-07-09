@@ -95,15 +95,19 @@ public final class AttributedString {
         return self
     }
 
-    public func append(_ attrString: NSAttributedString) -> AttributedString {
-        string.append(attrString)
-        wholeRange = NSRange(location: 0, length: string.length)
+    public func append(_ attributedString: NSAttributedString?) -> AttributedString {
+        if let value = attributedString {
+            string.append(value)
+            wholeRange = NSRange(location: 0, length: string.length)
+        }
         return self
     }
 
-    public func append(_ attrString: AttributedString) -> AttributedString {
-        string.append(attrString.done())
-        wholeRange = NSRange(location: 0, length: string.length)
+    public func append(_ string: AttributedString?) -> AttributedString {
+        if let value = string {
+            self.string.append(value.done())
+            wholeRange = NSRange(location: 0, length: self.string.length)
+        }
         return self
     }
 
