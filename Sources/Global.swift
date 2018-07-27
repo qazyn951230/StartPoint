@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import UIKit
+
 public func match<T>(v4: T, v5: T, v6: T, v6p: T, x: T) -> T {
     switch Device.current {
     case .phone4:
@@ -98,6 +100,19 @@ public func match<T>(v320: T?, v375: T?, v414: T?) -> T? {
     }
 }
 
-public func within<T:Comparable>(_ value: T, min: T, max: T) -> T {
+public func within<T: Comparable>(_ value: T, min: T, max: T) -> T {
     return Swift.max(min, Swift.min(value, max))
+}
+
+public func openUrl(_ url: String) {
+    let app = UIApplication.shared
+    guard let value = URL(string: url), app.canOpenURL(value) else {
+        Log.warn("App cannot open URL: \(url)")
+        return
+    }
+    if #available(iOS 10.0, *) {
+        app.open(value)
+    } else {
+        app.openURL(value)
+    }
 }

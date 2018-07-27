@@ -42,6 +42,9 @@ public enum PermissionType {
 #if ContactPermissionEnable
     case contact
 #endif // ContactPermissionEnable
+#if HealthPermissionEnable
+    case health
+#endif // HealthPermissionEnable
 
     var item: PermissionItem {
         switch self {
@@ -52,15 +55,19 @@ public enum PermissionType {
             return CameraPermission()
 #endif // CameraPermissionEnable
 #if LocationPermissionEnable
-            case .location:
+        case .location:
             return LocationPermission()
 #endif // LocationPermissionEnable
         case .notification(let options):
             return NotificationPermission(options: options)
 #if ContactPermissionEnable
-            case .contact:
+        case .contact:
             return ContactPermission()
 #endif // ContactPermissionEnable
+#if HealthPermissionEnable
+        case .health:
+            return HealthPermission()
+#endif // HealthPermissionEnable
         }
     }
 }

@@ -88,6 +88,7 @@
 		AC96A95E37503B8812972882 /* UIImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */; };
 		AC96A961D2413ABE7D375AE5 /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FCF7D4FE5D5D091381 /* AlertController.swift */; };
 		AC96A971B402B448B1D55A57 /* AlignSelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85E0F923B9028631591 /* AlignSelfTests.swift */; };
+		AC96A97A7E44276DDC012CD8 /* HealthPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAD61E3AFD3E2CD58A29 /* HealthPermission.swift */; };
 		AC96A9AA25BD2810D5DE3EC2 /* AbsolutePositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26C55282021CFB56FEC /* AbsolutePositionTests.swift */; };
 		AC96A9B0228A9C20C9B2FD30 /* StatusBarWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */; };
 		AC96A9BDF9EABD173944E1C0 /* ElementState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC568512717B29819623 /* ElementState.swift */; };
@@ -293,6 +294,7 @@
 		AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FlexLayout+Setter.swift"; sourceTree = "<group>"; };
 		AC96AA6DF54872C6A7028AFB /* ComputedPaddingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputedPaddingTests.swift; sourceTree = "<group>"; };
 		AC96AA6FF43854C4A178ACB1 /* ElementApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementApplication.swift; sourceTree = "<group>"; };
+		AC96AAD61E3AFD3E2CD58A29 /* HealthPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthPermission.swift; sourceTree = "<group>"; };
 		AC96AAEE7C3982A9F0E838C3 /* FlexLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexLayout.swift; sourceTree = "<group>"; };
 		AC96AAF6CC5FFB07839B5A15 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		AC96AB0722680DBC90E94458 /* Decodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Decodable.swift; sourceTree = "<group>"; };
@@ -580,6 +582,7 @@
 				AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */,
 				AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */,
 				AC96AC5D3212FC05F7BB00A7 /* ContactPermission.swift */,
+				AC96AAD61E3AFD3E2CD58A29 /* HealthPermission.swift */,
 			);
 			path = Permission;
 			sourceTree = "<group>";
@@ -1115,6 +1118,7 @@
 				AC96AA8241BC807A2B9AA28D /* ContactPermission.swift in Sources */,
 				AC96AD12589AF1B9280EC2ED /* BasicElement+rx.swift in Sources */,
 				AC96AB15FB41E415590019DF /* Double.swift in Sources */,
+				AC96A97A7E44276DDC012CD8 /* HealthPermission.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1209,7 +1213,7 @@
 				);
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PermissionEnable CameraPermissionEnable LocationPermissionEnable";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PermissionEnable CameraPermissionEnable LocationPermissionEnable HealthPermissionEnable";
 			};
 			name = Debug;
 		};
@@ -1223,7 +1227,7 @@
 				);
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PermissionEnable CameraPermissionEnable LocationPermissionEnable";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PermissionEnable CameraPermissionEnable LocationPermissionEnable HealthPermissionEnable";
 			};
 			name = Release;
 		};
