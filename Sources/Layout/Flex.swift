@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
+#endif
 import CoreGraphics
 
 public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
@@ -221,6 +223,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
+#if canImport(UIKit)
     public func edgeInsets(style: FlexStyle, size: Size) -> UIEdgeInsets {
         let direction = style.direction == Direction.ltr ? FlexDirection.row : FlexDirection.rowReverse
         let top = self.top.resolve(by: size.height)
@@ -232,6 +235,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         return UIEdgeInsets(top: CGFloat(top), left: CGFloat(left),
             bottom: CGFloat(bottom), right: CGFloat(right))
     }
+#endif // canImport(UIKit)
 
     public static func ==(lhs: StyleInsets, rhs: StyleInsets) -> Bool {
         return lhs.left == rhs.left && lhs.right == rhs.right &&
@@ -467,8 +471,8 @@ public struct Flex: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLi
 
     public static func ==(lhs: Flex, rhs: Flex) -> Bool {
         return lhs.grow ~~ rhs.grow &&
-            lhs.shrink ~~ rhs.shrink &&
-            lhs.basis == rhs.basis
+        lhs.shrink ~~ rhs.shrink &&
+        lhs.basis == rhs.basis
     }
 }
 
@@ -649,7 +653,7 @@ struct LayoutCache {
 
     func isEqual(width: Double, height: Double, widthMode: MeasureMode, heightMode: MeasureMode) -> Bool {
         return self.width ~~ width && self.height ~~ height &&
-            self.widthMode == widthMode && self.heightMode == heightMode
+        self.widthMode == widthMode && self.heightMode == heightMode
     }
 
     func validate(width: Double, height: Double, widthMode: MeasureMode, heightMode: MeasureMode,

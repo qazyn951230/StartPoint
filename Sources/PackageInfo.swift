@@ -21,11 +21,14 @@
 // SOFTWARE.
 
 import Foundation
-import UIKit
 
 public struct PackageInfo {
     public static var bundle: Bundle? {
-        return Bundle(identifier: "com.undev.StartPoint")
+#if os(iOS)
+        return Bundle(identifier: "com.undev.iOS.StartPoint")
+#else
+        return Bundle(identifier: "com.undev.macOS.StartPoint")
+#endif
     }
 }
 

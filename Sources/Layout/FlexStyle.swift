@@ -20,7 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
+#endif
+#if canImport(Cocoa)
+import Cocoa
+#endif
 
 // gYGNodeStyleDefaults
 public class FlexStyle: Equatable {
@@ -88,7 +93,15 @@ public class FlexStyle: Equatable {
     }
 
     public internal(set) var aspectRatio: Double = Double.nan
+#if canImport(UIKit)
     public static var scale: Double = Double(UIScreen.main.scale)
+#elseif canImport(Cocoa)
+    public static var scale: Double = Double(NSScreen.main?.backingScaleFactor ?? 0)
+#else
+    public static var scale: Double = 1
+#endif
+
+
     var absoluteLayout: Bool {
         return positionType == PositionType.absolute
     }

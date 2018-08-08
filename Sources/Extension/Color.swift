@@ -70,21 +70,21 @@ public extension UIColor {
 }
 #else
 public extension NSColor {
-    public static func hex(value: UInt32) -> NSColor {
-        return hexColor(hex, creator: NSColor.init(red:green:blue:alpha:))
+    public static func hex(_ value: UInt32) -> NSColor {
+        return hexColor(value, creator: NSColor.init(red:green:blue:alpha:))
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+    public static func hex(_ value: UInt32, alpha: CGFloat) -> NSColor {
         return hexColor(value, alpha: alpha, creator: NSColor.init(red:green:blue:alpha:))
     }
 }
 
 public extension CGColor {
-    public static func hex(value: UInt32) -> CGColor {
-        return hexColor(hex, creator: CGColor.init(red:green:blue:alpha:))
+    public static func hex(_ value: UInt32) -> CGColor {
+        return hexColor(value, creator: CGColor.init(red:green:blue:alpha:))
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+    public static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
         return hexColor(value, alpha: alpha, creator: CGColor.init(red:green:blue:alpha:))
     }
 }
