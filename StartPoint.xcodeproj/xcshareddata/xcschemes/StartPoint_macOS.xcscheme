@@ -27,7 +27,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BC4A4A6F2119479E002564C6"
+               BuildableName = "macOSTests.xctest"
+               BlueprintName = "macOSTests"
+               ReferencedContainer = "container:StartPoint.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BC4A4A672119479E002564C6"
+            BuildableName = "StartPoint.framework"
+            BlueprintName = "StartPoint_macOS"
+            ReferencedContainer = "container:StartPoint.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -63,6 +82,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BC4A4A672119479E002564C6"
+            BuildableName = "StartPoint.framework"
+            BlueprintName = "StartPoint_macOS"
+            ReferencedContainer = "container:StartPoint.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

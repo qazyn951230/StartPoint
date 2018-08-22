@@ -20,20 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#include <stdlib.h>
+#include <string.h>
+#import "Stream.h"
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+#define STRING_STREAM_COPY 1
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+struct StringStream {
+#if STRING_STREAM_COPY
+    char* source;
+#else
+    const char* source;
+#endif // STRING_STREAM_COPY
+    const char* current;
+};
 
-#import <StartPoint/Object.h>
-#import <StartPoint/config.h>
+StringStreamRef StringStreamCreate(const char* value) {
+    StringStreamRef const stream = (StringStreamRef) malloc(sizeof(struct StringStream));
+#if STRING_STREAM_COPY
+    stream->source = (char *) malloc(sizeof(char *) * strlen(value));
+    strcpy(stream->source, value);
+    stream->current = stream->source;
+#else
+    stream->source = value;
+    stream->current = value;
+#endif // STRING_STREAM_COPY
+    return stream;
+}
 
-#if !TARGET_OS_IPHONE
-
-#import <StartPoint/Stream.h>
-#import <StartPoint/Double.h>
-
+void StringStreamFree(StringStreamRef const stream) {
+#if STRING_STREAM_COPY
+    free((void*) stream->source);
 #endif
+    free(stream);
+}
+
+unsigned char StringStreamPeek(StringStreamRef const stream) {
+    return (unsigned char) *stream->current;
+}
+
+void StringStreamMove(StringStreamRef const stream) {
+    stream->current += 1;
+}

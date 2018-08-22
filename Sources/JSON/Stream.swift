@@ -20,20 +20,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import Foundation
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+public protocol Stream {
+    associatedtype Value
+    func peek() -> Value
+    func next() -> Value
+    func move()
+}
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+public extension Stream {
+    public func next() -> Value {
+        move()
+        return peek()
+    }
+}
 
-#import <StartPoint/Object.h>
-#import <StartPoint/config.h>
+final public class DataStream: Stream {
+    public typealias Value = UInt8
+    var iterator: Data.Iterator
+    var current: UInt8 = 0
 
-#if !TARGET_OS_IPHONE
+    public init(data: Data) {
+        iterator = data.makeIterator()
+        move()
+    }
 
-#import <StartPoint/Stream.h>
-#import <StartPoint/Double.h>
+    public func peek() -> UInt8 {
+        return current
+    }
 
-#endif
+    public func move() {
+        current = iterator.next() ?? 0
+    }
+}
+
+final public class StringStream: Stream {
+    public typealias Value = UInt8
+    var stream: StringStreamRef
+
+    public init(_ value: String) {
+        stream = StringStreamCreate(value)
+    }
+
+    public init(_ pointer: UnsafePointer<Int8>) {
+        stream = StringStreamCreate(pointer)
+    }
+
+    deinit {
+        StringStreamFree(stream)
+    }
+
+    public func peek() -> UInt8 {
+        return StringStreamPeek(stream)
+    }
+
+    public func move() {
+        StringStreamMove(stream)
+    }
+}

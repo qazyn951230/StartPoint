@@ -20,20 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#ifndef STARTPOINT_JSON_HPP
+#define STARTPOINT_JSON_HPP
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+class SPJSON {
 
-#import <StartPoint/Object.h>
-#import <StartPoint/config.h>
+};
 
-#if !TARGET_OS_IPHONE
 
-#import <StartPoint/Stream.h>
-#import <StartPoint/Double.h>
-
-#endif
+#endif //STARTPOINT_JSON_HPP

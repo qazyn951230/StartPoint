@@ -20,31 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import StartPoint
-import XCTest
+#ifndef STARTPOINT_STREAM_H
+#define STARTPOINT_STREAM_H
 
-class ArrayTests: XCTestCase {
-    func testStringArray() {
-        let array = ["1", "A", "😁", "➕"]
-        let json = JSON2(raw: array)
+#include "config.h"
 
-        XCTAssertEqual(json[0].string(), "1")
-        XCTAssertEqual(json[1].string(), "A")
-        XCTAssertEqual(json[2].string(), "😁")
-        XCTAssertEqual(json[3].string(), "➕")
-        XCTAssertEqual(json[-1], JSON2.null)
-        XCTAssertEqual(json[4], JSON2.null)
-    }
+SP_C_FILE_BEGIN
 
-    func testAnyArray() {
-        let array: [Any] = [1, "A", ["1"], ["1": "1"]]
-        let json = JSON2(raw: array)
+typedef struct StringStream* StringStreamRef;
 
-        XCTAssertEqual(json[0].int(), 1)
-        XCTAssertEqual(json[1].string(), "A")
-        XCTAssertEqual(json[2].array().map { $0.string() }, ["1"])
-        XCTAssertEqual(json[3].object().mapValues { $0.string() }, ["1": "1"])
-        XCTAssertEqual(json[-1], JSON2.null)
-        XCTAssertEqual(json[4], JSON2.null)
-    }
-}
+StringStreamRef StringStreamCreate(const char* value);
+void StringStreamFree(StringStreamRef const stream);
+unsigned char StringStreamPeek(StringStreamRef const stream);
+void StringStreamMove(StringStreamRef const stream);
+
+SP_C_FILE_END
+
+#endif //STARTPOINT_STREAM_H

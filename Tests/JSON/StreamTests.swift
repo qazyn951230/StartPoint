@@ -20,20 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+@testable import StartPoint
+import XCTest
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+class StreamTests: XCTestCase {
+    func testDataStream() {
+        let value = "foobar➕😁"
+        let stream = DataStream(data: value.data(using: .utf8)!)
+        var array: [UInt8] = []
+        while stream.peek() > 0 {
+            array.append(stream.peek())
+            stream.move()
+        }
+        let result: [UInt8] = [102, 111, 111, 98, 97, 114, 226, 158, 149, 240, 159, 152, 129]
+        XCTAssertEqual(array, result)
+    }
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Object.h>
-#import <StartPoint/config.h>
-
-#if !TARGET_OS_IPHONE
-
-#import <StartPoint/Stream.h>
-#import <StartPoint/Double.h>
-
-#endif
+    func testStringStream() {
+        let value = "foobar➕😁"
+        let stream = StringStream(value)
+        var array: [UInt8] = []
+        while stream.peek() > 0 {
+            array.append(stream.peek())
+            stream.move()
+        }
+        let result: [UInt8] = [102, 111, 111, 98, 97, 114, 226, 158, 149, 240, 159, 152, 129]
+        XCTAssertEqual(array, result)
+    }
+}

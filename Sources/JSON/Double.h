@@ -20,20 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#ifndef STARTPOINT_DOUBLE_H
+#define STARTPOINT_DOUBLE_H
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+#include "config.h"
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+SP_C_FILE_BEGIN
 
-#import <StartPoint/Object.h>
-#import <StartPoint/config.h>
+extern inline double parse_double(double value, int exp);
 
-#if !TARGET_OS_IPHONE
+SP_C_FILE_END
 
-#import <StartPoint/Stream.h>
-#import <StartPoint/Double.h>
-
-#endif
+#endif //STARTPOINT_DOUBLE_H
