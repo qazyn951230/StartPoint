@@ -51,7 +51,6 @@ open class StartWebController: AppViewController<WKWebView> {
                     .drive(onNext: { [weak self] value in
                         self?.setBackBarButton(canGoBack: value)
                     }).disposed(by: bag)
-                // .drive(onNext: setBackBarButton(canGoBack:)) 内存泄漏
             }
             if let url = initUrl {
                 let request = URLRequest(url: url)

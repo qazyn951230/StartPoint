@@ -32,8 +32,7 @@ struct Assert {
     static var checkMainThread: Bool {
         get {
             if let value: UnsafeMutableRawPointer = pthread_getspecific(Assert.checkKey) {
-                let b = value.assumingMemoryBound(to: Bool.self)
-                return b.pointee
+                return value.load(as: Bool.self)
             } else {
                 var check = true
                 pthread_setspecific(Assert.checkKey, &check)
