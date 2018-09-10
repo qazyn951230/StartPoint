@@ -63,6 +63,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     public convenience init(children: [BasicElement] = []) {
         self.init(framed: false, children: children)
     }
+    
+    deinit {
+        owner = nil
+    }
 
     public var frame: CGRect {
         return _frame.cgRect
