@@ -67,8 +67,8 @@ public extension Reactive where Base: SessionManager {
             .flatMap(request(request:))
     }
 
-    public func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>) -> Observable<Request>
-        where Request: ReactiveRequest {
+    public func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>)
+            -> Observable<Request> where Request: ReactiveRequest {
         return Observable.just(base)
             .flatMap(creator)
             .flatMap(request(request:))
