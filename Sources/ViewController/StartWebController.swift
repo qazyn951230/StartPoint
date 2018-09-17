@@ -51,9 +51,6 @@ open class StartWebController: AppViewController<WKWebView> {
                     .drive(onNext: { [weak self] value in
                         self?.setBackBarButton(canGoBack: value)
                     }).disposed(by: bag)
-//                goBackDriver(webView: webView)
-//                    .drive(onNext: setBackBarButton)
-//                    .disposed(by: bag)
             }
             if let url = initUrl {
                 let request = URLRequest(url: url)
@@ -69,11 +66,11 @@ open class StartWebController: AppViewController<WKWebView> {
         }
         hidesBottomBarWhenPushed = true
         loadRefreshBarItem()
+        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
+                                       target: self, action: #selector(closeBarAction(button:)))
         if method.isPush {
             return self
         }
-        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
-            target: self, action: #selector(closeBarAction(button:)))
         return UINavigationController(rootViewController: self)
     }
 
