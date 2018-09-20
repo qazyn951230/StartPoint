@@ -384,7 +384,7 @@ open class FlexLayout: Equatable {
     }
 
     // MARK: Equatable
-    open static func ==(lhs: FlexLayout, rhs: FlexLayout) -> Bool {
+    public static func ==(lhs: FlexLayout, rhs: FlexLayout) -> Bool {
         return lhs === rhs
     }
 }
