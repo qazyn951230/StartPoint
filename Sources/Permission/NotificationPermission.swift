@@ -85,7 +85,7 @@ public struct NotificationPermission: PermissionItem {
                         observer.onNext(Permission.denied)
                     case .notDetermined:
                         observer.onNext(Permission.notDetermined)
-                    case .authorized:
+                    case .authorized, .provisional:
                         observer.onNext(Permission.authorized)
                     }
                 }

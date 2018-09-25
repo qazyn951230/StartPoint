@@ -31,11 +31,3 @@ public struct PackageInfo {
 #endif
     }
 }
-
-public func address(of object: Any) -> String {
-    return stringAddress(object)
-}
-
-public func address(of object: CVarArg) -> String {
-    return String(format: "%p", object)
-}

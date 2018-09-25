@@ -144,6 +144,7 @@
 		AC96ABD23F5616B4AFB0958C /* CollectionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA57B29119FCA8B0BE81 /* CollectionElement.swift */; };
 		AC96ABD341001DE3CC043019 /* LabelElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6D3BCF3DB8BC2134433 /* LabelElement.swift */; };
 		AC96ABD4CB87B994B1E5AA82 /* TreeMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3D96DCB035B01301CE1 /* TreeMutationTests.swift */; };
+		AC96ABF1F990252497B908D7 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A70069177338DE20CAF5 /* Global.swift */; };
 		AC96AC33D1BEF725DA0E61CB /* ElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFF5FC0D5B0CA9CF53D1 /* ElementTests.swift */; };
 		AC96AC3E427E0477CF468F5A /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3C2520E78AF59EF5356 /* JSON.swift */; };
 		AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADC9D6329E0FEAF04D64 /* ZeroOutLayoutRecursivlyTests.swift */; };
@@ -1228,6 +1229,7 @@
 				AC96AC59F1CE5F05A7D957EF /* Stream.c in Sources */,
 				AC96A58ECC363C95BEF14F20 /* Stream.swift in Sources */,
 				AC96A0CA6244EC6F58E6CFAB /* JSONValues.swift in Sources */,
+				AC96ABF1F990252497B908D7 /* Global.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

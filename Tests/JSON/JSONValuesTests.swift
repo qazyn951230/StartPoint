@@ -101,7 +101,7 @@ class JSONValuesTests: XCTestCase {
         XCTAssertEqual(intMin.uint32, 0)
         XCTAssertEqual(intMin.uint64, UInt64.min)
 
-        let int = try! JSON.parse("9223372036854775807")
+        let int = try! JSON.parse("11529215046068469759")
 #if arch(x86_64) || arch(arm64)
         XCTAssertEqual(int.uint, 0x9fff_ffff_ffff_ffff as UInt)
 #else

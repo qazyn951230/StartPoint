@@ -24,7 +24,7 @@
 #include <string.h>
 #import "Stream.h"
 
-#define STRING_STREAM_COPY 1
+#define STRING_STREAM_COPY 0
 
 struct StringStream {
 #if STRING_STREAM_COPY
