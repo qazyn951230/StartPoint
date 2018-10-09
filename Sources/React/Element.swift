@@ -33,6 +33,11 @@ open class Element<View: UIView>: BasicElement {
         super.init(framed: true, children: children)
     }
 
+    public convenience init(children: [BasicElement], creator: @escaping () -> View) {
+        self.init(children: children)
+        self.creator = creator
+    }
+
     public override var loaded: Bool {
         return view != nil
     }
