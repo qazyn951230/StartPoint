@@ -164,11 +164,13 @@ public struct Device {
     public static let scale: CGFloat = UIScreen.main.scale
 
     public static var landscape: Bool {
-        return UIDevice.current.orientation.isLandscape
+        return false
+//        return UIDevice.current.orientation.isLandscape
     }
 
     public static var portrait: Bool {
-        return UIDevice.current.orientation.isPortrait
+        return true
+//        return UIDevice.current.orientation.isPortrait
     }
 
     public static var statusBar: CGFloat {
