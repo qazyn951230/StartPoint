@@ -48,8 +48,9 @@ open class StartWebController: AppViewController<WKWebView> {
                 }).disposed(by: bag)
             if trackWebViewTitle {
                 goBackDriver(webView: webView)
-                    .drive(onNext: setBackBarButton(canGoBack:))
-                    .disposed(by: bag)
+                    .drive(onNext: { [weak self] value in
+                        self?.setBackBarButton(canGoBack: value)
+                    }).disposed(by: bag)
             }
             if let url = initUrl {
                 let request = URLRequest(url: url)
@@ -65,11 +66,11 @@ open class StartWebController: AppViewController<WKWebView> {
         }
         hidesBottomBarWhenPushed = true
         loadRefreshBarItem()
+        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
+                                       target: self, action: #selector(closeBarAction(button:)))
         if method.isPush {
             return self
         }
-        closeBarItem = UIBarButtonItem(image: R.image.ic_close(), style: .plain,
-            target: self, action: #selector(closeBarAction(button:)))
         return UINavigationController(rootViewController: self)
     }
 
@@ -92,12 +93,12 @@ open class StartWebController: AppViewController<WKWebView> {
 
     // MARK: Function
     open func titleDriver(webView: WKWebView) -> Driver<String?> {
-        return webView.rx.observe(String.self, #keyPath(WKWebView.title))
+        return webView.rx.observeWeakly(String.self, #keyPath(WKWebView.title))
             .asDriver(onErrorJustReturn: nil)
     }
 
     open func goBackDriver(webView: WKWebView) -> Driver<Bool> {
-        return webView.rx.observe(Bool.self, #keyPath(WKWebView.canGoBack))
+        return webView.rx.observeWeakly(Bool.self, #keyPath(WKWebView.canGoBack))
             .asDriver(onErrorJustReturn: nil)
             .compactMap(Function.maybe)
             .distinctUntilChanged()

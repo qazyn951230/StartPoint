@@ -99,25 +99,8 @@ open class LabelElement: Element<UILabel> {
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
-        layout.measureSelf = measure
-    }
-
-    func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
-        guard let text = text else {
-            return Size.zero
-        }
-        let w = width.isNaN ? Double.greatestFiniteMagnitude : width
-        let h = height.isNaN ? Double.greatestFiniteMagnitude : height
-        let size = CGSize(width: w, height: h)
-        let options: NSStringDrawingOptions = autoLines ? [.usesLineFragmentOrigin] : []
-        // TODO: Ceil the size, not the cgsize
-        var textSize: CGSize = text.boundingSize(size: size, options: options)
-        if autoLines {
-            return Size(cgSize: textSize.ceiled)
-        } else {
-            // FIXME: multi-line text size
-            textSize = textSize.setHeight(textSize.height * CGFloat(lines))
-            return Size(cgSize: textSize.ceiled)
+        layout.measureSelf = { [weak self] (w, wm, h, hm) in
+            LabelElement.measureText(self, width: w, widthMode: wm, height: h, heightMode: hm)
         }
     }
 
@@ -171,5 +154,25 @@ open class LabelElement: Element<UILabel> {
             registerPendingState()
         }
         return self
+    }
+
+    static func measureText(_ element: LabelElement?, width: Double, widthMode: MeasureMode,
+                            height: Double, heightMode: MeasureMode) -> Size {
+        guard let element = element, let text = element.text else {
+            return Size.zero
+        }
+        let w = width.isNaN ? Double.greatestFiniteMagnitude : width
+        let h = height.isNaN ? Double.greatestFiniteMagnitude : height
+        let size = CGSize(width: w, height: h)
+        let options: NSStringDrawingOptions = element.autoLines ? [.usesLineFragmentOrigin] : []
+        // TODO: Ceil the size, not the cgsize
+        var textSize: CGSize = text.boundingSize(size: size, options: options)
+        if element.autoLines {
+            return Size(cgSize: textSize.ceiled)
+        } else {
+            // FIXME: multi-line text size
+            textSize = textSize.setHeight(textSize.height * CGFloat(element.lines))
+            return Size(cgSize: textSize.ceiled)
+        }
     }
 }

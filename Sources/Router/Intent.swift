@@ -72,16 +72,16 @@ public extension IntentTarget where Self: UIViewController {
     }
 
     public func finish(result: IntentResult? = nil) {
-        guard let intent = self.intent else {
+        if let intent = self.intent {
+            intent.end(for: result)
+            setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)
+        } else {
             if presentingViewController != nil {
                 dismiss(animated: true)
             } else {
                 navigationController?.popViewController(animated: true)
             }
-            return
         }
-        intent.end(for: result)
-        setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)
     }
 }
 

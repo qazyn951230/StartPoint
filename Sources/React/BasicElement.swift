@@ -41,6 +41,9 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     var _tap: ((BasicElement) -> Void)?
     var _pendingState: ElementState?
     var registered = false
+    var _onLoaded: [(BasicElement) -> Void] = []
+
+    public var zIndex: Int = 0
 
 #if DEBUG
     public var name = String.empty
@@ -59,6 +62,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
     public convenience init(children: [BasicElement] = []) {
         self.init(framed: false, children: children)
+    }
+    
+    deinit {
+        owner = nil
     }
 
     public var frame: CGRect {
@@ -114,7 +121,6 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return owner
     }
 
-    var _onLoaded: [(BasicElement) -> Void] = []
     public func onLoaded(then method: @escaping (BasicElement) -> Void) {
         if Runner.isMain(), loaded {
             method(self)
@@ -172,14 +178,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
                 view.addSubview(this)
             }
         } else {
-            children.forEach {
-                $0.build(in: view)
-            }
+            buildChildren(in: view)
         }
 #else
-        children.forEach {
-            $0.build(in: view)
-        }
+        buildChildren(in: view)
 #endif
         let methods = _onLoaded
         _onLoaded.removeAll()
@@ -195,12 +197,21 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         let this = UIView()
         _pendingState?.apply(view: this)
         this.randomBackgroundColor()
-        children.forEach {
-            $0.build(in: this)
-        }
+        buildChildren(in: this)
         return this
     }
 #endif
+
+    open func buildChildren(in view: UIView) {
+        let sorted = children.sorted(by: BasicElement.sortZIndex)
+        sorted.forEach { child in
+            child.build(in: view)
+        }
+    }
+
+    internal static func sortZIndex(lhs: BasicElement, rhs: BasicElement) -> Bool {
+        return lhs.zIndex < rhs.zIndex
+    }
 
     open func build(in layer: CALayer) {
         assertMainThread()

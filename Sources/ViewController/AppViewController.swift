@@ -43,6 +43,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialization()
 #if DEBUG
+        Log.debug(self.debugDescription, "init")
         assertFalse(_viewLoaded, "view should not load when initialization")
 #endif
     }
@@ -51,6 +52,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(coder: aDecoder)
         initialization()
 #if DEBUG
+        Log.debug(self.debugDescription, "init")
         assertFalse(_viewLoaded, "view should not load when initialization")
 #endif
     }
@@ -58,6 +60,12 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     open func initialization() {
         // Do nothing.
     }
+
+#if DEBUG
+    deinit {
+        Log.debug(self.debugDescription, "deinit")
+    }
+#endif
 
     open override func viewDidLoad() {
         super.viewDidLoad()

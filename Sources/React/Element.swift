@@ -33,6 +33,11 @@ open class Element<View: UIView>: BasicElement {
         super.init(framed: true, children: children)
     }
 
+    public convenience init(children: [BasicElement], creator: @escaping () -> View) {
+        self.init(children: children)
+        self.creator = creator
+    }
+
     public override var loaded: Bool {
         return view != nil
     }
@@ -191,12 +196,13 @@ open class Element<View: UIView>: BasicElement {
         super.registerPendingState()
     }
 
-    open func buildChildren(in view: UIView) {
+    open override func buildChildren(in view: UIView) {
         if children.isEmpty {
             return
         }
-        children.forEach {
-            $0.build(in: view)
+        let sorted = children.sorted(by: BasicElement.sortZIndex)
+        sorted.forEach { child in
+            child.build(in: view)
         }
     }
 
@@ -417,7 +423,7 @@ open class Element<View: UIView>: BasicElement {
     }
 
     @discardableResult
-    public func onLoadedShadowPath<View>(_ method: @escaping (Element<View>) -> UIBezierPath) -> Self {
+    public func onLoadedShadowPath(_ method: @escaping (Element<View>) -> UIBezierPath) -> Self {
         onLoaded { basic in
             guard let view = basic as? Element<View> else {
                 return
