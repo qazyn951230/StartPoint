@@ -301,8 +301,9 @@ extension AttributedString {
 
     @discardableResult
     public func writingDirection(_ writingDirection: NSWritingDirection,
-                                 text textWritingDirection: NSTextWritingDirection,
+                                 text textWritingDirection: NSWritingDirectionFormatType,
                                  range: NSRange? = nil) -> AttributedString {
+        // TODO: NSWritingDirectionFormatType iOS 9 test
         return setAttribute(key: NSAttributedStringKey.writingDirection,
             value: [writingDirection.rawValue | textWritingDirection.rawValue],
             range: range)

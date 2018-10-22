@@ -31,7 +31,7 @@ public func match<T>(v4: T, v5: T, v6: T, v6p: T, x: T) -> T {
         return v6
     case .phone6Plus:
         return v6p
-    case .phoneX:
+    case .phoneX, .phoneMAX:
         return x
     }
 }
@@ -46,7 +46,7 @@ public func match<T>(v4: T?, v5: T?, v6: T?, v6p: T?, x: T?) -> T? {
         return v6
     case .phone6Plus:
         return v6p
-    case .phoneX:
+    case .phoneX, .phoneMAX:
         return x
     }
 }
@@ -59,7 +59,7 @@ public func match<T>(v5: T, v6: T, v6p: T, x: T) -> T {
         return v6
     case .phone6Plus:
         return v6p
-    case .phoneX:
+    case .phoneX, .phoneMAX:
         return x
     }
 }
@@ -72,7 +72,7 @@ public func match<T>(v5: T?, v6: T?, v6p: T?, x: T?) -> T? {
         return v6
     case .phone6Plus:
         return v6p
-    case .phoneX:
+    case .phoneX, .phoneMAX:
         return x
     }
 }
@@ -83,7 +83,7 @@ public func match<T>(v320: T, v375: T, v414: T) -> T {
         return v320
     case .phone6, .phoneX:
         return v375
-    case .phone6Plus:
+    case .phone6Plus, .phoneMAX:
         return v414
     }
 }
@@ -94,7 +94,7 @@ public func match<T>(v320: T?, v375: T?, v414: T?) -> T? {
         return v320
     case .phone6, .phoneX:
         return v375
-    case .phone6Plus:
+    case .phone6Plus, .phoneMAX:
         return v414
     }
 }

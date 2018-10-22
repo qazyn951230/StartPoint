@@ -460,4 +460,11 @@ open class Element<View: UIView>: BasicElement {
         }
         return self
     }
+
+    public static func transition<F, T>(from: Element<F>, to: Element<T>, duration: TimeInterval,
+                                        options: UIViewAnimationOptions = [], completion: ((Bool) -> Void)? = nil)
+        where F: UIView, T: UIView {
+        assertMainThread()
+
+    }
 }

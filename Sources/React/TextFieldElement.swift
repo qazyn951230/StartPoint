@@ -514,4 +514,16 @@ open class TextFieldElement: Element<UITextField> {
         }
         return textAttributes(attributes)
     }
+
+    @discardableResult
+    public func becomeFirstResponder() -> Bool {
+        assertMainThread()
+        return view?.becomeFirstResponder() ?? false
+    }
+
+    @discardableResult
+    public func resignFirstResponder() -> Bool {
+        assertMainThread()
+        return view?.resignFirstResponder() ?? false
+    }
 }

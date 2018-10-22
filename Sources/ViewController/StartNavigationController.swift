@@ -22,28 +22,23 @@
 
 import UIKit
 
-public protocol Nibbed {
-    static var nib: UINib { get }
-}
+open class StartNavigationController: UINavigationController {
+    public private(set) var bottomLineView: UIView?
 
-public extension Nibbed where Self: UITableViewCell {
-    public static func registerNib(to tableView: UITableView) {
-        tableView.register(nib, forCellReuseIdentifier: identifier)
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        bottomLineView = findLineImageView(in: navigationBar)
+    }
+
+    func findLineImageView(in view: UIView) -> UIView? {
+        if (view is UIImageView) && view.bounds.height <= 1 {
+            return view
+        }
+        for item in view.subviews {
+            if let image = findLineImageView(in: item) {
+                return image
+            }
+        }
+        return nil
     }
 }
-
-public extension Nibbed where Self: UICollectionViewCell {
-    public static func registerNib(to collectionView: UICollectionView) {
-        collectionView.register(nib, forCellWithReuseIdentifier: identifier)
-    }
-}
-
-public extension Nibbed where Self: UICollectionReusableView {
-    public static func registerNib(to collectionView: UICollectionView) {
-        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
-                withReuseIdentifier: identifier)
-        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter,
-                withReuseIdentifier: identifier)
-    }
-}
-

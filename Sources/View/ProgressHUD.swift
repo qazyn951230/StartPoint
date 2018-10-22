@@ -60,9 +60,9 @@ public class ProgressHUD: UIView {
     func addObserver() {
         let center: Reactive<NotificationCenter> = NotificationCenter.default.rx
         center.notification(.UIDeviceOrientationDidChange)
-            .map(deviceOrientationDidChange)
-            .subscribe()
-            .disposed(by: bag)
+            .subscribe(onNext: { [weak self] n in
+                self?.deviceOrientationDidChange(notification: n)
+            }).disposed(by: bag)
     }
 
     func deviceOrientationDidChange(notification: Notification) {

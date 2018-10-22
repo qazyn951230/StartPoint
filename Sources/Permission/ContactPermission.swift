@@ -21,53 +21,27 @@
 // SOFTWARE.
 
 import Contacts
-import AddressBook
 import RxSwift
 import RxCocoa
 
 public struct ContactPermission: PermissionItem {
     public func status() -> Driver<Permission> {
-        if #available(iOS 9.0, *) {
-            let result = ContactPermission.normalize(CNContactStore.authorizationStatus(for: .contacts))
-            return Driver.just(result)
-        } else {
-            let result = ContactPermission.normalize(ABAddressBookGetAuthorizationStatus())
-            return Driver.just(result)
-        }
+        let result = ContactPermission.normalize(CNContactStore.authorizationStatus(for: .contacts))
+        return Driver.just(result)
     }
 
     public func request() -> Driver<Permission> {
         return Observable.create { observer in
-            if #available(iOS 9.0, *) {
-                CNContactStore().requestAccess(for: .contacts) { (granted, _) in
-                    let status = granted ? Permission.authorized : Permission.denied
-                    observer.onNext(status)
-                    observer.on(.completed)
-                }
-            } else {
-                ABAddressBookRequestAccessWithCompletion(nil) { (granted, _) in
-                    let status = granted ? Permission.authorized : Permission.denied
-                    observer.onNext(status)
-                    observer.on(.completed)
-                }
+            CNContactStore().requestAccess(for: .contacts) { (granted, _) in
+                let status = granted ? Permission.authorized : Permission.denied
+                observer.onNext(status)
+                observer.on(.completed)
             }
             return Disposables.create()
         }.asDriver(onErrorJustReturn: Permission.denied)
     }
 
-    @available(iOS 9.0, *)
     public static func normalize(_ status: CNAuthorizationStatus) -> Permission {
-        switch status {
-        case .authorized:
-            return .authorized
-        case .denied, .restricted:
-            return .denied
-        case .notDetermined:
-            return .notDetermined
-        }
-    }
-
-    public static func normalize(_ status: ABAuthorizationStatus) -> Permission {
         switch status {
         case .authorized:
             return .authorized

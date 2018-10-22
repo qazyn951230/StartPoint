@@ -23,7 +23,7 @@
 #ifndef STARTPOINT_JSONVALUE_HPP
 #define STARTPOINT_JSONVALUE_HPP
 
-#import "config.h"
+#import "Config.h"
 
 NS_ASSUME_NONNULL_BEGIN
 SP_NAMESPACE_BEGIN

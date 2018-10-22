@@ -58,7 +58,7 @@ public class Router {
         case .target(let t, let m):
             let i = Intent(target: t, method: m)
             i.start(with: controller)
-        case .intent(let f):
+        case let .intent(f):
             f().start(with: controller)
         }
         return true

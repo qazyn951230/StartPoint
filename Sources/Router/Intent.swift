@@ -110,7 +110,8 @@ public class Intent {
     var push: Bool? = nil
     weak var targetController: UIViewController? = nil
 
-    public init(target: IntentTarget.Type, method: IntentMethod = .auto, completion: ((IntentResult) -> Void)? = nil) {
+    public init(target: IntentTarget.Type, method: IntentMethod = .auto,
+                completion: ((IntentResult) -> Void)? = nil) {
         self.target = target
         self.method = method
         self.completion = completion

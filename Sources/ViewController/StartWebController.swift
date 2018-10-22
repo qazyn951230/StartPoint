@@ -25,7 +25,7 @@ import WebKit
 import RxSwift
 import RxCocoa
 
-open class StartWebController: AppViewController<WKWebView> {
+open class StartWebController: StartViewController<WKWebView> {
     public static let intentUrlKey = "StartWebControllerIntentUrlKey"
 
     public let bag = DisposeBag()
@@ -47,9 +47,11 @@ open class StartWebController: AppViewController<WKWebView> {
                     self?.navigationItem.title = value
                 }).disposed(by: bag)
             if trackWebViewTitle {
+                // StartWebController.setBackBarButton(self)
                 goBackDriver(webView: webView)
-                    .drive(onNext: setBackBarButton(canGoBack:))
-                    .disposed(by: bag)
+                    .drive(onNext: { [weak self] value in
+                        self?.setBackBarButton(canGoBack: value)
+                    }).disposed(by: bag)
             }
             if let url = initUrl {
                 let request = URLRequest(url: url)

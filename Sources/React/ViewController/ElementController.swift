@@ -58,7 +58,8 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
     }
 
     open func viewDidBack() {
-        interactivePopGestureRecognizer?.removeTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+        interactivePopGestureRecognizer?.removeTarget(self,
+            action: #selector(interactivePopGestureRecognizer(sender:)))
     }
 
     open override func viewWillLayoutSubviews() {

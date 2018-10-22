@@ -29,31 +29,26 @@ public enum DeviceSystem {
     case watchOS
 }
 
+// See also: https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
 public enum DeviceType {
-    case phone4 // 640 x 960; @2x; 326 ppi
-    case phone5 // 640 x 1136; @2x; 326 ppi
-    case phone6 // 750 x 1134; @2x; 326 ppi
-    case phone6Plus // 1242 x 2208; @3x; 401 ppi
-    case phoneX // 2436 x 1125; @3x; 458 ppi
-//    case pad // 1024 x 768; @1x; 132 ppi
-//    case padRetina // 2048 x 1536; @2x; mini 326 ppi; 9.7 264 ppi
-//    case padPro105 // 2224 x 1668; @2x; 264 ppi
-//    case padPro129 // 2732 x 2048; @2x; 264 ppi
-//    case watch38 // 272 x 340; @2x
-//    case watch42 // 312 x 390; @2x
+    case phone4         // 320 × 480
+    case phone5         // 320 × 568
+    case phone6         // 375 × 667
+    case phone6Plus     // 414 × 736
+    case phoneX         // 375 × 812
+    case phoneMAX       // 414 × 896
 
     public var iPhoneX: Bool {
-        return self == DeviceType.phoneX
+        return self == DeviceType.phoneX || self == DeviceType.phoneMAX
+    }
+
+    public var unsafe: Bool {
+        return self == DeviceType.phoneX || self == DeviceType.phoneMAX
     }
 }
 
 public enum DeviceVersion: Int {
-    case version80 = 0
-    case version81
-    case version82
-    case version83
-    case version84
-    case version90
+    case version90 = 0
     case version91
     case version92
     case version93
@@ -65,6 +60,8 @@ public enum DeviceVersion: Int {
     case version111
     case version112
     case version113
+    case version120
+    case version121
 
     public static func <(lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
         return lhs.rawValue < rhs.rawValue
@@ -87,15 +84,17 @@ public struct Device {
     public static let current: DeviceType = {
         let size = Device.size
         let height = size.height > size.width ? size.height : size.width
-        if height > 736 { // 2436 * 1125 / 812 * 375
+        if height > 813 {
+            return DeviceType.phoneMAX
+        } else if height > 737 {
             return DeviceType.phoneX
-        } else if height > 667 { // 1242 * 2208 / 414 * 736
+        } else if height > 668 {
             return DeviceType.phone6Plus
-        } else if height > 568 { // 750 * 1334 / 375 * 667
+        } else if height > 569 {
             return DeviceType.phone6
-        } else if height > 480 { // 640 * 1136 / 320 * 568
+        } else if height > 481 {
             return DeviceType.phone5
-        } else { // 640 * 960 / 320 * 480
+        } else {
             return DeviceType.phone4
         }
     }()
@@ -111,9 +110,15 @@ public struct Device {
             c = s
         }
         guard let v = Double(c) else {
-            return DeviceVersion.version80
+            return DeviceVersion.version90
         }
-        if v > 10.99 {
+        if v > 11.99 {
+            if v > 12.09 {
+                return DeviceVersion.version121
+            } else {
+                return DeviceVersion.version120
+            }
+        } else if v > 10.99 {
             if v > 11.29 {
                 return DeviceVersion.version113
             } else if v > 11.19 {
@@ -133,7 +138,7 @@ public struct Device {
             } else {
                 return DeviceVersion.version100
             }
-        } else if v > 8.99 {
+        } else {
             if v > 9.29 {
                 return DeviceVersion.version93
             } else if v > 9.19 {
@@ -142,18 +147,6 @@ public struct Device {
                 return DeviceVersion.version91
             } else {
                 return DeviceVersion.version90
-            }
-        } else {
-            if v > 8.39 {
-                return DeviceVersion.version84
-            } else if v > 8.29 {
-                return DeviceVersion.version83
-            } else if v > 8.19 {
-                return DeviceVersion.version82
-            } else if v > 8.09 {
-                return DeviceVersion.version81
-            } else {
-                return DeviceVersion.version80
             }
         }
     }()
@@ -164,11 +157,11 @@ public struct Device {
     public static let scale: CGFloat = UIScreen.main.scale
 
     public static var landscape: Bool {
-        return UIDevice.current.orientation.isLandscape
+        return UIApplication.shared.statusBarOrientation.isLandscape
     }
 
     public static var portrait: Bool {
-        return UIDevice.current.orientation.isPortrait
+        return !landscape
     }
 
     public static var statusBar: CGFloat {

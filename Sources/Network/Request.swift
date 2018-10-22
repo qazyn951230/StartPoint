@@ -37,10 +37,10 @@ extension Reactive where Base: DataRequest {
             request = request.response(queue: queue, responseSerializer: serializer) {
                 (response: DataResponse<T.SerializedObject>) in
                 switch response.result {
-                case .success(let object):
+                case let .success(object):
                     observer.on(.next((response, object)))
                     observer.on(.completed)
-                case .failure(let error):
+                case let .failure(error):
                     observer.on(.error(error))
                 }
             }
@@ -56,10 +56,10 @@ extension Reactive where Base: DataRequest {
             var request: DataRequest = self.base
             request = request.responseJSON(queue: queue, options: options) { (response: DataResponse<Any>) in
                 switch response.result {
-                case .success(let object):
+                case let .success(object):
                     observer.on(.next((response, JSON(object))))
                     observer.on(.completed)
-                case .failure(let error):
+                case let .failure(error):
                     observer.on(.error(error))
                 }
             }
@@ -81,10 +81,10 @@ extension Reactive where Base: DataRequest {
             var request: DataRequest = self.base
             request = request.responseString(queue: queue, encoding: encoding) { (response: DataResponse<String>) in
                 switch response.result {
-                case .success(let object):
+                case let .success(object):
                     observer.on(.next((response, object)))
                     observer.on(.completed)
-                case .failure(let error):
+                case let .failure(error):
                     observer.on(.error(error))
                 }
             }
@@ -104,10 +104,10 @@ extension Reactive where Base: DataRequest {
             var request: DataRequest = self.base
             request = request.responseData(queue: queue) { (response: DataResponse<Data>) in
                 switch response.result {
-                case .success(let object):
+                case let .success(object):
                     observer.on(.next((response, object)))
                     observer.on(.completed)
-                case .failure(let error):
+                case let .failure(error):
                     observer.on(.error(error))
                 }
             }
