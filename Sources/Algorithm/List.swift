@@ -56,6 +56,14 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
         return store.endIndex
     }
 
+    public func append(_ newElement: Element) {
+        store.append(newElement)
+    }
+
+    public func append<S>(contentsOf newElements: S) where S: Sequence, S.Element == Element {
+        store.append(contentsOf: newElements)
+    }
+
     public func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C)
         where C: Collection, Element == C.Element {
         store.replaceSubrange(subrange, with: newElements)
@@ -97,5 +105,15 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
         set {
             store[bounds] = newValue.store
         }
+    }
+}
+
+extension List: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return store.description
+    }
+
+    public var debugDescription: String {
+        return store.debugDescription
     }
 }

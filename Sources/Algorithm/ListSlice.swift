@@ -103,3 +103,13 @@ public final class ListSlice<Element>: MutableCollection, RandomAccessCollection
         }
     }
 }
+
+extension ListSlice: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return store.description
+    }
+
+    public var debugDescription: String {
+        return store.debugDescription
+    }
+}

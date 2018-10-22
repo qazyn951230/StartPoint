@@ -22,12 +22,11 @@
 
 import WebKit
 import RxSwift
-import SwiftyJSON
 
 public enum Bridge {
-    case empty((JSON) throws -> Void)
-    case json((JSON) throws -> [String: Any])
-    case async((JSON) throws -> Observable<[String: Any]>)
+    case empty((AnyNotation) throws -> Void)
+    case json((AnyNotation) throws -> [String: Any])
+    case async((AnyNotation) throws -> Observable<[String: Any]>)
 }
 
 public final class WebBridge {
@@ -44,15 +43,15 @@ public final class WebBridge {
         // Do nothing.
     }
 
-    public func register(id: String, handler: @escaping (JSON) throws -> Void) {
+    public func register(id: String, handler: @escaping (AnyNotation) throws -> Void) {
         bridges[id] = .empty(handler)
     }
 
-    public func register(id: String, json handler: @escaping (JSON) throws -> [String: Any]) {
+    public func register(id: String, json handler: @escaping (AnyNotation) throws -> [String: Any]) {
         bridges[id] = .json(handler)
     }
 
-    public func register(id: String, async handler: @escaping (JSON) throws -> Observable<[String: Any]>) {
+    public func register(id: String, async handler: @escaping (AnyNotation) throws -> Observable<[String: Any]>) {
         bridges[id] = .async(handler)
     }
 
@@ -60,10 +59,10 @@ public final class WebBridge {
         guard let webView = message.webView else {
             return
         }
-        let json = JSON(message.body)
-        let body: JSON = json <| "body"
+        let json = AnyNotation(message.body)
+        let body: AnyNotation = json <| "body"
         let messageId: String = json <| "id"
-        guard let id: String = json["event"].string, id.isNotEmpty else {
+        guard let id: String = json["event"].stringValue, id.isNotEmpty else {
             Log.error("WebBridge message has no id", message.body)
             return
         }

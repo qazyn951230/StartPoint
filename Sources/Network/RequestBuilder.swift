@@ -23,7 +23,6 @@
 import Alamofire
 import RxSwift
 import Dispatch
-import SwiftyJSON
 
 public final class RequestBuilder {
     public private(set) var url: String

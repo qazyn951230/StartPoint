@@ -25,8 +25,42 @@ public extension Collection {
         return !isEmpty
     }
 
-    public func mapIndex<T>(_ transform: (Self.Element, Self.Index) throws -> T) rethrows -> [T] {
-        guard !isEmpty else {
+    public func element(at index: Index) -> Element {
+        // IndexOutOfBoundsException
+        return self[index]
+    }
+
+    public func element(at index: Index, or value: (Index) throws -> Element) rethrows -> Element {
+        guard index >= startIndex && index < endIndex else {
+            return try value(index)
+        }
+        return self[index]
+    }
+
+    public func elementOrNil(at index: Index) -> Element? {
+        guard index >= startIndex && index < endIndex else {
+            return nil
+        }
+        return self[index]
+    }
+
+    public func filterIndexed(_ isIncluded: (Element, Index) throws -> Bool) rethrows -> [Element] {
+        if isEmpty {
+            return []
+        }
+        var result = [Element]()
+        var i = startIndex
+        repeat {
+            if try isIncluded(self[i], i) {
+                result.append(self[i])
+            }
+            i = index(after: i)
+        } while i < endIndex
+        return result
+    }
+
+    public func mapIndexed<T>(_ transform: (Element, Index) throws -> T) rethrows -> [T] {
+        if isEmpty {
             return []
         }
         var result = [T]()
@@ -39,8 +73,8 @@ public extension Collection {
         return result
     }
 
-    public func forEachIndex(_ body: (Self.Element, Self.Index) throws -> Void) rethrows {
-        guard !isEmpty else {
+    public func forEachIndexed(_ body: (Element, Index) throws -> Void) rethrows {
+        if isEmpty {
             return
         }
         var i = startIndex
@@ -50,7 +84,7 @@ public extension Collection {
         } while i < endIndex
     }
 
-    public func split(upTo count: Int) -> [Self.SubSequence] {
+    public func split(upTo count: Int) -> [SubSequence] {
         guard isNotEmpty && count > 0 else {
             return []
         }
@@ -59,13 +93,13 @@ public extension Collection {
         var end = index(start, offsetBy: count)
         while true {
             if end < endIndex {
-                let seq: Self.SubSequence = self[start..<end]
+                let seq: SubSequence = self[start..<end]
                 result.append(seq)
                 if index(after: end) > endIndex {
                     break
                 }
             } else {
-                let seq: Self.SubSequence = self[start..<endIndex]
+                let seq: SubSequence = self[start..<endIndex]
                 result.append(seq)
                 break
             }
@@ -112,10 +146,10 @@ public extension String {
     }
 }
 
-public extension Sequence where Element: Hashable {
-    public var hashValue: Int {
-        return reduce(0) { (result: Int, next: Element) in
-            result & next.hashValue
-        }
-    }
-}
+//public extension Sequence where Element: Hashable {
+//    public var hashValue: Int {
+//        return reduce(0) { (result: Int, next: Element) in
+//            result & next.hashValue
+//        }
+//    }
+//}

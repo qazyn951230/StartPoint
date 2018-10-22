@@ -20,28 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class Weak<T: AnyObject & Equatable>: Equatable {
-    weak var value: T?
+final public class Weak<T: AnyObject & Equatable>: Equatable {
+    public weak var value: T?
 
-    init(_ value: T) {
+    public init(_ value: T) {
         self.value = value
     }
 
-    static func ==(lhs: Weak<T>, rhs: Weak<T>) -> Bool {
+    public static func ==(lhs: Weak<T>, rhs: Weak<T>) -> Bool {
         return lhs.value == rhs.value
     }
 }
 
-final class WeakHash<T: AnyObject & Hashable>: Hashable {
-    weak var value: T?
-    let hashValue: Int
+final public class WeakHash<T: AnyObject & Hashable>: Hashable {
+    public weak var value: T?
+    public let hashValue: Int
 
-    init(_ value: T) {
+    public init(_ value: T) {
         self.value = value
         hashValue = value.hashValue
     }
 
-    static func ==(lhs: WeakHash<T>, rhs: WeakHash<T>) -> Bool {
+    public static func ==(lhs: WeakHash<T>, rhs: WeakHash<T>) -> Bool {
         return lhs.value == rhs.value
     }
 }

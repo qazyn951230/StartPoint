@@ -46,12 +46,20 @@ public final class JSONString: JSON {
         super.init()
     }
 
+    public override var stringValue: String? {
+        return value.isEmpty ? nil : value
+    }
+
+    public override var string: String {
+        return value
+    }
+
     public override var description: String {
-        return "<JSON: null>"
+        return "<JSON: \(value)>"
     }
 
     public override var debugDescription: String {
-        return "<JSON: null>"
+        return "<JSON: \(value)>"
     }
 
     override func equals(to object: JSON) -> Bool {
@@ -94,28 +102,28 @@ public final class JSONInt: JSON {
         return Int64(value)
     }
 
-//    public override var uintValue: UInt? {
+//    public var uintValue: UInt? {
 //        if value < 0 {
 //            return nil
 //        }
 //        return UInt(bitPattern: Int(value))
 //    }
 //
-//    public override var uint: UInt {
+//    public var uint: UInt {
 //        if value < 0 {
 //            return 0
 //        }
 //        return UInt(bitPattern: Int(value))
 //    }
 //
-//    public override var uint32Value: UInt32? {
+//    public var uint32Value: UInt32? {
 //        if value < 0 {
 //            return nil
 //        }
 //        return UInt32(bitPattern: value)
 //    }
 //
-//    public override var uint32: UInt32 {
+//    public var uint32: UInt32 {
 //        if value < 0 {
 //            return nil
 //        }
@@ -162,7 +170,7 @@ public final class JSONInt64: JSON {
 #endif
     }
 
-//    public override var int32Value: Int32? {
+//    public var int32Value: Int32? {
 //        let mask: Int64 = 0x7FFFFFFF80000000
 //        if value & mask > 0 {
 //            return nil
@@ -170,7 +178,7 @@ public final class JSONInt64: JSON {
 //        return Int32(truncatingIfNeeded: value)
 //    }
 //
-//    public override var int32: Int32 {
+//    public var int32: Int32 {
 //        let mask: Int64 = 0x7FFFFFFF80000000
 //        if value & mask > 0 {
 //            return 0

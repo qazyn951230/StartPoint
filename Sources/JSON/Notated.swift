@@ -20,27 +20,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
-    public static let null = JSONNull()
-    public typealias Value = JSON
+public protocol Notated {
+    associatedtype Value: Notated = Self
 
-    init() {
-        // Do nothing
-    }
+    var arrayValue: [Value]? { get }
+    var array: [Value] { get }
+    var dictionaryValue: [String: Value]? { get }
+    var dictionary: [String: Value] { get }
+    var boolValue: Bool? { get }
+    var bool: Bool { get }
+    var stringValue: String? { get }
+    var string: String { get }
+    var doubleValue: Double? { get }
+    var double: Double { get }
+    var floatValue: Float? { get }
+    var float: Float { get }
+    var intValue: Int? { get }
+    var int: Int { get }
+    var int32Value: Int32? { get }
+    var int32: Int32 { get }
+    var int64Value: Int64? { get }
+    var int64: Int64 { get }
+    var uintValue: UInt? { get }
+    var uint: UInt { get }
+    var uint32Value: UInt32? { get }
+    var uint32: UInt32 { get }
+    var uint64Value: UInt64? { get }
+    var uint64: UInt64 { get }
 
-    public var arrayValue: [JSON]? {
+    subscript(index: Int) -> Value { get }
+    subscript(key: String) -> Value { get }
+}
+
+extension Notated {
+    public var arrayValue: [Value]? {
         return nil
     }
 
-    public var array: [JSON]  {
+    public var array: [Value] {
         return []
     }
 
-    public var dictionaryValue: [String: JSON]? {
+    public var dictionaryValue: [String: Value]? {
         return nil
     }
 
-    public var dictionary: [String: JSON] {
+    public var dictionary: [String: Value] {
         return [:]
     }
 
@@ -57,7 +82,7 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
     }
 
     public var string: String {
-        return ""
+        return String.empty
     }
 
     public var doubleValue: Double? {
@@ -122,37 +147,5 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
 
     public var uint64: UInt64 {
         return 0
-    }
-
-    public var description: String {
-        return "<JSON>"
-    }
-
-    public var debugDescription: String {
-        return "<JSON: \(address(of: self))>"
-    }
-
-    func equals(to object: JSON) -> Bool {
-        return self === object
-    }
-
-    public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.equals(to: rhs)
-    }
-
-    public subscript(index: Int) -> JSON {
-        return JSON.null
-    }
-
-    public subscript(key: String) -> JSON {
-        return JSON.null
-    }
-
-    public static func parse(_ value: String, option: ParserOption = []) throws -> JSON {
-        return try value.withCString { pointer in
-            let stream = StringStream(pointer)
-            let parser: JSONParser<StringStream> = JSONParser(stream: stream, option: option)
-            return try parser.parse()
-        }
     }
 }

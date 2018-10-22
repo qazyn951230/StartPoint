@@ -22,8 +22,49 @@
 
 import Alamofire
 import RxSwift
-import SwiftyJSON
 import Foundation
+
+public extension DataRequest {
+    private static let emptyDataStatusCodes: Set<Int> = [204, 205]
+
+    public static func serializeResponseJSON2(options: ParserOption, response: HTTPURLResponse?,
+                                              data: Data?, error: Error?) -> Result<JSON> {
+        if let e = error {
+            return .failure(e)
+        }
+
+        if let response = response, emptyDataStatusCodes.contains(response.statusCode) {
+            return .success(JSON.null)
+        }
+
+        guard let validData = data, validData.count > 0 else {
+            return .failure(AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
+        }
+
+        do {
+            let stream = DataStream(data: validData)
+            let parser = JSONParser(stream: stream, option: options)
+            let json = try parser.parse()
+            return .success(json)
+        } catch {
+            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+        }
+    }
+
+    public static func jsonResponseSerializer2(options: ParserOption = []) -> DataResponseSerializer<JSON> {
+        return DataResponseSerializer { _, response, data, error in
+            return DataRequest.serializeResponseJSON2(options: options, response: response, data: data, error: error)
+        }
+    }
+
+    @discardableResult
+    public func responseJSON2(queue: DispatchQueue? = nil, options: ParserOption = [],
+                             completionHandler: @escaping (Alamofire.DataResponse<JSON>) -> Swift.Void) -> Self {
+        return response(queue: queue,
+            responseSerializer: DataRequest.jsonResponseSerializer2(options: options),
+            completionHandler: completionHandler)
+    }
+}
 
 extension Request: ReactiveCompatible {
     // Do nothing.
@@ -50,14 +91,14 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func jsonResponse(queue: DispatchQueue? = nil, options: JSONSerialization.ReadingOptions = .allowFragments)
-            -> Observable<(DataResponse<Any>, JSON)> {
-        return Observable<(DataResponse<Any>, JSON)>.create { observer in
+    public func jsonResponse(queue: DispatchQueue? = nil, options: ParserOption = [])
+            -> Observable<(DataResponse<JSON>, JSON)> {
+        return Observable<(DataResponse<JSON>, JSON)>.create { observer in
             var request: DataRequest = self.base
-            request = request.responseJSON(queue: queue, options: options) { (response: DataResponse<Any>) in
+            request = request.responseJSON2(queue: queue, options: options) { (response: DataResponse<JSON>) in
                 switch response.result {
                 case .success(let object):
-                    observer.on(.next((response, JSON(object))))
+                    observer.on(.next((response, object)))
                     observer.on(.completed)
                 case .failure(let error):
                     observer.on(.error(error))
@@ -69,7 +110,7 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func json(queue: DispatchQueue? = nil, options: JSONSerialization.ReadingOptions = .allowFragments)
+    public func json(queue: DispatchQueue? = nil, options: ParserOption = [])
             -> Observable<JSON> {
         return jsonResponse(queue: queue, options: options)
             .map(Function.second)

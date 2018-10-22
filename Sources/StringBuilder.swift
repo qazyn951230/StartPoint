@@ -20,14 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Dictionary {
-    public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> [Key: T] {
-        var map: [Key: T] = [:]
-        for (key, value) in self {
-            if let item = try transform(value) {
-                map[key] = item
-            }
-        }
-        return map
-    }
-}
+//public final class StringBuilder {
+//
+//}
