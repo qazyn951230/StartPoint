@@ -22,11 +22,15 @@
 
 import UIKit
 
-open class AppViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate, IntentTarget {
+open class StartViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate, IntentTarget {
     open var backBarItem: UIBarButtonItem? = nil
 
     public private(set) var rootView: View? = nil
     public private(set) var interactivePopGestureRecognizer: UIGestureRecognizer? = nil
+
+    public var startNavigationController: StartNavigationController? {
+        return navigationController as? StartNavigationController
+    }
 
 #if DEBUG
     var _viewLoaded = false
@@ -43,8 +47,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialization()
 #if DEBUG
-        Log.debug(self.debugDescription, "init")
-        assertFalse(_viewLoaded, "view should not load when initialization")
+        assertFalse(_viewLoaded, "View should not load when initialization")
 #endif
     }
 
@@ -52,20 +55,13 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
         super.init(coder: aDecoder)
         initialization()
 #if DEBUG
-        Log.debug(self.debugDescription, "init")
-        assertFalse(_viewLoaded, "view should not load when initialization")
+        assertFalse(_viewLoaded, "View should not load when initialization")
 #endif
     }
 
     open func initialization() {
         // Do nothing.
     }
-
-#if DEBUG
-    deinit {
-        Log.debug(self.debugDescription, "deinit")
-    }
-#endif
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,7 +77,8 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 
     open func viewDidBack() {
-        interactivePopGestureRecognizer?.removeTarget(self, action: #selector(interactivePopGestureRecognizer(sender:)))
+        interactivePopGestureRecognizer?.removeTarget(self,
+            action: #selector(interactivePopGestureRecognizer(sender:)))
     }
 
     @objc open func backBarItemAction(sender: UIBarButtonItem) {
@@ -121,7 +118,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 }
 
-public extension AppViewController where View: UIScrollView {
+public extension StartViewController where View: UIScrollView {
     public func adjustsViewInsets(_ adjusts: Bool) {
         if #available(iOS 11.0, *) {
             rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never

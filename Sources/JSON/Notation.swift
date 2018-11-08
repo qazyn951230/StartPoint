@@ -172,6 +172,16 @@ public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [St
     return array.map { $0.string }
 }
 
+public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: String] {
+    let map: [String: NotatedValue.Value.Value] = notated[key].dictionary
+    return map.mapValues { $0.string }
+}
+
+public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: Any] {
+    let map: [String: NotatedValue.Value.Value] = notated[key].dictionary
+    return map.mapValues { $0.raw }
+}
+
 // Decodable number
 public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Double? {
     return notated[key].doubleValue

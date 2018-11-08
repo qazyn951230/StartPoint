@@ -25,6 +25,10 @@ public final class JSONNull: JSON {
         super.init()
     }
 
+    public override var raw: Any {
+        return NSNull()
+    }
+
     public override var description: String {
         return "<JSON: null>"
     }
@@ -44,6 +48,10 @@ public final class JSONString: JSON {
     public init(_ value: String) {
         self.value = value
         super.init()
+    }
+
+    public override var raw: Any {
+        return value
     }
 
     public override var stringValue: String? {
@@ -76,6 +84,10 @@ public final class JSONInt: JSON {
     public init(_ value: Int32) {
         self.value = value
         super.init()
+    }
+
+    public override var raw: Any {
+        return value
     }
 
     public override var intValue: Int? {
@@ -154,6 +166,10 @@ public final class JSONInt64: JSON {
         super.init()
     }
 
+    public override var raw: Any {
+        return value
+    }
+
     public override var intValue: Int? {
 #if arch(arm64) || arch(x86_64)
         return Int(value)
@@ -216,6 +232,10 @@ public final class JSONUInt: JSON {
     public init(_ value: UInt32) {
         self.value = value
         super.init()
+    }
+
+    public override var raw: Any {
+        return value
     }
 
     public override var uintValue: UInt? {
@@ -308,6 +328,10 @@ public final class JSONUInt64: JSON {
         super.init()
     }
 
+    public override var raw: Any {
+        return value
+    }
+
     public override var uintValue: UInt? {
 #if arch(arm64) || arch(x86_64)
         return UInt(value)
@@ -392,6 +416,10 @@ public final class JSONDouble: JSON {
         super.init()
     }
 
+    public override var raw: Any {
+        return value
+    }
+
     public override var doubleValue: Double? {
         return value
     }
@@ -432,6 +460,10 @@ public final class JSONBool: JSON {
         super.init()
     }
 
+    public override var raw: Any {
+        return value
+    }
+
     public override var boolValue: Bool? {
         return value
     }
@@ -462,6 +494,10 @@ public final class JSONObject: JSON {
     public init(_ value: [String: JSON]) {
         self.value = value
         super.init()
+    }
+
+    public override var raw: Any {
+        return value
     }
 
     public override var dictionaryValue: [String: JSON]? {
@@ -502,6 +538,10 @@ public final class JSONArray: JSON {
     public init(_ value: [JSON]) {
         self.value = value
         super.init()
+    }
+
+    public override var raw: Any {
+        return value
     }
 
     public override var arrayValue: [JSON]? {

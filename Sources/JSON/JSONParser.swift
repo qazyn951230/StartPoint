@@ -257,6 +257,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
             }
             skip()
             let key = try quotedString()
+            skip()
             if !consume(char: 0x3a) {
                 throw JSONReaderError.objectMissColon
             }
@@ -344,9 +345,15 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
 
     func parseChar() throws -> UInt8 {
         switch stream.peek() {
-        case 0x22, 0x5c, 0x2f:
+        case 0x22:
             stream.move()
-            return stream.peek()
+            return 0x22
+        case 0x5c:
+            stream.move()
+            return 0x5c
+        case 0x2f:
+            stream.move()
+            return 0x2f
         case 0x62:
             stream.move()
             return 0x08

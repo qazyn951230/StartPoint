@@ -156,9 +156,9 @@ public final class RecyclerFlexElement: BasicElement {
 
     func view(kind: String, at indexPath: IndexPath) -> RecyclerViewElement? {
         switch kind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             return header(at: indexPath)
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             return footer(at: indexPath)
         default:
             return nil

@@ -98,7 +98,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         let size = pageControl.sizeThatFits(bounds.size)
         Layout(view: pageControl).right().bottom()
             .size(size).apply()
-        imageViews.forEachIndex { view, i in
+        imageViews.forEachIndexed { view, i in
             view.frame = CGRect(x: bounds.width * CGFloat(i), y: 0, size: bounds.size)
         }
         if infinite {
@@ -120,7 +120,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         }
         let t = Timer(timeInterval: autoPlayTimeInterval, target: self,
             selector: #selector(autoplay(timer:)), userInfo: nil, repeats: true)
-        RunLoop.main.add(t, forMode: .commonModes)
+        RunLoop.main.add(t, forMode: RunLoop.Mode.common)
         timer = t
     }
 

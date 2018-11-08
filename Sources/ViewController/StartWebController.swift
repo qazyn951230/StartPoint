@@ -25,7 +25,7 @@ import WebKit
 import RxSwift
 import RxCocoa
 
-open class StartWebController: AppViewController<WKWebView> {
+open class StartWebController: StartViewController<WKWebView> {
     public static let intentUrlKey = "StartWebControllerIntentUrlKey"
 
     public let bag = DisposeBag()

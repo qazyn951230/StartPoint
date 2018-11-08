@@ -457,7 +457,7 @@ open class Element<View: UIView>: BasicElement {
     }
 
     @discardableResult
-    public func contentMode(_ value: UIViewContentMode) -> Self {
+    public func contentMode(_ value: UIView.ContentMode) -> Self {
         if Runner.isMain(), let view = view {
             view.contentMode = value
         } else {

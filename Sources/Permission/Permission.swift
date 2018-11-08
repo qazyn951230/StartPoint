@@ -44,7 +44,7 @@ public enum PermissionType {
             return CameraPermission()
         case .location:
             return LocationPermission()
-        case .notification(let options):
+        case let .notification(options):
             return NotificationPermission(options: options)
         case .contact:
             return ContactPermission()

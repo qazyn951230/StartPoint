@@ -77,7 +77,7 @@ open class TableElement: Element<UITableView> {
         super.init(children: children)
     }
 
-    public convenience init(style: UITableViewStyle = .grouped, children: [BasicElement] = []) {
+    public convenience init(style: UITableView.Style = .grouped, children: [BasicElement] = []) {
         self.init(children: children)
         creator = {
             let view = UITableView(frame: .zero, style: style)

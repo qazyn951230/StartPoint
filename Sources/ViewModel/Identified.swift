@@ -50,9 +50,9 @@ public extension ClassIdentified where Self: UICollectionViewCell {
 
 public extension ClassIdentified where Self: UICollectionReusableView {
     public static func register(to collectionView: UICollectionView) {
-        collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+        collectionView.register(self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                 withReuseIdentifier: identifier)
-        collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter,
+        collectionView.register(self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                 withReuseIdentifier: identifier)
     }
 }

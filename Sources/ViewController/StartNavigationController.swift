@@ -20,4 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "JSON.hpp"
+import UIKit
+
+open class StartNavigationController: UINavigationController {
+    public private(set) var bottomLineView: UIView?
+
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        bottomLineView = findLineImageView(in: navigationBar)
+    }
+
+    func findLineImageView(in view: UIView) -> UIView? {
+        if (view is UIImageView) && view.bounds.height <= 1 {
+            return view
+        }
+        for item in view.subviews {
+            if let image = findLineImageView(in: item) {
+                return image
+            }
+        }
+        return nil
+    }
+}

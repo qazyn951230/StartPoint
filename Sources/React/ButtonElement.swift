@@ -23,7 +23,7 @@
 import UIKit
 
 public class ButtonElementState: ElementState {
-    public var titles: [UIControlState: NSAttributedString?] {
+    public var titles: [UIControl.State: NSAttributedString?] {
         get {
             return _titles ?? [:]
         }
@@ -31,9 +31,9 @@ public class ButtonElementState: ElementState {
             _titles = newValue
         }
     }
-    var _titles: [UIControlState: NSAttributedString?]?
+    var _titles: [UIControl.State: NSAttributedString?]?
 
-    public var images: [UIControlState: UIImage?] {
+    public var images: [UIControl.State: UIImage?] {
         get {
             return _images ?? [:]
         }
@@ -41,9 +41,9 @@ public class ButtonElementState: ElementState {
             _images = newValue
         }
     }
-    var _images: [UIControlState: UIImage?]?
+    var _images: [UIControl.State: UIImage?]?
 
-    public var backgroundImages: [UIControlState: UIImage?] {
+    public var backgroundImages: [UIControl.State: UIImage?] {
         get {
             return _backgroundImages ?? [:]
         }
@@ -51,7 +51,7 @@ public class ButtonElementState: ElementState {
             _backgroundImages = newValue
         }
     }
-    var _backgroundImages: [UIControlState: UIImage?]?
+    var _backgroundImages: [UIControl.State: UIImage?]?
 
     var tap = false
 
@@ -106,7 +106,7 @@ open class ButtonElement: Element<UIButton> {
         layout.flexDirection(.row)
     }
 
-    public convenience init(type: UIButtonType = .custom, children: [BasicElement] = []) {
+    public convenience init(type: UIButton.ButtonType = .custom, children: [BasicElement] = []) {
         self.init(children: children)
         creator = {
             UIButton(type: type)
@@ -234,8 +234,8 @@ open class ButtonElement: Element<UIButton> {
             view.setAttributedTitle(value, for: .normal)
         } else {
             let state = pendingState
-            var titles: [UIControlState: NSAttributedString?] = state.titles
-            titles[UIControlState.normal] = value
+            var titles: [UIControl.State: NSAttributedString?] = state.titles
+            titles[UIControl.State.normal] = value
             state.titles = titles
         }
         title?.text(value)
@@ -243,31 +243,31 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func title(_ value: NSAttributedString?, for state: UIControlState) -> Self {
+    public func title(_ value: NSAttributedString?, for state: UIControl.State) -> Self {
         if Runner.isMain(), let view = view {
             view.setAttributedTitle(value, for: state)
         } else {
             let _state = pendingState
-            var titles: [UIControlState: NSAttributedString?] = _state.titles
+            var titles: [UIControl.State: NSAttributedString?] = _state.titles
             titles[state] = value
             _state.titles = titles
             registerPendingState()
         }
-        if state == UIControlState.normal {
+        if state == UIControl.State.normal {
             title?.text(value)
         }
         return self
     }
 
     @discardableResult
-    public func title(_ value: NSAttributedString?, states: UIControlState...) -> Self {
+    public func title(_ value: NSAttributedString?, states: UIControl.State...) -> Self {
         if Runner.isMain(), let view = view {
             for state in states {
                 view.setAttributedTitle(value, for: state)
             }
         } else {
             let _state = pendingState
-            var titles: [UIControlState: NSAttributedString?] = _state.titles
+            var titles: [UIControl.State: NSAttributedString?] = _state.titles
             for state in states {
                 titles[state] = value
             }
@@ -286,8 +286,8 @@ open class ButtonElement: Element<UIButton> {
             view.setImage(value, for: .normal)
         } else {
             let state = pendingState
-            var images: [UIControlState: UIImage?] = state.images
-            images[UIControlState.normal] = value
+            var images: [UIControl.State: UIImage?] = state.images
+            images[UIControl.State.normal] = value
             state.images = images
             registerPendingState()
         }
@@ -296,12 +296,12 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func image(_ value: UIImage?, for state: UIControlState) -> Self {
+    public func image(_ value: UIImage?, for state: UIControl.State) -> Self {
         if Runner.isMain(), let view = view {
             view.setImage(value, for: state)
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.images
+            var images: [UIControl.State: UIImage?] = _state.images
             images[state] = value
             _state.images = images
             registerPendingState()
@@ -310,14 +310,14 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func image(_ value: UIImage?, states: UIControlState...) -> Self {
+    public func image(_ value: UIImage?, states: UIControl.State...) -> Self {
         if Runner.isMain(), let view = view {
             for state in states {
                 view.setImage(value, for: state)
             }
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.images
+            var images: [UIControl.State: UIImage?] = _state.images
             for state in states {
                 images[state] = value
             }
@@ -333,8 +333,8 @@ open class ButtonElement: Element<UIButton> {
             view.setImage(value, for: .normal)
         } else {
             let state = pendingState
-            var images: [UIControlState: UIImage?] = state.images
-            images[UIControlState.normal] = value
+            var images: [UIControl.State: UIImage?] = state.images
+            images[UIControl.State.normal] = value
             state.images = images
             registerPendingState()
         }
@@ -343,31 +343,31 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func sizedImage(_ value: UIImage?, for state: UIControlState) -> Self {
+    public func sizedImage(_ value: UIImage?, for state: UIControl.State) -> Self {
         if Runner.isMain(), let view = view {
             view.setImage(value, for: state)
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.images
+            var images: [UIControl.State: UIImage?] = _state.images
             images[state] = value
             _state.images = images
             registerPendingState()
         }
-        if state == UIControlState.normal {
+        if state == UIControl.State.normal {
             image?.layout.size(value?.size ?? CGSize.zero)
         }
         return self
     }
 
     @discardableResult
-    public func sizedImage(_ value: UIImage?, states: UIControlState...) -> Self {
+    public func sizedImage(_ value: UIImage?, states: UIControl.State...) -> Self {
         if Runner.isMain(), let view = view {
             for state in states {
                 view.setImage(value, for: state)
             }
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.images
+            var images: [UIControl.State: UIImage?] = _state.images
             for state in states {
                 images[state] = value
             }
@@ -386,8 +386,8 @@ open class ButtonElement: Element<UIButton> {
             view.setBackgroundImage(value, for: .normal)
         } else {
             let state = pendingState
-            var images: [UIControlState: UIImage?] = state.backgroundImages
-            images[UIControlState.normal] = value
+            var images: [UIControl.State: UIImage?] = state.backgroundImages
+            images[UIControl.State.normal] = value
             state.backgroundImages = images
             registerPendingState()
         }
@@ -395,12 +395,12 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func backgroundImage(_ value: UIImage?, for state: UIControlState) -> Self {
+    public func backgroundImage(_ value: UIImage?, for state: UIControl.State) -> Self {
         if Runner.isMain(), let view = view {
             view.setBackgroundImage(value, for: state)
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.backgroundImages
+            var images: [UIControl.State: UIImage?] = _state.backgroundImages
             images[state] = value
             _state.backgroundImages = images
             registerPendingState()
@@ -409,14 +409,14 @@ open class ButtonElement: Element<UIButton> {
     }
 
     @discardableResult
-    public func backgroundImage(_ value: UIImage?, states: UIControlState...) -> Self {
+    public func backgroundImage(_ value: UIImage?, states: UIControl.State...) -> Self {
         if Runner.isMain(), let view = view {
             for state in states {
                 view.setBackgroundImage(value, for: state)
             }
         } else {
             let _state = pendingState
-            var images: [UIControlState: UIImage?] = _state.backgroundImages
+            var images: [UIControl.State: UIImage?] = _state.backgroundImages
             for state in states {
                 images[state] = value
             }

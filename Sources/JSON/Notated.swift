@@ -23,6 +23,7 @@
 public protocol Notated {
     associatedtype Value: Notated = Self
 
+    var raw: Any { get }
     var arrayValue: [Value]? { get }
     var array: [Value] { get }
     var dictionaryValue: [String: Value]? { get }

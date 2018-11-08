@@ -43,15 +43,15 @@ public class TextFieldElementState: ElementState {
     }
     var _placeholder: NSAttributedString??
 
-    public var clearButtonMode: UITextFieldViewMode {
+    public var clearButtonMode: UITextField.ViewMode {
         get {
-            return _clearButtonMode ?? UITextFieldViewMode.never
+            return _clearButtonMode ?? UITextField.ViewMode.never
         }
         set {
             _clearButtonMode = newValue
         }
     }
-    var _clearButtonMode: UITextFieldViewMode?
+    var _clearButtonMode: UITextField.ViewMode?
 
     public var keyboard: UIKeyboardType {
         get {
@@ -113,7 +113,7 @@ public class TextFieldElementState: ElementState {
     }
     var _color: UIColor??
 
-    public var textAttributes: [String: Any] {
+    public var textAttributes: [NSAttributedString.Key: Any] {
         get {
             return _textAttributes ?? [:]
         }
@@ -121,7 +121,7 @@ public class TextFieldElementState: ElementState {
             _textAttributes = newValue
         }
     }
-    var _textAttributes: [String: Any]?
+    var _textAttributes: [NSAttributedString.Key: Any]?
 
     public override func apply(view: UIView) {
         if let textField = view as? UITextField {
@@ -185,7 +185,7 @@ public enum TextFieldElementEndEditingReason {
     case unknown
 
     @available(iOS 10.0, *)
-    public init(reason: UITextFieldDidEndEditingReason) {
+    public init(reason: UITextField.DidEndEditingReason) {
         switch reason {
         case .committed:
             self = .committed
@@ -259,7 +259,7 @@ public final class TextFieldDelegate: NSObject, UITextFieldDelegate {
     }
 
     @available(iOS 10.0, *)
-    public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+    public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         assertMainThread()
         delegate?.textFieldDidEndEditing(textField, reason: reason)
     }
@@ -345,7 +345,7 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @available(iOS 10.0, *)
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         assertMainThread()
         delegate?.textField(self, didEndEditing: TextFieldElementEndEditingReason(reason: reason))
     }
@@ -408,7 +408,7 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @discardableResult
-    public func clearButtonMode(_ value: UITextFieldViewMode) -> Self {
+    public func clearButtonMode(_ value: UITextField.ViewMode) -> Self {
         if Runner.isMain(), let view = view {
             view.clearButtonMode = value
         } else {
@@ -496,7 +496,7 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @discardableResult
-    public func textAttributes(_ value: [String: Any]) -> Self {
+    public func textAttributes(_ value: [NSAttributedString.Key: Any]) -> Self {
         if Runner.isMain(), let view = view {
             view.defaultTextAttributes = value
         } else {
@@ -508,9 +508,9 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func textAttributes(template: AttributedString) -> Self {
-        var attributes: [String: Any] = [:]
+        var attributes: [NSAttributedString.Key: Any] = [:]
         for (key, value) in template.attributes {
-            attributes[key.rawValue] = value
+            attributes[key] = value
         }
         return textAttributes(attributes)
     }

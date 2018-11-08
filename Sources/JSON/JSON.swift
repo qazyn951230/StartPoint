@@ -28,6 +28,10 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
         // Do nothing
     }
 
+    public var raw: Any {
+        return ""
+    }
+
     public var arrayValue: [JSON]? {
         return nil
     }

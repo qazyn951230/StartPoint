@@ -43,6 +43,21 @@ public final class AnyNotation: Notated {
         // Do nothing.
     }
 
+    public var raw: Any {
+        switch kind {
+        case .string:
+            return _rawString ?? NSNull()
+        case .array:
+            return _mapArray ?? _rawArray ?? []
+        case .object:
+            return _mapObject ?? _rawObject ?? [:]
+        case .number:
+            return _rawNumber ?? NSNull()
+        case .unknown:
+            return NSNull()
+        }
+    }
+
     public var arrayValue: [AnyNotation]? {
         if let resolved = _mapArray {
             return resolved

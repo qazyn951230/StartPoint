@@ -32,7 +32,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
 
     internal var valid: Bool {
         switch self {
-        case .length(let l), .percentage(let l):
+        case let .length(l), let .percentage(l):
             return !l.isNaN
         default:
             return true
@@ -59,14 +59,18 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         }
     }
 
+    public init(_ value: CGFloat) {
+        self = StyleValue.length(Double(value))
+    }
+
     // YGNodeResolveFlexBasisPtr
     func resolve(by value: Double) -> Double {
         switch self {
         case .auto:
             return Double.nan
-        case .length(let l):
+        case let .length(l):
             return l
-        case .percentage(let p):
+        case let .percentage(p):
             return p * value / 100
         }
     }
@@ -75,9 +79,9 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         switch self {
         case .auto:
             return false
-        case .length(let l):
+        case let .length(l):
             return l >= 0.0
-        case .percentage(let p):
+        case let .percentage(p):
             return !size.isNaN && p >= 0.0
         }
     }
@@ -94,7 +98,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         switch (lhs, rhs) {
         case (.auto, .auto):
             return true
-        case (.length(let a), .length(let b)), (.percentage(let a), .percentage(let b)):
+        case (let .length(a), let .length(b)), (let .percentage(a), let .percentage(b)):
             return a ~~ b
         default:
             return false
@@ -105,9 +109,9 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         switch (lhs, rhs) {
         case (.auto, .auto):
             return .auto
-        case (.length(let a), .length(let b)):
+        case (let .length(a), let .length(b)):
             return .length(a + b)
-        case (.percentage(let a), .percentage(let b)):
+        case (let .percentage(a), let .percentage(b)):
             return .percentage(a + b)
         default: // error
             return .length(0)
@@ -118,9 +122,9 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         switch (lhs, rhs) {
         case (.auto, .auto):
             return .auto
-        case (.length(let a), .length(let b)):
+        case (let .length(a), let .length(b)):
             return .length(a - b)
-        case (.percentage(let a), .percentage(let b)):
+        case (let .percentage(a), let .percentage(b)):
             return .percentage(a - b)
         default: // error
             return .length(0)

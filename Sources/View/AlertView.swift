@@ -114,7 +114,7 @@ open class BasicAlertView: Hashable {
             return old
         }
         let new = UIWindow(frame: UIScreen.main.bounds)
-        new.windowLevel = UIWindowLevelAlert
+        new.windowLevel = UIWindow.Level.alert
         new.backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
         window = new
         return new

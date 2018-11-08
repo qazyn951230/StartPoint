@@ -69,7 +69,7 @@ public class Toast {
 
     func addObserver() {
         let center: Reactive<NotificationCenter> = NotificationCenter.default.rx
-        center.notification(.UIDeviceOrientationDidChange)
+        center.notification(UIDevice.orientationDidChangeNotification)
             .map(deviceOrientationDidChange)
             .subscribe()
             .disposed(by: bag)
@@ -170,7 +170,7 @@ public class Toast {
                 return 2.0
             case .long:
                 return 4.0
-            case .other(let t):
+            case let .other(t):
                 return t
             }
         }

@@ -79,6 +79,11 @@ public final class XMLNotation: Notated {
         resolved = true
     }
 
+    public var raw: Any {
+        // TODO: XMLNotation.Any
+        return ""
+    }
+
     public var arrayValue: [XMLNotation]? {
         return _array
     }

@@ -34,7 +34,7 @@ extension String: AlertAction {
 }
 
 public class AlertController<Action:AlertAction> {
-    let style: UIAlertControllerStyle
+    let style: UIAlertController.Style
     var title: String? = nil
     var message: String? = nil
     var actions: [Action]? = nil
@@ -43,7 +43,7 @@ public class AlertController<Action:AlertAction> {
 
     var ignoreCancel: Bool = true
 
-    public init(style: UIAlertControllerStyle = .alert) {
+    public init(style: UIAlertController.Style = .alert) {
         self.style = style
     }
 

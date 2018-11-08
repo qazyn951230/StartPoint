@@ -111,11 +111,11 @@ final class RecyclerDataController: UICollectionViewLayout, UICollectionViewData
         for section in currentMap.sections {
             if (section.frame.intersects(rect)) {
                 let indexPath = IndexPath(row: 0, section: index)
-                if let header = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader,
+                if let header = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader,
                     at: indexPath), !(header.frame.intersection(rect).isEmpty) {
                     result.append(header)
                 }
-                if let footer = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionFooter,
+                if let footer = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter,
                     at: indexPath), !(footer.frame.intersection(rect).isEmpty) {
                     result.append(footer)
                 }

@@ -23,7 +23,7 @@
 #ifndef STARTPOINT_DOUBLE_H
 #define STARTPOINT_DOUBLE_H
 
-#include "config.h"
+#include "Config.h"
 
 SP_C_FILE_BEGIN
 
