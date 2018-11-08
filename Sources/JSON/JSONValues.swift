@@ -182,7 +182,7 @@ public final class JSONInt64: JSON {
 #if arch(arm64) || arch(x86_64)
         return Int(value)
 #else
-        return nil
+        return 0
 #endif
     }
 
@@ -344,7 +344,7 @@ public final class JSONUInt64: JSON {
 #if arch(arm64) || arch(x86_64)
         return UInt(value)
 #else
-        return nil
+        return 0
 #endif
     }
 
