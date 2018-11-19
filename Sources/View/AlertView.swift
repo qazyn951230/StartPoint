@@ -23,8 +23,11 @@
 import UIKit
 
 open class BasicAlertView: Hashable {
+    public weak var holderView: UIView?
     public var view: UIView?
     public let root: BasicElement
+    private var addToWindow = false
+    private var maskView: UIView?
 
     public init() {
         root = BasicElement().style { flex in
@@ -52,17 +55,30 @@ open class BasicAlertView: Hashable {
         guard let view = view else {
             return
         }
-        let window = BasicAlertView.alertWindow()
-        window.makeKeyAndVisible()
+        if let holder = holderView {
+            let masker = UIView(frame: holder.bounds)
+            masker.backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
+            holder.addSubview(masker)
+            show(animated: animated, in: masker, content: view)
+            maskView = masker
+        } else {
+            let window = BasicAlertView.alertWindow()
+            window.makeKeyAndVisible()
+            addToWindow = true
+            show(animated: animated, in: window, content: view)
+        }
+    }
+
+    private func show(animated: Bool, in view: UIView, content: UIView) {
         BasicAlertView.alerts.append(self)
         if animated {
-            view.alpha = 0
-            window.addSubview(view)
+            content.alpha = 0
+            view.addSubview(content)
             UIView.animate(withDuration: 0.3) {
-                view.alpha = 1
+                content.alpha = 1
             }
         } else {
-            window.addSubview(view)
+            view.addSubview(content)
         }
     }
 
@@ -76,20 +92,26 @@ open class BasicAlertView: Hashable {
             return
         }
         if animated {
+            let addToWindow = self.addToWindow
+            let masker = self.maskView
             UIView.animate(withDuration: 0.3, animations: {
                 view.alpha = 0
             }, completion: { _ in
                 view.removeFromSuperview()
-                if BasicAlertView.window?.subviews.count < 1 {
+                if addToWindow && BasicAlertView.window?.subviews.count < 1 {
                     BasicAlertView.window = nil
                     BasicAlertView.alerts.removeAll()
+                } else {
+                    masker?.removeFromSuperview()
                 }
             })
         } else {
             view.removeFromSuperview()
-            if BasicAlertView.window?.subviews.count < 1 {
+            if addToWindow && BasicAlertView.window?.subviews.count < 1 {
                 BasicAlertView.window = nil
                 BasicAlertView.alerts.removeAll()
+            } else {
+                maskView?.removeFromSuperview()
             }
         }
         if let index = BasicAlertView.alerts.index(of: self) {
@@ -114,7 +136,7 @@ open class BasicAlertView: Hashable {
             return old
         }
         let new = UIWindow(frame: UIScreen.main.bounds)
-        new.windowLevel = UIWindowLevelAlert
+        new.windowLevel = UIWindowLevelAlert - 10
         new.backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
         window = new
         return new
