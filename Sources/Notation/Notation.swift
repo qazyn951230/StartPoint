@@ -99,6 +99,15 @@ public func <|<T: Notation>(notated: T.NotatedValue, key: String) -> T
     return T.init(from: notated[key])
 }
 
+public func <|?<T: Notation>(notated: T.NotatedValue, key: String) -> T?
+    where T.NotatedValue.Value == T.NotatedValue {
+    let temp: T.NotatedValue = notated[key]
+    guard temp.exists else {
+        return nil
+    }
+    return T.init(from: temp)
+}
+
 public func <|<T: StaticNotation>(notated: T.NotatedValue, key: String) -> T
     where T.NotatedValue.Value == T.NotatedValue {
     return T.create(from: notated[key])

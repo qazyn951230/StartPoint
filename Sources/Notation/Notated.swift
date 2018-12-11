@@ -24,6 +24,8 @@ public protocol Notated {
     associatedtype Value: Notated = Self
 
     var raw: Any { get }
+    var exists: Bool { get }
+
     var arrayValue: [Value]? { get }
     var array: [Value] { get }
     var dictionaryValue: [String: Value]? { get }
@@ -53,7 +55,10 @@ public protocol Notated {
     subscript(key: String) -> Value { get }
 }
 
-extension Notated {
+public extension Notated {
+    public var exists: Bool {
+        return true
+    }
     public var arrayValue: [Value]? {
         return nil
     }

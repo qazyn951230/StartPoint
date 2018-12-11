@@ -32,6 +32,10 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
         return ""
     }
 
+    public var exists: Bool {
+        return true
+    }
+
     public var arrayValue: [JSON]? {
         return nil
     }

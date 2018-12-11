@@ -84,12 +84,32 @@ public final class XMLNotation: Notated {
         return ""
     }
 
+    public var exists: Bool {
+        return !(element == nil || node == nil || _array == nil)
+    }
+
     public var arrayValue: [XMLNotation]? {
-        return _array
+        if _array != nil {
+            return _array
+        } else {
+            resolve()
+            if let map = _map {
+                return Array<XMLNotation>(map.values)
+            }
+            return nil
+        }
     }
 
     public var array: [XMLNotation] {
-        return _array ?? []
+        if let temp = _array {
+            return temp
+        } else {
+            resolve()
+            if let map = _map {
+                return Array<XMLNotation>(map.values)
+            }
+            return []
+        }
     }
 
     public var dictionaryValue: [String: XMLNotation]? {
@@ -107,7 +127,15 @@ public final class XMLNotation: Notated {
     }
 
     public var bool: Bool {
-        return Bool(string) ?? false
+        switch string {
+        case "YES":
+            return true
+        case "NO":
+            return false
+        default:
+            // Bool.init => "true" or "false"
+            return Bool(string) ?? false
+        }
     }
 
     public var stringValue: String? {
@@ -191,5 +219,14 @@ public final class XMLNotation: Notated {
     public subscript(key: String) -> XMLNotation {
         resolve()
         return _map?[key] ?? XMLNotation.null
+    }
+
+    public static func parse(path: String, options: XMLNode.Options = []) -> XMLNotation {
+        let url = URL(fileURLWithPath: path)
+        guard let xml = try? XMLDocument(contentsOf: url, options: options),
+              let root = xml.rootElement() else {
+            return XMLNotation.null
+        }
+        return XMLNotation(root)
     }
 }

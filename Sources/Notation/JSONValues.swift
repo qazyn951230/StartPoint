@@ -31,6 +31,9 @@ public final class JSONNull: JSON {
         return NSNull()
     }
 
+    public override var exists: Bool {
+        return false
+    }
     public override var description: String {
         return "<JSON: null>"
     }
