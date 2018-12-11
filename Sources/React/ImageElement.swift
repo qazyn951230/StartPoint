@@ -23,34 +23,8 @@
 import UIKit
 
 public class ImageElementState: ElementState {
-    public var image: UIImage? {
-        get {
-            return _image ?? nil
-        }
-        set {
-            _image = newValue
-        }
-    }
-    var _image: UIImage??
-
-    public var highlightedImage: UIImage? {
-        get {
-            return _highlightedImage ?? nil
-        }
-        set {
-            _highlightedImage = newValue
-        }
-    }
-    var _highlightedImage: UIImage??
-
-    public override var interactive: Bool {
-        get {
-            return _interactive ?? false
-        }
-        set {
-            _interactive = newValue
-        }
-    }
+    public var image: UIImage??
+    public var highlightedImage: UIImage??
 
     public override func apply(view: UIView) {
         if let imageView = view as? UIImageView {
@@ -61,19 +35,19 @@ public class ImageElementState: ElementState {
     }
 
     public func apply(imageView view: UIImageView) {
-        if let image = _image {
+        if let image = self.image {
             view.image = image
         }
-        if let highlightedImage = _highlightedImage {
+        if let highlightedImage = self.highlightedImage {
             view.highlightedImage = highlightedImage
         }
         super.apply(view: view)
     }
 
     public override func invalidate() {
-        _image = nil
-        _highlightedImage = nil
         super.invalidate()
+        image = nil
+        highlightedImage = nil
     }
 }
 
@@ -92,7 +66,7 @@ open class ImageElement: Element<UIImageView> {
     // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func image(_ value: UIImage?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.image = value
         } else {
             pendingState.image = value
@@ -103,7 +77,7 @@ open class ImageElement: Element<UIImageView> {
 
     @discardableResult
     public func sizedImage(_ value: UIImage?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.image = value
         } else {
             pendingState.image = value
@@ -117,7 +91,7 @@ open class ImageElement: Element<UIImageView> {
 
     @discardableResult
     public func highlightedImage(_ value: UIImage?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.highlightedImage = value
         } else {
             pendingState.highlightedImage = value

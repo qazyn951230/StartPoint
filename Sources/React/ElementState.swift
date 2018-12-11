@@ -24,319 +24,144 @@ import UIKit
 import CoreGraphics
 import QuartzCore
 
-public protocol ElementProperty {
-    // UIView
-    var frame: CGRect { get }
-    var backgroundColor: UIColor? { get }
-    var clips: Bool { get }
-    var hidden: Bool { get }
-    var tintColor: UIColor { get }
-    var interactive: Bool { get }
-    var alpha: Double { get }
-    var contentMode: UIView.ContentMode { get }
-    // CALayer
-    var cornerRadius: CGFloat { get }
-    var borderColor: CGColor? { get }
-    var borderWidth: CGFloat { get }
-    var shadowOpacity: Float { get }
-    var shadowRadius: CGFloat { get }
-    var shadowOffset: CGSize { get }
-    var shadowColor: CGColor? { get }
-    var shadowPath: CGPath? { get }
-}
-
-open class ElementState: ElementProperty {
-    public var frame: CGRect {
-        get {
-            return _frame ?? CGRect.zero
-        }
-        set {
-            _frame = newValue
-        }
-    }
-    var _frame: CGRect?
-
-    public var backgroundColor: UIColor? {
-        get {
-            return _backgroundColor ?? nil
-        }
-        set {
-            _backgroundColor = newValue
-        }
-    }
-    var _backgroundColor: UIColor??
-
-    public var clips: Bool {
-        get {
-            return _clips ?? false
-        }
-        set {
-            _clips = newValue
-        }
-    }
-    var _clips: Bool?
-
-    public var hidden: Bool {
-        get {
-            return _hidden ?? false
-        }
-        set {
-            _hidden = newValue
-        }
-    }
-    var _hidden: Bool?
-
-    public var tintColor: UIColor {
-        get {
-            return _tintColor ?? UIView().tintColor ?? UIColor.white
-        }
-        set {
-            _tintColor = newValue
-        }
-    }
-    var _tintColor: UIColor?
-
-    public var interactive: Bool {
-        get {
-            return _interactive ?? true
-        }
-        set {
-            _interactive = newValue
-        }
-    }
-    var _interactive: Bool?
-
-    public var alpha: Double {
-        get {
-            return _alpha ?? 1.0
-        }
-        set {
-            _alpha = newValue
-        }
-    }
-    var _alpha: Double?
-
-    public var contentMode: UIView.ContentMode {
-        get {
-            return _contentMode ?? UIView.ContentMode.scaleToFill
-        }
-        set {
-            _contentMode = newValue
-        }
-    }
-    var _contentMode: UIView.ContentMode?
-
-    // MARK: Layer properties
-    public var cornerRadius: CGFloat {
-        get {
-            return _cornerRadius ?? 0
-        }
-        set {
-            _cornerRadius = newValue
-        }
-    }
-    var _cornerRadius: CGFloat?
-
-    public var borderColor: CGColor? {
-        get {
-            return _borderColor ?? nil
-        }
-        set {
-            _borderColor = newValue
-        }
-    }
-    var _borderColor: CGColor??
-
-    public var borderWidth: CGFloat {
-        get {
-            return _borderWidth ?? 0
-        }
-        set {
-            _borderWidth = newValue
-        }
-    }
-    var _borderWidth: CGFloat?
-
-    public var shadowOpacity: Float {
-        get {
-            return _shadowOpacity ?? 0
-        }
-        set {
-            _shadowOpacity = newValue
-        }
-    }
-    var _shadowOpacity: Float?
-
-    public var shadowRadius: CGFloat {
-        get {
-            return _shadowRadius ?? 0
-        }
-        set {
-            _shadowRadius = newValue
-        }
-    }
-    var _shadowRadius: CGFloat?
-
-    public var shadowOffset: CGSize {
-        get {
-            return _shadowOffset ?? CGSize.zero
-        }
-        set {
-            _shadowOffset = newValue
-        }
-    }
-    var _shadowOffset: CGSize?
-
-    public var shadowColor: CGColor? {
-        get {
-            return _shadowColor ?? nil
-        }
-        set {
-            _shadowColor = newValue
-        }
-    }
-    var _shadowColor: CGColor??
-
-    public var shadowPath: CGPath? {
-        get {
-            return _shadowPath ?? nil
-        }
-        set {
-            _shadowPath = newValue
-        }
-    }
-    var _shadowPath: CGPath??
+public class ElementState {
+    // For UIView
+    public var frame: CGRect?
+    public var backgroundColor: UIColor??
+    public var clips: Bool?
+    public var hidden: Bool?
+    public var tintColor: UIColor?
+    public var interactive: Bool?
+    public var alpha: Double?
+    public var contentMode: UIView.ContentMode?
+    // For CALayer
+    public var cornerRadius: CGFloat?
+    public var borderColor: CGColor??
+    public var borderWidth: CGFloat?
+    public var shadowOpacity: Float?
+    public var shadowRadius: CGFloat?
+    public var shadowOffset: CGSize?
+    public var shadowColor: CGColor??
+    public var shadowPath: CGPath??
 
     public required init() {
         // Do nothing.
     }
 
-    open func apply(view: UIView) {
+    public func apply(view: UIView) {
         assertMainThread()
-        let layer = view.layer
-        if let frame = _frame {
+        if let frame = self.frame {
             view.frame = frame
         }
-        if let backgroundColor = _backgroundColor {
+        if let backgroundColor = self.backgroundColor {
             view.backgroundColor = backgroundColor
         }
-        if let clips = _clips {
+        if let clips = self.clips {
             view.clipsToBounds = clips
         }
-        if let hidden = _hidden {
+        if let hidden = self.hidden {
             view.isHidden = hidden
         }
-        if let tintColor = _tintColor {
+        if let tintColor = self.tintColor {
             view.tintColor = tintColor
         }
-        if let interactive = _interactive {
+        if let interactive = self.interactive {
             view.isUserInteractionEnabled = interactive
         }
-        if let alpha = _alpha {
+        if let alpha = self.alpha {
             view.alpha = CGFloat(alpha)
         }
-        if let contentMode = _contentMode {
+        if let contentMode = self.contentMode {
             view.contentMode = contentMode
         }
-
-        if let cornerRadius = _cornerRadius {
+        let layer = view.layer
+        if let cornerRadius = self.cornerRadius {
             layer.cornerRadius = cornerRadius
         }
-        if let borderColor = _borderColor {
+        if let borderColor = self.borderColor {
             layer.borderColor = borderColor
         }
-        if let borderWidth = _borderWidth {
+        if let borderWidth = self.borderWidth {
             layer.borderWidth = borderWidth
         }
-        if let shadowOpacity = _shadowOpacity {
+        if let shadowOpacity = self.shadowOpacity {
             layer.shadowOpacity = shadowOpacity
         }
-        if let shadowRadius = _shadowRadius {
+        if let shadowRadius = self.shadowRadius {
             layer.shadowRadius = shadowRadius
         }
-        if let shadowOffset = _shadowOffset {
+        if let shadowOffset = self.shadowOffset {
             layer.shadowOffset = shadowOffset
         }
-        if let shadowColor = _shadowColor {
+        if let shadowColor = self.shadowColor {
             layer.shadowColor = shadowColor
         }
-        if let shadowPath = _shadowPath {
+        if let shadowPath = self.shadowPath {
             layer.shadowPath = shadowPath
         }
         invalidate()
     }
 
-    open func apply(layer: CALayer) {
+    public func apply(layer: CALayer) {
         assertMainThread()
-        if let frame = _frame {
+        if let frame = self.frame {
             layer.frame = frame
         }
-        if let backgroundColor = _backgroundColor {
+        if let backgroundColor = self.backgroundColor {
             layer.backgroundColor = backgroundColor?.cgColor
         }
-        if let clips = _clips {
+        if let clips = self.clips {
             layer.masksToBounds = clips
         }
-        if let hidden = _hidden {
+        if let hidden = self.hidden {
             layer.isHidden = hidden
         }
-        if let alpha = _alpha {
+        if let alpha = self.alpha {
             layer.opacity = Float(alpha)
         }
-        if let cornerRadius = _cornerRadius {
+        if let cornerRadius = self.cornerRadius {
             layer.cornerRadius = cornerRadius
         }
-        if let borderColor = _borderColor {
+        if let borderColor = self.borderColor {
             layer.borderColor = borderColor
         }
-        if let borderWidth = _borderWidth {
+        if let borderWidth = self.borderWidth {
             layer.borderWidth = borderWidth
         }
-        if let shadowOpacity = _shadowOpacity {
+        if let shadowOpacity = self.shadowOpacity {
             layer.shadowOpacity = shadowOpacity
         }
-        if let shadowRadius = _shadowRadius {
+        if let shadowRadius = self.shadowRadius {
             layer.shadowRadius = shadowRadius
         }
-        if let shadowOffset = _shadowOffset {
+        if let shadowOffset = self.shadowOffset {
             layer.shadowOffset = shadowOffset
         }
-        if let shadowColor = _shadowColor {
+        if let shadowColor = self.shadowColor {
             layer.shadowColor = shadowColor
         }
-        if let shadowPath = _shadowPath {
+        if let shadowPath = self.shadowPath {
             layer.shadowPath = shadowPath
         }
         invalidate()
     }
 
-    open func invalidate() {
-        _frame = nil
-        _backgroundColor = nil
-        _clips = nil
-        _hidden = nil
-        _tintColor = nil
-        _interactive = nil
-        _alpha = nil
-        _contentMode = nil
-
-        _cornerRadius = nil
-        _borderColor = nil
-        _borderWidth = nil
-        _shadowOpacity = nil
-        _shadowRadius = nil
-        _shadowOffset = nil
-        _shadowColor = nil
-        _shadowPath = nil
+    public func invalidate() {
+        frame = nil
+        backgroundColor = nil
+        clips = nil
+        hidden = nil
+        tintColor = nil
+        interactive = nil
+        alpha = nil
+        contentMode = nil
+        cornerRadius = nil
+        borderColor = nil
+        borderWidth = nil
+        shadowOpacity = nil
+        shadowRadius = nil
+        shadowOffset = nil
+        shadowColor = nil
+        shadowPath = nil
     }
-}
-
-extension UIControl.State: Hashable {
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
-
-//    public static func ==(lhs: UIControl.State, rhs: UIControl.State) -> Bool {
-//        return lhs.rawValue == rhs.rawValue
-//    }
 }

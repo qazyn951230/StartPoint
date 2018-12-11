@@ -123,16 +123,45 @@ open class Element<View: UIView>: BasicElement {
         view?.removeFromSuperview()
     }
 
-    public func onViewLoaded(then method: @escaping (Element<View>) -> Void) {
-        onLoaded { basic in
-            assertMainThread()
-            if let view = basic as? Element<View> {
-                method(view)
-            }
+    public func viewLoaded(_ method: @escaping (Element<View>) -> Void) {
+        if Runner.isMain(), loaded {
+            method(self)
+        } else {
+            actions.loadAction(self, method)
         }
     }
 
-    open override func build(in view: UIView) {
+    public func bind<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
+        if Runner.isMain(), loaded {
+            method(target)
+        } else {
+            actions.loadAction(target, method)
+        }
+    }
+
+    public func bind<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
+        if Runner.isMain(), loaded {
+            method(target)(self)
+        } else {
+            let action: ElementAction.Action = { [weak target, weak self] in
+                if let _target = target, let this = self {
+                    method(_target)(this)
+                }
+            }
+            actions.load.append(action)
+        }
+    }
+
+    public func tap<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
+        let action: ElementAction.Action = { [weak target, weak self] in
+            if let _target = target, let this = self {
+                method(_target)(this)
+            }
+        }
+        super.tap(action)
+    }
+
+    public override func build(in view: UIView) {
         assertMainThread()
         let this = buildView()
         if let superview = this.superview {
@@ -143,12 +172,10 @@ open class Element<View: UIView>: BasicElement {
         } else {
             view.addSubview(this)
         }
-        let methods = _onLoaded
-        _onLoaded.removeAll()
-        methods.forEach { $0(self) }
+        onLoaded()
     }
 
-    open func buildView() -> View {
+    public func buildView() -> View {
         assertMainThread()
         if let v = self.view {
             return v
@@ -156,9 +183,6 @@ open class Element<View: UIView>: BasicElement {
         let this = _createView()
         applyState(to: this)
         buildChildren()
-//        let methods = _onLoaded
-//        _onLoaded.removeAll()
-//        methods.forEach { $0(self) }
         return this
     }
 
@@ -184,7 +208,7 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
-    open func applyState(to view: View) {
+    public func applyState(to view: View) {
         assertMainThread()
         _pendingState?.apply(view: view)
     }
@@ -196,7 +220,7 @@ open class Element<View: UIView>: BasicElement {
         super.registerPendingState()
     }
 
-    open override func buildChildren(in view: UIView) {
+    public override func buildChildren(in view: UIView) {
         if children.isEmpty {
             return
         }
@@ -206,7 +230,7 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
-    open func buildChildren() {
+    public func buildChildren() {
         if let view = self.view {
             buildChildren(in: view)
         }
@@ -219,10 +243,15 @@ open class Element<View: UIView>: BasicElement {
     }
 #endif
 
+    override func removeFromSuperView() {
+        assertMainThread()
+        view?.removeFromSuperview()
+    }
+
     // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
@@ -234,7 +263,7 @@ open class Element<View: UIView>: BasicElement {
     @discardableResult
     public func backgroundColor(hex value: UInt32) -> Self {
         let value = UIColor.hex(value)
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
@@ -246,7 +275,7 @@ open class Element<View: UIView>: BasicElement {
     @discardableResult
     public func backgroundColor(hex value: UInt32, alpha: CGFloat) -> Self {
         let value = UIColor.hex(value, alpha: alpha)
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.backgroundColor = value
         } else {
             pendingState.backgroundColor = value
@@ -257,7 +286,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func tintColor(_ value: UIColor) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
@@ -269,7 +298,7 @@ open class Element<View: UIView>: BasicElement {
     @discardableResult
     public func tintColor(hex: UInt32) -> Self {
         let value = UIColor.hex(hex)
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.tintColor = value
         } else {
             pendingState.tintColor = value
@@ -280,7 +309,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func cornerRadius(_ value: CGFloat) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.layer.cornerRadius = value
         } else {
             pendingState.cornerRadius = value
@@ -291,7 +320,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func borderColor(cgColor value: CGColor?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.layer.borderColor = value
         } else {
             pendingState.borderColor = value
@@ -312,7 +341,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func borderWidth(_ value: CGFloat) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.layer.borderWidth = value
         } else {
             pendingState.borderWidth = value
@@ -323,7 +352,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func border(color: UIColor?, width: CGFloat) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.borderColor = color?.cgColor
             layer.borderWidth = width
@@ -339,7 +368,7 @@ open class Element<View: UIView>: BasicElement {
     @discardableResult
     public func border(hex value: UInt32, width: CGFloat) -> Self {
         let color = UIColor.hex(value).cgColor
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.borderColor = color
             layer.borderWidth = width
@@ -354,7 +383,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func shadow(opacity: Float, radius: CGFloat, offset: CGSize, color: CGColor?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.shadowOpacity = opacity
             layer.shadowRadius = radius
@@ -373,7 +402,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, color: UIColor) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.shadowOpacity = alpha
             layer.shadowRadius = blur
@@ -392,7 +421,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func shadow(alpha: Float, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.shadowOpacity = alpha
             layer.shadowRadius = blur
@@ -411,7 +440,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func shadowPath(_ value: CGPath?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             let layer = view.layer
             layer.shadowPath = value
         } else {
@@ -423,20 +452,17 @@ open class Element<View: UIView>: BasicElement {
     }
 
     @discardableResult
-    public func onLoadedShadowPath(_ method: @escaping (Element<View>) -> UIBezierPath) -> Self {
-        onLoaded { basic in
-            guard let view = basic as? Element<View> else {
-                return
-            }
-            let path = method(view)
-            view.shadowPath(path.cgPath)
+    public func shadowPath(_ method: @escaping (Element<View>) -> UIBezierPath) -> Self {
+        self.viewLoaded { (e: Element<View>) in
+            let path = method(e)
+            e.shadowPath(path.cgPath)
         }
         return self
     }
 
     @discardableResult
     public func interactive(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.isUserInteractionEnabled = value
         } else {
             pendingState.interactive = value
@@ -447,7 +473,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func alpha(_ value: Double) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.alpha = CGFloat(value)
         } else {
             pendingState.alpha = value
@@ -458,7 +484,7 @@ open class Element<View: UIView>: BasicElement {
 
     @discardableResult
     public func contentMode(_ value: UIView.ContentMode) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.contentMode = value
         } else {
             pendingState.contentMode = value

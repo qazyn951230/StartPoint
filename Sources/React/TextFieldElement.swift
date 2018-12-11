@@ -23,105 +23,17 @@
 import UIKit
 
 public class TextFieldElementState: ElementState {
-    public var text: NSAttributedString? {
-        get {
-            return _text ?? nil
-        }
-        set {
-            _text = newValue
-        }
-    }
-    var _text: NSAttributedString??
-
-    public var placeholder: NSAttributedString? {
-        get {
-            return _placeholder ?? nil
-        }
-        set {
-            _placeholder = newValue
-        }
-    }
-    var _placeholder: NSAttributedString??
-
-    public var clearButtonMode: UITextField.ViewMode {
-        get {
-            return _clearButtonMode ?? UITextField.ViewMode.never
-        }
-        set {
-            _clearButtonMode = newValue
-        }
-    }
-    var _clearButtonMode: UITextField.ViewMode?
-
-    public var keyboard: UIKeyboardType {
-        get {
-            return _keyboard ?? UIKeyboardType.default
-        }
-        set {
-            _keyboard = newValue
-        }
-    }
-    var _keyboard: UIKeyboardType?
-
-    public var returnKey: UIReturnKeyType {
-        get {
-            return _returnKey ?? UIReturnKeyType.default
-        }
-        set {
-            _returnKey = newValue
-        }
-    }
-    var _returnKey: UIReturnKeyType?
-
-    public var secure: Bool {
-        get {
-            return _secure ?? false
-        }
-        set {
-            _secure = newValue
-        }
-    }
-    var _secure: Bool?
-
-    public var textAlignment: NSTextAlignment {
-        get {
-            return _textAlignment ?? NSTextAlignment.natural
-        }
-        set {
-            _textAlignment = newValue
-        }
-    }
-    var _textAlignment: NSTextAlignment?
-
-    public var font: UIFont? {
-        get {
-            return _font ?? nil
-        }
-        set {
-            _font = newValue
-        }
-    }
-    var _font: UIFont??
-
-    public var color: UIColor? {
-        get {
-            return _color ?? nil
-        }
-        set {
-            _color = newValue
-        }
-    }
-    var _color: UIColor??
-
-    public var textAttributes: [NSAttributedString.Key: Any] {
-        get {
-            return _textAttributes ?? [:]
-        }
-        set {
-            _textAttributes = newValue
-        }
-    }
-    var _textAttributes: [NSAttributedString.Key: Any]?
+    public var text: NSAttributedString??
+    public var placeholder: String??
+    public var attributedPlaceholder: NSAttributedString??
+    public var clearButtonMode: UITextField.ViewMode?
+    public var keyboard: UIKeyboardType?
+    public var returnKey: UIReturnKeyType?
+    public var secure: Bool?
+    public var textAlignment: NSTextAlignment?
+    public var font: UIFont??
+    public var color: UIColor??
+    public var textAttributes: [NSAttributedString.Key: Any]?
 
     public override func apply(view: UIView) {
         if let textField = view as? UITextField {
@@ -132,51 +44,54 @@ public class TextFieldElementState: ElementState {
     }
 
     public func apply(textField view: UITextField) {
-        if let text = _text {
+        if let text = self.text {
             view.attributedText = text
         }
-        if let placeholder = _placeholder {
+        if let placeholder = self.attributedPlaceholder {
             view.attributedPlaceholder = placeholder
+        } else if let placeholder2 = self.placeholder {
+            view.placeholder = placeholder2
         }
-        if let clearButtonMode = _clearButtonMode {
+        if let clearButtonMode = self.clearButtonMode {
             view.clearButtonMode = clearButtonMode
         }
-        if let keyboard = _keyboard {
+        if let keyboard = self.keyboard {
             view.keyboardType = keyboard
         }
-        if let returnKey = _returnKey {
+        if let returnKey = self.returnKey {
             view.returnKeyType = returnKey
         }
-        if let secure = _secure {
+        if let secure = self.secure {
             view.isSecureTextEntry = secure
         }
-        if let textAlignment = _textAlignment {
+        if let textAlignment = self.textAlignment {
             view.textAlignment = textAlignment
         }
-        if let font = _font {
+        if let font = self.font {
             view.font = font
         }
-        if let color = _color {
+        if let color = self.color {
             view.textColor = color
         }
-        if let textAttributes = _textAttributes {
+        if let textAttributes = self.textAttributes {
             view.defaultTextAttributes = textAttributes
         }
         super.apply(view: view)
     }
 
     public override func invalidate() {
-        _text = nil
-        _placeholder = nil
-        _clearButtonMode = nil
-        _keyboard = nil
-        _clearButtonMode = nil
-        _secure = nil
-        _textAlignment = nil
-        _font = nil
-        _color = nil
-        _textAttributes = nil
         super.invalidate()
+        text = nil
+        attributedPlaceholder = nil
+        placeholder = nil
+        clearButtonMode = nil
+        keyboard = nil
+        clearButtonMode = nil
+        secure = nil
+        textAlignment = nil
+        font = nil
+        color = nil
+        textAttributes = nil
     }
 }
 
@@ -282,7 +197,7 @@ public final class TextFieldDelegate: NSObject, UITextFieldDelegate {
 }
 
 open class TextFieldElement: Element<UITextField> {
-    var text: NSAttributedString?
+    var _text: NSAttributedString?
     var placeholder: NSAttributedString?
 
     var _textFieldState: TextFieldElementState?
@@ -302,21 +217,13 @@ open class TextFieldElement: Element<UITextField> {
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
-        layout.measureSelf = measure
+        layout.measureSelf = { [weak self] (w, wm, h, hm) in
+            TextFieldElement.measureText(self, width: w, widthMode: wm, height: h, heightMode: hm)
+        }
         _delegate.delegate = self
     }
 
-    func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
-        // FIXME: Text field size > label size ?
-        if let text = text ?? placeholder {
-            let size = CGSize(width: width, height: height)
-            let options: NSStringDrawingOptions = []
-            return Size(cgSize: text.boundingSize(size: size, options: options).ceiled)
-        }
-        return Size.zero
-    }
-
-    open override func buildView() -> UITextField {
+    public override func buildView() -> UITextField {
         assertMainThread()
         let view = super.buildView()
         view.delegate = _delegate
@@ -383,8 +290,8 @@ open class TextFieldElement: Element<UITextField> {
     // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func text(_ value: NSAttributedString?) -> Self {
-        text = value
-        if Runner.isMain(), let view = view {
+        _text = value
+        if Runner.isMain(), let view = self.view {
             view.attributedText = value
         } else {
             pendingState.text = value
@@ -395,10 +302,9 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @discardableResult
-    public func placeholder(_ value: NSAttributedString?) -> Self {
-        placeholder = value
-        if Runner.isMain(), let view = view {
-            view.attributedPlaceholder = value
+    public func placeholder(_ value: String?) -> Self {
+        if Runner.isMain(), let view = self.view {
+            view.placeholder = value
         } else {
             pendingState.placeholder = value
             registerPendingState()
@@ -408,8 +314,21 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @discardableResult
+    public func placeholder(_ value: NSAttributedString?) -> Self {
+        placeholder = value
+        if Runner.isMain(), let view = self.view {
+            view.attributedPlaceholder = value
+        } else {
+            pendingState.attributedPlaceholder = value
+            registerPendingState()
+        }
+        layout.markDirty()
+        return self
+    }
+
+    @discardableResult
     public func clearButtonMode(_ value: UITextField.ViewMode) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.clearButtonMode = value
         } else {
             pendingState.clearButtonMode = value
@@ -420,7 +339,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func keyboard(_ value: UIKeyboardType) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.keyboardType = value
         } else {
             pendingState.keyboard = value
@@ -431,7 +350,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func returnKey(_ value: UIReturnKeyType) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.returnKeyType = value
         } else {
             pendingState.returnKey = value
@@ -442,7 +361,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func secure(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.isSecureTextEntry = value
         } else {
             pendingState.secure = value
@@ -453,7 +372,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func textAlignment(_ value: NSTextAlignment) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.textAlignment = value
         } else {
             pendingState.textAlignment = value
@@ -464,7 +383,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func font(_ value: UIFont?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.font = value
         } else {
             pendingState.font = value
@@ -486,7 +405,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func color(_ value: UIColor?) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.textColor = value
         } else {
             pendingState.color = value
@@ -497,7 +416,7 @@ open class TextFieldElement: Element<UITextField> {
 
     @discardableResult
     public func textAttributes(_ value: [NSAttributedString.Key: Any]) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.defaultTextAttributes = value
         } else {
             pendingState.textAttributes = value
@@ -513,5 +432,19 @@ open class TextFieldElement: Element<UITextField> {
             attributes[key] = value
         }
         return textAttributes(attributes)
+    }
+
+    static func measureText(_ element: TextFieldElement?, width: Double, widthMode: MeasureMode,
+                            height: Double, heightMode: MeasureMode) -> Size {
+        guard let view = element else {
+            return Size.zero
+        }
+        // FIXME: Text field size > label size ?
+        if let text = view._text ?? view.placeholder {
+            let size = CGSize(width: width, height: height)
+            let options: NSStringDrawingOptions = []
+            return Size(cgSize: text.boundingSize(size: size, options: options).ceiled)
+        }
+        return Size.zero
     }
 }

@@ -20,29 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if PermissionPhoto
+#if PermissionMotion
 
-import Photos
+import CoreMotion
 import RxSwift
 import RxCocoa
 
-public struct PhotoPermission: PermissionItem {
+public struct MotionPermission: PermissionItem {
     public func status() -> Driver<Permission> {
-        let result = PhotoPermission.normalize(PHPhotoLibrary.authorizationStatus())
-        return Driver.just(result)
+        if #available(iOS 11.0, *) {
+            let result = MotionPermission.normalize(CMPedometer.authorizationStatus())
+            return Driver.just(result)
+        } else {
+            return Driver.just(Permission.authorized)
+        }
     }
 
     public func request() -> Driver<Permission> {
         return Observable.create { observer in
-            PHPhotoLibrary.requestAuthorization { status in
-                observer.onNext(PhotoPermission.normalize(status))
-                observer.on(.completed)
+            let pedometer = CMPedometer()
+            let code = Int(CMErrorMotionActivityNotAuthorized.rawValue)
+            pedometer.startUpdates(from: Date()) { (data: CMPedometerData?, error: Error?) in
+                if let e = error as NSError?, e.code == code {
+                    observer.onNext(Permission.denied)
+                } else {
+                    observer.onNext(Permission.authorized)
+                }
+                observer.onCompleted()
+                pedometer.stopUpdates()
             }
             return Disposables.create()
         }.asDriver(onErrorJustReturn: Permission.denied)
     }
 
-    public static func normalize(_ status: PHAuthorizationStatus) -> Permission {
+    @available(iOS 11.0, *)
+    public static func normalize(_ status: CMAuthorizationStatus) -> Permission {
         switch status {
         case .authorized:
             return .authorized

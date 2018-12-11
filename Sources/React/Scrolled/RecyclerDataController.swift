@@ -43,13 +43,18 @@ final class AttributesCache {
     }
 }
 
-final class RecyclerDataController: UICollectionViewLayout, UICollectionViewDataSource, UICollectionViewDelegate {
+final class RecyclerDataController: UICollectionViewLayout, DataController,
+    UICollectionViewDataSource, UICollectionViewDelegate {
+    typealias DataType = RecyclerDataElement
+    typealias ViewType = UICollectionView
+
     let mainQueue: OperationQueue = OperationQueue.main
-    weak var delegate: RecyclerElementDelegate?
-    var currentMap: RecyclerFlexElement = RecyclerFlexElement()
-    var editingQueue: DispatchQueue? = nil
+    var currentMap: RecyclerDataElement = RecyclerDataElement()
+    var editingQueue: DispatchQueue?
     var cellAttributesCache: AttributesCache = AttributesCache()
     var viewAttributesCache: [String: AttributesCache] = [:]
+    weak var delegate: RecyclerElementDelegate?
+    weak var owner: RecyclerElement?
 
     override init() {
         // editingQueue can not init here
@@ -58,39 +63,38 @@ final class RecyclerDataController: UICollectionViewLayout, UICollectionViewData
     }
 
     required init?(coder aDecoder: NSCoder) {
+        // editingQueue can not init here
         super.init(coder: aDecoder)
         editingQueue = DispatchQueue(label: "com.start.point.data.controller." + address(of: self))
     }
 
-    func update(to paddingMap: RecyclerFlexElement, completion: (() -> Void)?) {
-        guard let view = collectionView else {
+    func update(to paddingMap: RecyclerDataElement, completion: (() -> Void)?) {
+        guard owner != nil else {
             currentMap = paddingMap
             return
         }
-        layout(map: paddingMap) { [weak self] in
+        // FIXME: zero width
+        let width = owner?._frame.width ?? 0
+        layout(map: paddingMap, width: width) { [weak self] in
             guard let this = self else {
                 return
             }
             this.mainQueue.addOperation {
                 this.currentMap = paddingMap
-                view.reloadData()
+                let view: UICollectionView? = this.owner?.view
+                view?.reloadData()
                 completion?()
             }
         }
     }
 
-    func layout(map: RecyclerFlexElement, completion: @escaping () -> Void) {
-        guard map.isNotEmpty else {
+    func layout(map: RecyclerDataElement, width: Double, completion: @escaping () -> Void) {
+        if map.isEmpty {
             completion()
             return
         }
-        let _width: CGFloat? = collectionView?.frame.width
-        let width: Double = _width.map(Double.init) ?? Double.nan
         editingQueue?.async {
-            let queue = DispatchQueue.global(qos: .default)
-            queue.sync {
-                map.layout(width: width, height: Double.nan)
-            }
+            map.layout(width: width)
             completion()
         }
     }
@@ -111,12 +115,10 @@ final class RecyclerDataController: UICollectionViewLayout, UICollectionViewData
         for section in currentMap.sections {
             if (section.frame.intersects(rect)) {
                 let indexPath = IndexPath(row: 0, section: index)
-                if let header = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader,
-                    at: indexPath), !(header.frame.intersection(rect).isEmpty) {
+                if let header = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, at: indexPath), !(header.frame.intersection(rect).isEmpty) {
                     result.append(header)
                 }
-                if let footer = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter,
-                    at: indexPath), !(footer.frame.intersection(rect).isEmpty) {
+                if let footer = layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, at: indexPath), !(footer.frame.intersection(rect).isEmpty) {
                     result.append(footer)
                 }
                 for row in 0..<section.count {
@@ -146,7 +148,8 @@ final class RecyclerDataController: UICollectionViewLayout, UICollectionViewData
         return attributes
     }
 
-    override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+    override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath)
+            -> UICollectionViewLayoutAttributes? {
         assertMainThread()
         if let cache = viewAttributesCache[elementKind]?[indexPath] {
             return cache
@@ -173,19 +176,56 @@ final class RecyclerDataController: UICollectionViewLayout, UICollectionViewData
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return currentMap.section(at: section)?.count ?? 0
+        return currentMap.itemCount(in: section)
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let item = currentMap.item(at: indexPath)
-        let id = item?.identifier ?? ElementCollectionViewCell.identifier
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
-        item?.build(in: cell)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath)
+            -> UICollectionViewCell {
+        guard let item = currentMap.item(at: indexPath) else {
+            return collectionView.dequeueReusableCell(withReuseIdentifier: ElementCollectionCell.identifier,
+                for: indexPath)
+        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.identifier, for: indexPath)
+        item.build(in: cell)
         return cell
     }
 
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let item = currentMap.view(kind: kind, at: indexPath) else {
+            return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                withReuseIdentifier: ElementReusableView.identifier, for: indexPath)
+        }
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+            withReuseIdentifier: item.identifier, for: indexPath)
+        item.build(in: view)
+        return view
+    }
+
     // MARK: - UICollectionViewDelegate
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if let element = owner, let target = delegate {
+            return target.recyclerElement(element, shouldSelectItemAt: indexPath)
+        }
+        return true
+    }
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.recyclerElement(collectionView, didSelectItemAt: indexPath)
+        if let element = owner {
+            delegate?.recyclerElement(element, didSelectItemAt: indexPath)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        if let element = owner, let target = delegate {
+            return target.recyclerElement(element, shouldDeselectItemAt: indexPath)
+        }
+        return true
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let element = owner {
+            delegate?.recyclerElement(element, didDeselectItemAt: indexPath)
+        }
     }
 }

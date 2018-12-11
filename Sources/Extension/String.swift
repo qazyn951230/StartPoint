@@ -20,6 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-extension String {
+public extension String {
     public static let empty: String = ""
+
+    public func remove(prefix: String) -> String {
+        if hasPrefix(prefix) {
+            return String(self[prefix.endIndex...])
+        }
+        return self
+    }
+
+    public func remove(suffix: String) -> String {
+        if hasSuffix(suffix) {
+            let end = index(endIndex, offsetBy: -suffix.count)
+            return String(self[..<end])
+        }
+        return self
+    }
 }

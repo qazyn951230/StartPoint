@@ -23,8 +23,8 @@
 import Dispatch
 import Foundation
 
-extension DispatchQueue {
-    func apply(iterations: Int, work: @escaping (Int) -> Void) {
+public extension DispatchQueue {
+    public func apply(iterations: Int, work: @escaping (Int) -> Void) {
         __dispatch_apply(iterations, self, work)
     }
 }

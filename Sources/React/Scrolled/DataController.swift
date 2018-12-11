@@ -20,62 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+public protocol DataController {
+    associatedtype DataType
+    associatedtype ViewType
 
-public protocol Stream {
-    associatedtype Value
-    func peek() -> Value
-    func next() -> Value
-    func move()
-}
-
-public extension Stream {
-    public func next() -> Value {
-        move()
-        return peek()
-    }
-}
-
-final public class DataStream: Stream {
-    public typealias Value = UInt8
-    var iterator: Data.Iterator
-    var current: UInt8 = 0
-
-    public init(data: Data) {
-        iterator = data.makeIterator()
-        move()
-    }
-
-    public func peek() -> UInt8 {
-        return current
-    }
-
-    public func move() {
-        current = iterator.next() ?? 0
-    }
-}
-
-final public class StringStream: Stream {
-    public typealias Value = UInt8
-    var stream: StringStreamRef
-
-    public init(_ value: String) {
-        stream = StringStreamCreate(value)
-    }
-
-    public init(_ pointer: UnsafePointer<Int8>) {
-        stream = StringStreamCreate(pointer)
-    }
-
-    deinit {
-        StringStreamFree(stream)
-    }
-
-    public func peek() -> UInt8 {
-        return StringStreamPeek(stream)
-    }
-
-    public func move() {
-        StringStreamMove(stream)
-    }
+    var currentMap: DataType { get }
+    func update(to paddingMap: DataType, completion: (() -> Void)?)
+    func layout(map: DataType, width: Double, completion: @escaping () -> Void)
 }

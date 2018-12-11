@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,30 @@
 // SOFTWARE.
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-public final class ElementCollectionViewCell: UICollectionViewCell {
-    public static let identifier: String = "ElementCollectionViewCell"
+public protocol TapEvent {
+    var tap: ControlEvent<Void>? { get }
+
+    func tap(to object: BehaviorRelay<Void>) -> Disposable?
+    func tap(to object: PublishRelay<Void>) -> Disposable?
 }
 
-public final class ElementCollectionReusableView: UICollectionReusableView {
-    public static let identifier: String = "ElementCollectionReusableView"
+public extension TapEvent {
+    public func tap(to object: BehaviorRelay<Void>) -> Disposable? {
+        assertMainThread()
+        return self.tap?.bind(to: object)
+    }
+
+    public func tap(to object: PublishRelay<Void>) -> Disposable? {
+        assertMainThread()
+        return self.tap?.bind(to: object)
+    }
+}
+
+extension Element: TapEvent where View: UIButton {
+    public var tap: ControlEvent<Void>? {
+        return view?.rx.tap
+    }
 }

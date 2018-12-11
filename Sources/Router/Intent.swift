@@ -48,7 +48,7 @@ public protocol IntentSource {
 public protocol IntentTarget: IntentSource, Creatable {
     var intent: Intent? { get set }
     func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController
-    func finish(result: IntentResult?)
+    func finish(result: IntentResult?, interactive: Bool)
 }
 
 private var tr0gSJaB = "tr0gSJaB"
@@ -71,11 +71,11 @@ public extension IntentTarget where Self: UIViewController {
         return self
     }
 
-    public func finish(result: IntentResult? = nil) {
+    public func finish(result: IntentResult? = nil, interactive: Bool) {
         if let intent = self.intent {
-            intent.end(for: result)
+            intent.end(for: result, interactive: interactive)
             setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)
-        } else {
+        } else if !interactive {
             if presentingViewController != nil {
                 dismiss(animated: true)
             } else {
@@ -162,14 +162,16 @@ public class Intent {
         function(destination)
     }
 
-    public func end(for result: IntentResult? = nil) {
+    public func end(for result: IntentResult? = nil, interactive: Bool) {
         guard let push = self.push, let controller = targetController else {
             return
         }
-        if push {
-            controller.navigationController?.popViewController(animated: true)
-        } else {
-            controller.dismiss(animated: true)
+        if !interactive {
+            if push {
+                controller.navigationController?.popViewController(animated: true)
+            } else {
+                controller.dismiss(animated: true)
+            }
         }
         if let result = result {
             completion?(result)

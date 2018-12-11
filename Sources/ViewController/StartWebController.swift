@@ -84,7 +84,7 @@ open class StartWebController: StartViewController<WKWebView> {
     }
 
     @objc open func closeBarAction(button: UIBarButtonItem) {
-        finish()
+        finish(interactive: false)
     }
 
     @objc open func refreshBarAction(button: UIBarButtonItem) {
@@ -99,16 +99,16 @@ open class StartWebController: StartViewController<WKWebView> {
 
     open func goBackDriver(webView: WKWebView) -> Driver<Bool> {
         return webView.rx.observeWeakly(Bool.self, #keyPath(WKWebView.canGoBack))
-            .asDriver(onErrorJustReturn: nil)
             .compactMap(Function.maybe)
+            .asDriver(onErrorJustReturn: false)
             .distinctUntilChanged()
     }
 
     open func setBackBarButton(canGoBack: Bool) {
         var array: [UIBarButtonItem] = []
-        array.append(nil: backBarItem)
+        array.append(any: backBarItem)
         if canGoBack {
-            array.append(nil: closeBarItem)
+            array.append(any: closeBarItem)
         }
         if array.isNotEmpty {
             navigationItem.setLeftBarButtonItems(array, animated: true)

@@ -26,9 +26,29 @@ import CoreGraphics
 import Dispatch
 import RxSwift
 
+final class ElementAction {
+    typealias Action = (() -> Void)
+    var load: [Action] = []
+    var tap: Action?
+
+    @inline(__always)
+    func action<T>(target: T, _ method: @escaping (T) -> Void) -> Action where T: AnyObject {
+        return { [weak target] in
+            if let _target = target {
+                method(_target)
+            }
+        }
+    }
+
+    func loadAction<T>(_ target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
+        load.append(action(target: target, method))
+    }
+}
+
 open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let layout = FlexLayout()
 
+    let actions = ElementAction()
     let framed: Bool
     var _frame: Rect = Rect.zero {
         didSet {
@@ -37,11 +57,8 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
     var _bounds: Rect = Rect.zero
     var _center: Point = Point.zero
-
-    var _tap: ((BasicElement) -> Void)?
     var _pendingState: ElementState?
     var registered = false
-    var _onLoaded: [(BasicElement) -> Void] = []
 
     public var zIndex: Int = 0
 
@@ -63,7 +80,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     public convenience init(children: [BasicElement] = []) {
         self.init(framed: false, children: children)
     }
-    
+
     deinit {
         owner = nil
     }
@@ -107,30 +124,39 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // CustomStringConvertible
-    open var description: String { // "BasicElement:0xffffff"
+    public var description: String { // "BasicElement:0xffffff"
         return String(describing: type(of: self)) + ":" + address(of: self)
     }
 
     // CustomDebugStringConvertible
-    open var debugDescription: String { // "BasicElement:0xffffff"
+    public var debugDescription: String { // "BasicElement:0xffffff"
         return String(describing: type(of: self)) + ":" + address(of: self)
     }
 
     // MARK: - Managing the Responder Chain
-    open var next: BasicElement? {
+    public var next: BasicElement? {
         return owner
     }
 
-    public func onLoaded(then method: @escaping (BasicElement) -> Void) {
+    public func loaded(_ method: @escaping () -> Void) {
         if Runner.isMain(), loaded {
-            method(self)
+            method()
         } else {
-            _onLoaded.append(method)
+            actions.load.append(method)
+        }
+    }
+
+    open func onLoaded() {
+        assertMainThread()
+        let methods = actions.load
+        actions.load.removeAll()
+        for method in methods {
+            method()
         }
     }
 
     // MARK: - Responding to Touch Events
-    open func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
+    public func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
         if let element = hitTest(point: event.location, event: nil) {
             if element.onTouchEvent(event) {
                 return true
@@ -147,15 +173,14 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return false
     }
 
-    open func onTouchEvent(_ event: TouchEvent) -> Bool {
-        guard let tap = _tap else {
+    public func onTouchEvent(_ event: TouchEvent) -> Bool {
+        guard let tap = actions.tap else {
             return false
         }
         switch event.action {
         case .touchUp:
-            let sender = self
             DispatchQueue.main.async {
-                tap(sender)
+                tap()
             }
         default:
             break
@@ -164,7 +189,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Create a View Object
-    open func build(in view: UIView) {
+    public func build(in view: UIView) {
         assertMainThread()
 #if DEBUG
         if debug {
@@ -183,9 +208,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 #else
         buildChildren(in: view)
 #endif
-        let methods = _onLoaded
-        _onLoaded.removeAll()
-        methods.forEach { $0(self) }
+        onLoaded()
     }
 
 #if DEBUG
@@ -202,7 +225,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 #endif
 
-    open func buildChildren(in view: UIView) {
+    public func buildChildren(in view: UIView) {
         let sorted = children.sorted(by: BasicElement.sortZIndex)
         sorted.forEach { child in
             child.build(in: view)
@@ -213,7 +236,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return lhs.zIndex < rhs.zIndex
     }
 
-    open func build(in layer: CALayer) {
+    public func build(in layer: CALayer) {
         assertMainThread()
     }
 
@@ -299,6 +322,10 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
     public func removeFromOwner() {
         owner?.removeElement(self)
+    }
+
+    func removeFromSuperView() {
+        fatalError("Subclass must implement `removeFromSuperView`")
     }
 
     // MARK: - Observing Element-Related Changes
@@ -395,11 +422,11 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Hit Testing in a Element
-    open var enableHitTest: Bool {
+    public var enableHitTest: Bool {
         return interactive && alpha > 0.01
     }
 
-    open func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
+    public func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
         guard enableHitTest && pointInside(point, event: event) else {
             return nil
         }
@@ -417,7 +444,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return self
     }
 
-    open func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
+    public func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
         return _bounds.contains(point: point)
     }
 
@@ -462,14 +489,37 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 #endif
 
     // MARK: - Touch
-    open func tap(_ method: @escaping (BasicElement) -> Void) {
-        _tap = method
+    public func tap(_ method: @escaping () -> Void) {
+        actions.tap = method
         interactive = true
     }
 
+    public func tap<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
+        self.tap(actions.action(target: target, method))
+    }
+
+    public func tap<T>(target: T, method: @escaping (T) -> () -> Void) where T: AnyObject {
+        let action: ElementAction.Action = { [weak target] in
+            if let _target = target {
+                method(_target)()
+            }
+        }
+        self.tap(action)
+    }
+
+    public func tap<T, Value>(target: T, any value: Value, _ method: @escaping (T) -> (Value) -> Void)
+        where T: AnyObject {
+        let action: ElementAction.Action = { [weak target] in
+            if let _target = target {
+                method(_target)(value)
+            }
+        }
+        self.tap(action)
+    }
+
     // MARK: - Hashable
-    open var hashValue: Int {
-        return address(of: self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(address(of: self))
     }
 
     public static func ==(lhs: BasicElement, rhs: BasicElement) -> Bool {

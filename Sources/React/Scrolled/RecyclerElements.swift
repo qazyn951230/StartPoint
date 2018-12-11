@@ -30,15 +30,15 @@ open class RecyclerCellElement: Element<UIView>, Identified {
         super.init(children: children)
     }
 
-    open var identifier: String {
-        return ElementCollectionViewCell.identifier
+    public var identifier: String {
+        return ElementCollectionCell.identifier
     }
 
-    open override var hashValue: Int {
-        return key.hashValue
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
     }
 
-    open func build(in cell: UICollectionViewCell) {
+    public func build(in cell: UICollectionViewCell) {
         assertMainThread()
         if let view = self.view {
             if view.superview != cell.contentView {
@@ -56,8 +56,8 @@ open class RecyclerCellElement: Element<UIView>, Identified {
         }
     }
 
-    open override func applyState(to view: UIView) {
-        pendingState.frame = pendingState.frame.setOrigin(.zero)
+    public override func applyState(to view: UIView) {
+        pendingState.frame = pendingState.frame?.setOrigin(.zero)
         super.applyState(to: view)
     }
 }
@@ -70,16 +70,19 @@ open class RecyclerViewElement: Element<UIView>, Identified {
         super.init(children: children)
     }
 
-    open var identifier: String {
-        return ElementCollectionReusableView.identifier
+    public var identifier: String {
+        return ElementReusableView.identifier
     }
 
-    open override var hashValue: Int {
-        return key.hashValue
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
     }
 }
 
-public final class RecyclerSectionElement: BasicElement {
+public final class RecyclerSectionElement: BasicElement, ArrayScrollSectionMap {
+    public typealias ItemType = RecyclerCellElement
+    public typealias ViewType = RecyclerViewElement
+
     public let items: [RecyclerCellElement]
     public let header: RecyclerViewElement?
     public let footer: RecyclerViewElement?
@@ -90,28 +93,21 @@ public final class RecyclerSectionElement: BasicElement {
         self.header = header
         self.footer = footer
         var children: [BasicElement] = items
-        children.insert(nil: header, at: 0)
-        children.append(nil: footer)
+        children.insert(any: header, at: 0)
+        children.append(any: footer)
         super.init(framed: false, children: items)
     }
 
-    var count: Int {
-        return items.count
-    }
-
-    public override var hashValue: Int {
-        var value = items.hashValue
-        if let header = self.header {
-            value ^= header.hashValue
-        }
-        if let footer = self.header {
-            value ^= footer.hashValue
-        }
-        return value
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(items)
+        hasher.combine(header)
+        hasher.combine(footer)
     }
 }
 
-public final class RecyclerFlexElement: BasicElement {
+public final class RecyclerDataElement: BasicElement, ArrayScrollDataMap {
+    public typealias SectionType = RecyclerSectionElement
+
     public let sections: [RecyclerSectionElement]
 
     public init(sections: [RecyclerSectionElement] = []) {
@@ -119,39 +115,8 @@ public final class RecyclerFlexElement: BasicElement {
         super.init(framed: false, children: sections)
     }
 
-    var isEmpty: Bool {
-        return sections.isEmpty
-    }
-
-    var isNotEmpty: Bool {
-        return sections.isNotEmpty
-    }
-
-    var count: Int {
-        return sections.count
-    }
-
-    public override var hashValue: Int {
-        return sections.hashValue
-    }
-
-    func section(at index: Int) -> RecyclerSectionElement? {
-        return sections.object(at: index)
-    }
-
-    func item(at indexPath: IndexPath) -> RecyclerCellElement? {
-        let section = sections.object(at: indexPath.section)
-        return section?.items.object(at: indexPath.row)
-    }
-
-    func header(at indexPath: IndexPath) -> RecyclerViewElement? {
-        let section = sections.object(at: indexPath.section)
-        return section?.header
-    }
-
-    func footer(at indexPath: IndexPath) -> RecyclerViewElement? {
-        let section = sections.object(at: indexPath.section)
-        return section?.footer
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(sections)
     }
 
     func view(kind: String, at indexPath: IndexPath) -> RecyclerViewElement? {

@@ -23,35 +23,10 @@
 import UIKit
 
 public class LabelElementState: ElementState {
-    public var text: NSAttributedString? {
-        get {
-            return _text ?? nil
-        }
-        set {
-            _text = newValue
-        }
-    }
-    var _text: NSAttributedString??
-
-    public var numberOfLines: Int {
-        get {
-            return _numberOfLines ?? 1
-        }
-        set {
-            _numberOfLines = newValue
-        }
-    }
-    var _numberOfLines: Int?
-
-    public var textAlignment: NSTextAlignment {
-        get {
-            return _textAlignment ?? NSTextAlignment.natural
-        }
-        set {
-            _textAlignment = newValue
-        }
-    }
-    var _textAlignment: NSTextAlignment?
+    public var text: NSAttributedString??
+    public var numberOfLines: Int?
+    public var textAlignment: NSTextAlignment?
+    public var lineBreak: NSLineBreakMode?
 
     public override func apply(view: UIView) {
         if let label = view as? UILabel {
@@ -62,32 +37,37 @@ public class LabelElementState: ElementState {
     }
 
     public func apply(label view: UILabel) {
-        if let text = _text {
+        if let text = self.text {
             view.attributedText = text
         }
-        if let numberOfLines = _numberOfLines {
+        if let numberOfLines = self.numberOfLines {
             view.numberOfLines = numberOfLines
         }
-        if let textAlignment = _textAlignment {
+        if let textAlignment = self.textAlignment {
             view.textAlignment = textAlignment
+        }
+        if let lineBreak = self.lineBreak {
+            view.lineBreakMode = lineBreak
         }
         super.apply(view: view)
     }
 
     public override func invalidate() {
-        _text = nil
-        _numberOfLines = nil
-        _textAlignment = nil
         super.invalidate()
+        text = nil
+        numberOfLines = nil
+        textAlignment = nil
+        lineBreak = nil
     }
 }
 
 open class LabelElement: Element<UILabel> {
-    var text: NSAttributedString?
-    var lines: Int = 1
-    var autoLines: Bool = false
+    private var _text: NSAttributedString?
+//    private var _lineBreak: NSLineBreakMode?
+    private var lines: Int = 1
+    private var autoLines: Bool = false
+    private var _labelState: LabelElementState?
 
-    var _labelState: LabelElementState?
     public override var pendingState: LabelElementState {
         let state = _labelState ?? LabelElementState()
         if _labelState == nil {
@@ -108,7 +88,7 @@ open class LabelElement: Element<UILabel> {
     @discardableResult
     public func numberOfLines(_ value: Int) -> Self {
         lines = value
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.numberOfLines = value
         } else {
             pendingState.numberOfLines = value
@@ -120,8 +100,8 @@ open class LabelElement: Element<UILabel> {
 
     @discardableResult
     public func text(_ value: NSAttributedString?) -> Self {
-        text = value
-        if Runner.isMain(), let view = view {
+        _text = value
+        if Runner.isMain(), let view = self.view {
             view.attributedText = value
         } else {
             pendingState.text = value
@@ -135,7 +115,7 @@ open class LabelElement: Element<UILabel> {
     public func multiLine(_ value: Bool = true) -> Self {
         lines = value ? 0 : 1
         autoLines = value
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.numberOfLines = lines
         } else {
             pendingState.numberOfLines = lines
@@ -147,7 +127,7 @@ open class LabelElement: Element<UILabel> {
 
     @discardableResult
     public func textAlignment(_ value: NSTextAlignment) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.textAlignment = value
         } else {
             pendingState.textAlignment = value
@@ -156,15 +136,31 @@ open class LabelElement: Element<UILabel> {
         return self
     }
 
+    @discardableResult
+    public func lineBreak(_ value: NSLineBreakMode) -> Self {
+//        _lineBreak = value
+        if Runner.isMain(), let view = self.view {
+            view.lineBreakMode = value
+        } else {
+            pendingState.lineBreak = value
+            registerPendingState()
+        }
+        return self
+    }
+
     static func measureText(_ element: LabelElement?, width: Double, widthMode: MeasureMode,
                             height: Double, heightMode: MeasureMode) -> Size {
-        guard let element = element, let text = element.text else {
+        guard let element = element, let text = element._text else {
             return Size.zero
         }
         let w = width.isNaN ? Double.greatestFiniteMagnitude : width
         let h = height.isNaN ? Double.greatestFiniteMagnitude : height
         let size = CGSize(width: w, height: h)
         let options: NSStringDrawingOptions = element.autoLines ? [.usesLineFragmentOrigin] : []
+//        if element.autoLines, let mode = element._lineBreak,
+//           mode == NSLineBreakMode.byCharWrapping || mode == NSLineBreakMode.byWordWrapping {
+//            options.update(with: .truncatesLastVisibleLine)
+//        }
         // TODO: Ceil the size, not the cgsize
         var textSize: CGSize = text.boundingSize(size: size, options: options)
         if element.autoLines {

@@ -59,13 +59,46 @@ open class StartViewController<View: UIView>: UIViewController, UIGestureRecogni
 #endif
     }
 
+#if DEBUG
+    deinit {
+        Log.debug(self, "deinit")
+    }
+#endif
+
+    var interactive = false
+
     open func initialization() {
         // Do nothing.
     }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+        if view.backgroundColor == nil {
+            view.backgroundColor = UIColor.white
+        }
         loadBackBarItem()
+    }
+
+    open override func viewWillAppear(_ animated: Bool) {
+        interactive = false
+        super.viewWillAppear(animated)
+    }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        interactive = false
+        super.viewDidAppear(animated)
+    }
+
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if interactive {
+            finish(interactive: true)
+            viewDidBack()
+        }
     }
 
     open override func loadView() {
@@ -77,17 +110,24 @@ open class StartViewController<View: UIView>: UIViewController, UIGestureRecogni
     }
 
     open func viewDidBack() {
+        interactivePopGestureRecognizer?.delegate = nil
         interactivePopGestureRecognizer?.removeTarget(self,
             action: #selector(interactivePopGestureRecognizer(sender:)))
     }
 
     @objc open func backBarItemAction(sender: UIBarButtonItem) {
-        finish()
+        finish(interactive: false)
         viewDidBack()
     }
 
     @objc open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
-        viewDidBack()
+        if sender.state  == UIGestureRecognizer.State.ended {
+            interactive = true
+        }
+    }
+
+    open func finish(interactive: Bool) {
+        finish(result: nil, interactive: interactive)
     }
 
     open func loadBackBarItem() {

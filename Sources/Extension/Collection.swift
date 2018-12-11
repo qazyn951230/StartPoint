@@ -145,11 +145,3 @@ public extension String {
         return result
     }
 }
-
-//public extension Sequence where Element: Hashable {
-//    public var hashValue: Int {
-//        return reduce(0) { (result: Int, next: Element) in
-//            result & next.hashValue
-//        }
-//    }
-//}

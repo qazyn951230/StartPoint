@@ -25,7 +25,7 @@ import CoreGraphics
 
 public typealias ScrollElement = BasicScrollElement<UIScrollView>
 
-open class ScrollElementState: ElementState {
+public class ScrollElementState: ElementState {
     public var contentSize: CGSize {
         get {
             return _contentSize ?? CGSize.zero
@@ -66,7 +66,7 @@ open class ScrollElementState: ElementState {
     }
     var _pagingEnabled: Bool?
 
-    open override func apply(view: UIView) {
+    public override func apply(view: UIView) {
         if let scrollView = view as? UIScrollView {
             apply(scrollView: scrollView)
         } else {
@@ -74,7 +74,7 @@ open class ScrollElementState: ElementState {
         }
     }
 
-    open func apply(scrollView: UIScrollView) {
+    public func apply(scrollView: UIScrollView) {
         if let contentSize = _contentSize {
             scrollView.contentSize = contentSize
         }
@@ -87,7 +87,7 @@ open class ScrollElementState: ElementState {
         super.apply(view: scrollView)
     }
 
-    open override func invalidate() {
+    public override func invalidate() {
         _contentSize = nil
         super.invalidate()
     }
@@ -139,7 +139,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         return state
     }
 
-    open override func applyState(to view: ScrollView) {
+    public override func applyState(to view: ScrollView) {
         if _scrollState?._contentSize == nil {
             view.contentSize = content._frame.cgSize
         }
@@ -165,12 +165,10 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         content.build(in: view)
         self.content = content
     }
-}
 
-extension BasicScrollElement {
     @discardableResult
     public func contentSize(_ value: CGSize) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.contentSize = value
         } else {
             pendingState.contentSize = value
@@ -181,7 +179,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func horizontalIndicator(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.showsHorizontalScrollIndicator = value
         } else {
             pendingState.horizontalIndicator = value
@@ -192,7 +190,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func verticalIndicator(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.showsVerticalScrollIndicator = value
         } else {
             pendingState.verticalIndicator = value
@@ -203,7 +201,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func indicator(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.showsHorizontalScrollIndicator = value
             view.showsVerticalScrollIndicator = value
         } else {
@@ -216,7 +214,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func indicator(horizontal: Bool, vertical: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.showsHorizontalScrollIndicator = horizontal
             view.showsVerticalScrollIndicator = vertical
         } else {
@@ -229,7 +227,7 @@ extension BasicScrollElement {
 
     @discardableResult
     public func paging(_ value: Bool) -> Self {
-        if Runner.isMain(), let view = view {
+        if Runner.isMain(), let view = self.view {
             view.isPagingEnabled = value
         } else {
             pendingState.pagingEnabled = value

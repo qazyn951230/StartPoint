@@ -23,11 +23,26 @@
 import UIKit
 
 public protocol RecyclerElementDelegate: class {
-    func recyclerElement(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    func recyclerElement(_ Element: RecyclerElement, shouldSelectItemAt indexPath: IndexPath) -> Bool
+    func recyclerElement(_ Element: RecyclerElement, didSelectItemAt indexPath: IndexPath)
+    func recyclerElement(_ Element: RecyclerElement, shouldDeselectItemAt indexPath: IndexPath) -> Bool
+    func recyclerElement(_ Element: RecyclerElement, didDeselectItemAt indexPath: IndexPath)
 }
 
 public extension RecyclerElementDelegate {
-    public func recyclerElement(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func recyclerElement(_ Element: RecyclerElement, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    public func recyclerElement(_ Element: RecyclerElement, didSelectItemAt indexPath: IndexPath) {
+        // Do nothing.
+    }
+
+    func recyclerElement(_ Element: RecyclerElement, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func recyclerElement(_ Element: RecyclerElement, didDeselectItemAt indexPath: IndexPath) {
         // Do nothing.
     }
 }
@@ -48,8 +63,8 @@ public final class RecyclerElement: Element<UICollectionView> {
         super.init(children: children)
         creator = {
             let view = UICollectionView(frame: .zero, collectionViewLayout: viewLayout)
-            ElementCollectionViewCell.register(to: view)
-            ElementCollectionReusableView.register(to: view)
+            ElementCollectionCell.register(to: view)
+            ElementReusableView.register(to: view)
             return view
         }
     }
@@ -69,7 +84,18 @@ public final class RecyclerElement: Element<UICollectionView> {
         super.applyState(to: view)
     }
 
-    public func reload(to map: RecyclerFlexElement) {
-        dataController.update(to: map, completion: nil)
+    public func reload(to map: RecyclerDataElement, completion: (() -> Void)? = nil) {
+        dataController.update(to: map, completion: completion)
+    }
+
+    public func select(item: IndexPath, animated: Bool = true,
+                       position: UICollectionView.ScrollPosition = .centeredVertically) {
+        assertMainThread()
+        view?.selectItem(at: item, animated: animated, scrollPosition: position)
+    }
+
+    public func deselect(item: IndexPath, animated: Bool = true) {
+        assertMainThread()
+        view?.deselectItem(at: item, animated: animated)
     }
 }

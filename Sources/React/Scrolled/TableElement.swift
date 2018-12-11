@@ -23,7 +23,28 @@
 import UIKit
 
 public protocol TableElementDelegate: class {
-    func tableElement(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    func tableElement(_ element: TableElement, willSelectRowAt indexPath: IndexPath) -> IndexPath?
+    func tableElement(_ element: TableElement, willDeselectRowAt indexPath: IndexPath) -> IndexPath?
+    func tableElement(_ element: TableElement, didSelectRowAt indexPath: IndexPath)
+    func tableElement(_ element: TableElement, didDeselectRowAt indexPath: IndexPath)
+}
+
+public extension TableElementDelegate {
+    func tableElement(_ element: TableElement, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        return indexPath
+    }
+
+    func tableElement(_ element: TableElement, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+        return indexPath
+    }
+
+    func tableElement(_ element: TableElement, didSelectRowAt indexPath: IndexPath) {
+        // Do nothing.
+    }
+
+    func tableElement(_ element: TableElement, didDeselectRowAt indexPath: IndexPath) {
+        // Do nothing.
+    }
 }
 
 public protocol TableElementDataSource: class {
@@ -34,19 +55,11 @@ public protocol TableElementDataSource: class {
     // Header & footer
     func tableElement(_ table: TableElement, headerIn section: Int) -> ViewElement?
     func tableElement(_ table: TableElement, footerIn section: Int) -> ViewElement?
-    func tableElement(_ table: TableElement, headerTitleIn section: Int) -> String?
-    func tableElement(_ table: TableElement, footerTitleIn section: Int) -> String?
+    func tableElement(_ table: TableElement, headerTitleIn section: Int) -> NSAttributedString?
+    func tableElement(_ table: TableElement, footerTitleIn section: Int) -> NSAttributedString?
 }
 
 public extension TableElementDataSource {
-    public func numberOfSections(in table: TableElement) -> Int {
-        return 0
-    }
-
-    public func tableElement(_ table: TableElement, numberOfRowsIn section: Int) -> Int {
-        return 0
-    }
-
     public func tableElement(_ table: TableElement, headerIn section: Int) -> ViewElement? {
         return nil
     }
@@ -55,62 +68,42 @@ public extension TableElementDataSource {
         return nil
     }
 
-    public func tableElement(_ table: TableElement, headerTitleIn section: Int) -> String? {
+    public func tableElement(_ table: TableElement, headerTitleIn section: Int) -> NSAttributedString? {
         return nil
     }
 
-    public func tableElement(_ table: TableElement, footerTitleIn section: Int) -> String? {
+    public func tableElement(_ table: TableElement, footerTitleIn section: Int) -> NSAttributedString? {
         return nil
     }
 }
 
-open class TableElement: Element<UITableView> {
-    public weak var delegate: TableElementDelegate? {
-        didSet {
-            dataController.delegate = delegate
+public class TableElement: BasicTableElement {
+    public var delegate: TableElementDelegate? {
+        get {
+            return dataController.delegate
+        }
+        set {
+            dataController.delegate = newValue
         }
     }
-    public weak var dataSource: TableElementDataSource?
-    public let dataController = TableDataController()
-
-    public override init(children: [BasicElement] = []) {
-        super.init(children: children)
-    }
-
-    public convenience init(style: UITableView.Style = .grouped, children: [BasicElement] = []) {
-        self.init(children: children)
-        creator = {
-            let view = UITableView(frame: .zero, style: style)
-            ElementTableViewCell.register(to: view)
-            return view
+    public var dataSource: TableElementDataSource? {
+        get {
+            return dataController.dataSource
+        }
+        set {
+            dataController.dataSource = newValue
         }
     }
+    let dataController = TableDataController()
 
-    deinit {
-        if let table = view {
-            Runner.onMain {
-                table.delegate = nil
-                table.dataSource = nil
-            }
-        }
-    }
-
-    open override func applyState(to view: UITableView) {
+    public override func applyState(to view: UITableView) {
         view.delegate = dataController
         view.dataSource = dataController
         super.applyState(to: view)
-        reloadData()
     }
 
     public func reloadData(completion: (() -> Void)? = nil) {
         assertMainThread()
-        guard view != nil, let source = dataSource else {
-            return
-        }
-        dataController.reloadData(in: self, dataSource: source, completion: completion)
+        dataController.reloadData(completion: completion)
     }
-}
-
-public final class ElementTableViewCell: UITableViewCell {
-    public static let identifier: String = "ElementTableViewCell"
 }

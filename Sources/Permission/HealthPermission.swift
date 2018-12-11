@@ -20,37 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if PermissionPhoto
+#if PermissionHealth
 
-import Photos
+import HealthKit
 import RxSwift
 import RxCocoa
 
-public struct PhotoPermission: PermissionItem {
-    public func status() -> Driver<Permission> {
-        let result = PhotoPermission.normalize(PHPhotoLibrary.authorizationStatus())
-        return Driver.just(result)
+public struct HealthPermission: PermissionItem {
+    public func available() -> Bool {
+        return HKHealthStore.isHealthDataAvailable()
     }
-
+    
+    public func status() -> Driver<Permission> {
+        // To help protect the user’s privacy, your app does not know whether
+        // the user granted or denied permission to read data from HealthKit.
+        // If the user denied permission, attempts to query data from HealthKit
+        // return only samples that your app successfully saved to the HealthKit store.
+        return Driver.just(Permission.notDetermined)
+    }
+    
     public func request() -> Driver<Permission> {
+        let store = HKHealthStore()
+        let types = self.types()
         return Observable.create { observer in
-            PHPhotoLibrary.requestAuthorization { status in
-                observer.onNext(PhotoPermission.normalize(status))
+            // A Boolean value that indicates whether the request was processed successfully.
+            // This value does not indicate whether permission was actually granted.
+            // This parameter is false if an error occurred while processing the request;
+            // otherwise, it is true.
+            store.requestAuthorization(toShare: nil, read: types) { (success, error) in
+                observer.onNext(Permission.authorized)
                 observer.on(.completed)
             }
             return Disposables.create()
         }.asDriver(onErrorJustReturn: Permission.denied)
     }
-
-    public static func normalize(_ status: PHAuthorizationStatus) -> Permission {
-        switch status {
-        case .authorized:
-            return .authorized
-        case .denied, .restricted:
-            return .denied
-        case .notDetermined:
-            return .notDetermined
+    
+    private func type() -> HKObjectType? {
+        return HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)
+    }
+    
+    private func types() -> Set<HKObjectType> {
+        guard let value = type() else {
+            return Set()
         }
+        return Set([value])
     }
 }
 

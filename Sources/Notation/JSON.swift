@@ -20,53 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol Notated {
-    associatedtype Value: Notated = Self
+public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
+    public static let null = JSONNull()
+    public typealias Value = JSON
 
-    var raw: Any { get }
-    var arrayValue: [Value]? { get }
-    var array: [Value] { get }
-    var dictionaryValue: [String: Value]? { get }
-    var dictionary: [String: Value] { get }
-    var boolValue: Bool? { get }
-    var bool: Bool { get }
-    var stringValue: String? { get }
-    var string: String { get }
-    var doubleValue: Double? { get }
-    var double: Double { get }
-    var floatValue: Float? { get }
-    var float: Float { get }
-    var intValue: Int? { get }
-    var int: Int { get }
-    var int32Value: Int32? { get }
-    var int32: Int32 { get }
-    var int64Value: Int64? { get }
-    var int64: Int64 { get }
-    var uintValue: UInt? { get }
-    var uint: UInt { get }
-    var uint32Value: UInt32? { get }
-    var uint32: UInt32 { get }
-    var uint64Value: UInt64? { get }
-    var uint64: UInt64 { get }
+    init() {
+        // Do nothing
+    }
 
-    subscript(index: Int) -> Value { get }
-    subscript(key: String) -> Value { get }
-}
+    public var raw: Any {
+        return ""
+    }
 
-extension Notated {
-    public var arrayValue: [Value]? {
+    public var arrayValue: [JSON]? {
         return nil
     }
 
-    public var array: [Value] {
+    public var array: [JSON]  {
         return []
     }
 
-    public var dictionaryValue: [String: Value]? {
+    public var dictionaryValue: [String: JSON]? {
         return nil
     }
 
-    public var dictionary: [String: Value] {
+    public var dictionary: [String: JSON] {
         return [:]
     }
 
@@ -83,7 +61,7 @@ extension Notated {
     }
 
     public var string: String {
-        return String.empty
+        return ""
     }
 
     public var doubleValue: Double? {
@@ -148,5 +126,45 @@ extension Notated {
 
     public var uint64: UInt64 {
         return 0
+    }
+
+    public var description: String {
+        return "<JSON>"
+    }
+
+    public var debugDescription: String {
+        return "<JSON: \(address(of: self))>"
+    }
+
+    func equals(to object: JSON) -> Bool {
+        return self === object
+    }
+
+    public static func ==(lhs: JSON, rhs: JSON) -> Bool {
+        return lhs.equals(to: rhs)
+    }
+
+    public subscript(index: Int) -> JSON {
+        return JSON.null
+    }
+
+    public subscript(key: String) -> JSON {
+        return JSON.null
+    }
+
+    public static func parse(_ value: String, option: ParserOption = []) throws -> JSON {
+        return try value.withCString { pointer in
+            let stream = ByteStream.int8(pointer)
+            let parser = JSONParser(stream: stream, option: option)
+            return try parser.parse()
+        }
+    }
+
+    public static func parse(_ data: Data, option: ParserOption = []) throws -> JSON {
+        return try data.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) in
+            let stream = ByteStream.uint8(pointer)
+            let parser = JSONParser(stream: stream, option: option)
+            return try parser.parse()
+        }
     }
 }

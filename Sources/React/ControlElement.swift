@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,6 @@
 // SOFTWARE.
 
 import UIKit
-import RxSwift
-import RxCocoa
 
-extension BasicElement: ReactiveCompatible {
-    // Do nothing.
-}
-
-extension Reactive where Base: LabelElement {
-    var text: Binder<String?>? {
-        assertMainThread()
-        let view: UILabel? = base.view
-        return view?.rx.text
-    }
-
-    var attributedText: Binder<NSAttributedString?>? {
-        assertMainThread()
-        let view: UILabel? = base.view
-        return view?.rx.attributedText
-    }
-}
-
-extension Reactive where Base: TextFieldElement {
-    var text: ControlProperty<String>? {
-        assertMainThread()
-        let view: UITextField? = base.view
-        return view?.rx.text.orEmpty
-    }
-}
-
-extension Reactive where Base: ButtonElement {
-    var tap: ControlEvent<Void>? {
-        assertMainThread()
-        let view: UIButton? = base.view
-        return view?.rx.tap
-    }
+open class ControlElement<Control>: Element<Control> where Control: UIControl {
 }

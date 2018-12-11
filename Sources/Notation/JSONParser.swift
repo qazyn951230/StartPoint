@@ -30,7 +30,7 @@ public struct ParserOption: OptionSet {
     public static let fullPrecision = ParserOption(rawValue: 1 << 0)
 }
 
-final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt8 {
+final public class JSONParser {
     let stream: ByteStream
     let option: ParserOption
 
@@ -112,7 +112,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
             stream.move()
         case 0x31...0x39:
             i = next - 0x30
-            next = UInt32(stream.next())
+            next = UInt32(stream.take())
             if minus {
                 while next >= 0x30 && next <= 0x39 {
                     if i >= 214748364 { // 2^31 = 2147483648
@@ -124,7 +124,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                     }
                     i = i * 10 + (next - 0x30)
                     significandDigit += 1
-                    next = UInt32(stream.next())
+                    next = UInt32(stream.take())
                 }
             } else {
                 while next >= 0x30 && next <= 0x39 {
@@ -137,7 +137,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                     }
                     i = i * 10 + (next - 0x30)
                     significandDigit += 1
-                    next = UInt32(stream.next())
+                    next = UInt32(stream.take())
                 }
             }
         default:
@@ -157,7 +157,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                     }
                     i64 = i64 * 10 + (UInt64(next) - 0x30)
                     significandDigit += 1
-                    next = UInt32(stream.next())
+                    next = UInt32(stream.take())
                 }
             } else {
                 while next >= 0x30 && next <= 0x39 {
@@ -170,14 +170,14 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                     }
                     i64 = i64 * 10 + (UInt64(next) - 0x30)
                     significandDigit += 1
-                    next = UInt32(stream.next())
+                    next = UInt32(stream.take())
                 }
             }
         }
         if useDouble {
             while next >= 0x30 && next <= 0x39 {
                 double = double * 10 + Double(next - 0x30)
-                next = UInt32(stream.next())
+                next = UInt32(stream.take())
             }
         }
         var frac: Int32 = 0
@@ -201,7 +201,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                     if i64 != 0 {
                         significandDigit += 1
                     }
-                    next = UInt32(stream.next())
+                    next = UInt32(stream.take())
                 }
                 double = Double(i64)
                 useDouble = true
@@ -213,7 +213,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
                         significandDigit += 1
                     }
                 }
-                next = UInt32(stream.next())
+                next = UInt32(stream.take())
             }
         }
 //        else {
@@ -321,7 +321,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
         while true {
             switch next {
             case 0x5c:
-                next = stream.next()
+                next = stream.take()
                 if next == 0x75 {
                     let codes = try parseUnicode()
                     result.append(contentsOf: codes)
@@ -432,7 +432,7 @@ final public class JSONParser<ByteStream: Stream> where ByteStream.Value == UInt
     func skip() {
         var next = stream.peek()
         while next == 0x20 || next == 0x0a || next == 0x0d || next == 0x09 {
-            next = stream.next()
+            next = stream.take()
         }
     }
 

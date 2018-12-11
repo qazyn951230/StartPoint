@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if PermissionEnable
+
 import Foundation
 import RxSwift
 import RxCocoa
@@ -30,24 +32,58 @@ public protocol PermissionItem {
 }
 
 public enum PermissionType {
+#if PermissionPhoto
     case photo
+#endif
+#if PermissionCamera
     case camera
+#endif
+#if PermissionLocation
     case location
+#endif
+#if PermissionNotification
     case notification(NotificationOptions)
+#endif
+#if PermissionContact
     case contact
+#endif
+#if PermissionHealth
+    case health
+#endif
+#if PermissionMotion
+    case motion
+#endif
 
     var item: PermissionItem {
         switch self {
+#if PermissionPhoto
         case .photo:
             return PhotoPermission()
-        case .camera:
+#endif
+#if PermissionCamera
+            case .camera:
             return CameraPermission()
-        case .location:
+#endif
+#if PermissionLocation
+            case .location:
             return LocationPermission()
-        case let .notification(options):
+#endif
+#if PermissionNotification
+            case let .notification(options):
             return NotificationPermission(options: options)
-        case .contact:
+#endif
+#if PermissionContact
+            case .contact:
             return ContactPermission()
+#endif
+#if PermissionHealth
+            case .health:
+            return HealthPermission()
+#endif
+#if PermissionMotion
+            case .motion:
+            return MotionPermission()
+#endif
         }
     }
 }
@@ -65,16 +101,6 @@ public enum Permission {
     public static func request(_ type: PermissionType) -> Driver<Permission> {
         return type.item.request()
     }
-
-    public static func firstRequest(_ type: PermissionType) -> Driver<Permission> {
-        let item = type.item
-        return item.status().flatMap { (permission: Permission) -> Driver<Permission> in
-            switch permission {
-            case .notDetermined:
-                return item.request()
-            default:
-                return Driver.just(permission)
-            }
-        }
-    }
 }
+
+#endif // PermissionEnable

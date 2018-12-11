@@ -39,31 +39,31 @@ public extension UIEdgeInsets {
         self.init(top: vertical, left: 0, bottom: vertical, right: 0)
     }
 
-    static func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+    public static func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left,
             bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
     }
 
-    static func +=(lhs: inout UIEdgeInsets, rhs: UIEdgeInsets) {
+    public static func +=(lhs: inout UIEdgeInsets, rhs: UIEdgeInsets) {
         lhs = UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left,
             bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
     }
 
-    static func -(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
+    public static func -(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsets(top: lhs.top - rhs.top, left: lhs.left - rhs.left,
             bottom: lhs.bottom - rhs.bottom, right: lhs.right - rhs.right)
     }
 
-    static func -=(lhs: inout UIEdgeInsets, rhs: UIEdgeInsets) {
+    public static func -=(lhs: inout UIEdgeInsets, rhs: UIEdgeInsets) {
         lhs = UIEdgeInsets(top: lhs.top + rhs.top, left: lhs.left + rhs.left,
             bottom: lhs.bottom + rhs.bottom, right: lhs.right + rhs.right)
     }
 
-    prefix static func +(x: UIEdgeInsets) -> UIEdgeInsets {
+    public prefix static func +(x: UIEdgeInsets) -> UIEdgeInsets {
         return x
     }
 
-    prefix static func -(x: UIEdgeInsets) -> UIEdgeInsets {
+    public prefix static func -(x: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsets(top: -x.top, left: -x.left, bottom: -x.bottom, right: -x.right)
     }
 }

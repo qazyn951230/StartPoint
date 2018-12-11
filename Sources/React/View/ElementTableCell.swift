@@ -20,14 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import UIKit
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+public final class ElementTableCell: UITableViewCell, ElementContainer {
+    public static let identifier: String = "ElementTableCell"
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Object.h>
-#import <StartPoint/Config.h>
-#import <StartPoint/Double.h>
+    public weak var element: BasicElement? = nil
+}

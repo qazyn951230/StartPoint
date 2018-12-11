@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if PermissionContact
+
 import Contacts
 import RxSwift
 import RxCocoa
@@ -52,3 +54,5 @@ public struct ContactPermission: PermissionItem {
         }
     }
 }
+
+#endif

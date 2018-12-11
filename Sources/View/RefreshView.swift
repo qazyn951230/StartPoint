@@ -120,9 +120,9 @@ public class RefreshView: UIView, Refresher {
 
     func addObserver(to scrollView: UIScrollView) {
         let offset: Driver<CGPoint> = scrollView.rx
-            .observe(CGPoint.self, #keyPath(UIScrollView.contentOffset))
-            .asDriver(onErrorJustReturn: CGPoint.zero)
+            .observeWeakly(CGPoint.self, #keyPath(UIScrollView.contentOffset))
             .compactMap(Function.maybe)
+            .asDriver(onErrorJustReturn: CGPoint.zero)
         contentOffset = offset
         offset.drive(onNext: nextContentOffset)
             .disposed(by: bag)
@@ -136,9 +136,9 @@ public class RefreshView: UIView, Refresher {
 //            .disposed(by: bag)
 
         let size: Driver<CGSize> = scrollView.rx
-            .observe(CGSize.self, #keyPath(UIScrollView.contentSize))
-            .asDriver(onErrorJustReturn: CGSize.zero)
+            .observeWeakly(CGSize.self, #keyPath(UIScrollView.contentSize))
             .compactMap(Function.maybe)
+            .asDriver(onErrorJustReturn: CGSize.zero)
         contentSize = size
         size.drive(onNext: nextContentSize)
             .disposed(by: bag)

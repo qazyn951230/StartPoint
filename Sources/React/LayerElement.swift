@@ -96,23 +96,20 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         layer?.removeFromSuperlayer()
     }
 
-    public func onLayerLoaded(then method: @escaping (BasicLayerElement<Layer>) -> Void) {
-        onLoaded { basic in
-            assertMainThread()
-            if let view = basic as? BasicLayerElement<Layer> {
-                method(view)
-            }
+    public func layerLoaded(then method: @escaping (BasicLayerElement<Layer>) -> Void) {
+        if Runner.isMain(), loaded {
+            method(self)
+        } else {
+            actions.loadAction(self, method)
         }
     }
 
-    open override func build(in view: UIView) {
+    public override func build(in view: UIView) {
         build(in: view.layer)
-        let methods = _onLoaded
-        _onLoaded.removeAll()
-        methods.forEach { $0(self) }
+        onLoaded()
     }
 
-    open override func build(in layer: CALayer) {
+    public override func build(in layer: CALayer) {
         assertMainThread()
         let this = buildLayer()
         if let superlayer = this.superlayer {
@@ -125,7 +122,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
-    open func buildLayer() -> Layer {
+    public func buildLayer() -> Layer {
         assertMainThread()
         if let l = self.layer {
             return l
@@ -133,9 +130,6 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         let this = _createLayer()
         applyState(to: this)
         buildChildren(in: this)
-//        let methods = _onLoaded
-//        _onLoaded.removeAll()
-//        methods.forEach { $0(self) }
         return this
     }
 
@@ -162,7 +156,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
-    open func applyState(to layer: Layer) {
+    public func applyState(to layer: Layer) {
         assertMainThread()
         _pendingState?.apply(layer: layer)
     }
@@ -174,7 +168,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         super.registerPendingState()
     }
 
-    open func buildChildren(in layer: CALayer) {
+    public func buildChildren(in layer: CALayer) {
         if children.isEmpty {
             return
         }
@@ -189,6 +183,11 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         super.debugMode()
     }
 #endif
+
+    override func removeFromSuperView() {
+        assertMainThread()
+        layer?.removeFromSuperlayer()
+    }
 
     // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult

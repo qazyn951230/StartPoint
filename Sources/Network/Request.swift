@@ -42,9 +42,7 @@ public extension DataRequest {
         }
 
         do {
-            let stream = DataStream(data: validData)
-            let parser = JSONParser(stream: stream, option: options)
-            let json = try parser.parse()
+            let json = try JSON.parse(validData, option: options)
             return .success(json)
         } catch {
             return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))

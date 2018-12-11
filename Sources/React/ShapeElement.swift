@@ -24,125 +24,18 @@ import UIKit
 import QuartzCore
 
 public class ShapeElementState: ElementState {
-    public var path: CGPath? {
-        get {
-            return _path ?? nil
-        }
-        set {
-            _path = newValue
-        }
-    }
-    var _path: CGPath??
-
-    public var fillColor: CGColor? {
-        get {
-            return _fillColor ?? nil
-        }
-        set {
-            _fillColor = newValue
-        }
-    }
-    var _fillColor: CGColor??
-
-    public var fillRule: ShapeElement.FillRule {
-        get {
-            return _fillRule ?? ShapeElement.FillRule.nonZero
-        }
-        set {
-            _fillRule = newValue
-        }
-    }
-    var _fillRule: ShapeElement.FillRule?
-
-    public var lineCap: ShapeElement.LineCap {
-        get {
-            return _lineCap ?? ShapeElement.LineCap.butt
-        }
-        set {
-            _lineCap = newValue
-        }
-    }
-    var _lineCap: ShapeElement.LineCap?
-
-    public var lineDashPattern: [Int]? {
-        get {
-            return _lineDashPattern ?? nil
-        }
-        set {
-            _lineDashPattern = newValue
-        }
-    }
-    var _lineDashPattern: [Int]??
-
-    public var lineDashPhase: CGFloat {
-        get {
-            return _lineDashPhase ?? 0
-        }
-        set {
-            _lineDashPhase = newValue
-        }
-    }
-    var _lineDashPhase: CGFloat?
-
-    public var lineJoin: ShapeElement.LineJoin {
-        get {
-            return _lineJoin ?? ShapeElement.LineJoin.miter
-        }
-        set {
-            _lineJoin = newValue
-        }
-    }
-    var _lineJoin: ShapeElement.LineJoin?
-
-    public var lineWidth: CGFloat {
-        get {
-            return _lineWidth ?? 0
-        }
-        set {
-            _lineWidth = newValue
-        }
-    }
-    var _lineWidth: CGFloat?
-
-    public var miterLimit: CGFloat {
-        get {
-            return _miterLimit ?? 10
-        }
-        set {
-            _miterLimit = newValue
-        }
-    }
-    var _miterLimit: CGFloat?
-
-    public var strokeColor: CGColor? {
-        get {
-            return _strokeColor ?? nil
-        }
-        set {
-            _strokeColor = newValue
-        }
-    }
-    var _strokeColor: CGColor??
-
-    public var strokeStart: CGFloat {
-        get {
-            return _strokeStart ?? 0
-        }
-        set {
-            _strokeStart = inner(newValue, min: 0, max: 1)
-        }
-    }
-    var _strokeStart: CGFloat?
-
-    public var strokeEnd: CGFloat {
-        get {
-            return _strokeEnd ?? 1.0
-        }
-        set {
-            _strokeEnd = inner(newValue, min: 0, max: 1)
-        }
-    }
-    var _strokeEnd: CGFloat?
+    public var path: CGPath??
+    public var fillColor: CGColor??
+    public var fillRule: ShapeElement.FillRule?
+    public var lineCap: ShapeElement.LineCap?
+    public var lineDashPattern: [Int]??
+    public var lineDashPhase: CGFloat?
+    public var lineJoin: ShapeElement.LineJoin?
+    public var lineWidth: CGFloat?
+    public var miterLimit: CGFloat?
+    public var strokeColor: CGColor??
+    public var strokeStart: CGFloat?
+    public var strokeEnd: CGFloat?
 
     public override func apply(layer: CALayer) {
         if let shape = layer as? CAShapeLayer {
@@ -153,59 +46,59 @@ public class ShapeElementState: ElementState {
     }
 
     public func apply(shapeLayer layer: CAShapeLayer) {
-        if let path = _path {
+        if let path = self.path {
             layer.path = path
         }
-        if let fillColor = _fillColor {
+        if let fillColor = self.fillColor {
             layer.fillColor = fillColor
         }
-        if let fillRule = _fillRule {
+        if let fillRule = self.fillRule {
             layer.fillRule = fillRule.value
         }
-        if let lineCap = _lineCap {
+        if let lineCap = self.lineCap {
             layer.lineCap = lineCap.value
         }
-        if let lineDashPattern = _lineDashPattern {
+        if let lineDashPattern = self.lineDashPattern {
             layer.lineDashPattern = lineDashPattern?.map(NSNumber.init(value:))
         }
-        if let lineDashPhase = _lineDashPhase {
+        if let lineDashPhase = self.lineDashPhase {
             layer.lineDashPhase = lineDashPhase
         }
-        if let lineJoin = _lineJoin {
+        if let lineJoin = self.lineJoin {
             layer.lineJoin = lineJoin.value
         }
-        if let lineWidth = _lineWidth {
+        if let lineWidth = self.lineWidth {
             layer.lineWidth = lineWidth
         }
-        if let miterLimit = _miterLimit {
+        if let miterLimit = self.miterLimit {
             layer.miterLimit = miterLimit
         }
-        if let strokeColor = _strokeColor {
+        if let strokeColor = self.strokeColor {
             layer.strokeColor = strokeColor
         }
-        if let strokeStart = _strokeStart {
+        if let strokeStart = self.strokeStart {
             layer.strokeStart = strokeStart
         }
-        if let strokeEnd = _strokeEnd {
+        if let strokeEnd = self.strokeEnd {
             layer.strokeEnd = strokeEnd
         }
         super.apply(layer: layer)
     }
 
     public override func invalidate() {
-        _path = nil
-        _fillColor = nil
-        _fillRule = nil
-        _lineCap = nil
-        _lineDashPattern = nil
-        _lineDashPhase = nil
-        _lineJoin = nil
-        _lineWidth = nil
-        _miterLimit = nil
-        _strokeColor = nil
-        _strokeStart = nil
-        _strokeEnd = nil
         super.invalidate()
+        path = nil
+        fillColor = nil
+        fillRule = nil
+        lineCap = nil
+        lineDashPattern = nil
+        lineDashPhase = nil
+        lineJoin = nil
+        lineWidth = nil
+        miterLimit = nil
+        strokeColor = nil
+        strokeStart = nil
+        strokeEnd = nil
     }
 }
 

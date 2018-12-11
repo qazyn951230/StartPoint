@@ -23,85 +23,16 @@
 import UIKit
 import CoreGraphics
 
-public final class TableSectionDataMap {
-    public internal(set) var header: ViewElement?
-    public internal(set) var headerTitle: String?
-    public internal(set) var footer: ViewElement?
-    public internal(set) var footerTitle: String?
-    public internal(set) var item: [TableCellElement] = []
+final class TableDataController: NSObject, DataController, UITableViewDelegate, UITableViewDataSource {
+    typealias DataType = TableDataMap
+    typealias ViewType = UITableView
 
-    public init(rows: Int) {
-        item.reserveCapacity(rows)
-    }
-
-    public var items: Int {
-        return item.count
-    }
-
-    public func append(cell: TableCellElement) {
-        item.append(cell)
-    }
-
-    public func setHeader(_ element: ViewElement?, or title: String?) {
-        header = element
-        if element == nil {
-            headerTitle = title
-        }
-    }
-
-    public func setFooter(_ element: ViewElement?, or title: String?) {
-        footer = element
-        if element == nil {
-            footerTitle = title
-        }
-    }
-
-    internal func flatted() -> [BasicElement] {
-        var array: [BasicElement] = item
-        array.append(nil: header)
-        array.append(nil: footer)
-        return array
-    }
-}
-
-public final class TableDataMap {
-    public internal(set) var section: [TableSectionDataMap] = []
-    internal var width: CGFloat = 0
-
-    public var sections: Int {
-        return section.count
-    }
-
-    public init(sections: Int = 0) {
-        section.reserveCapacity(sections)
-    }
-
-    public func append(section: TableSectionDataMap) {
-        self.section.append(section)
-    }
-
-    public func items(in section: Int) -> Int {
-        return self.section[section].items
-    }
-
-    public func itemElement(at indexPath: IndexPath) -> TableCellElement {
-        let section = self.section.object(at: indexPath.section)
-        let item = section?.item.object(at: indexPath.row)
-        return item ?? TableCellElement()
-    }
-
-    internal func flatted() -> [BasicElement] {
-        return section.flatMap {
-            $0.flatted()
-        }
-    }
-}
-
-public final class TableDataController: NSObject, UITableViewDelegate, UITableViewDataSource {
     let mainQueue: OperationQueue = OperationQueue.main
     var currentMap: TableDataMap = TableDataMap()
     var editingQueue: DispatchQueue? = nil
     weak var delegate: TableElementDelegate?
+    weak var dataSource: TableElementDataSource?
+    weak var owner: TableElement?
 
     override init() {
         // editingQueue can not init here
@@ -109,44 +40,37 @@ public final class TableDataController: NSObject, UITableViewDelegate, UITableVi
         editingQueue = DispatchQueue(label: "com.start.point.data.controller." + address(of: self))
     }
 
-    public func reloadData(in table: TableElement, dataSource: TableElementDataSource, completion: (() -> Void)?) {
-        assertMainThread()
-        guard let view = table.view else {
+    func reloadData(completion: (() -> Void)?) {
+        guard let source = dataSource, let element = owner else {
+            completion?()
             return
         }
-        let map = reloadSections(in: table, dataSource: dataSource)
-        map.width = view.frame.width
-        let fn = TableDataController.prepareUpdate(this: self, paddingMap: map,
-            view: view, completion: completion)
-        layoutSections(data: map, completion: fn)
+        let paddingMap = collectDataMap(from: element, source: source)
+        update(to: paddingMap, completion: completion)
     }
 
-    internal func reloadSections(in table: TableElement, dataSource: TableElementDataSource) -> TableDataMap {
-        let sections = dataSource.numberOfSections(in: table)
-        let map = TableDataMap(sections: sections)
-        for i in 0..<sections {
-            let rows: Int = dataSource.tableElement(table, numberOfRowsIn: i)
-            let section = TableSectionDataMap(rows: rows)
-            for j in 0..<rows {
-                let k = IndexPath(item: j, section: i)
-                section.append(cell: dataSource.tableElement(table, itemAt: k))
+    func update(to paddingMap: TableDataMap, completion: (() -> Void)?) {
+        // FIXME: zero width
+        let width = owner?._frame.width ?? 0
+        layout(map: paddingMap, width: width) { [weak self] in
+            guard let this = self else {
+                return
             }
-            section.setHeader(dataSource.tableElement(table, headerIn: i),
-                or: dataSource.tableElement(table, headerTitleIn: i))
-            section.setFooter(dataSource.tableElement(table, footerIn: i),
-                or: dataSource.tableElement(table, footerTitleIn: i))
-            map.append(section: section)
+            this.mainQueue.addOperation {
+                this.currentMap = paddingMap
+                let view: UITableView? = this.owner?.view
+                view?.reloadData()
+                completion?()
+            }
         }
-        return map
     }
 
-    internal func layoutSections(data: TableDataMap, completion: @escaping () -> Void) {
-        let width = Double(data.width)
-        let array = data.flatted()
-        guard array.isNotEmpty else {
+    func layout(map: TableDataMap, width: Double, completion: @escaping () -> Void) {
+        if map.isEmpty {
             completion()
             return
         }
+        let array = map.flatted()
         editingQueue?.async {
             let queue = DispatchQueue.global(qos: .default)
             queue.apply(iterations: array.count) { index in
@@ -157,39 +81,86 @@ public final class TableDataController: NSObject, UITableViewDelegate, UITableVi
         }
     }
 
-    internal static func prepareUpdate(this: TableDataController, paddingMap: TableDataMap, view: UITableView,
-                                       completion: (() -> Void)?) -> () -> Void {
-        return {
-            this.mainQueue.addOperation {
-                this.currentMap = paddingMap
-                view.reloadData()
-                completion?()
-            }
+    func collectDataMap(from element: TableElement, source: TableElementDataSource) -> TableDataMap {
+        let n = source.numberOfSections(in: element)
+        guard n > 0 else {
+            return TableDataMap(sections: [])
         }
+        var sections: [TableSectionDataMap] = []
+        sections.reserveCapacity(n)
+        for i in 0..<n {
+            let m = source.tableElement(element, numberOfRowsIn: i)
+            var rows: [TableCellElement] = []
+            rows.reserveCapacity(m)
+            for j in 0..<m {
+                let index = IndexPath(row: j, section: i)
+                rows.append(source.tableElement(element, itemAt: index))
+            }
+            let header = source.tableElement(element, headerIn: i)
+            let footer = source.tableElement(element, footerIn: i)
+            if header != nil && footer != nil {
+                let map = TableSectionDataMap(items: rows, header: header, footer: footer)
+                sections.append(map)
+                continue
+            }
+            let header2 = source.tableElement(element, headerTitleIn: i)
+            let footer2 = source.tableElement(element, footerTitleIn: i)
+            let map2 = TableSectionDataMap(items: rows, header: header2, footer: footer2)
+            sections.append(map2)
+        }
+        return TableDataMap(sections: sections)
     }
 
-    @objc public func numberOfSections(in tableView: UITableView) -> Int {
-        return currentMap.sections
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return currentMap.count
     }
 
-    @objc public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentMap.items(in: section)
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return currentMap.itemCount(in: section)
     }
 
-    @objc public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let element = currentMap.itemElement(at: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let element: TableCellElement = currentMap.item(at: indexPath) else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ElementTableCell.identifier, for: indexPath)
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: element.identifier, for: indexPath)
         element.build(in: cell)
         return cell
     }
 
-    @objc public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let element = currentMap.itemElement(at: indexPath)
-        // FIXME: Table view cell separator?
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let element = currentMap.item(at: indexPath) else {
+            return tableView.rowHeight
+        }
         return element.frame.height
     }
 
-    @objc public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.tableElement(tableView, didSelectRowAt: indexPath)
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if let element = owner, let target = delegate {
+            return target.tableElement(element, willSelectRowAt: indexPath)
+        } else {
+            return indexPath
+        }
+    }
+
+    func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+        if let element = owner, let target = delegate {
+            return target.tableElement(element, willDeselectRowAt: indexPath)
+        } else {
+            return indexPath
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let element = owner {
+            delegate?.tableElement(element, didSelectRowAt: indexPath)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let element = owner {
+            delegate?.tableElement(element, didDeselectRowAt: indexPath)
+        }
     }
 }

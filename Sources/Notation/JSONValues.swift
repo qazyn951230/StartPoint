@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Foundation
+
 public final class JSONNull: JSON {
     override init() {
         super.init()
@@ -88,6 +90,22 @@ public final class JSONInt: JSON {
 
     public override var raw: Any {
         return value
+    }
+
+    public override var doubleValue: Double? {
+        return Double(value)
+    }
+
+    public override var double: Double {
+        return Double(value)
+    }
+
+    public override var floatValue: Float? {
+        return Float(value)
+    }
+
+    public override var float: Float {
+        return Float(value)
     }
 
     public override var intValue: Int? {
@@ -170,6 +188,22 @@ public final class JSONInt64: JSON {
         return value
     }
 
+    public override var doubleValue: Double? {
+        return Double(value)
+    }
+
+    public override var double: Double {
+        return Double(value)
+    }
+
+    public override var floatValue: Float? {
+        return Float(value)
+    }
+
+    public override var float: Float {
+        return Float(value)
+    }
+
     public override var intValue: Int? {
 #if arch(arm64) || arch(x86_64)
         return Int(value)
@@ -236,6 +270,22 @@ public final class JSONUInt: JSON {
 
     public override var raw: Any {
         return value
+    }
+
+    public override var doubleValue: Double? {
+        return Double(value)
+    }
+
+    public override var double: Double {
+        return Double(value)
+    }
+
+    public override var floatValue: Float? {
+        return Float(value)
+    }
+
+    public override var float: Float {
+        return Float(value)
     }
 
     public override var uintValue: UInt? {
@@ -330,6 +380,22 @@ public final class JSONUInt64: JSON {
 
     public override var raw: Any {
         return value
+    }
+
+    public override var doubleValue: Double? {
+        return Double(value)
+    }
+
+    public override var double: Double {
+        return Double(value)
+    }
+
+    public override var floatValue: Float? {
+        return Float(value)
+    }
+
+    public override var float: Float {
+        return Float(value)
     }
 
     public override var uintValue: UInt? {

@@ -20,20 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef STARTPOINT_STREAM_H
-#define STARTPOINT_STREAM_H
+import UIKit
 
-#include "Config.h"
+public final class ElementCollectionCell: UICollectionViewCell, ElementContainer {
+    public static let identifier: String = "ElementCollectionCell"
 
-SP_C_FILE_BEGIN
+    public weak var element: BasicElement? = nil
+}
 
-typedef struct StringStream* StringStreamRef;
+public final class ElementReusableView: UICollectionReusableView, ElementContainer {
+    public static let identifier: String = "ElementReusableView"
 
-StringStreamRef StringStreamCreate(const char* value);
-void StringStreamFree(StringStreamRef const stream);
-unsigned char StringStreamPeek(StringStreamRef const stream);
-void StringStreamMove(StringStreamRef const stream);
-
-SP_C_FILE_END
-
-#endif //STARTPOINT_STREAM_H
+    public weak var element: BasicElement? = nil
+}

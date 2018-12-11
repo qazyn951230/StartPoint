@@ -27,7 +27,6 @@ import UIKit
 import Cocoa
 #endif
 
-// gYGNodeStyleDefaults
 public class FlexStyle: Equatable {
     public init() {
         // Do nothing

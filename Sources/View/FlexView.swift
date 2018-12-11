@@ -27,7 +27,11 @@ open class FlexView: UIView {
 
     open override var bounds: CGRect {
         didSet {
-            root.layout.size(bounds.size)
+            if bounds.size != oldValue.size {
+                root.layout.size(bounds.size)
+                // TODO: assertMainThread()
+                setNeedsLayout()
+            }
         }
     }
 
@@ -46,7 +50,7 @@ open class FlexView: UIView {
     }
 
     open func layout() {
-        root.layout()
+        root.layout(width: bounds.width, height: bounds.height)
         root.build(in: self)
     }
 

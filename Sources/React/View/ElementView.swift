@@ -33,9 +33,7 @@ public final class ElementView: UIView, ElementContainer {
         guard let object = element else {
             return super.sizeThatFits(size)
         }
-        let w = Double(size.width)
-        let h = Double(size.height)
-        object.layout(width: w, height: h)
+        object.layout(width: size.width, height: size.height)
         return object.frame.size
     }
 

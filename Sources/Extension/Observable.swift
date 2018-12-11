@@ -20,45 +20,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <stdlib.h>
-#include <string.h>
-#import "Stream.h"
+#if RxCompactMap
 
-#define STRING_STREAM_COPY 0
+import RxSwift
 
-struct StringStream {
-#if STRING_STREAM_COPY
-    char* source;
-#else
-    const char* source;
-#endif // STRING_STREAM_COPY
-    const char* current;
-};
-
-StringStreamRef StringStreamCreate(const char* value) {
-    StringStreamRef const stream = (StringStreamRef) malloc(sizeof(struct StringStream));
-#if STRING_STREAM_COPY
-    stream->source = (char *) malloc(sizeof(char *) * strlen(value));
-    strcpy(stream->source, value);
-    stream->current = stream->source;
-#else
-    stream->source = value;
-    stream->current = value;
-#endif // STRING_STREAM_COPY
-    return stream;
+public extension ObservableType {
+    public func compactMap<R>(_ transform: @escaping (E) throws -> R?) -> Observable<R> {
+        return Observable<R>.create { observer in
+            let subscription = self.subscribe { e in
+                switch e {
+                case .next(let value):
+                    do {
+                        if let result = try transform(value) {
+                            observer.on(.next(result))
+                        }
+                    } catch let e {
+                        observer.on(.error(e))
+                    }
+                case .error(let error):
+                    observer.on(.error(error))
+                case .completed:
+                    observer.on(.completed)
+                }
+            }
+            return subscription
+        }
+    }
 }
 
-void StringStreamFree(StringStreamRef const stream) {
-#if STRING_STREAM_COPY
-    free((void*) stream->source);
 #endif
-    free(stream);
-}
 
-unsigned char StringStreamPeek(StringStreamRef const stream) {
-    return (unsigned char) *stream->current;
-}
-
-void StringStreamMove(StringStreamRef const stream) {
-    stream->current += 1;
-}

@@ -23,7 +23,7 @@
 import UIKit
 
 open class ElementController<View: UIView, E: Element<View>>: UIViewController, UIGestureRecognizerDelegate {
-    open var backBarItem: UIBarButtonItem?
+    public var backBarItem: UIBarButtonItem?
 
     public private(set) var rootElement: E?
     public private(set) var rootView: View?
@@ -31,7 +31,7 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
 
     var size = Size.zero
 
-    open func initialization() {
+    public func initialization() {
         if let count = navigationController?.viewControllers.count, count > 1 {
             backBarItem = createBackBarItem()
             navigationItem.leftBarButtonItem = backBarItem
@@ -67,7 +67,7 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
         rootElement?.layout(width: size.width, height: size.height)
     }
 
-    @objc open func backBarItemAction(sender: UIBarButtonItem) {
+    @objc public func backBarItemAction(sender: UIBarButtonItem) {
         if presentingViewController != nil {
             dismiss(animated: true)
         } else {
@@ -76,17 +76,17 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
         viewDidBack()
     }
 
-    @objc open func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
+    @objc public func interactivePopGestureRecognizer(sender: UIGestureRecognizer) {
         viewDidBack()
     }
 
-    open func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {
+    public func createBackBarItem(image: UIImage? = nil) -> UIBarButtonItem {
         let image = image ?? R.image.ic_arrow_back()
         return UIBarButtonItem(image: image, style: .plain, target: self,
             action: #selector(backBarItemAction(sender:)))
     }
 
-    open func createElement() -> E {
+    public func createElement() -> E {
         fatalError("Subclass mast override this function.")
     }
 }
