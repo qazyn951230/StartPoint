@@ -91,6 +91,11 @@ public class ByteStream: Stream {
         return false
     }
 
+    public func next() -> UInt8 {
+        move()
+        return peek()
+    }
+
     public static func int8(_ source: UnsafePointer<Int8>) -> ByteStream {
         return _Int8Stream(source: source)
     }

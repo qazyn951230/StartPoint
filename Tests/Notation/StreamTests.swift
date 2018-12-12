@@ -25,24 +25,30 @@ import XCTest
 
 class StreamTests: XCTestCase {
     func testDataStream() {
-        let value = "foobar➕😁"
-        let stream = DataStream(data: value.data(using: .utf8)!)
-        var array: [UInt8] = []
-        while stream.peek() > 0 {
-            array.append(stream.peek())
-            stream.move()
+        let value = "foobar➕😁".data(using: .utf8)!
+        let array: [UInt8] =  value.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) in
+            let stream = ByteStream.uint8(pointer)
+            var array: [UInt8] = []
+            while stream.peek() > 0 {
+                array.append(stream.peek())
+                stream.move()
+            }
+            return array
         }
         let result: [UInt8] = [102, 111, 111, 98, 97, 114, 226, 158, 149, 240, 159, 152, 129]
         XCTAssertEqual(array, result)
     }
-
+    
     func testStringStream() {
         let value = "foobar➕😁"
-        let stream = StringStream(value)
-        var array: [UInt8] = []
-        while stream.peek() > 0 {
-            array.append(stream.peek())
-            stream.move()
+        let array: [UInt8] =  value.withCString { pointer in
+            let stream = ByteStream.int8(pointer)
+            var array: [UInt8] = []
+            while stream.peek() > 0 {
+                array.append(stream.peek())
+                stream.move()
+            }
+            return array
         }
         let result: [UInt8] = [102, 111, 111, 98, 97, 114, 226, 158, 149, 240, 159, 152, 129]
         XCTAssertEqual(array, result)

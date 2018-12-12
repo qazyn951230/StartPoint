@@ -25,14 +25,16 @@ import XCTest
 
 class ParseTests: XCTestCase {
     func parseTest(json: String, expect: JSON, file: StaticString = #file, line: UInt = #line,
-                   method: (JSONParser<DataStream>) throws -> JSON) {
-        let data = DataStream(data: json.data(using: .utf8)!)
-        let parser: JSONParser<DataStream> = JSONParser(stream: data)
-        do {
-            let result = try method(parser)
-            XCTAssertEqual(result, expect, file: file, line: line)
-        } catch let e {
-            XCTAssertTrue(false, e.localizedDescription)
+                   method: (JSONParser) throws -> JSON) {
+        json.withCString { pointer in
+            let stream = ByteStream.int8(pointer)
+            let parser = JSONParser(stream: stream, option: [])
+            do {
+                let result = try method(parser)
+                XCTAssertEqual(result, expect, file: file, line: line)
+            } catch let e {
+                XCTAssertTrue(false, e.localizedDescription)
+            }
         }
     }
 
