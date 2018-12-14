@@ -1,0 +1,10 @@
+{
+  "project": "StartPoint",
+  "dependencies": {
+    "Alamofire": "^4.5",
+    "@qazyn951230/RxSwift": "#bcaf752d1c1a53b4714453226bc4801cbfde4e7c"
+  },
+  "RxSwift": {
+    "schemes": [ "RxSwfit", "RxCocoa" ]
+  }
+}

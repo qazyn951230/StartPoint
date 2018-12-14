@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if PermissionEnable
+#if PERMISSION_ENABLE
 
 import Foundation
 import RxSwift
@@ -32,55 +32,55 @@ public protocol PermissionItem {
 }
 
 public enum PermissionType {
-#if PermissionPhoto
+#if PERMISSION_PHOTO
     case photo
 #endif
-#if PermissionCamera
+#if PERMISSION_CAMERA
     case camera
 #endif
-#if PermissionLocation
+#if PERMISSION_LOCATION
     case location
 #endif
-#if PermissionNotification
+#if PERMISSION_NOTIFICATION
     case notification(NotificationOptions)
 #endif
-#if PermissionContact
+#if PERMISSION_CONTACT
     case contact
 #endif
-#if PermissionHealth
+#if PERMISSION_HEALTH
     case health
 #endif
-#if PermissionMotion
+#if PERMISSION_MOTION
     case motion
 #endif
 
     var item: PermissionItem {
         switch self {
-#if PermissionPhoto
+#if PERMISSION_PHOTO
         case .photo:
             return PhotoPermission()
 #endif
-#if PermissionCamera
+#if PERMISSION_CAMERA
             case .camera:
             return CameraPermission()
 #endif
-#if PermissionLocation
+#if PERMISSION_LOCATION
             case .location:
             return LocationPermission()
 #endif
-#if PermissionNotification
+#if PERMISSION_NOTIFICATION
             case let .notification(options):
             return NotificationPermission(options: options)
 #endif
-#if PermissionContact
+#if PERMISSION_CONTACT
             case .contact:
             return ContactPermission()
 #endif
-#if PermissionHealth
+#if PERMISSION_HEALTH
             case .health:
             return HealthPermission()
 #endif
-#if PermissionMotion
+#if PERMISSION_MOTION
             case .motion:
             return MotionPermission()
 #endif
@@ -103,4 +103,4 @@ public enum Permission {
     }
 }
 
-#endif // PermissionEnable
+#endif // PERMISSION_ENABLE

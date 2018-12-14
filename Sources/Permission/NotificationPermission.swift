@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if PermissionNotification
+#if PERMISSION_NOTIFICATION
 
 import UIKit
 import UserNotifications

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if PermissionCamera
+#if PERMISSION_CAMERA
 
 import AVFoundation
 import RxSwift
