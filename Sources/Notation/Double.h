@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef STARTPOINT_DOUBLE_H
-#define STARTPOINT_DOUBLE_H
+#ifndef START_POINT_DOUBLE_H
+#define START_POINT_DOUBLE_H
 
 #include "Config.h"
 
@@ -31,4 +31,4 @@ extern inline double parse_double(double value, int exp);
 
 SP_C_FILE_END
 
-#endif //STARTPOINT_DOUBLE_H
+#endif //START_POINT_DOUBLE_H

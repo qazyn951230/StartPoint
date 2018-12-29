@@ -20,46 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class Atomic<Value> {
-    private let lock = Lock.make()
-    private var _value: Value
-
-    public var value: Value {
-        get {
-            return lock.locking {
-                _value
-            }
-        }
-        set {
-            lock.locking {
-                _value = newValue
-            }
-        }
-    }
-
-    public init(_ value: Value) {
-        _value = value
-    }
-
-    @discardableResult
-    public func replace(with value: Value) -> Value {
-        return modify { _ in
-            value
-        }
-    }
-
-    @discardableResult
-    public func modify(_ method: (Value) throws -> Value) rethrows -> Value {
-        return try lock.locking {
-            let old = _value
-            _value = try method(_value)
-            return old
-        }
-    }
-}
-
-public extension Atomic where Value: OptionSet {
-    public func contains(_ member: Value.Element) -> Bool {
-        return value.contains(member)
-    }
+public enum StartPointError: Error {
+    case cannotOpenFile(String)
+    case corruptedString(String)
 }

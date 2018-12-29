@@ -42,6 +42,10 @@ public final class JSONNull: JSON {
         return "<JSON: null>"
     }
 
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(null: self)
+    }
+
     override func equals(to object: JSON) -> Bool {
         return self === JSON.null
     }
@@ -73,6 +77,10 @@ public final class JSONString: JSON {
 
     public override var debugDescription: String {
         return "<JSON: \(value)>"
+    }
+
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(string: self)
     }
 
     override func equals(to object: JSON) -> Bool {
@@ -171,6 +179,10 @@ public final class JSONInt: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(int: self)
+    }
+
     override func equals(to object: JSON) -> Bool {
         if let element = object as? JSONInt {
             return value == element.value
@@ -253,6 +265,10 @@ public final class JSONInt64: JSON {
 
     public override var debugDescription: String {
         return "<JSON: \(value) \(address(of: self))>"
+    }
+
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(int64: self)
     }
 
     override func equals(to object: JSON) -> Bool {
@@ -365,6 +381,10 @@ public final class JSONUInt: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(uint: self)
+    }
+
     override func equals(to object: JSON) -> Bool {
         if let element = object as? JSONUInt {
             return value == element.value
@@ -469,6 +489,10 @@ public final class JSONUInt64: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(uint64: self)
+    }
+
     override func equals(to object: JSON) -> Bool {
         if let element = object as? JSONUInt64 {
             return value == element.value
@@ -513,6 +537,10 @@ public final class JSONDouble: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(double: self)
+    }
+
     override func equals(to object: JSON) -> Bool {
         if let element = object as? JSONDouble {
             return value == element.value
@@ -547,6 +575,10 @@ public final class JSONBool: JSON {
 
     public override var debugDescription: String {
         return "<JSON: \(value) \(address(of: self))>"
+    }
+
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(bool: self)
     }
 
     override func equals(to object: JSON) -> Bool {
@@ -585,8 +617,84 @@ public final class JSONObject: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
-    func append(key: String, _ element: JSON) {
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(dictionary: self)
+    }
+
+    @discardableResult
+    public func append(key: String, _ element: JSON) -> JSONObject {
         value[key] = element
+        return self
+    }
+
+    @discardableResult
+    public func append(key: String, array element: [JSON]) -> JSONObject {
+        return append(key: key, JSONArray(element))
+    }
+
+    @discardableResult
+    public func append(key: String, array element: JSONArray) -> JSONObject {
+        return append(key: key, element)
+    }
+
+    @discardableResult
+    public func append(key: String, dictionary element: [String: JSON]) -> JSONObject {
+        return append(key: key, JSONObject(element))
+    }
+
+    @discardableResult
+    public func append(key: String, dictionary element: JSONObject) -> JSONObject {
+        return append(key: key, element)
+    }
+
+    @discardableResult
+    public func append(key: String, bool element: Bool) -> JSONObject {
+        return append(key: key, JSONBool(element))
+    }
+
+    @discardableResult
+    public func append(key: String, string element: String) -> JSONObject {
+        return append(key: key, JSONString(element))
+    }
+
+    @discardableResult
+    public func append(key: String, double element: Double) -> JSONObject {
+        return append(key: key, JSONDouble(element))
+    }
+
+    @discardableResult
+    public func append(key: String, float element: Float) -> JSONObject {
+        return append(key: key, JSONDouble(Double(element)))
+    }
+
+    @discardableResult
+    public func append(key: String, int element: Int) -> JSONObject {
+        return append(key: key, JSONInt64(Int64(element)))
+    }
+
+    @discardableResult
+    public func append(key: String, int32 element: Int32) -> JSONObject {
+        return append(key: key, JSONInt(element))
+    }
+
+    @discardableResult
+    public func append(key: String, int64 element: Int64) -> JSONObject {
+        return append(key: key, JSONInt64(element))
+    }
+
+    @discardableResult
+    public func append(key: String, uint element: UInt) -> JSONObject {
+        return append(key: key, JSONUInt64(UInt64(element)))
+    }
+
+    @discardableResult
+    public func append(key: String, uint32 element: UInt32) -> JSONObject {
+        return append(key: key, JSONUInt(element))
+    }
+
+    @discardableResult
+    public func append(key: String, uint64 element: UInt64) -> JSONObject {
+        return append(key: key, JSONUInt64(element))
     }
 
     override func equals(to object: JSON) -> Bool {
@@ -629,8 +737,84 @@ public final class JSONArray: JSON {
         return "<JSON: \(value) \(address(of: self))>"
     }
 
-    func append(_ element: JSON) {
+    public override func accept(visitor: JSONVisitor) {
+        visitor.visit(array: self)
+    }
+
+    @discardableResult
+    public func append(_ element: JSON) -> JSONArray {
         value.append(element)
+        return self
+    }
+
+    @discardableResult
+    public func append(array element: [JSON]) -> JSONArray {
+        return append(JSONArray(element))
+    }
+
+    @discardableResult
+    public func append(array element: JSONArray) -> JSONArray {
+        return append(element)
+    }
+
+    @discardableResult
+    public func append(dictionary element: [String: JSON]) -> JSONArray {
+        return append(JSONObject(element))
+    }
+
+    @discardableResult
+    public func append(dictionary element: JSONObject) -> JSONArray {
+        return append(element)
+    }
+
+    @discardableResult
+    public func append(bool element: Bool) -> JSONArray {
+        return append(JSONBool(element))
+    }
+
+    @discardableResult
+    public func append(string element: String) -> JSONArray {
+        return append(JSONString(element))
+    }
+
+    @discardableResult
+    public func append(double element: Double) -> JSONArray {
+        return append(JSONDouble(element))
+    }
+
+    @discardableResult
+    public func append(float element: Float) -> JSONArray {
+        return append(JSONDouble(Double(element)))
+    }
+
+    @discardableResult
+    public func append(int element: Int) -> JSONArray {
+        return append(JSONInt64(Int64(element)))
+    }
+
+    @discardableResult
+    public func append(int32 element: Int32) -> JSONArray {
+        return append(JSONInt(element))
+    }
+
+    @discardableResult
+    public func append(int64 element: Int64) -> JSONArray {
+        return append(JSONInt64(element))
+    }
+
+    @discardableResult
+    public func append(uint element: UInt) -> JSONArray {
+        return append(JSONUInt64(UInt64(element)))
+    }
+
+    @discardableResult
+    public func append(uint32 element: UInt32) -> JSONArray {
+        return append(JSONUInt(element))
+    }
+
+    @discardableResult
+    public func append(uint64 element: UInt64) -> JSONArray {
+        return append(JSONUInt64(element))
     }
 
     override func equals(to object: JSON) -> Bool {

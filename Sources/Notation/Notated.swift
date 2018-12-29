@@ -155,33 +155,3 @@ public extension Notated {
         return 0
     }
 }
-
-public protocol MutableNotated: Notated where Value: MutableNotated {
-    var arrayValue: [Value]? { get set }
-    var array: [Value] { get set }
-    var dictionaryValue: [String: Value]? { get set }
-    var dictionary: [String: Value] { get set }
-    var boolValue: Bool? { get set }
-    var bool: Bool { get set }
-    var stringValue: String? { get set }
-    var string: String { get set }
-    var doubleValue: Double? { get set }
-    var double: Double { get set }
-    var floatValue: Float? { get set }
-    var float: Float { get set }
-    var intValue: Int? { get set }
-    var int: Int { get set }
-    var int32Value: Int32? { get set }
-    var int32: Int32 { get set }
-    var int64Value: Int64? { get set }
-    var int64: Int64 { get set }
-    var uintValue: UInt? { get set }
-    var uint: UInt { get set }
-    var uint32Value: UInt32? { get set }
-    var uint32: UInt32 { get set }
-    var uint64Value: UInt64? { get set }
-    var uint64: UInt64 { get set }
-
-    subscript(index: Int) -> Value { get set }
-    subscript(key: String) -> Value { get set }
-}
