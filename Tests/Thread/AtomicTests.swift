@@ -20,15 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+import XCTest
+import Dispatch
+@testable import StartPoint
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
-
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Object.h>
-#import <StartPoint/Config.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/Atomic.h>
+class AtomicTests: XCTestCase {
+    // https://en.cppreference.com/w/c/atomic/atomic_fetch_add
+    func testCAtomicIntAdd() {
+        let value: SPAIntRef = spa_int_create(0)
+        XCTAssertEqual(spa_int_load(value), 0)
+        
+        let group = DispatchGroup()
+        let queue = DispatchQueue(label: "test", qos: .utility, attributes: .concurrent)
+        queue.apply(iterations: 10) { _ in
+            group.enter()
+            for _ in 0..<1000 {
+                spa_int_add(value, 1)
+            }
+            group.leave()
+        }
+        _ = group.wait(timeout: .distantFuture)
+        XCTAssertEqual(spa_int_load(value), 10000)
+        spa_int_free(value)
+    }
+}

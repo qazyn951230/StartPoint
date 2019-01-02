@@ -101,6 +101,7 @@
 		AC96A659248A95EA749DD61A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4561F3DA5BC007A772A /* Color.swift */; };
 		AC96A65BBEE6C4CA6514328C /* BasicElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A37F4922CCB61BDB2997 /* BasicElement.swift */; };
 		AC96A67344553D0200218CFB /* VisualEffectElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A533FD00FAFBFB66ED82 /* VisualEffectElement.swift */; };
+		AC96A6A6892884EC7EFCEB0C /* Atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96A6ABCC1C9E90F75DB922 /* Creatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD4CAEBFA3C2C43365E1 /* Creatable.swift */; };
 		AC96A6C9AD8EF5BFD98AFFC1 /* JSONWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8E35C873CC85240C67D /* JSONWriter.swift */; };
 		AC96A6D8F4C2F9394AE640A8 /* LayerElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5C24B6B105C043B2099 /* LayerElement.swift */; };
@@ -112,6 +113,7 @@
 		AC96A7918E55CEAC35D5CBD6 /* NodeChildTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4A2070B519A0B214291 /* NodeChildTests.swift */; };
 		AC96A79C3E20C5431268E294 /* BindText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A34FDE2D19170DA393BB /* BindText.swift */; };
 		AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFCB44A6188AB237A221 /* FlexTests.swift */; };
+		AC96A7A1D1DD0C2636B65F95 /* AtomicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A72AD4C75E5449616991 /* AtomicTests.swift */; };
 		AC96A7A9CD2E2BE324EDB0BB /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A03D7883AFC28651386E /* Weak.swift */; };
 		AC96A7BBC21903BB64D3E997 /* LayoutValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */; };
 		AC96A7BE04D512DB0B6995AB /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A692552FC3A7CCD77301 /* DispatchQueue.swift */; };
@@ -119,6 +121,7 @@
 		AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */; };
 		AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */; };
 		AC96A7D6DFA6B94A1B605775 /* ElementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4A03497EA83043E8EEE /* ElementController.swift */; };
+		AC96A7EE6CF2C4DFD71C5D0C /* AtomicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A72AD4C75E5449616991 /* AtomicTests.swift */; };
 		AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2429CD251C00FABFCD1 /* SafeArea.swift */; };
 		AC96A80C1EF61F19CC7CE2DA /* AndroidNewsFeeds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */; };
 		AC96A8118D2718872E1D4E75 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7E6CC6F0146C8FA3160 /* ProgressHUD.swift */; };
@@ -222,6 +225,7 @@
 		AC96AF0890D0F9FD66CE462A /* PendingStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACE47E7EB175A48EE7B9 /* PendingStateManager.swift */; };
 		AC96AF1325847866E4EBF084 /* Double.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A5D0A4D8F4101620EE48 /* Double.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96AF2CB14F130041777456 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D560BBF1E4278D3A5A /* List.swift */; };
+		AC96AF38234552F4A160F217 /* Atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC96AF3F38A64CAE3CE01F7B /* ListElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A694DEC7A6D0CCD1D4C2 /* ListElements.swift */; };
 		AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADD6A32F1944E34B2888 /* RouteTests.swift */; };
 		AC96AF5564F233CCD7F5125B /* FlexBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD323FF76C0D4F692CD4 /* FlexBox.swift */; };
@@ -360,6 +364,7 @@
 		AC96A6F3F80B8DC6E1B808A7 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutValue.swift; sourceTree = "<group>"; };
 		AC96A70069177338DE20CAF5 /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
+		AC96A72AD4C75E5449616991 /* AtomicTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicTests.swift; sourceTree = "<group>"; };
 		AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarginTests.swift; sourceTree = "<group>"; };
 		AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignItemsTests.swift; sourceTree = "<group>"; };
 		AC96A7B3446BBB16CCEBE486 /* TableElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableElement.swift; sourceTree = "<group>"; };
@@ -391,6 +396,7 @@
 		AC96A95BC07C5AFE77700234 /* LogLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogLevel.swift; sourceTree = "<group>"; };
 		AC96A9641732CAA268D0936D /* AsyncLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncLayer.swift; sourceTree = "<group>"; };
 		AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImagePickerController.swift; sourceTree = "<group>"; };
+		AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomic.h; sourceTree = "<group>"; };
 		AC96A9AF443FC015B0799EF5 /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		AC96A9DBE440F563BF37EAC6 /* ManualLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualLayout.swift; sourceTree = "<group>"; };
 		AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundingTests.swift; sourceTree = "<group>"; };
@@ -673,6 +679,7 @@
 				AC96A1F339CA6B8CEFE79E5B /* Layout */,
 				AC96ABAE9E0E01AD5A5A59C4 /* React */,
 				AC96AB8D6DC9B61E9FD00A87 /* Router */,
+				AC96A3E1666CFBEBB14A6977 /* Thread */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -703,7 +710,7 @@
 				AC96A0C820BE78FDF5CE1C28 /* Renderer */,
 				AC96A12D115789E979840DE8 /* Router */,
 				AC96A0F03295044FF278F44A /* TextKit */,
-				AC96AD3B11145102758B9C19 /* Threading */,
+				AC96AD3B11145102758B9C19 /* Thread */,
 				BCA2A4591F3DA5BC007A772A /* View */,
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
 				AC96A20AA9DC21B1459471BD /* Identified.swift */,
@@ -725,6 +732,14 @@
 				AC96AAD9208AEC797AD3E6A1 /* MotionPermission.swift */,
 			);
 			path = Permission;
+			sourceTree = "<group>";
+		};
+		AC96A3E1666CFBEBB14A6977 /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				AC96A72AD4C75E5449616991 /* AtomicTests.swift */,
+			);
+			path = Thread;
 			sourceTree = "<group>";
 		};
 		AC96A48C2C2CDB1F8620071E /* Extension */ = {
@@ -844,15 +859,16 @@
 			path = Scrolled;
 			sourceTree = "<group>";
 		};
-		AC96AD3B11145102758B9C19 /* Threading */ = {
+		AC96AD3B11145102758B9C19 /* Thread */ = {
 			isa = PBXGroup;
 			children = (
+				AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */,
 				AC96A69C27E15608DF50FF12 /* Atomic.swift */,
 				AC96AEC6503E25A2408613CD /* Lock.swift */,
 				AC96A46B8B71C16C26CBE55F /* RunLoopQueue.swift */,
 				AC96ADB1EB1ECC7E7C293FE4 /* Runner.swift */,
 			);
-			path = Threading;
+			path = Thread;
 			sourceTree = "<group>";
 		};
 		AC96AD4472F0D6D751CF2A4E /* Transaction */ = {
@@ -1047,6 +1063,7 @@
 				BC86B87F211AE58500C02605 /* StartPoint.h in Headers */,
 				BC86B881211AE66A00C02605 /* Object.h in Headers */,
 				AC96AF1325847866E4EBF084 /* Double.h in Headers */,
+				AC96AF38234552F4A160F217 /* Atomic.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1058,6 +1075,7 @@
 				BC6BA1C61F2DC38700772AA8 /* StartPoint.h in Headers */,
 				AC96A5699350613957D8E4B1 /* Object.h in Headers */,
 				AC96A5F114E8E1EEE1C484A7 /* Double.h in Headers */,
+				AC96A6A6892884EC7EFCEB0C /* Atomic.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1287,6 +1305,7 @@
 				AC96A949E79F5201FB432F27 /* ParseTests.swift in Sources */,
 				AC96AC56A80C72CBDC836EA5 /* JSONValuesTests.swift in Sources */,
 				AC96AD7E61D389E663E4B747 /* NotationCoderTests.swift in Sources */,
+				AC96A7EE6CF2C4DFD71C5D0C /* AtomicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1483,6 +1502,7 @@
 				AC96ABD4CB87B994B1E5AA82 /* TreeMutationTests.swift in Sources */,
 				AC96A7C9E288B5B11C6A68E7 /* CollectionTests.swift in Sources */,
 				AC96A8F18B0A64B44EBBA6B8 /* NotationCoderTests.swift in Sources */,
+				AC96A7A1D1DD0C2636B65F95 /* AtomicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
