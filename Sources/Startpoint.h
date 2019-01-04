@@ -28,7 +28,7 @@ FOUNDATION_EXPORT double StartPointVersionNumber;
 //! Project version string for StartPoint.
 FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
 
-#import <StartPoint/Object.h>
 #import <StartPoint/Config.h>
-#import <StartPoint/Double.h>
 #import <StartPoint/Atomic.h>
+#import <StartPoint/Double.h>
+#import <StartPoint/Object.h>

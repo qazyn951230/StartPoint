@@ -23,6 +23,28 @@
 public extension String {
     public static let empty: String = ""
 
+    public func split(at index: String.Index) -> (Substring, Substring) {
+        if index < startIndex {
+            return (Substring(), self[startIndex...])
+        }
+        if index > endIndex {
+            return (self[startIndex...], Substring())
+        }
+        return (self[..<index], self[index...])
+    }
+
+    public func string(upTo index: String.Index) -> String {
+        return String(self[..<index])
+    }
+
+    public func string(through index: String.Index) -> String {
+        return String(self[...index])
+    }
+
+    public func string(from index: String.Index) -> String {
+        return String(self[index...])
+    }
+
     public func remove(prefix: String) -> String {
         if hasPrefix(prefix) {
             return String(self[prefix.endIndex...])
