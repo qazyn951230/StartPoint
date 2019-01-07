@@ -33,6 +33,16 @@ public extension String {
         return (self[..<index], self[index...])
     }
 
+    public func split(firstOf element: Character) -> (Substring, Substring) {
+        let index = firstIndex(of: element) ?? startIndex
+        return split(at: index)
+    }
+
+    public func split(lastOf element: Character) -> (Substring, Substring) {
+        let index = lastIndex(of: element) ?? endIndex
+        return split(at: index)
+    }
+
     public func string(upTo index: String.Index) -> String {
         return String(self[..<index])
     }
