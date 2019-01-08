@@ -1,0 +1,26 @@
+{
+  "project": "StartPoint",
+  "lockVersion": 1,
+  "dependencies": {
+    "Alamofire": {
+      "resolved": "carthage"
+    },
+    "RxSwift": {
+      "resolved": "carthage"
+    }
+  },
+  "StartPoint_iOS": {
+    "requires": [
+      "Alamofire.framework",
+      "RxSwift.framework",
+      "RxCocoa.framework"
+    ]
+  },
+  "StartPoint_macOS": {
+    "requires": [
+      "Alamofire.framework",
+      "RxSwift.framework",
+      "RxCocoa.framework"
+    ]
+  }
+}

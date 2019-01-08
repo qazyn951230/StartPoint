@@ -253,7 +253,6 @@
 		BC61275B1F3EFCE300AC8224 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC16E7541F3EAB9800DDC894 /* Request.swift */; };
 		BC6BA1B31F2DC08700772AA8 /* StartPoint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */; };
 		BC6BA1C61F2DC38700772AA8 /* StartPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A342F409A0E293EB7804 /* StartPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BC8504E21F41506D00DB0BB3 /* RxTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC8504E11F41506D00DB0BB3 /* RxTest.framework */; };
 		BC86B87F211AE58500C02605 /* StartPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A342F409A0E293EB7804 /* StartPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BC86B880211AE5AD00C02605 /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
 		BC86B881211AE66A00C02605 /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96AF4CCDEEAB7B80A449DC /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -266,6 +265,9 @@
 		BCA2A4681F3DA5BC007A772A /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A45A1F3DA5BC007A772A /* View.swift */; };
 		BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4621F3DA5BC007A772A /* Device.swift */; };
 		BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
+		BCF6529821C74EA100D64A48 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E7591F3EB2D600DDC894 /* Alamofire.framework */; };
+		BCF6529921C74EA100D64A48 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */; };
+		BCF6529A21C74EA100D64A48 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -469,9 +471,9 @@
 		AC96AFF5FC0D5B0CA9CF53D1 /* ElementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementTests.swift; sourceTree = "<group>"; };
 		BC034E0A21BFADA100F3627A /* StreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamTests.swift; sourceTree = "<group>"; };
 		BC16E7541F3EAB9800DDC894 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
-		BC16E7591F3EB2D600DDC894 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
-		BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		BC16E7591F3EB2D600DDC894 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxCocoa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		BC33768D211D7648006DF19C /* iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = iOS.plist; sourceTree = "<group>"; };
 		BC33768E211D7648006DF19C /* macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = macOS.plist; sourceTree = "<group>"; };
@@ -482,7 +484,6 @@
 		BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6BA1B21F2DC08700772AA8 /* iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC8504E11F41506D00DB0BB3 /* RxTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxTest.framework; path = Carthage/Build/iOS/RxTest.framework; sourceTree = "<group>"; };
 		BC86B874211ADD6100C02605 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
 		BC86B875211ADD6100C02605 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		BC86B876211ADD6100C02605 /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
@@ -509,6 +510,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCF6529921C74EA100D64A48 /* RxCocoa.framework in Frameworks */,
+				BCF6529821C74EA100D64A48 /* Alamofire.framework in Frameworks */,
+				BCF6529A21C74EA100D64A48 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,7 +538,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC8504E21F41506D00DB0BB3 /* RxTest.framework in Frameworks */,
 				BC6BA1B31F2DC08700772AA8 /* StartPoint.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -927,7 +930,6 @@
 				BC16E7591F3EB2D600DDC894 /* Alamofire.framework */,
 				BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */,
 				BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */,
-				BC8504E11F41506D00DB0BB3 /* RxTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1086,6 +1088,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC4A4A792119479F002564C6 /* Build configuration list for PBXNativeTarget "StartPoint_macOS" */;
 			buildPhases = (
+				BCF6529B21C7500D00D64A48 /* [XPM] Copy Linked Libraries */,
 				BC4A4A632119479E002564C6 /* Sources */,
 				BC4A4A642119479E002564C6 /* Frameworks */,
 				BC4A4A652119479E002564C6 /* Headers */,
@@ -1122,6 +1125,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC6BA1BD1F2DC08700772AA8 /* Build configuration list for PBXNativeTarget "StartPoint_iOS" */;
 			buildPhases = (
+				BCF6529721C7484A00D64A48 /* [XPM] Copy Linked Libraries */,
 				BC6BA1A41F2DC08600772AA8 /* Sources */,
 				BC6BA1A51F2DC08600772AA8 /* Frameworks */,
 				BC6BA1A61F2DC08600772AA8 /* Headers */,
@@ -1234,6 +1238,47 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BCF6529721C7484A00D64A48 /* [XPM] Copy Linked Libraries */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[XPM] Copy Linked Libraries";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xpm copy\n";
+			showEnvVarsInLog = 0;
+		};
+		BCF6529B21C7500D00D64A48 /* [XPM] Copy Linked Libraries */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[XPM] Copy Linked Libraries";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xpm copy\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BC4A4A632119479E002564C6 /* Sources */ = {
@@ -1592,10 +1637,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
 			};
@@ -1605,10 +1646,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
 			};

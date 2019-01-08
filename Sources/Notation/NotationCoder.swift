@@ -576,7 +576,6 @@ final class NotatedUnkeyedDecodingContainer<Value>: UnkeyedDecodingContainer
     }
 }
 
-
 final class NotatedValueDecodingContainer<Value>: SingleValueDecodingContainer
     where Value: Notated, Value.Value == Value {
     private(set) var codingPath: [CodingKey] = []

@@ -41,7 +41,7 @@ fileprivate struct SimpleKey: Decodable, Equatable {
     }
 }
 
-fileprivate class CodeFoo {
+fileprivate class CodeFoo: Decodable {
     let simple: Simple
     let data: Data
 
@@ -49,14 +49,9 @@ fileprivate class CodeFoo {
         self.simple = simple
         self.data = data
     }
-
-    init() {
-        simple = Simple(a: 0, b: 0, c: "")
-        data = Data()
-    }
 }
 
-fileprivate class CodeBar: CodeFoo, Decodable, Equatable {
+fileprivate class CodeBar: CodeFoo, Equatable {
     let simpleKey: SimpleKey
     let date: Date
 
@@ -65,7 +60,13 @@ fileprivate class CodeBar: CodeFoo, Decodable, Equatable {
         self.date = date
         super.init(simple: simple, data: data)
     }
-
+    
+    required init(from decoder: Decoder) throws {
+        simpleKey = try SimpleKey(from: decoder)
+        date = try Date(from: decoder)
+        try super.init(from: decoder)
+    }
+    
     static func ==(lhs: CodeBar, rhs: CodeBar) -> Bool {
         if lhs === rhs {
             return true
@@ -220,13 +221,15 @@ class NotationCoderTests: XCTestCase {
     }
 
     func testDecodeObject() {
-        decode("{\"a\":-999,\"b\":999,\"c\":\"foobar\"}",
-            decoded: Simple(a: -999, b: 999, c: "foobar"))
-        decode("{\"a\":\"foobar\",\"b\":-999,\"c\":999}",
-            decoded: SimpleKey(a: -999, b: 999, c: "foobar"))
-//        decode("{\"simple\":{\"a\":-999,\"b\":999,\"c\":\"foobar\"},\"simpleKey\":{\"a\":\"foobar\",\"b\":-999,\"c\":999},\"data\":\"01010101\",\"date\":\"10101010\"}",
+//        decode("{\"a\":-999,\"b\":999,\"c\":\"foobar\"}",
+//            decoded: Simple(a: -999, b: 999, c: "foobar"))
+//        decode("{\"a\":\"foobar\",\"b\":-999,\"c\":999}",
+//            decoded: SimpleKey(a: -999, b: 999, c: "foobar"))
+//        decode("{\"simple\":{\"a\":-999,\"b\":999,\"c\":\"foobar\"},\"simpleKey\":{\"a\":\"foobar\",\"b\":-999,\"c\":999},\"data\":\"01010101\",\"date\":\"1545101000\"}",
 //            decoded: CodeBar(simple: Simple(a: -999, b: 999, c: "foobar"), data: Data(),
-//                simpleKey: SimpleKey(a: -999, b: 999, c: "foobar"), date: Date()))
+//                simpleKey: SimpleKey(a: -999, b: 999, c: "foobar"), date: Date(timeIntervalSince1970: 1545101000)))
+//        decode("1545101000", decoded: Date(timeIntervalSince1970: 1545101000))
+        decode("01010101", decoded: Data())
     }
 
     func testDecodeObjectArray() {
