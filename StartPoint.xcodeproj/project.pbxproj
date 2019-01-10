@@ -130,9 +130,7 @@
 		AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4DC5896A6E8391A0D87 /* ComputedMarginTests.swift */; };
 		AC96A86B169E962BDDBEE539 /* R.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8F7A138D61BC5B15CBB /* R.swift */; };
 		AC96A8886C4B265CC0F26D64 /* Approximate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A90E1FFE0A0283FFA2EF /* Approximate.swift */; };
-		AC96A89C5095B176A30D61E3 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8D792053394063F1400 /* LogType.swift */; };
 		AC96A8F18B0A64B44EBBA6B8 /* NotationCoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A57C32DA8C738856D4DC /* NotationCoderTests.swift */; };
-		AC96A92289E64E2128492229 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8D792053394063F1400 /* LogType.swift */; };
 		AC96A949E79F5201FB432F27 /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A14D82B441745E497381 /* ParseTests.swift */; };
 		AC96A9558E00CE299874823E /* FlexTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7DAB98F07172DF5C170 /* FlexTestCase.swift */; };
 		AC96A958E771DD9FBD215C9F /* ScrollDataMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A224D4371EE16D782AD4 /* ScrollDataMap.swift */; };
@@ -389,7 +387,6 @@
 		AC96A8840C1FF127DF79DD2D /* DisplayTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayTests.swift; sourceTree = "<group>"; };
 		AC96A88DAF244E5EAAC1C668 /* ImageElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageElement.swift; sourceTree = "<group>"; };
 		AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexAlgorithm.swift; sourceTree = "<group>"; };
-		AC96A8D792053394063F1400 /* LogType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
 		AC96A8E24D0656180E2EBBDA /* NotationCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotationCoder.swift; sourceTree = "<group>"; };
 		AC96A8E35C873CC85240C67D /* JSONWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONWriter.swift; sourceTree = "<group>"; };
 		AC96A8F7A138D61BC5B15CBB /* R.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.swift; sourceTree = "<group>"; };
@@ -759,7 +756,6 @@
 				AC96A2BEB5B8FDC95696FC69 /* Log.swift */,
 				AC96AA31A616833F79C3128B /* LogDestination.swift */,
 				AC96A95BC07C5AFE77700234 /* LogLevel.swift */,
-				AC96A8D792053394063F1400 /* LogType.swift */,
 			);
 			path = Log;
 			sourceTree = "<group>";
@@ -1322,7 +1318,6 @@
 				AC96ADEBC54E2013FA68C2E5 /* LogLevel.swift in Sources */,
 				AC96AA7D0690ECBB71DCB299 /* LogDestination.swift in Sources */,
 				BC25D0A5212BF86600697244 /* Double.c in Sources */,
-				AC96A92289E64E2128492229 /* LogType.swift in Sources */,
 				AC96AD6390386604C008D1DD /* AttributedString.swift in Sources */,
 				AC96AC3E427E0477CF468F5A /* JSON.swift in Sources */,
 				AC96AC54970C98EC7313B2DA /* JSONParser.swift in Sources */,
@@ -1401,7 +1396,6 @@
 				AC96A010F185A399FA3A0241 /* NotificationPermission.swift in Sources */,
 				AC96AE8328EC6A497FAD665C /* Log.swift in Sources */,
 				AC96A5BAFF506D6B416039FB /* LogLevel.swift in Sources */,
-				AC96A89C5095B176A30D61E3 /* LogType.swift in Sources */,
 				AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */,
 				AC96AE3CF770D7AD9ECC8EDA /* PackageInfo.swift in Sources */,
 				AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */,

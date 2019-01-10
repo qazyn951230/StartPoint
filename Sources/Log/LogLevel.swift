@@ -20,35 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public enum LogLevel: Int {
-    case info = 0
-    case warn = 1
-    case debug = 2
-    case error = 3
-    case off = 4
-}
+public enum LogLevel: Int, Comparable, CustomStringConvertible {
+    case off = 0
+    case error = 1
+    case warn = 2
+    case info = 3
+    case debug = 4
+    case verbose = 5
 
-extension LogLevel: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
+        case .off:
+            return "OFF"
+        case .verbose:
+            return "VERBOSE"
         case .debug:
             return "DEBUG"
-        case .error:
-            return "ERROR"
         case .info:
             return "INFO"
         case .warn:
             return "WARN"
-        case .off:
-            return "OFF"
+        case .error:
+            return "ERROR"
         }
     }
-    public var debugDescription: String {
-        return description
-    }
-}
 
-extension LogLevel: Comparable {
     public static func ==(lhs: LogLevel, rhs: LogLevel) -> Bool {
         return lhs.rawValue == rhs.rawValue
     }

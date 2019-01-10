@@ -23,37 +23,7 @@
 import Foundation
 
 public protocol LogDestination {
-    func write(message: String)
-    func close()
+    func write(_ data: Data)
 }
 
-public struct FileLogDestination: LogDestination {
-    private let file: FileHandle
-
-    public init(fileHandle: FileHandle) {
-        self.file = fileHandle
-    }
-
-    public init(path: URL) throws {
-        let file = try FileHandle(forWritingTo: path)
-        self.init(fileHandle: file)
-    }
-
-    public func write(message: String) {
-        if let data = message.data(using: .utf8) {
-            file.write(data)
-        }
-    }
-
-    public func close() {
-        file.closeFile()
-    }
-
-    public static func standardOutput() -> FileLogDestination {
-        return FileLogDestination(fileHandle: FileHandle.standardOutput)
-    }
-
-    public static func standardError() -> FileLogDestination {
-        return FileLogDestination(fileHandle: FileHandle.standardError)
-    }
-}
+extension FileHandle: LogDestination {}
