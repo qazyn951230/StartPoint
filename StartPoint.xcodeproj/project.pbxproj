@@ -159,6 +159,7 @@
 		AC96AAFA3740F97365D179FE /* FlexStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */; };
 		AC96AB1166AEEE839B575C37 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEC6503E25A2408613CD /* Lock.swift */; };
 		AC96AB15FB41E415590019DF /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FC10F6CE9C8040980B /* Double.swift */; };
+		AC96AB36CA0FF06CF047764E /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC22BCA0084DE95CFE78 /* Observable.swift */; };
 		AC96AB39E21C735ED53D6439 /* PropertyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACA4EDB3AEDEECC4CD2D /* PropertyText.swift */; };
 		AC96AB46E6519A6C67A1E168 /* TextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE5EBD5B093C9633D7BA /* TextTests.swift */; };
 		AC96AB61D33FB8BD1C845B23 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6737DECA9AA4695E1FE /* Stream.swift */; };
@@ -1334,6 +1335,7 @@
 				AC96A55AA3888CF21A2D99D4 /* ByteStream.swift in Sources */,
 				AC96AF9C28B8E85022971F70 /* Errors.swift in Sources */,
 				AC96A00FF55B45C2AAD4389F /* FileStream.swift in Sources */,
+				AC96AB36CA0FF06CF047764E /* Observable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
