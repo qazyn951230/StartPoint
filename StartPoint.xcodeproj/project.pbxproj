@@ -78,6 +78,7 @@
 		AC96A4E45330ED5C4C2BE266 /* FlexLayout+Setter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA67AD91A5E0DDA9F337 /* FlexLayout+Setter.swift */; };
 		AC96A4E666F920D40C04949C /* LayoutValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6F769DB9BB251DE1D06 /* LayoutValue.swift */; };
 		AC96A4FDC81F7F682F338B53 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E6DA3952501D318D1F /* Element.swift */; };
+		AC96A5324F6F2BF354CAA84F /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9DE41EA263C74E68932 /* Path.swift */; };
 		AC96A5470AA8FFAD4030F123 /* ShapeElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF3F8868F5EA5FAD39E7 /* ShapeElement.swift */; };
 		AC96A552F4B28D501AA4ADB0 /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC81FAF819B3E8886240 /* AttributedString.swift */; };
 		AC96A55AA3888CF21A2D99D4 /* ByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD4ABA467764C653F6DB /* ByteStream.swift */; };
@@ -121,6 +122,7 @@
 		AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */; };
 		AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFB3E714E078FE0E3BCD /* DimensionTests.swift */; };
 		AC96A7D6DFA6B94A1B605775 /* ElementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4A03497EA83043E8EEE /* ElementController.swift */; };
+		AC96A7E5633F1756F813D108 /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9DE41EA263C74E68932 /* Path.swift */; };
 		AC96A7EE6CF2C4DFD71C5D0C /* AtomicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A72AD4C75E5449616991 /* AtomicTests.swift */; };
 		AC96A7F087CDB7F9A74EFC1A /* SafeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2429CD251C00FABFCD1 /* SafeArea.swift */; };
 		AC96A80C1EF61F19CC7CE2DA /* AndroidNewsFeeds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5E10803794D738F56FB /* AndroidNewsFeeds.swift */; };
@@ -184,6 +186,7 @@
 		AC96AC56A80C72CBDC836EA5 /* JSONValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A94D0C76F766ADC30426 /* JSONValuesTests.swift */; };
 		AC96AC8CB51E0CC7A4CD5FBB /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
 		AC96AC9D591F76CBEC07C03A /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A881F78BCDEBBF333943 /* Assert.swift */; };
+		AC96AC9DBE3766A7271D6C6C /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A981C5C1F35F672D6245 /* FileSystem.swift */; };
 		AC96ACA086FA6131CFA8E446 /* StartNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E6E4DF2276E031292C /* StartNavigationController.swift */; };
 		AC96ACADD9383820A4BFFFC7 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2AF396B00CCEA2B44AD /* CGPoint.swift */; };
 		AC96ACAE5C2B8912FD5E84BD /* TableElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7B3446BBB16CCEBE486 /* TableElement.swift */; };
@@ -195,6 +198,7 @@
 		AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */; };
 		AC96AD6390386604C008D1DD /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC81FAF819B3E8886240 /* AttributedString.swift */; };
 		AC96AD7E61D389E663E4B747 /* NotationCoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A57C32DA8C738856D4DC /* NotationCoderTests.swift */; };
+		AC96AD9E7C7AEEF487B7684F /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A981C5C1F35F672D6245 /* FileSystem.swift */; };
 		AC96AD9FE9EA2D914F94BA80 /* TestElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3D2C1F8432D3994DBE /* TestElement.swift */; };
 		AC96ADAEC73129DDDE5E6D04 /* BasicElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD8DE83BB1E6946ADA74 /* BasicElementTests.swift */; };
 		AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */; };
@@ -396,9 +400,11 @@
 		AC96A95BC07C5AFE77700234 /* LogLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogLevel.swift; sourceTree = "<group>"; };
 		AC96A9641732CAA268D0936D /* AsyncLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncLayer.swift; sourceTree = "<group>"; };
 		AC96A9774F611EFB99497CAB /* UIImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImagePickerController.swift; sourceTree = "<group>"; };
+		AC96A981C5C1F35F672D6245 /* FileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileSystem.swift; sourceTree = "<group>"; };
 		AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomic.h; sourceTree = "<group>"; };
 		AC96A9AF443FC015B0799EF5 /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		AC96A9DBE440F563BF37EAC6 /* ManualLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualLayout.swift; sourceTree = "<group>"; };
+		AC96A9DE41EA263C74E68932 /* Path.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Path.swift; sourceTree = "<group>"; };
 		AC96AA03C1C4A12EC0D4A6BF /* RoundingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundingTests.swift; sourceTree = "<group>"; };
 		AC96AA31A616833F79C3128B /* LogDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		AC96AA36EE92A0C924EC81CC /* NSObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
@@ -716,6 +722,7 @@
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
 				AC96A20AA9DC21B1459471BD /* Identified.swift */,
 				AC96A6343AA9195CFA7C7A96 /* Errors.swift */,
+				AC96A6B6EB859A1F50D65727 /* FileSystem */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -794,6 +801,15 @@
 				AC96A881F78BCDEBBF333943 /* Assert.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		AC96A6B6EB859A1F50D65727 /* FileSystem */ = {
+			isa = PBXGroup;
+			children = (
+				AC96A9DE41EA263C74E68932 /* Path.swift */,
+				AC96A981C5C1F35F672D6245 /* FileSystem.swift */,
+			);
+			path = FileSystem;
 			sourceTree = "<group>";
 		};
 		AC96A8969BE859EBD00C9FBC /* Algorithm */ = {
@@ -1336,6 +1352,8 @@
 				AC96AF9C28B8E85022971F70 /* Errors.swift in Sources */,
 				AC96A00FF55B45C2AAD4389F /* FileStream.swift in Sources */,
 				AC96AB36CA0FF06CF047764E /* Observable.swift in Sources */,
+				AC96A5324F6F2BF354CAA84F /* Path.swift in Sources */,
+				AC96AD9E7C7AEEF487B7684F /* FileSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1484,6 +1502,8 @@
 				AC96AEF5A2B8A943E63F9402 /* ByteStream.swift in Sources */,
 				AC96A0FB7797A323EC2E34A3 /* Errors.swift in Sources */,
 				AC96ADE14A6F9A0AA8FA36C9 /* FileStream.swift in Sources */,
+				AC96A7E5633F1756F813D108 /* Path.swift in Sources */,
+				AC96AC9DBE3766A7271D6C6C /* FileSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

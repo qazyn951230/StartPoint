@@ -20,42 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef START_POINT_CONFIG_H
-#define START_POINT_CONFIG_H
-
-#ifdef __cplusplus
-#define SP_EXTERN_C_BEGIN   extern "C" {
-#define SP_EXTERN_C_END     }
-
-#define SP_NAMESPACE_BEGIN  namespace StartPoint {
-#define SP_NAMESPACE_END    }
-
-#define SP_CPP_FILE_BEGIN   SP_NAMESPACE_BEGIN  \
-                            _Pragma("clang assume_nonnull begin")
-#define SP_CPP_FILE_END     _Pragma("clang assume_nonnull end") \
-                            SP_NAMESPACE_END
-#else
-#define SP_EXTERN_C_BEGIN
-#define SP_EXTERN_C_END
-
-#define SP_NAMESPACE_BEGIN
-#define SP_NAMESPACE_END
-
-#define SP_CPP_FILE_BEGIN
-#define SP_CPP_FILE_END
-#endif
-
-#define SP_C_FILE_BEGIN SP_EXTERN_C_BEGIN \
-                        _Pragma("clang assume_nonnull begin")
-#define SP_C_FILE_END   _Pragma("clang assume_nonnull end") \
-                        SP_EXTERN_C_END
-
-#if defined(__clang__) || defined(__GNUC__)
-#define SP_LIKELY(x)    __builtin_expect(!!(x), 1)
-#define SP_UNLIKELY(x)  __builtin_expect(!!(x), 0)
-#else
-#define SP_LIKELY(x)    (x)
-#define SP_UNLIKELY(x)  (x)
-#endif
-
-#endif //START_POINT_CONFIG_H
+//import Darwin.C
+//
+//public class FileSystem {
+//    public var current: Path {
+//        get {
+//            let size = Int(PATH_MAX)
+//            let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: size)
+//            defer {
+//                buffer.deallocate()
+//            }
+//            getcwd(buffer, size)
+//            return Path(String(cString: buffer))
+//        }
+//        set {
+//           _ = newValue.string.withCString(chdir)
+//        }
+//    }
+//
+//    public func copy(from: Path, to: Path) {
+//
+//    }
+//}

@@ -69,4 +69,19 @@ public extension String {
         }
         return self
     }
+
+    public static func decodeFixedArray<T>(_ value: T, keyPath: PartialKeyPath<T>, count: Int) -> String? {
+        guard let offset = MemoryLayout<T>.offset(of: keyPath) else {
+            return nil
+        }
+        return withUnsafePointer(to: value) { (pointer: UnsafePointer<T>) -> String? in
+            let raw: UnsafeRawPointer = UnsafeRawPointer(pointer).advanced(by: offset)
+            let field: UnsafePointer<UInt8> = raw.assumingMemoryBound(to: UInt8.self)
+            if field[count - 1] != 0 {
+                let data = Data(bytes: raw, count: count)
+                return String(data: data, encoding: .utf8)
+            }
+            return String(cString: field)
+        }
+    }
 }

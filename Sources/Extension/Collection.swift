@@ -121,10 +121,7 @@ public extension String {
         if _end == nil {
             return [self[start..<endIndex]]
         }
-        while true {
-            guard let end = _end else {
-                break
-            }
+        while let end = _end {
             if end < endIndex {
                 let seq: Substring = self[start..<end]
                 result.append(seq)
