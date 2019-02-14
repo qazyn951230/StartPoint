@@ -41,7 +41,7 @@ public final class RequestBuilder {
     // Debug
     public private(set) var file: String = String.empty
     public private(set) var function: String = String.empty
-    public private(set) var line: Int = 0
+    public private(set) var line: UInt = 0
 
     public init(url: String, method: HTTPMethod) {
         self.url = url
@@ -129,7 +129,7 @@ public final class RequestBuilder {
     }
 
     @discardableResult
-    public func debug(file: String, function: String, line: Int) -> RequestBuilder {
+    public func debug(file: String, function: String, line: UInt) -> RequestBuilder {
         self.file = file
         self.function = function
         self.line = line
