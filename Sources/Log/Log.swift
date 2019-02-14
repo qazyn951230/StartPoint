@@ -37,7 +37,11 @@ public final class Log {
     private let separator: String = "\u{0020}"
     // Default is a single '\n'
     private let newline: [UInt8] = [0x0a]
+#if os(iOS)
+    private let dateFormatter = DateFormatter()
+#else
     private let dateFormatter = ISO8601DateFormatter()
+#endif
     private let queue: DispatchQueue
     private let tag: String
 
@@ -53,58 +57,58 @@ public final class Log {
         queue = DispatchQueue(label: self.tag, qos: .utility)
     }
 
-    public func verbose(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public func verbose(_ value: Any..., file: String = #file, function: String = #function,
                         line: UInt = #line, column: UInt = #column) {
         write(value, level: .verbose, file, function, line, column)
     }
 
-    public func verbose(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public func verbose(any value: Any?..., file: String = #file, function: String = #function,
                         line: UInt = #line, column: UInt = #column) {
         write(any: value, level: .verbose, file, function, line, column)
     }
 
-    public func debug(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public func debug(_ value: Any..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         write(value, level: .debug, file, function, line, column)
     }
 
-    public func debug(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public func debug(any value: Any?..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         write(any: value, level: .debug, file, function, line, column)
     }
 
-    public func info(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public func info(_ value: Any..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         write(value, level: .info, file, function, line, column)
     }
 
-    public func info(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public func info(any value: Any?..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         write(any: value, level: .info, file, function, line, column)
     }
 
-    public func warn(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public func warn(_ value: Any..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         write(value, level: .warn, file, function, line, column)
     }
 
-    public func warn(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public func warn(any value: Any?..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         write(any: value, level: .warn, file, function, line, column)
     }
 
-    public func error(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public func error(_ value: Any..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         write(value, level: .error, file, function, line, column)
     }
 
-    public func error(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public func error(any value: Any?..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         write(any: value, level: .error, file, function, line, column)
     }
 
     @inline(__always)
-    private func write(_ value: [Any], level: LogLevel, _ file: StaticString,
+    private func write(_ value: [Any], level: LogLevel, _ file: String,
                        _ function: String, _ line: UInt, _ column: UInt) {
         guard self.level >= level && self.level > LogLevel.off else {
             return
@@ -113,7 +117,7 @@ public final class Log {
     }
 
     @inline(__always)
-    private func write(any value: [Any?], level: LogLevel, _ file: StaticString,
+    private func write(any value: [Any?], level: LogLevel, _ file: String,
                        _ function: String, _ line: UInt, _ column: UInt) {
         guard self.level >= level && self.level > LogLevel.off else {
             return
@@ -125,7 +129,7 @@ public final class Log {
     // Date [Thread] Level [file:line:column] function
     // message lines
     @inline(__always)
-    private func write(value: [Any], _ level: LogLevel, _ file: StaticString,
+    private func write(value: [Any], _ level: LogLevel, _ file: String,
                        _ function: String, _ line: UInt, _ column: UInt) {
         assert(level != LogLevel.off)
         waitGroup?.enter()
@@ -150,7 +154,7 @@ public final class Log {
 
     // Date [Thread] Level [file:line:column] function
     @inline(__always)
-    private func header(_ level: LogLevel, _ file: StaticString,
+    private func header(_ level: LogLevel, _ file: String,
                         _ function: String, _ line: UInt, _ column: UInt) -> String {
         var array: [String] = [dateFormatter.string(from: Date())]
         array.append(level.description)
@@ -216,52 +220,52 @@ public final class Log {
         return Log(tag: tag, level: _level, destinations: _destinations)
     }
 
-    public static func verbose(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public static func verbose(_ value: Any..., file: String = #file, function: String = #function,
                         line: UInt = #line, column: UInt = #column) {
         global.write(value, level: .verbose, file, function, line, column)
     }
 
-    public static func verbose(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public static func verbose(any value: Any?..., file: String = #file, function: String = #function,
                         line: UInt = #line, column: UInt = #column) {
         global.write(any: value, level: .verbose, file, function, line, column)
     }
 
-    public static func debug(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public static func debug(_ value: Any..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         global.write(value, level: .debug, file, function, line, column)
     }
 
-    public static func debug(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public static func debug(any value: Any?..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         global.write(any: value, level: .debug, file, function, line, column)
     }
 
-    public static func info(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public static func info(_ value: Any..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         global.write(value, level: .info, file, function, line, column)
     }
 
-    public static func info(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public static func info(any value: Any?..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         global.write(any: value, level: .info, file, function, line, column)
     }
 
-    public static func warn(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public static func warn(_ value: Any..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         global.write(value, level: .warn, file, function, line, column)
     }
 
-    public static func warn(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public static func warn(any value: Any?..., file: String = #file, function: String = #function,
                      line: UInt = #line, column: UInt = #column) {
         global.write(any: value, level: .warn, file, function, line, column)
     }
 
-    public static func error(_ value: Any..., file: StaticString = #file, function: String = #function,
+    public static func error(_ value: Any..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         global.write(value, level: .error, file, function, line, column)
     }
 
-    public static func error(any value: Any?..., file: StaticString = #file, function: String = #function,
+    public static func error(any value: Any?..., file: String = #file, function: String = #function,
                       line: UInt = #line, column: UInt = #column) {
         global.write(any: value, level: .error, file, function, line, column)
     }
