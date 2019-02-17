@@ -51,7 +51,7 @@ public extension Locking {
 }
 
 @available(iOS 10.0, *)
-final public class UnfairLock: Locking {
+public final class UnfairLock: Locking {
     private let _lock: os_unfair_lock_t
 
     public init() {
@@ -77,7 +77,7 @@ final public class UnfairLock: Locking {
     }
 }
 
-final public class MutexLock: Locking {
+public final class MutexLock: Locking {
     private let mutex: UnsafeMutablePointer<pthread_mutex_t>
 
     public init(recursive: Bool = false) {

@@ -601,11 +601,11 @@ public final class JSONObject: JSON {
         return value
     }
 
-    public override var dictionaryValue: [String: JSON]? {
+    public override var dictionaryValue: [String: Notated]? {
         return value.isEmpty ? nil : value
     }
 
-    public override var dictionary: [String: JSON] {
+    public override var dictionary: [String: Notated] {
         return value
     }
 
@@ -721,11 +721,11 @@ public final class JSONArray: JSON {
         return value
     }
 
-    public override var arrayValue: [JSON]? {
+    public override var arrayValue: [Notated]? {
         return value.isEmpty ? nil : value
     }
 
-    public override var array: [JSON] {
+    public override var array: [Notated] {
         return value
     }
 

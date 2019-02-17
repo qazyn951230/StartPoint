@@ -28,7 +28,7 @@ class ParseTests: XCTestCase {
                    method: (JSONParser) throws -> JSON) {
         json.withCString { pointer in
             let stream = ByteStream.int8(pointer)
-            let parser = JSONParser(stream: stream, option: [])
+            let parser = JSONParser(stream: stream, options: [])
             do {
                 let result = try method(parser)
                 XCTAssertEqual(result, expect, file: file, line: line)

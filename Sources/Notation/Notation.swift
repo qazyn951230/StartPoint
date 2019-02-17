@@ -30,23 +30,23 @@ infix operator <|: DecodePrecedence
 infix operator <|?: DecodePrecedence
 
 public protocol BaseNotation {
-    associatedtype NotatedValue: Notated
+    static func objects(from notated: Notated) -> [Self]
 }
 
 public protocol Notation: BaseNotation {
-    init(from notated: NotatedValue)
+    init(from notated: Notated)
 }
 
 public protocol FailableNotation: BaseNotation {
-    init?(from notated: NotatedValue)
+    init?(from notated: Notated)
 }
 
 public protocol ThrowNotation: BaseNotation {
-    init(from notated: NotatedValue) throws
+    init(from notated: Notated) throws
 }
 
 public protocol StaticNotation: BaseNotation {
-    static func create(from notated: NotatedValue) -> Self
+    static func create(from notated: Notated) -> Self
 }
 
 public protocol RawNotation: StaticNotation, RawRepresentable {
@@ -54,213 +54,217 @@ public protocol RawNotation: StaticNotation, RawRepresentable {
 }
 
 public extension RawNotation where RawValue == String {
-    public static func create(from notated: NotatedValue) -> Self {
+    public static func create(from notated: Notated) -> Self {
         let temp: Self? = self.init(rawValue: notated.string)
         return temp ?? Self.default
     }
 }
 
-public protocol ListNotation: BaseNotation {
-    static func objects(from notated: NotatedValue) -> [Self]
+public extension RawNotation where RawValue == UInt {
+    public static func create(from notated: Notated) -> Self {
+        let temp: Self? = self.init(rawValue: notated.uint)
+        return temp ?? Self.default
+    }
 }
 
-public extension ListNotation where Self: Notation, Self.NotatedValue.Value == Self.NotatedValue {
-    public static func objects(from notated: Self.NotatedValue) -> [Self] {
-        return notated.array.map { (value: Self.NotatedValue.Value) -> Self in
+public extension Notation {
+    public static func objects(from notated: Notated) -> [Self] {
+        return notated.array.map { (value: Notated) -> Self in
             Self.init(from: value)
         }
     }
 }
 
-public extension ListNotation where Self: FailableNotation, Self.NotatedValue.Value == Self.NotatedValue {
-    public static func objects(from notated: Self.NotatedValue) -> [Self] {
-        return notated.array.compactMap { (value: Self.NotatedValue.Value) -> Self? in
+public extension FailableNotation {
+    public static func objects(from notated: Notated) -> [Self] {
+        return notated.array.compactMap { (value: Notated) -> Self? in
             Self.init(from: value)
         }
     }
 }
 
-public extension ListNotation where Self: StaticNotation, Self.NotatedValue.Value == Self.NotatedValue {
-    public static func objects(from notated: Self.NotatedValue) -> [Self] {
-        return notated.array.map { (value: Self.NotatedValue.Value) -> Self in
+public extension StaticNotation {
+    public static func objects(from notated: Notated) -> [Self] {
+        return notated.array.map { (value: Notated) -> Self in
             Self.create(from: value)
         }
     }
 }
 
 // MARK: - Decodable object
-public func <|?<T: FailableNotation>(notated: T.NotatedValue, key: String) -> T?
-    where T.NotatedValue.Value == T.NotatedValue {
-    return T.init(from: notated[key])
+public func <|?<T: FailableNotation>(notated: Notated, key: String) -> T? {
+    return T.init(from: notated.item(key: key))
 }
 
-public func <|<T: Notation>(notated: T.NotatedValue, key: String) -> T
-    where T.NotatedValue.Value == T.NotatedValue {
-    return T.init(from: notated[key])
+public func <|<T: Notation>(notated: Notated, key: String) -> T {
+    return T.init(from: notated.item(key: key))
 }
 
-public func <|?<T: Notation>(notated: T.NotatedValue, key: String) -> T?
-    where T.NotatedValue.Value == T.NotatedValue {
-    let temp: T.NotatedValue = notated[key]
+public func <|?<T: Notation>(notated: Notated, key: String) -> T? {
+    let temp: Notated = notated.item(key: key)
     guard temp.exists else {
         return nil
     }
     return T.init(from: temp)
 }
 
-public func <|<T: StaticNotation>(notated: T.NotatedValue, key: String) -> T
-    where T.NotatedValue.Value == T.NotatedValue {
-    return T.create(from: notated[key])
+public func <|<T: StaticNotation>(notated: Notated, key: String) -> T {
+    return T.create(from: notated.item(key: key))
 }
 
-public func <|?<T: RawRepresentable, NotatedValue: Notated>(notated: NotatedValue, key: String) -> T?
+public func <|?<T: RawRepresentable>(notated: Notated, key: String) -> T?
     where T.RawValue == String {
-    return T.init(rawValue: notated[key].string)
+    return T.init(rawValue: notated.item(key: key).string)
 }
 
-public func <|?<T: ListNotation>(notated: T.NotatedValue, key: String) -> [T]?
-    where T.NotatedValue.Value == T.NotatedValue {
-    let objects = T.objects(from: notated[key])
+public func <|?<T: BaseNotation>(notated: Notated, key: String) -> [T]? {
+    let objects = T.objects(from: notated.item(key: key))
     return objects.count > 0 ? objects : nil
 }
 
-public func <|<T: ListNotation>(notated: T.NotatedValue, key: String) -> [T]
-    where T.NotatedValue.Value == T.NotatedValue {
-    return T.objects(from: notated[key])
+public func <|<T: BaseNotation>(notated: Notated, key: String) -> [T] {
+    return T.objects(from: notated.item(key: key))
 }
 
 // MARK: - Decodable array
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [NotatedValue.Value.Value]? {
-    return notated[key].arrayValue
+public func <|?(notated: Notated, key: String) -> [Notated]? {
+    return notated.item(key: key).arrayValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [NotatedValue.Value.Value] {
-    return notated[key].array
+public func <|(notated: Notated, key: String) -> [Notated] {
+    return notated.item(key: key).array
 }
 
 // MARK: - Decodable dictionary
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: NotatedValue.Value.Value]? {
-    return notated[key].dictionaryValue
+public func <|?(notated: Notated, key: String) -> [String: Notated]? {
+    return notated.item(key: key).dictionaryValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: NotatedValue.Value.Value] {
-    return notated[key].dictionary
+public func <|(notated: Notated, key: String) -> [String: Notated] {
+    return notated.item(key: key).dictionary
 }
 
-public func <|<T: Notation>(notated: T.NotatedValue, key: String) -> [String: T]
-    where T.NotatedValue.Value == T.NotatedValue {
-    return notated[key].dictionary
+public func <|<T: Notation>(notated: Notated, key: String) -> [String: T] {
+    return notated.item(key: key).dictionary
         .mapValues(T.init(from:))
 }
 
 // MARK: - Decodable bool
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Bool? {
-    return notated[key].boolValue
+public func <|?(notated: Notated, key: String) -> Bool? {
+    return notated.item(key: key).boolValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Bool {
-    return notated[key].bool
+public func <|(notated: Notated, key: String) -> Bool {
+    return notated.item(key: key).bool
 }
 
 // MARK: - Decodable string
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> String? {
-    return notated[key].stringValue
+public func <|?(notated: Notated, key: String) -> String? {
+    return notated.item(key: key).stringValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> String {
-    return notated[key].string
+public func <|(notated: Notated, key: String) -> String {
+    return notated.item(key: key).string
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String]? {
-    let array: [NotatedValue.Value.Value]? = notated[key].arrayValue
-    return array?.compactMap { $0.stringValue }
+public func <|?(notated: Notated, key: String) -> [String]? {
+    let array: [Notated]? = notated.item(key: key).arrayValue
+    return array?.compactMap {
+        $0.stringValue
+    }
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String] {
-    let array: [NotatedValue.Value.Value] = notated[key].array
-    return array.map { $0.string }
+public func <|(notated: Notated, key: String) -> [String] {
+    let array: [Notated] = notated.item(key: key).array
+    return array.map {
+        $0.string
+    }
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: String] {
-    let map: [String: NotatedValue.Value.Value] = notated[key].dictionary
-    return map.mapValues { $0.string }
+public func <|(notated: Notated, key: String) -> [String: String] {
+    let map: [String: Notated] = notated.item(key: key).dictionary
+    return map.mapValues {
+        $0.string
+    }
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> [String: Any] {
-    let map: [String: NotatedValue.Value.Value] = notated[key].dictionary
-    return map.mapValues { $0.raw }
+public func <|(notated: Notated, key: String) -> [String: Any] {
+    let map: [String: Notated] = notated.item(key: key).dictionary
+    return map.mapValues {
+        $0.raw
+    }
 }
 
 // Decodable number
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Double? {
-    return notated[key].doubleValue
+public func <|?(notated: Notated, key: String) -> Double? {
+    return notated.item(key: key).doubleValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Double {
-    return notated[key].double
+public func <|(notated: Notated, key: String) -> Double {
+    return notated.item(key: key).double
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Float? {
-    return notated[key].floatValue
+public func <|?(notated: Notated, key: String) -> Float? {
+    return notated.item(key: key).floatValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Float {
-    return notated[key].float
+public func <|(notated: Notated, key: String) -> Float {
+    return notated.item(key: key).float
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int? {
-    return notated[key].intValue
+public func <|?(notated: Notated, key: String) -> Int? {
+    return notated.item(key: key).intValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int {
-    return notated[key].int
+public func <|(notated: Notated, key: String) -> Int {
+    return notated.item(key: key).int
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt? {
-    return notated[key].uintValue
+public func <|?(notated: Notated, key: String) -> UInt? {
+    return notated.item(key: key).uintValue
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt {
-    return notated[key].uint
+public func <|(notated: Notated, key: String) -> UInt {
+    return notated.item(key: key).uint
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int32? {
-    return notated[key].int32Value
+public func <|?(notated: Notated, key: String) -> Int32? {
+    return notated.item(key: key).int32Value
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int32 {
-    return notated[key].int32
+public func <|(notated: Notated, key: String) -> Int32 {
+    return notated.item(key: key).int32
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt32? {
-    return notated[key].uint32Value
+public func <|?(notated: Notated, key: String) -> UInt32? {
+    return notated.item(key: key).uint32Value
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt32 {
-    return notated[key].uint32
+public func <|(notated: Notated, key: String) -> UInt32 {
+    return notated.item(key: key).uint32
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int64? {
-    return notated[key].int64Value
+public func <|?(notated: Notated, key: String) -> Int64? {
+    return notated.item(key: key).int64Value
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> Int64 {
-    return notated[key].int64
+public func <|(notated: Notated, key: String) -> Int64 {
+    return notated.item(key: key).int64
 }
 
-public func <|?<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt64? {
-    return notated[key].uint64Value
+public func <|?(notated: Notated, key: String) -> UInt64? {
+    return notated.item(key: key).uint64Value
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> UInt64 {
-    return notated[key].uint64
+public func <|(notated: Notated, key: String) -> UInt64 {
+    return notated.item(key: key).uint64
 }
 
-public func <|<NotatedValue: Notated>(notated: NotatedValue, key: String) -> NotatedValue.Value {
-    return notated[key]
+public func <|(notated: Notated, key: String) -> Notated {
+    return notated.item(key: key)
 }
 
-public func <|?(json: JSON, key: String) -> JSON? {
-    let result = json[key]
-    return result.equals(to: JSON.null) ? nil : result
+public func <|?(notated: Notated, key: String) -> Notated? {
+    let result = notated.item(key: key)
+    return result.exists ? nil : result
 }

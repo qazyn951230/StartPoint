@@ -21,15 +21,13 @@
 // SOFTWARE.
 
 public protocol Notated {
-    associatedtype Value: Notated = Self
-
     var raw: Any { get }
     var exists: Bool { get }
 
-    var arrayValue: [Value]? { get }
-    var array: [Value] { get }
-    var dictionaryValue: [String: Value]? { get }
-    var dictionary: [String: Value] { get }
+    var arrayValue: [Notated]? { get }
+    var array: [Notated] { get }
+    var dictionaryValue: [String: Notated]? { get }
+    var dictionary: [String: Notated] { get }
     var boolValue: Bool? { get }
     var bool: Bool { get }
     var stringValue: String? { get }
@@ -51,27 +49,28 @@ public protocol Notated {
     var uint64Value: UInt64? { get }
     var uint64: UInt64 { get }
 
-    subscript(index: Int) -> Value { get }
-    subscript(key: String) -> Value { get }
+    func item(at index: Int) -> Notated
+    func item(key: String) -> Notated
 }
 
 public extension Notated {
     public var exists: Bool {
         return true
     }
-    public var arrayValue: [Value]? {
+
+    public var arrayValue: [Notated]? {
         return nil
     }
 
-    public var array: [Value] {
+    public var array: [Notated] {
         return []
     }
 
-    public var dictionaryValue: [String: Value]? {
+    public var dictionaryValue: [String: Notated]? {
         return nil
     }
 
-    public var dictionary: [String: Value] {
+    public var dictionary: [String: Notated] {
         return [:]
     }
 

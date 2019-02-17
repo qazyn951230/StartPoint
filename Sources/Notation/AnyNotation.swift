@@ -326,6 +326,14 @@ public final class AnyNotation: Notated {
         return dictionaryValue?[key] ?? AnyNotation.null
     }
 
+    public func item(at index: Int) -> Notated {
+        return self[index]
+    }
+
+    public func item(key: String) -> Notated {
+        return self[key]
+    }
+
     enum Kind {
         case number
         case string

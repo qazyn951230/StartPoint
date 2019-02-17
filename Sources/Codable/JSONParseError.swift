@@ -20,28 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class Weak<T: AnyObject & Equatable>: Equatable {
-    public weak var value: T?
+import Foundation
 
-    public init(_ value: T) {
-        self.value = value
-    }
-
-    public static func ==(lhs: Weak<T>, rhs: Weak<T>) -> Bool {
-        return lhs.value == rhs.value
-    }
-}
-
-public final class WeakHash<T: AnyObject & Hashable>: Hashable {
-    public weak var value: T?
-    public let hashValue: Int
-
-    public init(_ value: T) {
-        self.value = value
-        hashValue = value.hashValue
-    }
-
-    public static func ==(lhs: WeakHash<T>, rhs: WeakHash<T>) -> Bool {
-        return lhs.value == rhs.value
-    }
+public enum JSONParseError: LocalizedError {
+    case valueInvalid
+    case invalidEncoding
+    case missQuotationMark
+    case stringEscapeInvalid
+    case StringUnicodeEscapeInvalidHex
+    case objectMissName
+    case objectMissColon
+    case objectMissCommaOrCurlyBracket
+    case arrayMissCommaOrSquareBracket
+    case numberMissFraction
 }

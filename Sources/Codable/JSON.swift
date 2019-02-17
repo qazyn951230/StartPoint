@@ -74,7 +74,6 @@ public extension JSONVisitor {
     public func visit(uint64 value: JSONUInt64) {
         visit(value)
     }
-
 }
 
 public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
@@ -94,19 +93,19 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
         return true
     }
 
-    public var arrayValue: [JSON]? {
+    public var arrayValue: [Notated]? {
         return nil
     }
 
-    public var array: [JSON]  {
+    public var array: [Notated]  {
         return []
     }
 
-    public var dictionaryValue: [String: JSON]? {
+    public var dictionaryValue: [String: Notated]? {
         return nil
     }
 
-    public var dictionary: [String: JSON] {
+    public var dictionary: [String: Notated] {
         return [:]
     }
 
@@ -218,18 +217,26 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
         return JSON.null
     }
 
-    public static func parse(_ value: String, option: ParserOption = []) throws -> JSON {
+    public func item(at index: Int) -> Notated {
+        return self[index]
+    }
+
+    public func item(key: String) -> Notated {
+        return self[key]
+    }
+
+    public static func parse(_ value: String, option: JSONParser.Options = []) throws -> JSON {
         return try value.withCString { pointer in
             let stream = ByteStream.int8(pointer)
-            let parser = JSONParser(stream: stream, option: option)
+            let parser = JSONParser(stream: stream, options: option)
             return try parser.parse()
         }
     }
 
-    public static func parse(_ data: Data, option: ParserOption = []) throws -> JSON {
+    public static func parse(_ data: Data, option: JSONParser.Options = []) throws -> JSON {
         return try data.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) in
             let stream = ByteStream.uint8(pointer)
-            let parser = JSONParser(stream: stream, option: option)
+            let parser = JSONParser(stream: stream, options: option)
             return try parser.parse()
         }
     }

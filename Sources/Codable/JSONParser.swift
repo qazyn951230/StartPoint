@@ -20,23 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct ParserOption: OptionSet {
-    public let rawValue: Int32
+public final class JSONParser {
+    public struct Options: OptionSet {
+        public let rawValue: Int32
 
-    public init(rawValue: Int32) {
-        self.rawValue = rawValue
+        public init(rawValue: Int32) {
+            self.rawValue = rawValue
+        }
+
+        public static let fullPrecision = Options(rawValue: 1 << 0)
     }
 
-    public static let fullPrecision = ParserOption(rawValue: 1 << 0)
-}
-
-final public class JSONParser {
     let stream: ByteStream
-    let option: ParserOption
+    let options: Options
 
-    public init(stream: ByteStream, option: ParserOption = []) {
+    public init(stream: ByteStream, options: Options = []) {
         self.stream = stream
-        self.option = option
+        self.options = options
     }
 
     //  n,  t,  f,  ",  [,  {
@@ -67,7 +67,7 @@ final public class JSONParser {
                consume(char: 0x6c) && consume(char: 0x6c) {
             return JSON.null
         } else {
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
     }
 
@@ -78,7 +78,7 @@ final public class JSONParser {
                consume(char: 0x075) && consume(char: 0x65) {
             return JSONBool(true)
         } else {
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
     }
 
@@ -89,7 +89,7 @@ final public class JSONParser {
                consume(char: 0x73) && consume(char: 0x65) {
             return JSONBool(false)
         } else {
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
     }
 
@@ -141,7 +141,7 @@ final public class JSONParser {
                 }
             }
         default:
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
         var useDouble = false
         var double: Double = 0
@@ -186,7 +186,7 @@ final public class JSONParser {
 //            decimalPosition = stream.current
             next = UInt32(stream.peek())
             if next < 0x30 || next > 0x39 {
-                throw JSONReaderError.numberMissFraction
+                throw JSONParseError.numberMissFraction
             }
             if !useDouble {
                 if !use64bit {
@@ -253,13 +253,13 @@ final public class JSONParser {
         }
         while true {
             if stream.peek() != 0x22 {
-                throw JSONReaderError.objectMissName
+                throw JSONParseError.objectMissName
             }
             skip()
             let key = try quotedString()
             skip()
             if !consume(char: 0x3a) {
-                throw JSONReaderError.objectMissColon
+                throw JSONParseError.objectMissColon
             }
             skip()
             let value = try parse()
@@ -273,7 +273,7 @@ final public class JSONParser {
                 stream.move()
                 return object
             default:
-                throw JSONReaderError.objectMissCommaOrCurlyBracket
+                throw JSONParseError.objectMissCommaOrCurlyBracket
             }
         }
     }
@@ -297,18 +297,18 @@ final public class JSONParser {
             } else if consume(char: 0x5d) {
                 return array
             } else {
-                throw JSONReaderError.arrayMissCommaOrSquareBracket
+                throw JSONParseError.arrayMissCommaOrSquareBracket
             }
         }
     }
 
     func quotedString() throws -> String {
         if !consume(char: 0x22) {
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
         let value = try rawString()
         if !consume(char: 0x22) {
-            throw JSONReaderError.valueInvalid
+            throw JSONParseError.valueInvalid
         }
         return value
     }
@@ -332,9 +332,9 @@ final public class JSONParser {
             case 0x22:
                 return String(bytes: result, encoding: .utf8) ?? ""
             case 0x00:
-                throw JSONReaderError.missQuotationMark
+                throw JSONParseError.missQuotationMark
             case 0x01..<0x20:
-                throw JSONReaderError.invalidEncoding
+                throw JSONParseError.invalidEncoding
             default:
                 result.append(next)
                 stream.move()
@@ -370,7 +370,7 @@ final public class JSONParser {
             stream.move()
             return 0x09
         default:
-            throw JSONReaderError.stringEscapeInvalid
+            throw JSONParseError.stringEscapeInvalid
         }
     }
 
@@ -394,7 +394,7 @@ final public class JSONParser {
                     UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))),
                     UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F)))]
         }
-        throw JSONReaderError.valueInvalid
+        throw JSONParseError.valueInvalid
     }
 
     func parseUnicodeValue() throws -> UInt32 {
@@ -412,7 +412,7 @@ final public class JSONParser {
             case 0x61...0x66: // a-f
                 point -= next - 0x61
             default:
-                throw JSONReaderError.StringUnicodeEscapeInvalidHex
+                throw JSONParseError.StringUnicodeEscapeInvalidHex
             }
             stream.move()
         }
@@ -434,18 +434,5 @@ final public class JSONParser {
         while next == 0x20 || next == 0x0a || next == 0x0d || next == 0x09 {
             next = stream.next()
         }
-    }
-
-    public enum JSONReaderError: LocalizedError {
-        case valueInvalid
-        case invalidEncoding
-        case missQuotationMark
-        case stringEscapeInvalid
-        case StringUnicodeEscapeInvalidHex
-        case objectMissName
-        case objectMissColon
-        case objectMissCommaOrCurlyBracket
-        case arrayMissCommaOrSquareBracket
-        case numberMissFraction
     }
 }

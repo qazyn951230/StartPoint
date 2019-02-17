@@ -221,6 +221,14 @@ public final class XMLNotation: Notated {
         return _map?[key] ?? XMLNotation.null
     }
 
+    public func item(at index: Int) -> Notated {
+        return self[index]
+    }
+
+    public func item(key: String) -> Notated {
+        return self[key]
+    }
+
     public static func parse(path: String, options: XMLNode.Options = []) -> XMLNotation {
         let url = URL(fileURLWithPath: path)
         guard let xml = try? XMLDocument(contentsOf: url, options: options),
