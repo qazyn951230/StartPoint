@@ -27,7 +27,7 @@ import Foundation
 public extension DataRequest {
     private static let emptyDataStatusCodes: Set<Int> = [204, 205]
 
-    public static func serializeResponseJSON2(options: ParserOption, response: HTTPURLResponse?,
+    public static func serializeResponseJSON2(options: JSONParser.Options, response: HTTPURLResponse?,
                                               data: Data?, error: Error?) -> Result<JSON> {
         if let e = error {
             return .failure(e)
@@ -49,14 +49,14 @@ public extension DataRequest {
         }
     }
 
-    public static func jsonResponseSerializer2(options: ParserOption = []) -> DataResponseSerializer<JSON> {
+    public static func jsonResponseSerializer2(options: JSONParser.Options = []) -> DataResponseSerializer<JSON> {
         return DataResponseSerializer { _, response, data, error in
             return DataRequest.serializeResponseJSON2(options: options, response: response, data: data, error: error)
         }
     }
 
     @discardableResult
-    public func responseJSON2(queue: DispatchQueue? = nil, options: ParserOption = [],
+    public func responseJSON2(queue: DispatchQueue? = nil, options: JSONParser.Options = [],
                              completionHandler: @escaping (Alamofire.DataResponse<JSON>) -> Swift.Void) -> Self {
         return response(queue: queue,
             responseSerializer: DataRequest.jsonResponseSerializer2(options: options),
@@ -89,7 +89,7 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func jsonResponse(queue: DispatchQueue? = nil, options: ParserOption = [])
+    public func jsonResponse(queue: DispatchQueue? = nil, options: JSONParser.Options = [])
             -> Observable<(DataResponse<JSON>, JSON)> {
         return Observable<(DataResponse<JSON>, JSON)>.create { observer in
             var request: DataRequest = self.base
@@ -108,7 +108,7 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func json(queue: DispatchQueue? = nil, options: ParserOption = [])
+    public func json(queue: DispatchQueue? = nil, options: JSONParser.Options = [])
             -> Observable<JSON> {
         return jsonResponse(queue: queue, options: options)
             .map(Function.second)
