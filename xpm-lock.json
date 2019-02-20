@@ -13,14 +13,16 @@
     "requires": [
       "Alamofire.framework",
       "RxSwift.framework",
-      "RxCocoa.framework"
+      "RxCocoa.framework",
+      "RxAtomic.framework"
     ]
   },
   "StartPoint_macOS": {
     "requires": [
       "Alamofire.framework",
       "RxSwift.framework",
-      "RxCocoa.framework"
+      "RxCocoa.framework",
+      "RxAtomic.framework"
     ]
   }
 }

@@ -5,6 +5,6 @@
     "RxSwift": "carthage"
   },
   "RxSwift": {
-    "schemes": [ "RxSwfit", "RxCocoa" ]
+    "schemes": [ "RxSwfit", "RxCocoa", "RxAtomic" ]
   }
 }

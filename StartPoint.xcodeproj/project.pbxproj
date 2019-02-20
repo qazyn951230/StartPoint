@@ -252,6 +252,8 @@
 		BC1C2E601F7F895F00CA9C99 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */; };
 		BC25D0A5212BF86600697244 /* Double.c in Sources */ = {isa = PBXBuildFile; fileRef = AC96A000E4E77DEB157E178F /* Double.c */; };
 		BC4A4A712119479E002564C6 /* StartPoint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC4A4A682119479E002564C6 /* StartPoint.framework */; };
+		BC5824E1221CF9AF001D1388 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5824E0221CF9AF001D1388 /* RxAtomic.framework */; };
+		BC5824E2221CF9AF001D1388 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5824E0221CF9AF001D1388 /* RxAtomic.framework */; };
 		BC6127551F3EFBA300AC8224 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E7591F3EB2D600DDC894 /* Alamofire.framework */; };
 		BC6127581F3EFCD400AC8224 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */; };
 		BC6127591F3EFCD400AC8224 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
@@ -488,6 +490,7 @@
 		BC4A4A682119479E002564C6 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC4A4A702119479E002564C6 /* macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC4A4A7F21194B2F002564C6 /* macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = macOS.plist; sourceTree = "<group>"; };
+		BC5824E0221CF9AF001D1388 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxAtomic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6BA1B21F2DC08700772AA8 /* iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -518,6 +521,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCF6529921C74EA100D64A48 /* RxCocoa.framework in Frameworks */,
+				BC5824E2221CF9AF001D1388 /* RxAtomic.framework in Frameworks */,
 				BCF6529821C74EA100D64A48 /* Alamofire.framework in Frameworks */,
 				BCF6529A21C74EA100D64A48 /* RxSwift.framework in Frameworks */,
 			);
@@ -536,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC6127591F3EFCD400AC8224 /* RxSwift.framework in Frameworks */,
+				BC5824E1221CF9AF001D1388 /* RxAtomic.framework in Frameworks */,
 				BC6127581F3EFCD400AC8224 /* RxCocoa.framework in Frameworks */,
 				BC6127551F3EFBA300AC8224 /* Alamofire.framework in Frameworks */,
 			);
@@ -953,6 +958,7 @@
 			isa = PBXGroup;
 			children = (
 				BC16E7591F3EB2D600DDC894 /* Alamofire.framework */,
+				BC5824E0221CF9AF001D1388 /* RxAtomic.framework */,
 				BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */,
 				BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */,
 			);
