@@ -20,57 +20,76 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class JSONWriter: JSONVisitor {
-    let stream: DataStream
-    let pretty: Bool
+public protocol JSONWriterType: JSONVisitor {
+    var stream: DataStream { get }
+    var level: Int { get }
+    var hasIntent: Bool { get }
+
+    func writeIntent()
+    func write(_ string: String)
+    func write(_ byte: UInt8)
+    func flush() throws
+    func newline()
+    func comma()
+}
+
+public extension JSONWriterType {
+    public func writeIntent() {
+        if hasIntent && level > 0 {
+            let intent = Array<UInt8>(repeating: 0x20, count: level * 2)
+            try? stream.write(bytes: intent)
+        }
+    }
+
+    public func write(_ data: Data) {
+        try? stream.write(data)
+    }
+
+    public func write(_ string: String) {
+        try? stream.write(string: string)
+    }
+
+    public func write(_ byte: UInt8) {
+        try? stream.write(byte: byte)
+    }
+
+    public func flush() throws {
+        try stream.flush()
+    }
+
+    public func newline() {
+        write(0x0a)
+    }
+
+    public func comma() {
+        write(0x2c)
+    }
+}
+
+public final class JSONWriter: JSONWriterType {
+    public let stream: DataStream
+    public let hasIntent: Bool
+    public private(set) var level = 0
     let compact: Bool
     let ordered: Bool
-    var level = 0
     var state: [State] = []
 
     public init(stream: DataStream) {
         self.stream = stream
-        pretty = true
+        hasIntent = true
         compact = true
         ordered = true
     }
 
     public init(stream: DataStream, options: Options) {
         self.stream = stream
-        pretty = options.contains(.pretty)
+        hasIntent = options.contains(.pretty)
         compact = options.contains(.compact)
         ordered = options.contains(.ordered)
     }
 
-    func writeIntent() {
-        if pretty && level > 0 {
-            let intent = Array<UInt8>(repeating: 0x20, count: level * 2)
-            try? stream.write(bytes: intent)
-        }
-    }
-
-    func write(_ string: String) {
-        try? stream.write(string: string)
-    }
-
-    func write(_ byte: UInt8) {
-        try? stream.write(byte: byte)
-    }
-
-    func flush() throws {
-        try stream.flush()
-    }
-
-    func newline() {
-        write(0x0a)
-    }
-
-    func comma() {
-        write(0x2c)
-    }
-
     public func visit(_ value: JSON) {
-        assertionFailure("Error state")
+        // Do nothing.
     }
 
     public func visit(array value: JSONArray) {
@@ -189,5 +208,159 @@ public final class JSONWriter: JSONVisitor {
         json.accept(visitor: writer)
         writer.newline()
         try writer.flush()
+    }
+}
+
+public final class JSONPlistWriter: JSONWriterType {
+    public let stream: DataStream
+    public let hasIntent: Bool = true
+    public private(set) var level = 0
+
+    public init(stream: DataStream) {
+        self.stream = stream
+    }
+
+    public func writeIntent() {
+        if hasIntent && level > 0 {
+            let intent = Array<UInt8>(repeating: 0x20, count: level * 4)
+            try? stream.write(bytes: intent)
+        }
+    }
+
+    public func header() {
+        write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+        write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" ")
+        write("\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
+        write("<plist version=\"1.0\">\"\n")
+    }
+
+    public func visit(_ value: JSON) {
+        // Do nothing.
+    }
+
+    public func visit(array value: JSONArray) {
+        let array = value.value
+        if array.isEmpty {
+            write("<array/>")
+            return
+        }
+        write("<array>\n")
+        level += 1
+        for item in array {
+            if !item.exists {
+                continue
+            }
+            writeIntent()
+            item.accept(visitor: self)
+            newline()
+        }
+        level -= 1
+        writeIntent()
+        write("</array>")
+    }
+
+    public func visit(dictionary value: JSONObject) {
+        let map = value.value
+        if map.isEmpty {
+            write("<dict/>")
+            return
+        }
+        write("<dict>\n")
+        level += 1
+        for (key, item) in map {
+            if !item.exists {
+                continue
+            }
+            writeIntent()
+            write("<key>")
+            write(key)
+            write("</key>\n")
+            writeIntent()
+            item.accept(visitor: self)
+            newline()
+        }
+        level -= 1
+        writeIntent()
+        write("</dict>")
+    }
+
+    public func visit(null value: JSONNull) {
+        // Do nothing.
+    }
+
+    public func visit(string value: JSONString) {
+        write("<string>")
+        write(JSONPlistWriter.encodingString(value.value))
+        write("</string>")
+    }
+
+    public func visit(bool value: JSONBool) {
+        if value.value {
+            write("<true/>")
+        } else {
+            write("<false/>")
+        }
+    }
+
+    public func visit(double value: JSONDouble) {
+        write("<real>")
+        write(String(value.value))
+        write("</real>")
+    }
+
+    public func visit(int value: JSONInt) {
+        write("<integer>")
+        write(String(value.value))
+        write("</integer>")
+    }
+
+    public func visit(int64 value: JSONInt64) {
+        write("<integer>")
+        write(String(value.value))
+        write("</integer>")
+    }
+
+    public func visit(uint value: JSONUInt) {
+        write("<integer>")
+        write(String(value.value))
+        write("</integer>")
+    }
+
+    public func visit(uint64 value: JSONUInt64) {
+        write("<integer>")
+        write(String(value.value))
+        write("</integer>")
+    }
+
+    public static func write(_ json: JSON, stream: DataStream) throws {
+        let writer = JSONPlistWriter(stream: stream)
+        writer.header()
+        json.accept(visitor: writer)
+        writer.newline()
+        try writer.flush()
+    }
+
+    public static func encodingString(_ value: String) -> Data {
+        var result = Data()
+        for char in value {
+            switch char {
+            case "<": // &lt;
+                result.append(contentsOf: [0x26, 0x6c, 0x74, 0x3b])
+            case ">": // &gt;
+                result.append(contentsOf: [0x26, 0x67, 0x74, 0x3b])
+            case "&": // &amp;
+                result.append(contentsOf: [0x26, 0x61, 0x6d, 0x70, 0x3b])
+            case "'": // &apos;
+                result.append(contentsOf: [0x26, 0x61, 0x70, 0x6f, 0x73, 0x3b])
+            case "\"": // &quot;
+                result.append(contentsOf: [0x26, 0x71, 0x75, 0x6f, 0x74, 0x3b])
+            default:
+                // FIXME: String => Character => String
+                if let temp = String(char).data(using: .utf8) {
+                    result.append(temp)
+                }
+            }
+        }
+        return result
     }
 }

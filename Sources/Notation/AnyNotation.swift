@@ -22,7 +22,7 @@
 
 import Foundation
 
-public final class AnyNotation: Notated {
+public final class AnyNotation: TypeNotated {
     public static let null = AnyNotation()
     public typealias Value = AnyNotation
 
@@ -48,9 +48,15 @@ public final class AnyNotation: Notated {
         case .string:
             return _rawString ?? NSNull()
         case .array:
-            return _mapArray ?? _rawArray ?? []
+            if let map = _mapArray {
+                return map.map { $0.raw }
+            }
+            return _rawArray ?? []
         case .object:
-            return _mapObject ?? _rawObject ?? [:]
+            if let map = _mapObject {
+                return map.mapValues { $0.raw }
+            }
+            return _rawObject ?? [:]
         case .number:
             return _rawNumber ?? NSNull()
         case .unknown:
@@ -319,19 +325,11 @@ public final class AnyNotation: Notated {
     }
 
     public subscript(index: Int) -> AnyNotation {
-        return arrayValue?.object(at: index) ?? AnyNotation.null
+        return arrayValue?[index] ?? AnyNotation.null
     }
 
     public subscript(key: String) -> AnyNotation {
         return dictionaryValue?[key] ?? AnyNotation.null
-    }
-
-    public func item(at index: Int) -> Notated {
-        return self[index]
-    }
-
-    public func item(key: String) -> Notated {
-        return self[key]
     }
 
     enum Kind {

@@ -601,11 +601,11 @@ public final class JSONObject: JSON {
         return value
     }
 
-    public override var dictionaryValue: [String: Notated]? {
+    public override var dictionaryValue: [String: JSON]? {
         return value.isEmpty ? nil : value
     }
 
-    public override var dictionary: [String: Notated] {
+    public override var dictionary: [String: JSON] {
         return value
     }
 
@@ -640,6 +640,19 @@ public final class JSONObject: JSON {
     @discardableResult
     public func append(key: String, dictionary element: [String: JSON]) -> JSONObject {
         return append(key: key, JSONObject(element))
+    }
+
+    @discardableResult
+    public func append(key: String, dictionary element: [String: Any], nullable: Bool) -> JSONObject {
+        if nullable {
+            let json = JSON.create(from: element, nullable: nullable) ?? JSON.null
+            return append(key: key, json)
+        } else {
+            if let json = JSON.create(from: element, nullable: nullable) {
+                return append(key: key, json)
+            }
+            return self
+        }
     }
 
     @discardableResult
@@ -721,11 +734,11 @@ public final class JSONArray: JSON {
         return value
     }
 
-    public override var arrayValue: [Notated]? {
+    public override var arrayValue: [JSON]? {
         return value.isEmpty ? nil : value
     }
 
-    public override var array: [Notated] {
+    public override var array: [JSON] {
         return value
     }
 

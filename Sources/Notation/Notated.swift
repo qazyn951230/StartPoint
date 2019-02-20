@@ -24,10 +24,10 @@ public protocol Notated {
     var raw: Any { get }
     var exists: Bool { get }
 
-    var arrayValue: [Notated]? { get }
-    var array: [Notated] { get }
-    var dictionaryValue: [String: Notated]? { get }
-    var dictionary: [String: Notated] { get }
+    var listValue: [Notated]? { get }
+    var list: [Notated] { get }
+    var mapValue: [String: Notated]? { get }
+    var map: [String: Notated] { get }
     var boolValue: Bool? { get }
     var bool: Bool { get }
     var stringValue: String? { get }
@@ -56,22 +56,6 @@ public protocol Notated {
 public extension Notated {
     public var exists: Bool {
         return true
-    }
-
-    public var arrayValue: [Notated]? {
-        return nil
-    }
-
-    public var array: [Notated] {
-        return []
-    }
-
-    public var dictionaryValue: [String: Notated]? {
-        return nil
-    }
-
-    public var dictionary: [String: Notated] {
-        return [:]
     }
 
     public var boolValue: Bool? {
@@ -152,5 +136,40 @@ public extension Notated {
 
     public var uint64: UInt64 {
         return 0
+    }
+}
+
+public protocol TypeNotated: Notated {
+    associatedtype Typed: Notated = Self
+
+    var arrayValue: [Typed]? { get }
+    var array: [Typed] { get }
+    var dictionaryValue: [String: Typed]? { get }
+    var dictionary: [String: Typed] { get }
+
+    subscript(index: Int) -> Typed { get }
+    subscript(key: String) -> Typed { get }
+}
+
+public extension TypeNotated {
+    var listValue: [Notated]? {
+        return arrayValue
+    }
+    var list: [Notated] {
+        return array
+    }
+    var mapValue: [String: Notated]? {
+        return dictionaryValue
+    }
+    var map: [String: Notated] {
+        return dictionary
+    }
+
+    func item(at index: Int) -> Notated {
+        return self[index]
+    }
+
+    func item(key: String) -> Notated {
+        return self[key]
     }
 }

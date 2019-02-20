@@ -22,7 +22,7 @@
 
 import Foundation
 
-public final class XMLNotation: Notated {
+public final class XMLNotation: TypeNotated {
     public typealias Value = XMLNotation
     static let null = XMLNotation()
 
@@ -219,14 +219,6 @@ public final class XMLNotation: Notated {
     public subscript(key: String) -> XMLNotation {
         resolve()
         return _map?[key] ?? XMLNotation.null
-    }
-
-    public func item(at index: Int) -> Notated {
-        return self[index]
-    }
-
-    public func item(key: String) -> Notated {
-        return self[key]
     }
 
     public static func parse(path: String, options: XMLNode.Options = []) -> XMLNotation {

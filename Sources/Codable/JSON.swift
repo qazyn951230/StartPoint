@@ -76,7 +76,7 @@ public extension JSONVisitor {
     }
 }
 
-public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
+public class JSON: TypeNotated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
     public static let null = JSONNull()
     public typealias Value = JSON
     public var order: Int = 0
@@ -93,19 +93,19 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
         return true
     }
 
-    public var arrayValue: [Notated]? {
+    public var arrayValue: [JSON]? {
         return nil
     }
 
-    public var array: [Notated]  {
+    public var array: [JSON] {
         return []
     }
 
-    public var dictionaryValue: [String: Notated]? {
+    public var dictionaryValue: [String: JSON]? {
         return nil
     }
 
-    public var dictionary: [String: Notated] {
+    public var dictionary: [String: JSON] {
         return [:]
     }
 
@@ -247,5 +247,74 @@ public class JSON: Notated, Equatable, CustomStringConvertible, CustomDebugStrin
 
     public static func object() -> JSONObject {
         return JSONObject([:])
+    }
+
+    static func create(from value: Any, nullable: Bool) -> JSON? {
+        switch value {
+        case let string as String:
+            return JSONString(string)
+        case let bool as Bool:
+            return JSONBool(bool)
+        case let int32 as Int32:
+            return JSONInt(int32)
+        case let int64 as Int64:
+            return JSONInt64(int64)
+        case let int as Int:
+            return JSONInt64(Int64(int))
+        case let uint32 as UInt32:
+            return JSONUInt(uint32)
+        case let uint64 as UInt64:
+            return JSONUInt64(uint64)
+        case let uint as UInt:
+            return JSONUInt64(UInt64(uint))
+        case let double as Double:
+            return JSONDouble(double)
+        case let float as Float:
+            return JSONDouble(Double(float))
+        case let int8 as Int8:
+            return JSONInt(Int32(int8))
+        case let int16 as Int16:
+            return JSONInt(Int32(int16))
+        case let uint8 as UInt8:
+            return JSONUInt(UInt32(uint8))
+        case let uint16 as UInt16:
+            return JSONUInt(UInt32(uint16))
+        case is NSNull:
+            return JSON.null
+        case let array as [Any]:
+            return create(from: array, nullable: nullable)
+        case let map as [String: Any]:
+            return create(from: map, nullable: nullable)
+        default:
+            return nil
+        }
+    }
+
+    static func create(from value: [Any], nullable: Bool) -> JSON? {
+        if nullable {
+            let array =  value.map { (v: Any) -> JSON in
+                return JSON.create(from: v, nullable: nullable) ?? JSON.null
+            }
+            return JSONArray(array)
+        } else {
+            let array = value.compactMap { (v: Any) -> JSON? in
+                return JSON.create(from: v, nullable: nullable)
+            }
+            return JSONArray(array)
+        }
+    }
+
+    static func create(from value: [String: Any], nullable: Bool) -> JSON? {
+        if nullable {
+            let map = value.mapValues { (v: Any) -> JSON in
+                return JSON.create(from: v, nullable: nullable) ?? JSON.null
+            }
+            return JSONObject(map)
+        } else {
+            let map = value.compactMapValues { (v: Any) -> JSON? in
+                return JSON.create(from: v, nullable: nullable)
+            }
+            return JSONObject(map)
+        }
     }
 }

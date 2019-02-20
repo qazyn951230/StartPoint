@@ -69,7 +69,7 @@ public extension RawNotation where RawValue == UInt {
 
 public extension Notation {
     public static func objects(from notated: Notated) -> [Self] {
-        return notated.array.map { (value: Notated) -> Self in
+        return notated.list.map { (value: Notated) -> Self in
             Self.init(from: value)
         }
     }
@@ -77,7 +77,7 @@ public extension Notation {
 
 public extension FailableNotation {
     public static func objects(from notated: Notated) -> [Self] {
-        return notated.array.compactMap { (value: Notated) -> Self? in
+        return notated.list.compactMap { (value: Notated) -> Self? in
             Self.init(from: value)
         }
     }
@@ -85,7 +85,7 @@ public extension FailableNotation {
 
 public extension StaticNotation {
     public static func objects(from notated: Notated) -> [Self] {
-        return notated.array.map { (value: Notated) -> Self in
+        return notated.list.map { (value: Notated) -> Self in
             Self.create(from: value)
         }
     }
@@ -128,24 +128,24 @@ public func <|<T: BaseNotation>(notated: Notated, key: String) -> [T] {
 
 // MARK: - Decodable array
 public func <|?(notated: Notated, key: String) -> [Notated]? {
-    return notated.item(key: key).arrayValue
+    return notated.item(key: key).listValue
 }
 
 public func <|(notated: Notated, key: String) -> [Notated] {
-    return notated.item(key: key).array
+    return notated.item(key: key).list
 }
 
-// MARK: - Decodable dictionary
+// MARK: - Decodable.map
 public func <|?(notated: Notated, key: String) -> [String: Notated]? {
-    return notated.item(key: key).dictionaryValue
+    return notated.item(key: key).mapValue
 }
 
 public func <|(notated: Notated, key: String) -> [String: Notated] {
-    return notated.item(key: key).dictionary
+    return notated.item(key: key).map
 }
 
 public func <|<T: Notation>(notated: Notated, key: String) -> [String: T] {
-    return notated.item(key: key).dictionary
+    return notated.item(key: key).map
         .mapValues(T.init(from:))
 }
 
@@ -168,31 +168,23 @@ public func <|(notated: Notated, key: String) -> String {
 }
 
 public func <|?(notated: Notated, key: String) -> [String]? {
-    let array: [Notated]? = notated.item(key: key).arrayValue
-    return array?.compactMap {
-        $0.stringValue
-    }
+    let array: [Notated]? = notated.item(key: key).listValue
+    return array?.compactMap { $0.stringValue }
 }
 
 public func <|(notated: Notated, key: String) -> [String] {
-    let array: [Notated] = notated.item(key: key).array
-    return array.map {
-        $0.string
-    }
+    let array: [Notated] = notated.item(key: key).list
+    return array.map { $0.string }
 }
 
 public func <|(notated: Notated, key: String) -> [String: String] {
-    let map: [String: Notated] = notated.item(key: key).dictionary
-    return map.mapValues {
-        $0.string
-    }
+    let map: [String: Notated] = notated.item(key: key).map
+    return map.mapValues { $0.string }
 }
 
 public func <|(notated: Notated, key: String) -> [String: Any] {
-    let map: [String: Notated] = notated.item(key: key).dictionary
-    return map.mapValues {
-        $0.raw
-    }
+    let map: [String: Notated] = notated.item(key: key).map
+    return map.mapValues { $0.raw }
 }
 
 // Decodable number

@@ -49,6 +49,14 @@ public class DataStream: WritableStream {
         let data = Data(value)
         try write(data)
     }
+
+    public static func standardOutput() -> DataStream {
+        return FileStream(file: FileHandle.standardOutput)
+    }
+
+    public static func standardError() -> DataStream {
+        return FileStream(file: FileHandle.standardError)
+    }
 }
 
 public final class FileStream: DataStream {
@@ -56,11 +64,15 @@ public final class FileStream: DataStream {
 
     let file: FileHandle
 
-    public init(path: String) throws {
-        guard let _file = FileHandle(forWritingAtPath: path) else {
+    public convenience init(path: String) throws {
+        guard let file = FileHandle(forWritingAtPath: path) else {
             throw StartPointError.cannotOpenFile(path)
         }
-        file = _file
+        self.init(file: file)
+    }
+
+    public init(file: FileHandle) {
+        self.file = file
     }
 
     public override func write(_ value: Data) throws {
