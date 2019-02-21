@@ -20,6 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+public enum SortMethod {
+    case none
+    case alphabet
+    case indexed
+    case combined
+}
+
 public protocol JSONWriterType: JSONVisitor {
     var stream: DataStream { get }
     var level: Int { get }
@@ -214,6 +221,7 @@ public final class JSONWriter: JSONWriterType {
 public final class JSONPlistWriter: JSONWriterType {
     public let stream: DataStream
     public let hasIntent: Bool = true
+    public let sorted: Bool = true
     public private(set) var level = 0
 
     public init(stream: DataStream) {
@@ -231,7 +239,11 @@ public final class JSONPlistWriter: JSONWriterType {
         write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
         write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" ")
         write("\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
-        write("<plist version=\"1.0\">\"\n")
+        write("<plist version=\"1.0\">\n")
+    }
+
+    public func footer() {
+        write("</plist>")
     }
 
     public func visit(_ value: JSON) {
@@ -246,7 +258,7 @@ public final class JSONPlistWriter: JSONWriterType {
         }
         write("<array>\n")
         level += 1
-        for item in array {
+        for item in array.sorted() {
             if !item.exists {
                 continue
             }
@@ -267,17 +279,20 @@ public final class JSONPlistWriter: JSONWriterType {
         }
         write("<dict>\n")
         level += 1
-        for (key, item) in map {
-            if !item.exists {
-                continue
+        let keys = map.keys.sorted()
+        for key in keys {
+            if let item = map[key] {
+                if !item.exists {
+                    continue
+                }
+                writeIntent()
+                write("<key>")
+                write(key)
+                write("</key>\n")
+                writeIntent()
+                item.accept(visitor: self)
+                newline()
             }
-            writeIntent()
-            write("<key>")
-            write(key)
-            write("</key>\n")
-            writeIntent()
-            item.accept(visitor: self)
-            newline()
         }
         level -= 1
         writeIntent()
@@ -337,6 +352,7 @@ public final class JSONPlistWriter: JSONWriterType {
         writer.header()
         json.accept(visitor: writer)
         writer.newline()
+        writer.footer()
         try writer.flush()
     }
 

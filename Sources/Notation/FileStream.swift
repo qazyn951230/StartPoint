@@ -65,6 +65,12 @@ public final class FileStream: DataStream {
     let file: FileHandle
 
     public convenience init(path: String) throws {
+        let manager = FileManager.default
+        if !manager.fileExists(atPath: path) {
+            if !manager.createFile(atPath: path, contents: nil) {
+                throw StartPointError.cannotOpenFile(path)
+            }
+        }
         guard let file = FileHandle(forWritingAtPath: path) else {
             throw StartPointError.cannotOpenFile(path)
         }

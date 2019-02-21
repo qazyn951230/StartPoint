@@ -38,16 +38,20 @@ public final class JSONNull: JSON {
         return "<JSON: null>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: null>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(null: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
+    override func equals(other: JSON) -> Bool {
         return self === JSON.null
+    }
+
+    override func less(other: JSON) -> Bool {
+        return true
+    }
+
+    override func greater(other: JSON) -> Bool {
+        return false
     }
 }
 
@@ -75,19 +79,29 @@ public final class JSONString: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value)>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(string: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONString {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONString {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONString {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONString {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -175,19 +189,29 @@ public final class JSONInt: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(int: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONInt {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONInt {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONInt {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONInt {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -263,19 +287,29 @@ public final class JSONInt64: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(int64: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONInt64 {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONInt64 {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONInt64 {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONInt64 {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -377,19 +411,29 @@ public final class JSONUInt: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(uint: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONUInt {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONUInt {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONUInt {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONUInt {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -485,19 +529,29 @@ public final class JSONUInt64: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(uint64: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONUInt64 {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONUInt64 {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONUInt64 {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONUInt64 {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -533,19 +587,29 @@ public final class JSONDouble: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(double: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONDouble {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONDouble {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONDouble {
+            return value < element.value
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONDouble {
+            return value > element.value
+        }
+        return super.greater(other: other)
     }
 }
 
@@ -573,19 +637,23 @@ public final class JSONBool: JSON {
         return "<JSON: \(value)>"
     }
 
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
-    }
-
     public override func accept(visitor: JSONVisitor) {
         visitor.visit(bool: self)
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONBool {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONBool {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        return !value
+    }
+
+    override func greater(other: JSON) -> Bool {
+        return value
     }
 }
 
@@ -611,10 +679,6 @@ public final class JSONObject: JSON {
 
     public override var description: String {
         return "<JSON: \(value)>"
-    }
-
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
     }
 
     public override func accept(visitor: JSONVisitor) {
@@ -710,11 +774,25 @@ public final class JSONObject: JSON {
         return append(key: key, JSONUInt64(element))
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONObject {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONObject {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONObject {
+            return value.count < element.value.count
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONObject {
+            return value.count > element.value.count
+        }
+        return super.greater(other: other)
     }
 
     public override subscript(key: String) -> JSON {
@@ -744,10 +822,6 @@ public final class JSONArray: JSON {
 
     public override var description: String {
         return "<JSON: \(value)>"
-    }
-
-    public override var debugDescription: String {
-        return "<JSON: \(value) \(address(of: self))>"
     }
 
     public override func accept(visitor: JSONVisitor) {
@@ -830,11 +904,25 @@ public final class JSONArray: JSON {
         return append(JSONUInt64(element))
     }
 
-    override func equals(to object: JSON) -> Bool {
-        if let element = object as? JSONArray {
+    override func equals(other: JSON) -> Bool {
+        if let element = other as? JSONArray {
             return value == element.value
         }
-        return super.equals(to: object)
+        return super.equals(other: other)
+    }
+
+    override func less(other: JSON) -> Bool {
+        if let element = other as? JSONArray {
+            return value.count < element.value.count
+        }
+        return super.less(other: other)
+    }
+
+    override func greater(other: JSON) -> Bool {
+        if let element = other as? JSONArray {
+            return value.count > element.value.count
+        }
+        return super.greater(other: other)
     }
 
     public override subscript(index: Int) -> JSON {

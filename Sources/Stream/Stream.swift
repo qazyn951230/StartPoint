@@ -20,17 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+public protocol ReadableStream {
+    associatedtype Value
 
-public enum JSONParseError: Error {
-    case valueInvalid
-    case invalidEncoding
-    case missQuotationMark
-    case stringEscapeInvalid
-    case StringUnicodeEscapeInvalidHex
-    case objectMissName
-    case objectMissColon
-    case objectMissCommaOrCurlyBracket
-    case arrayMissCommaOrSquareBracket
-    case numberMissFraction
+    func next() -> Value
+    func take() -> Value
+    func take(size: Int) -> [Value]
+
+    func peek() -> Value
+    func peek(offset: Int) -> Value
+
+    func move()
+    func move(offset: Int)
+}
+
+public extension ReadableStream {
+    public func next() -> Value {
+        move()
+        return peek()
+    }
+
+    public func take() -> Value {
+        let value = peek()
+        move()
+        return value
+    }
+
+    public func take(size: Int) -> [Value] {
+        precondition(size > -1)
+        var result: [Value] = []
+        for _ in 0..<size {
+            result.append(take())
+        }
+        return result
+    }
+}
+
+public protocol WritableStream {
+    associatedtype Value
+
+    func write(_ value: Value) throws
+    func flush() throws
 }

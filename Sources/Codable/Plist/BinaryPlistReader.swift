@@ -20,48 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol ReadableStream {
-    associatedtype Value
-
-    func take() -> Value
-    func take(to offset: Int) -> [Value]
-
-    func peek() -> Value
-    func peek(offset: Int) -> Value
-    func peek(at index: Int) -> Value
-
-    func move() -> Bool
-    func move(offset: Int) -> Bool
-    func move(to index: Int) -> Bool
-
-    subscript(index: Int) -> Value { get }
-}
-
-public extension ReadableStream {
-    public func take() -> Value {
-        let value = peek()
-        _ = move()
-        return value
-    }
-
-    func take(to offset: Int) -> [Value] {
-        var result: [Value] = []
-        for _ in 0..<offset {
-            result.append(take())
-        }
-        return result
-    }
-
-    public subscript(index: Int) -> Value {
-        get {
-            return peek(at: index)
-        }
-    }
-}
-
-public protocol WritableStream {
-    associatedtype Value
-
-    func write(_ value: Value) throws
-    func flush() throws
-}
+//fileprivate final class BinaryPlistContext {
+//
+//}
+//
+//public final class BinaryPlistReader {
+//    let stream: ByteStream
+//
+//    public init(stream: ByteStream) {
+//        self.stream = stream
+//    }
+//
+//    private func header() {
+//
+//    }
+//}

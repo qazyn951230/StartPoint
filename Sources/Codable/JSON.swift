@@ -76,7 +76,7 @@ public extension JSONVisitor {
     }
 }
 
-public class JSON: TypeNotated, Equatable, CustomStringConvertible, CustomDebugStringConvertible {
+public class JSON: TypeNotated, Comparable, CustomStringConvertible {
     public static let null = JSONNull()
     public typealias Value = JSON
     public var order: Int = 0
@@ -86,7 +86,7 @@ public class JSON: TypeNotated, Equatable, CustomStringConvertible, CustomDebugS
     }
 
     public var raw: Any {
-        return ""
+        return String.empty
     }
 
     public var exists: Bool {
@@ -190,23 +190,51 @@ public class JSON: TypeNotated, Equatable, CustomStringConvertible, CustomDebugS
     }
 
     public var description: String {
-        return "<JSON>"
-    }
-
-    public var debugDescription: String {
-        return "<JSON: \(address(of: self))>"
+        return String.empty
     }
 
     public func accept(visitor: JSONVisitor) {
         visitor.visit(self)
     }
 
-    func equals(to object: JSON) -> Bool {
-        return self === object
+    func equals(other: JSON) -> Bool {
+        return self === other
+    }
+
+    func less(other: JSON) -> Bool {
+        return false
+    }
+
+    func greater(other: JSON) -> Bool {
+        return !lessOrEqual(other: other)
+    }
+
+    func lessOrEqual(other: JSON) -> Bool {
+        return equals(other: other) || less(other: other)
+    }
+
+    func greaterOrEqual(other: JSON) -> Bool {
+        return equals(other: other) || greater(other: other)
     }
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.equals(to: rhs)
+        return lhs.equals(other: rhs)
+    }
+
+    public static func <(lhs: JSON, rhs: JSON) -> Bool {
+        return lhs.less(other: rhs)
+    }
+
+    public static func <=(lhs: JSON, rhs: JSON) -> Bool {
+        return lhs.lessOrEqual(other: rhs)
+    }
+
+    public static func >(lhs: JSON, rhs: JSON) -> Bool {
+        return lhs.greater(other: rhs)
+    }
+
+    public static func >=(lhs: JSON, rhs: JSON) -> Bool {
+        return lhs.greaterOrEqual(other: rhs)
     }
 
     public subscript(index: Int) -> JSON {
@@ -304,7 +332,7 @@ public class JSON: TypeNotated, Equatable, CustomStringConvertible, CustomDebugS
         }
     }
 
-    static func create(from value: [String: Any], nullable: Bool) -> JSON? {
+    public static func create(from value: [String: Any], nullable: Bool) -> JSON? {
         if nullable {
             let map = value.mapValues { (v: Any) -> JSON in
                 return JSON.create(from: v, nullable: nullable) ?? JSON.null
