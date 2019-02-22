@@ -193,10 +193,12 @@
 		AC96ACAF4592BC56CCA73704 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7DD51A8DC2463702C6E /* PersistenceTests.swift */; };
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
 		AC96ACCF2CCC4001ACE5116E /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF6BFC92CCBFACCADA7C /* Stream.swift */; };
+		AC96ACE6C81FA6B99C78B494 /* MemoryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */; };
 		AC96ACF5A55DA28EEAA4C9D7 /* StartLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFEC484673FEBC3FDF5B /* StartLabel.swift */; };
 		AC96AD0B363703B4490B9200 /* MinMaxDimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */; };
 		AC96AD13E7C00E21C2972AC8 /* UnicodeStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A93466C792C36E118E28 /* UnicodeStream.swift */; };
 		AC96AD1E2405F3F8CC7B9D67 /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3CE4AD79F58DDB5E59 /* Optional.swift */; };
+		AC96AD4C6DCFE66207A9883B /* MemoryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */; };
 		AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE78F11EBC0CF12D80C8 /* DirtyMarkingTests.swift */; };
 		AC96AD6390386604C008D1DD /* AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC81FAF819B3E8886240 /* AttributedString.swift */; };
 		AC96AD7E61D389E663E4B747 /* NotationCoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A57C32DA8C738856D4DC /* NotationCoderTests.swift */; };
@@ -304,6 +306,7 @@
 		AC96A049016BCF3BD73C578F /* TextLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLayout.swift; sourceTree = "<group>"; };
 		AC96A05651F2A36DE50AD01A /* ElementContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementContainer.swift; sourceTree = "<group>"; };
 		AC96A05B3B0690B7B3B3C8B8 /* ControlElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlElement.swift; sourceTree = "<group>"; };
+		AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryBuffer.swift; sourceTree = "<group>"; };
 		AC96A0FC10F6CE9C8040980B /* Double.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		AC96A0FCF7D4FE5D5D091381 /* AlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		AC96A0FF4EE7351C2C3980F3 /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
@@ -848,6 +851,7 @@
 				AC96AF6BFC92CCBFACCADA7C /* Stream.swift */,
 				AC96A660ACE5815583364D09 /* ByteStream.swift */,
 				AC96A93466C792C36E118E28 /* UnicodeStream.swift */,
+				AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */,
 			);
 			path = Stream;
 			sourceTree = "<group>";
@@ -1398,6 +1402,7 @@
 				AC96A7F80A1D90AFCAFD6527 /* Stream.swift in Sources */,
 				AC96AB61259A58D02F493257 /* ByteStream.swift in Sources */,
 				AC96AD13E7C00E21C2972AC8 /* UnicodeStream.swift in Sources */,
+				AC96AD4C6DCFE66207A9883B /* MemoryBuffer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1550,6 +1555,7 @@
 				AC96ACCF2CCC4001ACE5116E /* Stream.swift in Sources */,
 				AC96AF3494D44C99DC77D8C3 /* ByteStream.swift in Sources */,
 				AC96A0C7D177AF2DD2C73BCA /* UnicodeStream.swift in Sources */,
+				AC96ACE6C81FA6B99C78B494 /* MemoryBuffer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
