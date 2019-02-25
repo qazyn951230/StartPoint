@@ -20,27 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Darwin.C
-
-public enum BasicError: Error {
+enum PropertyListKind {
     case unknown
-    case invalidArgument
-    case noEnoughMemory
-    case permissionDenied
-    // File System
-    case noSuchFile
-    case fileExists
-    case filenameToLong
-    case fileTooLarge
-    case notDirectory
-    case isDirectory
-    case noEnoughSpace
-    case invalidData
-    case ioError
-    // C
-    case posix(Int32)
-
-    public static func posixError() -> BasicError {
-        return BasicError.posix(errno)
-    }
+    case null
+    case boolTrue
+    case boolFalse
+    case fill
+    case date
+    case integer
+    case real
+    case data
+    case ascii
+    case unicode
+    case uid
+    case array
+    case dictionary
 }

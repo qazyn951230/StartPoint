@@ -20,27 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Darwin.C
+import Foundation
 
-public enum BasicError: Error {
-    case unknown
-    case invalidArgument
-    case noEnoughMemory
-    case permissionDenied
-    // File System
-    case noSuchFile
-    case fileExists
-    case filenameToLong
-    case fileTooLarge
-    case notDirectory
-    case isDirectory
-    case noEnoughSpace
-    case invalidData
-    case ioError
-    // C
-    case posix(Int32)
+public class PropertyListReader {
+    init() {
+        // Do nothing.
+    }
 
-    public static func posixError() -> BasicError {
-        return BasicError.posix(errno)
+    public func read() {
+        // Do nothing.
+    }
+
+    public static func binaryReader(stream: FileByteStream) -> PropertyListReader {
+        return BinaryPropertyListReader(stream: stream)
     }
 }

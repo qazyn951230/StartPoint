@@ -186,20 +186,24 @@ public final class UnicodeStream: ReadableStream {
         }
     }
 
-    public func move() {
+    @discardableResult
+    public func move() -> Bool {
         decode(offset: 0)
         if available {
             current = current.successor()
             index += 1
         }
+        return true
     }
 
-    public func move(offset: Int) {
+    @discardableResult
+    public func move(offset: Int) -> Bool {
         precondition(offset > -1 && offset < 1024)
         decode(offset: offset)
         if index + offset < count {
             current = current.advanced(by: offset)
             index += offset
         }
+        return true
     }
 }

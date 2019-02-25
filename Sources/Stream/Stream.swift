@@ -30,19 +30,19 @@ public protocol ReadableStream {
     func peek() -> Value
     func peek(offset: Int) -> Value
 
-    func move()
-    func move(offset: Int)
+    func move() -> Bool
+    func move(offset: Int) -> Bool
 }
 
 public extension ReadableStream {
     public func next() -> Value {
-        move()
+        _ = move()
         return peek()
     }
 
     public func take() -> Value {
         let value = peek()
-        move()
+        _ = move()
         return value
     }
 
@@ -61,4 +61,31 @@ public protocol WritableStream {
 
     func write(_ value: Value) throws
     func flush() throws
+}
+
+public enum SeekOffset {
+    case current
+    case start
+    case end
+}
+
+public protocol RandomAccessStream: ReadableStream {
+    func move(offset: Int, seek: SeekOffset) -> Bool
+    func peek(offset: Int, seek: SeekOffset) -> Value
+
+    subscript(position: Int) -> Value { get }
+}
+
+public extension RandomAccessStream {
+    public func peek(offset: Int) -> Value {
+        return self.peek(offset: offset, seek: .current)
+    }
+
+    public func move(offset: Int) -> Bool {
+        return self.move(offset: offset, seek: .current)
+    }
+
+    public subscript(position: Int) -> Value {
+        return self.peek(offset: position, seek: .start)
+    }
 }

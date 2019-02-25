@@ -37,12 +37,14 @@ public class ByteStream: ReadableStream {
         return 0
     }
 
-    public func move() {
-        // Do nothing.
+    @discardableResult
+    public func move() -> Bool {
+        return false
     }
 
-    public func move(offset: Int) {
-        // Do nothing.
+    @discardableResult
+    public func move(offset: Int) -> Bool {
+        return false
     }
 
     public static func int8(_ source: UnsafePointer<Int8>) -> ByteStream {
@@ -58,248 +60,170 @@ public class ByteStream: ReadableStream {
     }
 }
 
-final class Int8Stream: ByteStream {
-    let source: UnsafePointer<Int8>
-    let size: Int
-    let nullTerminated: Bool
+public final class Int8Stream: ByteStream {
+    public let source: UnsafePointer<Int8>
+    public let size: Int
+    public let nullTerminated: Bool
     var index: Int = 0
     var current: UnsafePointer<Int8>
     var terminated: Bool = false
 
-    init(source: UnsafePointer<Int8>, size: Int = 0) {
+    public init(source: UnsafePointer<Int8>, size: Int = 0) {
         self.source = source
         self.size = size
         current = source
         nullTerminated = size < 1
     }
 
-    override var available: Bool {
+    public override var available: Bool {
         return nullTerminated ? terminated : index < size
     }
 
-    override func peek() -> UInt8 {
+    public override func peek() -> UInt8 {
         return available ? UInt8(bitPattern: current.pointee) : 0
     }
 
-    override func peek(offset: Int) -> UInt8 {
-        var result: Int8 = 0
+    public override func peek(offset: Int) -> UInt8 {
         if nullTerminated {
-            var i = 0
             var t = current
-            while i < offset {
+            for _ in 0 ..< offset {
                 t = t.successor()
                 if t.pointee == 0 {
-                    return 0
+                    break
                 }
-                i += 1
             }
-            result = t.pointee
+            return UInt8(bitPattern: t.pointee)
         } else {
             if index + offset < size {
-                result = current.advanced(by: offset).pointee
+                return UInt8(bitPattern: current.advanced(by: offset).pointee)
             } else {
                 return 0
             }
         }
-        return UInt8(bitPattern: result)
     }
 
-    override func move() {
-        guard available else {
-            return
-        }
-        current = current.successor()
-        if nullTerminated {
-            terminated = current.pointee == 0
-        } else {
-            index += 1
-        }
-    }
-
-    override func move(offset: Int) {
+    @discardableResult
+    public override func move() -> Bool {
         if nullTerminated {
             if terminated {
-                return
+                return false
             }
-            var i = 0
+            current = current.advanced(by: 1)
+            terminated = current.pointee == 0
+            return true
+        } else {
+            current = current.advanced(by: 1)
+            index += 1
+            return available
+        }
+    }
+
+    @discardableResult
+    public override func move(offset: Int) -> Bool {
+        if nullTerminated {
+            if terminated {
+                return false
+            }
             var t = current
-            while i < offset {
+            for _ in 0 ..< offset {
                 t = t.successor()
                 if t.pointee == 0 {
-                    terminated = true
-                    break
+                    return false
                 }
-                i += 1
             }
-            if !terminated {
-                current = current.advanced(by: offset)
-            }
+            current = t
+            terminated = current.pointee == 0
+            return true
         } else {
             if index + offset < size {
                 current = current.advanced(by: offset)
                 index += offset
             }
+            return available
         }
     }
 }
 
-final class UInt8Stream: ByteStream {
-    let source: UnsafePointer<UInt8>
-    let size: Int
-    let nullTerminated: Bool
+public final class UInt8Stream: ByteStream {
+    public let source: UnsafePointer<UInt8>
+    public let size: Int
+    public let nullTerminated: Bool
     var index: Int = 0
     var current: UnsafePointer<UInt8>
     var terminated: Bool = false
 
-    init(source: UnsafePointer<UInt8>, size: Int = 0) {
+    public init(source: UnsafePointer<UInt8>, size: Int = 0) {
         self.source = source
         self.size = size
         current = source
         nullTerminated = size < 1
     }
 
-    override var available: Bool {
+    public override var available: Bool {
         return nullTerminated ? terminated : index < size
     }
 
-    override func peek() -> UInt8 {
+    public override func peek() -> UInt8 {
         return available ? current.pointee : 0
     }
 
-    override func peek(offset: Int) -> UInt8 {
-        var result: UInt8 = 0
+    public override func peek(offset: Int) -> UInt8 {
         if nullTerminated {
-            var i = 0
             var t = current
-            while i < offset {
+            for _ in 0 ..< offset {
                 t = t.successor()
                 if t.pointee == 0 {
-                    return 0
+                    break
                 }
-                i += 1
             }
-            result = t.pointee
+            return t.pointee
         } else {
             if index + offset < size {
-                result = current.advanced(by: offset).pointee
+                return current.advanced(by: offset).pointee
             } else {
                 return 0
             }
         }
-        return result
     }
 
-    override func move() {
-        guard available else {
-            return
-        }
-        current = current.successor()
-        if nullTerminated {
-            terminated = current.pointee == 0
-        } else {
-            index += 1
-        }
-    }
-
-    override func move(offset: Int) {
+    @discardableResult
+    public override func move() -> Bool {
         if nullTerminated {
             if terminated {
-                return
+                return false
             }
-            var i = 0
+            current = current.advanced(by: 1)
+            terminated = current.pointee == 0
+            return true
+        } else {
+            current = current.advanced(by: 1)
+            index += 1
+            return available
+        }
+    }
+
+    @discardableResult
+    public override func move(offset: Int) -> Bool {
+        if nullTerminated {
+            if terminated {
+                return false
+            }
             var t = current
-            while i < offset {
+            for _ in 0 ..< offset {
                 t = t.successor()
                 if t.pointee == 0 {
-                    terminated = true
-                    break
+                    return false
                 }
-                i += 1
             }
-            if !terminated {
-                current = current.advanced(by: offset)
-            }
+            current = t
+            terminated = current.pointee == 0
+            return true
         } else {
             if index + offset < size {
                 current = current.advanced(by: offset)
                 index += offset
             }
+            return available
         }
-    }
-}
-
-final class FileByteStream: ByteStream {
-    let bytes: UnsafeMutableRawPointer
-    let count: Int
-    var current: UnsafeMutableRawPointer
-    var index: Int = 0
-
-    init(path: String) {
-        let (content, size) = FileByteStream.open(path: path)
-        bytes = content ?? UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: MemoryLayout<UInt8>.alignment)
-        count = content == nil ? 0 : size
-        current = bytes
-    }
-
-    deinit {
-        bytes.deallocate()
-    }
-
-    override var available: Bool {
-        return index < count
-    }
-
-    override func peek() -> UInt8 {
-        guard available else {
-            return 0
-        }
-        return current.load(as: UInt8.self)
-    }
-
-    override func peek(offset: Int) -> UInt8 {
-        if index + offset < count {
-            let c = current.advanced(by: offset)
-            return c.load(as: UInt8.self)
-        } else {
-            return 0
-        }
-    }
-
-    override func move() {
-        guard available else {
-            return
-        }
-        current = current.advanced(by: 1)
-        index += 1
-    }
-
-    override func move(offset: Int) {
-        if index + offset < count {
-            current = current.advanced(by: offset)
-            index += offset
-        }
-    }
-
-    private static func open(path: String) -> (UnsafeMutableRawPointer?, Int) {
-        guard let file = fopen(path, "rb") else {
-            return (nil, 0)
-        }
-        defer {
-            fclose(file)
-        }
-        if fseeko(file, 0, SEEK_END) != 0 {
-            return (nil, 0)
-        }
-        let size = ftello(file)
-        if fseeko(file, 0, SEEK_SET) != 0 {
-            return (nil, 0)
-        }
-        guard size > 0 && size < Int32.max else {
-            return (nil, 0)
-        }
-        var count = Int(size)
-        let bytes = UnsafeMutableRawPointer.allocate(byteCount: count, alignment: MemoryLayout<UInt8>.alignment)
-        count = fread(bytes, 1, count, file)
-        return (bytes, count)
     }
 }

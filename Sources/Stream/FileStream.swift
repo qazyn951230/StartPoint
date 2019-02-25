@@ -26,8 +26,12 @@ import Foundation
 public class DataStream: WritableStream {
     public typealias Value = Data
 
+    init() {
+        // Do nothing.
+    }
+
     public func write(_ value: Data) throws {
-        fatalError("`write(_:)` not implemented")
+        // Do nothing.
     }
 
     public func flush() throws {
@@ -36,7 +40,7 @@ public class DataStream: WritableStream {
 
     public func write(string value: String, encoding: String.Encoding = String.Encoding.utf8) throws {
         guard let data = value.data(using: .utf8) else {
-            throw StartPointError.corruptedString(value)
+            throw BasicError.invalidArgument
         }
         try write(data)
     }
@@ -68,17 +72,18 @@ public final class FileStream: DataStream {
         let manager = FileManager.default
         if !manager.fileExists(atPath: path) {
             if !manager.createFile(atPath: path, contents: nil) {
-                throw StartPointError.cannotOpenFile(path)
+                throw BasicError.ioError
             }
         }
         guard let file = FileHandle(forWritingAtPath: path) else {
-            throw StartPointError.cannotOpenFile(path)
+            throw BasicError.noSuchFile
         }
         self.init(file: file)
     }
 
     public init(file: FileHandle) {
         self.file = file
+        super.init()
     }
 
     public override func write(_ value: Data) throws {
@@ -95,11 +100,12 @@ public final class CFileStream: DataStream {
 
     public init(path: String) throws {
         guard let _file = fopen(path, "w") else {
-            throw StartPointError.cannotOpenFile(path)
+            throw BasicError.posixError()
         }
         file = _file
         buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: CFileStream.capacity)
         current = buffer
+        super.init()
     }
 
     deinit {

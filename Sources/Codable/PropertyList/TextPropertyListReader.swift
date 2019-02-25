@@ -20,18 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//fileprivate final class BinaryPlistContext {
-//
-//}
-//
-//public final class BinaryPlistReader {
-//    let stream: ByteStream
-//
-//    public init(stream: ByteStream) {
-//        self.stream = stream
-//    }
-//
-//    private func header() {
-//
-//    }
-//}
+// BNF Syntax:
+// MAP ::=  "{"
+final class TextPropertyListReader: PropertyListReader {
+    let stream: UnicodeStream
+
+    init(stream: UnicodeStream) {
+        self.stream = stream
+        super.init()
+    }
+
+    override func read() {
+
+    }
+
+
+    private func parse() throws -> PropertyList {
+        switch stream.peek() {
+
+        }
+    }
+}
