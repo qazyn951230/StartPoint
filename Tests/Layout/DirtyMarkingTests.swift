@@ -29,7 +29,7 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_propagation
     func testDirtyPropagation() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -61,7 +61,7 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_propagation_only_if_prop_changed
     func testDirtyPropagationOnlyIfPropChanged() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -134,7 +134,7 @@ class DirtyMarkingTests: FlexTestCase {
     // Generated from test: dirty_node_only_if_children_are_actually_removed
     func testDirtyNodeOnlyIfChildrenAreActuallyRemoved() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(50))
         root.height(StyleValue.length(50))
 

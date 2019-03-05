@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ import XCTest
 
 // Generated from YGStyleTest.cpp
 class StyleTests: FlexTestCase {
+
     // Generated from test: copy_style_same
     func testCopyStyleSame() {
         let node0 = FlexLayout()

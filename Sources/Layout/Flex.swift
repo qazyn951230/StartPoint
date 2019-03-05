@@ -30,7 +30,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
     case percentage(Double)
     case auto
 
-    internal var valid: Bool {
+    var valid: Bool {
         switch self {
         case let .length(l), let .percentage(l):
             return !l.isNaN
@@ -63,7 +63,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         self = StyleValue.length(Double(value))
     }
 
-    // YGNodeResolveFlexBasisPtr
+    // YGResolveValue
     func resolve(by value: Double) -> Double {
         switch self {
         case .auto:
@@ -71,7 +71,7 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
         case let .length(l):
             return l
         case let .percentage(p):
-            return p * value / 100
+            return p * value * 0.01
         }
     }
 
@@ -156,8 +156,8 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         bottom = vertical
         left = horizontal
         right = horizontal
-        leading = horizontal
-        trailing = horizontal
+        leading = nil
+        trailing = nil
     }
 
     public init(top: StyleValue, left: StyleValue, bottom: StyleValue, right: StyleValue) {
@@ -174,8 +174,8 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         self.bottom = bottom
         self.leading = leading
         self.trailing = trailing
-        left = 0
-        right = 0
+        left = StyleValue.length(0)
+        right = StyleValue.length(0)
     }
 
     // ExpressibleByFloatLiteral
@@ -188,7 +188,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         self.init(StyleValue(integerLiteral: value))
     }
 
-    // YGMarginLeadingValue
+    // YGNode::getLeadingMargin
     public func leading(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:
@@ -202,7 +202,7 @@ public struct StyleInsets: Equatable, ExpressibleByIntegerLiteral, ExpressibleBy
         }
     }
 
-    // YGMarginTrailingValue
+    // YGNode::getTrailingMargin
     public func trailing(direction: FlexDirection) -> StyleValue {
         switch direction {
         case .row:

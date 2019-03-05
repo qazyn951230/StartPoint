@@ -43,4 +43,68 @@ class ComputedPaddingTests: FlexTestCase {
         XCTAssertEqual(root.box.padding.left, 0)
         XCTAssertEqual(root.box.padding.right, 10)
     }
+    
+    // Generated from test: padding_side_overrides_horizontal_and_vertical
+    func testPaddingSideOverridesHorizontalAndVertical() {
+        let edges: [Edge] = [Edge.top, Edge.bottom, Edge.leading, Edge.trailing, Edge.left, Edge.right]
+        for value in 0..<2 {
+            for edge in edges {
+                let other: Edge = (edge == Edge.top || edge == Edge.bottom) ? Edge.vertical : Edge.horizontal
+                
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.padding(edge: other, StyleValue.length(10))
+                root.padding(edge: edge, StyleValue.length(Double(value)))
+                
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+                
+                XCTAssertEqual(root.layoutPadding(edge: edge), Double(value), "Current edge: \(edge)")
+            }
+        }
+    }
+
+    // Generated from test: padding_side_overrides_all
+    func testPaddingSideOverridesAll() {
+        let edges: [Edge] = [Edge.top, Edge.bottom, Edge.leading, Edge.trailing, Edge.left, Edge.right]
+        for value in 0..<2 {
+            for edge in edges {
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.padding(value: StyleValue.length(10))
+                root.padding(edge: edge, StyleValue.length(Double(value)))
+                
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+                
+                XCTAssertEqual(root.layoutPadding(edge: edge), Double(value), "Current edge: \(edge)")
+            }
+        }
+    }
+
+    // Generated from test: padding_horizontal_and_vertical_overrides_all
+    func testPaddingHorizontalAndVerticalOverridesAll() {
+        let directions: [Edge] = [Edge.horizontal, Edge.vertical]
+        for value in 0..<2 {
+            for direction in directions {
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.padding(value: StyleValue.length(10))
+                root.padding(edge: direction, StyleValue.length(Double(value)))
+                
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+                
+                if direction == Edge.vertical {
+                    XCTAssertEqual(root.box.padding.top, Double(value))
+                    XCTAssertEqual(root.box.padding.bottom, Double(value))
+                } else {
+                    XCTAssertEqual(root.layoutPadding(edge: Edge.leading), Double(value))
+                    XCTAssertEqual(root.layoutPadding(edge: Edge.trailing), Double(value))
+                    XCTAssertEqual(root.box.padding.left, Double(value))
+                    XCTAssertEqual(root.box.padding.right, Double(value))
+                }
+            }
+        }
+    }
 }

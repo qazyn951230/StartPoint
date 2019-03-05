@@ -25,15 +25,18 @@ import XCTest
 
 // Generated from YGRoundingMeasureFuncTest.cpp
 class RoundingMeasureFuncTests: FlexTestCase {
-    func _measureFloor(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+    func _measureFloor(width _: Double, widthMode _: MeasureMode, height _: Double,
+                       heightMode _: MeasureMode) -> Size {
         return Size(width: 10.2, height: 10.2)
     }
 
-    func _measureCeil(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+    func _measureCeil(width _: Double, widthMode _: MeasureMode, height _: Double,
+                      heightMode _: MeasureMode) -> Size {
         return Size(width: 10.5, height: 10.5)
     }
 
-    func _measureFractial(width _: Double, widthMode _: MeasureMode, height _: Double, heightMode _: MeasureMode) -> Size {
+    func _measureFractial(width _: Double, widthMode _: MeasureMode, height _: Double,
+                          heightMode _: MeasureMode) -> Size {
         return Size(width: 0.5, height: 0.5)
     }
 

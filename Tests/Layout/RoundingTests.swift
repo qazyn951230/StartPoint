@@ -35,15 +35,15 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -98,23 +98,23 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
 
         let root_child3 = FlexLayout()
         root_child3.flexGrow(1)
-        root.append(root_child3)
+        root.insert(root_child3, at: 3)
 
         let root_child4 = FlexLayout()
         root_child4.flexGrow(1)
-        root.append(root_child4)
+        root.insert(root_child4, at: 4)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -189,16 +189,16 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexShrink(1)
-        root_child0.flexBasis(FlexBasis.length(100))
-        root.append(root_child0)
+        root_child0.flexBasis(100)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
-        root_child1.flexBasis(FlexBasis.length(25))
-        root.append(root_child1)
+        root_child1.flexBasis(25)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
-        root_child2.flexBasis(FlexBasis.length(25))
-        root.append(root_child2)
+        root_child2.flexBasis(25)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -252,19 +252,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.flexBasis(50)
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -318,19 +318,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(0.7)
-        root_child0.flexBasis(FlexBasis.length(50.3))
+        root_child0.flexBasis(50.3)
         root_child0.height(StyleValue.length(20.3))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1.6)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1.1)
         root_child2.height(StyleValue.length(10.7))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -386,31 +386,31 @@ class RoundingTests: FlexTestCase {
         root_child0.flexGrow(0.7)
         root_child0.flexBasis(FlexBasis.length(50.3))
         root_child0.height(StyleValue.length(20.3))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.flexGrow(1)
         root_child0_child0.flexBasis(FlexBasis.length(0.3))
         root_child0_child0.position(bottom: StyleValue.length(13.3))
         root_child0_child0.height(StyleValue.length(9.9))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         let root_child0_child1 = FlexLayout()
         root_child0_child1.flexGrow(4)
         root_child0_child1.flexBasis(FlexBasis.length(0.3))
         root_child0_child1.position(top: StyleValue.length(13.3))
         root_child0_child1.height(StyleValue.length(1.1))
-        root_child0.append(root_child0_child1)
+        root_child0.insert(root_child0_child1, at: 1)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1.6)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1.1)
         root_child2.height(StyleValue.length(10.7))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -484,19 +484,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.flexBasis(50)
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -550,19 +550,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.flexBasis(50)
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -617,19 +617,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.flexBasis(50)
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -684,19 +684,19 @@ class RoundingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root_child0.flexBasis(FlexBasis.length(50))
+        root_child0.flexBasis(50)
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -751,22 +751,22 @@ class RoundingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.flexGrow(1)
         root_child1_child0.height(StyleValue.length(10))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -830,22 +830,22 @@ class RoundingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.flexGrow(1)
         root_child1_child0.width(StyleValue.length(10))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -911,37 +911,37 @@ class RoundingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.height(StyleValue.percentage(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.height(StyleValue.percentage(100))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.flexGrow(1)
         root_child1_child0.width(StyleValue.percentage(100))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
 
         let root_child1_child1 = FlexLayout()
         root_child1_child1.flexGrow(1)
         root_child1_child1.width(StyleValue.percentage(100))
-        root_child1.append(root_child1_child1)
+        root_child1.insert(root_child1_child1, at: 1)
 
         let root_child1_child1_child0 = FlexLayout()
         root_child1_child1_child0.flexGrow(1)
         root_child1_child1_child0.width(StyleValue.percentage(100))
-        root_child1_child1.append(root_child1_child1_child0)
+        root_child1_child1.insert(root_child1_child1_child0, at: 0)
 
         let root_child1_child2 = FlexLayout()
         root_child1_child2.flexGrow(1)
         root_child1_child2.width(StyleValue.percentage(100))
-        root_child1.append(root_child1_child2)
+        root_child1.insert(root_child1_child2, at: 2)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.height(StyleValue.percentage(100))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

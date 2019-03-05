@@ -35,15 +35,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -99,15 +99,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -163,15 +163,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -227,15 +227,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -291,15 +291,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -353,15 +353,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -416,15 +416,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -479,15 +479,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -542,15 +542,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -605,15 +605,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -670,7 +670,7 @@ class JustifyContentTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 100)
@@ -708,7 +708,7 @@ class JustifyContentTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 100)
@@ -744,7 +744,7 @@ class JustifyContentTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -781,7 +781,7 @@ class JustifyContentTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -816,15 +816,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -880,15 +880,15 @@ class JustifyContentTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.height(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -932,5 +932,149 @@ class JustifyContentTests: FlexTestCase {
         XCTAssertEqual(root_child2.box.top, 0)
         XCTAssertEqual(root_child2.box.width, 0)
         XCTAssertEqual(root_child2.box.height, 10)
+    }
+
+    // Generated from test: justify_content_min_width_with_padding_child_width_greater_than_parent
+    func testJustifyContentMinWidthWithPaddingChildWidthGreaterThanParent() {
+        let root = FlexLayout()
+        root.alignContent(AlignContent.stretch)
+        root.width(StyleValue.length(1000))
+        root.height(StyleValue.length(1584))
+
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.alignContent(AlignContent.stretch)
+        root.insert(root_child0, at: 0)
+
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.flexDirection(FlexDirection.row)
+        root_child0_child0.justifyContent(JustifyContent.center)
+        root_child0_child0.alignContent(AlignContent.stretch)
+        root_child0_child0.padding(left: StyleValue.length(100))
+        root_child0_child0.padding(right: StyleValue.length(100))
+        root_child0_child0.minWidth(StyleValue.length(400))
+        root_child0.insert(root_child0_child0, at: 0)
+
+        let root_child0_child0_child0 = FlexLayout()
+        root_child0_child0_child0.flexDirection(FlexDirection.row)
+        root_child0_child0_child0.alignContent(AlignContent.stretch)
+        root_child0_child0_child0.width(StyleValue.length(300))
+        root_child0_child0_child0.height(StyleValue.length(100))
+        root_child0_child0.insert(root_child0_child0_child0, at: 0)
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 1000)
+        XCTAssertEqual(root.box.height, 1584)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 1000)
+        XCTAssertEqual(root_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 100)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 300)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 100)
+
+        root.calculate(direction: Direction.rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 1000)
+        XCTAssertEqual(root.box.height, 1584)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 1000)
+        XCTAssertEqual(root_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0.box.left, 500)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 500)
+        XCTAssertEqual(root_child0_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 100)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 300)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 100)
+    }
+
+    // Generated from test: justify_content_min_width_with_padding_child_width_lower_than_parent
+    func testJustifyContentMinWidthWithPaddingChildWidthLowerThanParent() {
+        let root = FlexLayout()
+        root.alignContent(AlignContent.stretch)
+        root.width(StyleValue.length(1080))
+        root.height(StyleValue.length(1584))
+
+        let root_child0 = FlexLayout()
+        root_child0.flexDirection(FlexDirection.row)
+        root_child0.alignContent(AlignContent.stretch)
+        root.insert(root_child0, at: 0)
+
+        let root_child0_child0 = FlexLayout()
+        root_child0_child0.flexDirection(FlexDirection.row)
+        root_child0_child0.justifyContent(JustifyContent.center)
+        root_child0_child0.alignContent(AlignContent.stretch)
+        root_child0_child0.padding(left: StyleValue.length(100))
+        root_child0_child0.padding(right: StyleValue.length(100))
+        root_child0_child0.minWidth(StyleValue.length(400))
+        root_child0.insert(root_child0_child0, at: 0)
+
+        let root_child0_child0_child0 = FlexLayout()
+        root_child0_child0_child0.flexDirection(FlexDirection.row)
+        root_child0_child0_child0.alignContent(AlignContent.stretch)
+        root_child0_child0_child0.width(StyleValue.length(199))
+        root_child0_child0_child0.height(StyleValue.length(100))
+        root_child0_child0.insert(root_child0_child0_child0, at: 0)
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 1080)
+        XCTAssertEqual(root.box.height, 1584)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 1080)
+        XCTAssertEqual(root_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0.box.left, 0)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 400)
+        XCTAssertEqual(root_child0_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 101)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 199)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 100)
+
+        root.calculate(direction: Direction.rtl)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 1080)
+        XCTAssertEqual(root.box.height, 1584)
+
+        XCTAssertEqual(root_child0.box.left, 0)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 1080)
+        XCTAssertEqual(root_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0.box.left, 680)
+        XCTAssertEqual(root_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0.box.width, 400)
+        XCTAssertEqual(root_child0_child0.box.height, 100)
+
+        XCTAssertEqual(root_child0_child0_child0.box.left, 101)
+        XCTAssertEqual(root_child0_child0_child0.box.top, 0)
+        XCTAssertEqual(root_child0_child0_child0.box.width, 199)
+        XCTAssertEqual(root_child0_child0_child0.box.height, 100)
     }
 }

@@ -31,6 +31,105 @@ func webLayout() -> FlexLayout {
     return layout
 }
 
+enum Edge {
+    case left
+    case top
+    case right
+    case bottom
+    case leading
+    case trailing
+    case horizontal
+    case vertical
+}
+
+extension FlexLayout {
+    @discardableResult
+    func margin(edge: Edge, _ value: StyleValue) -> FlexLayout {
+        switch edge {
+        case .left:
+            return margin(left: value)
+        case .top:
+            return margin(top: value)
+        case .right:
+            return margin(right: value)
+        case .bottom:
+            return margin(bottom: value)
+        case .leading:
+            return margin(leading: value)
+        case .trailing:
+            return margin(trailing: value)
+        case .horizontal:
+            return margin(horizontal: value)
+        case .vertical:
+            return margin(vertical: value)
+        }
+    }
+    
+    func layoutMargin(edge: Edge) -> Double {
+        switch edge {
+        case .left:
+            return box.margin.left
+        case .top:
+            return box.margin.top
+        case .right:
+            return box.margin.right
+        case .bottom:
+            return box.margin.bottom
+        case .leading:
+            return box.direction == Direction.ltr ? box.margin.left : box.margin.right
+        case .trailing:
+            return box.direction == Direction.ltr ? box.margin.right : box.margin.left
+        case .horizontal:
+            return box.margin.left == box.margin.right ? box.margin.left : Double.nan
+        case .vertical:
+            return box.margin.top == box.margin.bottom ? box.margin.top : Double.nan
+        }
+    }
+    
+    @discardableResult
+    func padding(edge: Edge, _ value: StyleValue) -> FlexLayout {
+        switch edge {
+        case .left:
+            return padding(left: value)
+        case .top:
+            return padding(top: value)
+        case .right:
+            return padding(right: value)
+        case .bottom:
+            return padding(bottom: value)
+        case .leading:
+            return padding(leading: value)
+        case .trailing:
+            return padding(trailing: value)
+        case .horizontal:
+            return padding(horizontal: value)
+        case .vertical:
+            return padding(vertical: value)
+        }
+    }
+    
+    func layoutPadding(edge: Edge) -> Double {
+        switch edge {
+        case .left:
+            return box.padding.left
+        case .top:
+            return box.padding.top
+        case .right:
+            return box.padding.right
+        case .bottom:
+            return box.padding.bottom
+        case .leading:
+            return box.direction == Direction.ltr ? box.padding.left : box.padding.right
+        case .trailing:
+            return box.direction == Direction.ltr ? box.padding.right : box.padding.left
+        case .horizontal:
+            return box.padding.left == box.padding.right ? box.padding.left : Double.nan
+        case .vertical:
+            return box.padding.top == box.padding.bottom ? box.padding.top : Double.nan
+        }
+    }
+}
+
 class FlexTestCase: XCTestCase {
     override class func setUp() {
         super.setUp()

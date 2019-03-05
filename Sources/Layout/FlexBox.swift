@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
+import Darwin.C
 
 final class FlexBox {
     // gCurrentGenerationCount
@@ -112,6 +112,11 @@ final class FlexBox {
             .isDefined(size: size)
     }
 
+    // YGNodeIsLayoutDimDefined
+    func isLayoutDimensionDefined(for direction: FlexDirection) -> Bool {
+        return measuredDimension(for: direction) >= 0.0
+    }
+
     func setLeadingPosition(for direction: FlexDirection, size: Double) {
         switch direction {
         case .column:
@@ -138,22 +143,7 @@ final class FlexBox {
         }
     }
 
-    // YGRoundValueToPixelGrid
-    static func round(_ value: Double, scale: Double, ceil: Bool, floor: Bool) -> Double {
-        var value = value * scale
-        let mod = fmod(value, 1)
-        if mod ~~ 0 {
-            value = value - mod
-        } else if mod ~~ 1 || ceil {
-            value = value - mod + 1
-        } else if floor {
-            value = value - mod
-        } else {
-            value = value - mod + ((mod > 0.5 || mod ~~ 0.5) ? 1.0 : 0.0)
-        }
-        return value / scale
-    }
-
+    // YGRoundToPixelGrid
     func roundPosition(scale: Double, left absoluteLeft: Double, top absoluteTop: Double, textLayout: Bool) -> (Double, Double) {
         let nodeLeft = left
         let nodeTop = top
@@ -192,8 +182,37 @@ final class FlexBox {
         }
     }
 
-    // YGNodeIsLayoutDimDefined
-    func isLayoutDimensionDefined(for direction: FlexDirection) -> Bool {
-        return measuredDimension(for: direction) >= 0.0
+    // YGRoundValueToPixelGrid
+    static func round(_ value: Double, scale: Double, ceil: Bool, floor: Bool) -> Double {
+        var value = value * scale
+        var mod = fmod(value, 1.0) // fractial
+        if mod < 0 {
+            // This branch is for handling negative numbers for `value`.
+            //
+            // Regarding `floor` and `ceil`. Note that for a number x, `floor(x) <= x <=
+            // ceil(x)` even for negative numbers. Here are a couple of examples:
+            //   - x =  2.2: floor( 2.2) =  2, ceil( 2.2) =  3
+            //   - x = -2.2: floor(-2.2) = -3, ceil(-2.2) = -2
+            //
+            // Regarding `fmodf`. For fractional negative numbers, `fmodf` returns a
+            // negative number. For example, `fmodf(-2.2) = -0.2`. However, we want
+            // `fractial` to be the number such that subtracting it from `value` will
+            // give us `floor(value)`. In the case of negative numbers, adding 1 to
+            // `fmodf(value)` gives us this. Let's continue the example from above:
+            //   - fractial = fmodf(-2.2) = -0.2
+            //   - Add 1 to the fraction: fractial2 = fractial + 1 = -0.2 + 1 = 0.8
+            //   - Finding the `floor`: -2.2 - fractial2 = -2.2 - 0.8 = -3
+            mod += 1.0
+        }
+        if mod ~~ 0.0 {
+            value = value - mod
+        } else if mod ~~ 1.0 || ceil {
+            value = value - mod + 1.0
+        } else if floor {
+            value = value - mod
+        } else {
+            value = value - mod + ((!mod.isNaN && (mod > 0.5 || mod ~~ 0.5)) ? 1.0 : 0.0)
+        }
+        return value / scale
     }
 }

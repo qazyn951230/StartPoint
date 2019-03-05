@@ -43,4 +43,68 @@ class ComputedMarginTests: FlexTestCase {
         XCTAssertEqual(root.box.margin.left, 0)
         XCTAssertEqual(root.box.margin.right, 10)
     }
+
+    // Generated from test: margin_side_overrides_horizontal_and_vertical
+    func testMarginSideOverridesHorizontalAndVertical() {
+        let edges: [Edge] = [Edge.top, Edge.bottom, Edge.leading, Edge.trailing, Edge.left, Edge.right]
+        for value in 0..<2 {
+            for edge in edges {
+                let other: Edge = (edge == Edge.top || edge == Edge.bottom) ? Edge.vertical : Edge.horizontal
+
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.margin(edge: other, StyleValue.length(10))
+                root.margin(edge: edge, StyleValue.length(Double(value)))
+
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+
+                XCTAssertEqual(root.layoutMargin(edge: edge), Double(value), "Current edge: \(edge)")
+            }
+        }
+    }
+
+    // Generated from test: margin_side_overrides_all
+    func testMarginSideOverridesAll() {
+        let edges: [Edge] = [Edge.top, Edge.bottom, Edge.leading, Edge.trailing, Edge.left, Edge.right]
+        for value in 0..<2 {
+            for edge in edges {
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.margin(value: StyleValue.length(10))
+                root.margin(edge: edge, StyleValue.length(Double(value)))
+
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+
+                XCTAssertEqual(root.layoutMargin(edge: edge), Double(value), "Current edge: \(edge)")
+            }
+        }
+    }
+
+    // Generated from test: margin_horizontal_and_vertical_overrides_all
+    func testMarginHorizontalAndVerticalOverridesAll() {
+        let directions: [Edge] = [Edge.horizontal, Edge.vertical]
+        for value in 0..<2 {
+            for direction in directions {
+                let root = FlexLayout()
+                root.width(StyleValue.length(100))
+                root.height(StyleValue.length(100))
+                root.margin(value: StyleValue.length(10))
+                root.margin(edge: direction, StyleValue.length(Double(value)))
+                
+                root.calculate(width: 100, height: 100, direction: Direction.ltr)
+                
+                if direction == Edge.vertical {
+                    XCTAssertEqual(root.box.margin.top, Double(value))
+                    XCTAssertEqual(root.box.margin.bottom, Double(value))
+                } else {
+                    XCTAssertEqual(root.layoutMargin(edge: Edge.leading), Double(value))
+                    XCTAssertEqual(root.layoutMargin(edge: Edge.trailing), Double(value))
+                    XCTAssertEqual(root.box.margin.left, Double(value))
+                    XCTAssertEqual(root.box.margin.right, Double(value))
+                }
+            }
+        }
+    }
 }

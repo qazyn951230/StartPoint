@@ -36,7 +36,7 @@ class AlignSelfTests: FlexTestCase {
         root_child0.alignSelf(AlignSelf.center)
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -72,7 +72,7 @@ class AlignSelfTests: FlexTestCase {
         root_child0.alignSelf(AlignSelf.flexEnd)
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -108,7 +108,7 @@ class AlignSelfTests: FlexTestCase {
         root_child0.alignSelf(AlignSelf.flexStart)
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -145,7 +145,7 @@ class AlignSelfTests: FlexTestCase {
         root_child0.alignSelf(AlignSelf.flexEnd)
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -182,18 +182,18 @@ class AlignSelfTests: FlexTestCase {
         root_child0.alignSelf(AlignSelf.baseline)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.alignSelf(AlignSelf.baseline)
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.width(StyleValue.length(50))
         root_child1_child0.height(StyleValue.length(10))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

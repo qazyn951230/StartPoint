@@ -33,15 +33,15 @@ class AndroidNewsFeeds: FlexTestCase {
         root.width(StyleValue.length(1080))
 
         let root_child0 = FlexLayout()
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.alignContent(AlignContent.stretch)
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         let root_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0.alignContent(AlignContent.stretch)
-        root_child0_child0.append(root_child0_child0_child0)
+        root_child0_child0.insert(root_child0_child0_child0, at: 0)
 
         let root_child0_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0_child0.flexDirection(FlexDirection.row)
@@ -49,18 +49,18 @@ class AndroidNewsFeeds: FlexTestCase {
         root_child0_child0_child0_child0.alignItems(AlignItems.flexStart)
         root_child0_child0_child0_child0.margin(leading: StyleValue.length(36))
         root_child0_child0_child0_child0.margin(top: StyleValue.length(24))
-        root_child0_child0_child0.append(root_child0_child0_child0_child0)
+        root_child0_child0_child0.insert(root_child0_child0_child0_child0, at: 0)
 
         let root_child0_child0_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0_child0_child0.flexDirection(FlexDirection.row)
         root_child0_child0_child0_child0_child0.alignContent(AlignContent.stretch)
-        root_child0_child0_child0_child0.append(root_child0_child0_child0_child0_child0)
+        root_child0_child0_child0_child0.insert(root_child0_child0_child0_child0_child0, at: 0)
 
         let root_child0_child0_child0_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0_child0_child0_child0.alignContent(AlignContent.stretch)
         root_child0_child0_child0_child0_child0_child0.width(StyleValue.length(120))
         root_child0_child0_child0_child0_child0_child0.height(StyleValue.length(120))
-        root_child0_child0_child0_child0_child0.append(root_child0_child0_child0_child0_child0_child0)
+        root_child0_child0_child0_child0_child0.insert(root_child0_child0_child0_child0_child0_child0, at: 0)
 
         let root_child0_child0_child0_child0_child1 = FlexLayout()
         root_child0_child0_child0_child0_child1.alignContent(AlignContent.stretch)
@@ -70,22 +70,22 @@ class AndroidNewsFeeds: FlexTestCase {
         root_child0_child0_child0_child0_child1.padding(top: StyleValue.length(21))
         root_child0_child0_child0_child0_child1.padding(right: StyleValue.length(36))
         root_child0_child0_child0_child0_child1.padding(bottom: StyleValue.length(18))
-        root_child0_child0_child0_child0.append(root_child0_child0_child0_child0_child1)
+        root_child0_child0_child0_child0.insert(root_child0_child0_child0_child0_child1, at: 1)
 
         let root_child0_child0_child0_child0_child1_child0 = FlexLayout()
         root_child0_child0_child0_child0_child1_child0.flexDirection(FlexDirection.row)
         root_child0_child0_child0_child0_child1_child0.alignContent(AlignContent.stretch)
         root_child0_child0_child0_child0_child1_child0.flexShrink(1)
-        root_child0_child0_child0_child0_child1.append(root_child0_child0_child0_child0_child1_child0)
+        root_child0_child0_child0_child0_child1.insert(root_child0_child0_child0_child0_child1_child0, at: 0)
 
         let root_child0_child0_child0_child0_child1_child1 = FlexLayout()
         root_child0_child0_child0_child0_child1_child1.alignContent(AlignContent.stretch)
         root_child0_child0_child0_child0_child1_child1.flexShrink(1)
-        root_child0_child0_child0_child0_child1.append(root_child0_child0_child0_child0_child1_child1)
+        root_child0_child0_child0_child0_child1.insert(root_child0_child0_child0_child0_child1_child1, at: 1)
 
         let root_child0_child0_child1 = FlexLayout()
         root_child0_child0_child1.alignContent(AlignContent.stretch)
-        root_child0_child0.append(root_child0_child0_child1)
+        root_child0_child0.insert(root_child0_child0_child1, at: 1)
 
         let root_child0_child0_child1_child0 = FlexLayout()
         root_child0_child0_child1_child0.flexDirection(FlexDirection.row)
@@ -93,18 +93,18 @@ class AndroidNewsFeeds: FlexTestCase {
         root_child0_child0_child1_child0.alignItems(AlignItems.flexStart)
         root_child0_child0_child1_child0.margin(leading: StyleValue.length(174))
         root_child0_child0_child1_child0.margin(top: StyleValue.length(24))
-        root_child0_child0_child1.append(root_child0_child0_child1_child0)
+        root_child0_child0_child1.insert(root_child0_child0_child1_child0, at: 0)
 
         let root_child0_child0_child1_child0_child0 = FlexLayout()
         root_child0_child0_child1_child0_child0.flexDirection(FlexDirection.row)
         root_child0_child0_child1_child0_child0.alignContent(AlignContent.stretch)
-        root_child0_child0_child1_child0.append(root_child0_child0_child1_child0_child0)
+        root_child0_child0_child1_child0.insert(root_child0_child0_child1_child0_child0, at: 0)
 
         let root_child0_child0_child1_child0_child0_child0 = FlexLayout()
         root_child0_child0_child1_child0_child0_child0.alignContent(AlignContent.stretch)
         root_child0_child0_child1_child0_child0_child0.width(StyleValue.length(72))
         root_child0_child0_child1_child0_child0_child0.height(StyleValue.length(72))
-        root_child0_child0_child1_child0_child0.append(root_child0_child0_child1_child0_child0_child0)
+        root_child0_child0_child1_child0_child0.insert(root_child0_child0_child1_child0_child0_child0, at: 0)
 
         let root_child0_child0_child1_child0_child1 = FlexLayout()
         root_child0_child0_child1_child0_child1.alignContent(AlignContent.stretch)
@@ -114,18 +114,18 @@ class AndroidNewsFeeds: FlexTestCase {
         root_child0_child0_child1_child0_child1.padding(top: StyleValue.length(21))
         root_child0_child0_child1_child0_child1.padding(right: StyleValue.length(36))
         root_child0_child0_child1_child0_child1.padding(bottom: StyleValue.length(18))
-        root_child0_child0_child1_child0.append(root_child0_child0_child1_child0_child1)
+        root_child0_child0_child1_child0.insert(root_child0_child0_child1_child0_child1, at: 1)
 
         let root_child0_child0_child1_child0_child1_child0 = FlexLayout()
         root_child0_child0_child1_child0_child1_child0.flexDirection(FlexDirection.row)
         root_child0_child0_child1_child0_child1_child0.alignContent(AlignContent.stretch)
         root_child0_child0_child1_child0_child1_child0.flexShrink(1)
-        root_child0_child0_child1_child0_child1.append(root_child0_child0_child1_child0_child1_child0)
+        root_child0_child0_child1_child0_child1.insert(root_child0_child0_child1_child0_child1_child0, at: 0)
 
         let root_child0_child0_child1_child0_child1_child1 = FlexLayout()
         root_child0_child0_child1_child0_child1_child1.alignContent(AlignContent.stretch)
         root_child0_child0_child1_child0_child1_child1.flexShrink(1)
-        root_child0_child0_child1_child0_child1.append(root_child0_child0_child1_child0_child1_child1)
+        root_child0_child0_child1_child0_child1.insert(root_child0_child0_child1_child0_child1_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

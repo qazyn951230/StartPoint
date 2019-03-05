@@ -25,7 +25,6 @@ import XCTest
 
 // Generated from YGDefaultValuesTest.cpp
 class DefaultValuesTests: FlexTestCase {
-
     // Generated from test: assert_default_values
     func testAssertDefaultValues() {
         let root = FlexLayout()
@@ -104,5 +103,14 @@ class DefaultValuesTests: FlexTestCase {
         XCTAssertTrue(root.box.width.isNaN)
         XCTAssertTrue(root.box.height.isNaN)
         XCTAssertEqual(root.box.direction, Direction.inherit)
+    }
+
+    // Generated from test: assert_webdefault_values
+    func testAssertWebdefaultValues() {
+        let root = webLayout()
+
+        XCTAssertEqual(root.style.flexDirection, FlexDirection.row)
+        XCTAssertEqual(root.style.alignContent, AlignContent.stretch)
+        XCTAssertEqual(root.style.flexShrink, 1.0)
     }
 }

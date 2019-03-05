@@ -76,7 +76,7 @@ public final class Int8Stream: ByteStream {
     }
 
     public override var available: Bool {
-        return nullTerminated ? terminated : index < size
+        return nullTerminated ? !terminated : index < size
     }
 
     public override func peek() -> UInt8 {
@@ -160,7 +160,7 @@ public final class UInt8Stream: ByteStream {
     }
 
     public override var available: Bool {
-        return nullTerminated ? terminated : index < size
+        return nullTerminated ? !terminated : index < size
     }
 
     public override func peek() -> UInt8 {

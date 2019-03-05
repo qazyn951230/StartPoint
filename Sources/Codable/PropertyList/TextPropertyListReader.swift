@@ -22,22 +22,22 @@
 
 // BNF Syntax:
 // MAP ::=  "{"
-final class TextPropertyListReader: PropertyListReader {
-    let stream: UnicodeStream
-
-    init(stream: UnicodeStream) {
-        self.stream = stream
-        super.init()
-    }
-
-    override func read() {
-
-    }
-
-
-    private func parse() throws -> PropertyList {
-        switch stream.peek() {
-
-        }
-    }
-}
+//final class TextPropertyListReader: PropertyListReader {
+//    let stream: UnicodeStream
+//
+//    init(stream: UnicodeStream) {
+//        self.stream = stream
+//        super.init()
+//    }
+//
+//    override func read() {
+//
+//    }
+//
+//
+//    private func parse() throws -> PropertyList {
+//        switch stream.peek() {
+//
+//        }
+//    }
+//}

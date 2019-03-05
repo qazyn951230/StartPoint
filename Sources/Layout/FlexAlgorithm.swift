@@ -23,8 +23,839 @@
 import Foundation
 import CoreGraphics
 
+final class CollectFlexItems {
+    var itemsOnLine: Int = 0
+    var sizeConsumedOnCurrentLine: Double = 0.0
+    var totalFlexGrowFactors: Double = 0.0
+    var totalFlexShrinkScaledFactors: Double = 0.0
+    var endOfLineIndex: Int = 0
+    var relativeChildren: [FlexLayout] = []
+    var remainingFreeSpace: Double = 0.0
+    var mainDim: Double = 0.0
+    var crossDim: Double = 0.0
+}
+
+final class FlexAlgorithm {
+    // YGNodelayoutImpl
+    let availableWidth: Double
+    let availableHeight: Double
+    let ownerDirection: Direction
+    let widthMeasureMode: MeasureMode
+    let heightMeasureMode: MeasureMode
+    let ownerWidth: Double
+    let ownerHeight: Double
+    let performLayout: Bool
+
+    let node: FlexLayout
+    let style: FlexStyle
+
+    let direction: Direction
+    let mainAxis: FlexDirection
+    let crossAxis: FlexDirection
+    let isMainAxisRow: Bool
+    let isNodeFlexWrap: Bool
+    let mainAxisOwnerSize: Double
+    let crossAxisOwnerSize: Double
+    let totalLeadingCross: Double
+    // paddingAndBorderAxisMain
+    let totalInnerMain: Double
+    // paddingAndBorderAxisCross
+    let totalInnerCross: Double
+    let totalInnerRow: Double
+    let totalInnerColumn: Double
+    let marginRow: Double
+    let marginColumn: Double
+    let minInnerWidth: Double
+    let maxInnerWidth: Double
+    let minInnerHeight: Double
+    let maxInnerHeight: Double
+    let minInnerMain: Double
+    let maxInnerMain: Double
+
+    var mainMeasureMode: MeasureMode
+    var crossMeasureMode: MeasureMode
+    // for step2
+    var availableInnerWidth: Double = 0.0
+    var availableInnerHeight: Double = 0.0
+    var availableInnerMain: Double = 0.0
+    var availableInnerCross: Double = 0.0
+    // for step3
+    var totalOuterFlexBasis: Double = 0.0
+    var flexBasisOverflows = false
+    // for step4
+    var totalLineCrossDim: Double = 0.0
+    var maxLineMainDim: Double = 0.0
+    // for step6
+    var containerCrossAxis: Double = 0.0
+
+    // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
+    init(for layout: FlexLayout, ownerDirection: Direction,
+         availableWidth: Double, availableHeight: Double,
+         widthMeasureMode: MeasureMode, heightMeasureMode: MeasureMode,
+         ownerWidth: Double, ownerHeight: Double, performLayout: Bool) {
+        self.availableWidth = availableWidth
+        self.availableHeight = availableHeight
+        self.ownerDirection = ownerDirection
+        self.widthMeasureMode = widthMeasureMode
+        self.heightMeasureMode = heightMeasureMode
+        self.ownerWidth = ownerWidth
+        self.ownerHeight = ownerHeight
+        self.performLayout = performLayout
+
+        node = layout
+        style = layout.style
+        direction = style.resolveDirection(by: ownerDirection)
+
+        mainAxis = style.flexDirection.resolve(by: direction)
+        crossAxis = mainAxis.cross(by: direction)
+        isMainAxisRow = mainAxis.isRow
+        isNodeFlexWrap = style.wrapped
+        mainAxisOwnerSize = isMainAxisRow ? ownerWidth : ownerHeight
+        crossAxisOwnerSize = isMainAxisRow ? ownerHeight : ownerWidth
+        totalLeadingCross = style.totalLeadingSize(for: crossAxis, width: ownerWidth)
+        totalInnerMain = style.totalInnerSize(for: mainAxis, width: ownerWidth)
+        totalInnerCross = style.totalInnerSize(for: crossAxis, width: ownerWidth)
+        totalInnerRow = isMainAxisRow ? totalInnerMain : totalInnerCross
+        totalInnerColumn = isMainAxisRow ? totalInnerCross : totalInnerMain
+        marginRow = style.totalOuterSize(for: .row, width: ownerWidth)
+        marginColumn = style.totalOuterSize(for: .column, width: ownerWidth)
+        minInnerWidth = style.minWidth.resolve(by: ownerWidth) - totalInnerRow
+        maxInnerWidth = style.computedMaxWidth.resolve(by: ownerWidth) - totalInnerRow
+        minInnerHeight = style.minHeight.resolve(by: ownerHeight) - totalInnerColumn
+        maxInnerHeight = style.computedMaxHeight.resolve(by: ownerHeight) - totalInnerColumn
+        minInnerMain = isMainAxisRow ? minInnerWidth : minInnerHeight
+        maxInnerMain = isMainAxisRow ? maxInnerWidth : maxInnerHeight
+
+        mainMeasureMode = isMainAxisRow ? widthMeasureMode : heightMeasureMode
+        crossMeasureMode = isMainAxisRow ? heightMeasureMode : widthMeasureMode
+    }
+
+    func steps() {
+        step2()
+        step3()
+        step4()
+        step9()
+        step10()
+        step11()
+    }
+
+    // STEP 2: DETERMINE AVAILABLE SIZE IN MAIN AND CROSS DIRECTIONS
+    private func step2() {
+        availableInnerWidth = availableInnerSize(for: .row, availableSize: availableWidth, size: ownerWidth)
+        availableInnerHeight = availableInnerSize(for: .column, availableSize: availableHeight, size: ownerHeight)
+        availableInnerMain = isMainAxisRow ? availableInnerWidth : availableInnerHeight
+        availableInnerCross = isMainAxisRow ? availableInnerHeight : availableInnerWidth
+    }
+
+    // STEP 3: DETERMINE FLEX BASIS FOR EACH ITEM
+    private func step3() {
+        totalOuterFlexBasis = computeFlexBasis()
+        flexBasisOverflows = mainMeasureMode.isUndefined ? false : totalOuterFlexBasis > availableInnerWidth
+        if isNodeFlexWrap && flexBasisOverflows && mainMeasureMode.isAtMost {
+            mainMeasureMode = MeasureMode.exactly
+        }
+    }
+
+    // STEP 4: COLLECT FLEX ITEMS INTO FLEX LINES
+    private func step4() {
+        var startOfLineIndex = 0
+        var endOfLineIndex = 0
+        var lineCount = 0
+        var items = CollectFlexItems()
+        let childCount = node.children.count
+        while endOfLineIndex < childCount {
+            items = calculateCollectFlexItems(lineCount, startOfLineIndex)
+            endOfLineIndex = items.endOfLineIndex
+            let canSkipFlex = !performLayout && crossMeasureMode.isExactly
+            step5(items: items, canSkipFlex: canSkipFlex)
+            step6(items: items, startOfLineIndex)
+            step7(items: items, startOfLineIndex, endOfLineIndex)
+            lineCount += 1
+            startOfLineIndex = endOfLineIndex
+        }
+        step8(lineCount, node.isBaselineLayout)
+    }
+
+    // STEP 5: RESOLVING FLEXIBLE LENGTHS ON MAIN AXIS
+    private func step5(items: CollectFlexItems, canSkipFlex: Bool) {
+        var sizeBasedOnContent = false
+        if !mainMeasureMode.isExactly {
+            if !minInnerMain.isNaN && items.sizeConsumedOnCurrentLine < minInnerMain {
+                availableInnerMain = minInnerMain
+            } else if !maxInnerMain.isNaN && items.sizeConsumedOnCurrentLine > maxInnerMain {
+                availableInnerMain = maxInnerMain
+            } else {
+                if items.totalFlexGrowFactors == 0 || node.computedFlexGrow == 0 {
+                    availableInnerMain = items.sizeConsumedOnCurrentLine
+                }
+                sizeBasedOnContent = true
+            }
+        }
+        if !sizeBasedOnContent && !availableInnerMain.isNaN {
+            items.remainingFreeSpace = availableInnerMain - items.sizeConsumedOnCurrentLine
+        } else if items.sizeConsumedOnCurrentLine < 0 {
+            items.remainingFreeSpace = 0 - items.sizeConsumedOnCurrentLine
+        }
+        if !canSkipFlex {
+            resolveFlexibleLength(items: items)
+        }
+        node.box.hasOverflow = node.box.hasOverflow || (items.remainingFreeSpace < 0)
+    }
+
+    // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
+    private func step6(items: CollectFlexItems, _ startOfLineIndex: Int) {
+        justifyMainAxis(items, startOfLineIndex)
+        containerCrossAxis = availableInnerCross
+        if !crossMeasureMode.isExactly {
+            containerCrossAxis = style.bound(axis: crossAxis, value: items.crossDim + totalInnerCross,
+                axisSize: crossAxisOwnerSize, width: ownerWidth) - totalInnerCross
+        }
+        if !isNodeFlexWrap && crossMeasureMode.isExactly {
+            items.crossDim = availableInnerCross
+        }
+        // Clamp to the min/max size specified on the container.
+        items.crossDim = style.bound(axis: crossAxis, value: items.crossDim + totalInnerCross,
+            axisSize: crossAxisOwnerSize, width: ownerWidth) - totalInnerCross
+    }
+
+    // STEP 7: CROSS-AXIS ALIGNMENT
+    // We can skip child alignment if we're just measuring the container.
+    private func step7(items: CollectFlexItems, _ startOfLineIndex: Int, _ endOfLineIndex: Int) {
+        if performLayout {
+            for child: FlexLayout in node.children[startOfLineIndex..<endOfLineIndex]
+                where !child.style.hidden {
+                if child.style.absoluteLayout {
+                    // If the child is absolutely positioned and has a top/left/bottom/right
+                    // set, override all the previously computed positions to set it correctly.
+                    // isLeadingPositionDefined
+                    let leadingDefined = child.style.isLeadingPositionDefined(for: crossAxis)
+                    if leadingDefined {
+                        child.box.position[crossAxis] = style.leadingBorder(for: crossAxis) +
+                            child.style.leadingPosition(for: crossAxis, size: availableInnerCross) +
+                            child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
+                    }
+                    if !leadingDefined || child.box.position.leading(direction: crossAxis).isNaN {
+                        // If leading position is not defined or calculations result in Nan, default to border + margin
+                        child.box.position[crossAxis] = style.leadingBorder(for: crossAxis) +
+                            child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
+                    }
+                } else {
+                    var leadingCrossDim = totalLeadingCross
+                    let alignItem = node.computedAlignItem(child: child)
+                    if (alignItem == AlignItems.stretch &&
+                        child.style.margin.leading(direction: crossAxis) != StyleValue.auto &&
+                        child.style.margin.trailing(direction: crossAxis) != StyleValue.auto) {
+                        if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCross) {
+                            var childMainSize: Double = child.box.measuredDimension(for: mainAxis)
+                            var childCrossSize: Double = 0.0
+                            let aspectRatio = child.style.aspectRatio
+                            if aspectRatio.isNaN {
+                                childCrossSize = items.crossDim
+                            } else {
+                                childCrossSize = child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth)
+                                if isMainAxisRow {
+                                    childCrossSize += childMainSize / aspectRatio
+                                } else {
+                                    childCrossSize += childMainSize * aspectRatio
+                                }
+                            }
+                            childMainSize += child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+                            var childMainMeasureMode = MeasureMode.exactly
+                            var childCrossMeasureMode = MeasureMode.exactly
+                            (childMainMeasureMode, childMainSize) = child.style.constrainMaxSize(axis: mainAxis,
+                                parentAxisSize: availableInnerMain, parentWidth: availableInnerWidth,
+                                mode: childMainMeasureMode, size: childMainSize)
+                            (childCrossMeasureMode, childCrossSize) = child.style.constrainMaxSize(axis: crossAxis,
+                                parentAxisSize: availableInnerCross, parentWidth: availableInnerWidth,
+                                mode: childCrossMeasureMode, size: childCrossSize)
+                            let childWidth = isMainAxisRow ? childMainSize : childCrossSize
+                            let childHeight = isMainAxisRow ? childCrossSize : childMainSize
+                            let childWidthMeasureMode: MeasureMode =
+                                childWidth.isNaN ? MeasureMode.undefined : MeasureMode.exactly
+                            let childHeightMeasureMode: MeasureMode =
+                                childHeight.isNaN ? MeasureMode.undefined : MeasureMode.exactly
+                            _ = child.layoutInternal(width: childWidth, height: childHeight,
+                                widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode,
+                                parentWidth: availableInnerWidth, parentHeight: availableInnerHeight,
+                                direction: direction, layout: true, reason: "stretch")
+                        }
+                    } else {
+                        let remainingCrossDim = containerCrossAxis -
+                            child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth)
+                        if (child.style.margin.leading(direction: crossAxis) == StyleValue.auto &&
+                            child.style.margin.trailing(direction: crossAxis) == StyleValue.auto) {
+                            leadingCrossDim += fmax(0, remainingCrossDim / 2)
+                        } else if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
+                            // No-op
+                        } else if child.style.margin.leading(direction: crossAxis) == StyleValue.auto  {
+                            leadingCrossDim += fmax(0, remainingCrossDim)
+                        } else if alignItem == AlignItems.flexStart {
+                            // No-op
+                        } else if alignItem == AlignItems.center {
+                            leadingCrossDim += remainingCrossDim / 2
+                        } else {
+                            leadingCrossDim += remainingCrossDim
+                        }
+                    }
+                    child.box.position[crossAxis] += totalLineCrossDim + leadingCrossDim
+                }
+            }
+        }
+        totalLineCrossDim += items.crossDim
+        maxLineMainDim = fmax(maxLineMainDim, items.mainDim)
+    }
+
+    // STEP 8: MULTI-LINE CONTENT
+    private func step8(_ lineCount: Int, _ isBaselineLayout: Bool) {
+        guard performLayout && (lineCount > 1 || isBaselineLayout) else {
+            return
+        }
+        var crossDimLead: Double = 0.0
+        var currentLead: Double = totalLeadingCross
+        if !availableInnerCross.isNaN {
+            let remainingAlignContentDim = availableInnerCross - totalLineCrossDim
+            switch style.alignContent {
+            case .flexStart:
+                break
+            case .flexEnd:
+                currentLead += remainingAlignContentDim
+            case .center:
+                currentLead += remainingAlignContentDim / 2
+            case .stretch:
+                if availableInnerCross > totalLineCrossDim {
+                    crossDimLead = remainingAlignContentDim / Double(lineCount)
+                }
+            case .spaceAround:
+                if availableInnerCross > totalLineCrossDim {
+                    currentLead += remainingAlignContentDim / Double(2 * lineCount)
+                    if lineCount > 1 {
+                        crossDimLead = remainingAlignContentDim / Double(lineCount)
+                    }
+                } else {
+                    currentLead += remainingAlignContentDim / 2
+                }
+            case .spaceBetween:
+                if availableInnerCross > totalLineCrossDim && lineCount > 1 {
+                    crossDimLead = remainingAlignContentDim / Double(lineCount - 1)
+                }
+            }
+        }
+        var endIndex = 0
+        for i in 0..<lineCount {
+            let startIndex = endIndex
+            // compute the line's height and find the endIndex
+            var lineHeight = 0.0
+            var maxAscentForCurrentLine = 0.0
+            var maxDescentForCurrentLine = 0.0
+            var ii = startIndex
+            for child: FlexLayout in node.children[startIndex...] {
+                if child.style.hidden {
+                    ii += 1
+                    continue
+                }
+                if !child.style.absoluteLayout {
+                    if child.lineIndex != i {
+                        break
+                    }
+                    if child.box.isLayoutDimensionDefined(for: crossAxis) {
+                        lineHeight = fmax(lineHeight,
+                            child.box.measuredDimension(for: crossAxis) +
+                            child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth))
+                    }
+                    if node.computedAlignItem(child: child) == AlignItems.baseline {
+                        let ascent: Double = child.baseline() +
+                            child.style.leadingMargin(for: .column, width: availableInnerWidth)
+                        let descent: Double = child.box.measuredDimension(for: .column) - ascent +
+                            child.style.totalOuterSize(for: .column, width: availableInnerWidth)
+                        maxAscentForCurrentLine = fmax(maxAscentForCurrentLine, ascent)
+                        maxDescentForCurrentLine = fmax(maxDescentForCurrentLine, descent)
+                        lineHeight = fmax(lineHeight, maxAscentForCurrentLine + maxDescentForCurrentLine)
+                    }
+                }
+                ii += 1
+            }
+            endIndex = ii
+            lineHeight += crossDimLead
+            if performLayout {
+                for child: FlexLayout in node.children[startIndex..<endIndex]
+                    where !child.style.hidden && !child.style.absoluteLayout {
+                    switch node.computedAlignItem(child: child) {
+                    case .flexStart:
+                        child.box.position[crossAxis] = currentLead +
+                            child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
+                    case .flexEnd:
+                        child.box.position[crossAxis] = currentLead + lineHeight -
+                            child.style.trailingMargin(for: crossAxis, width: availableInnerWidth) -
+                            child.box.measuredDimension(for: crossAxis)
+                    case .center:
+                        child.box.position[crossAxis] = currentLead +
+                            (lineHeight - child.box.measuredDimension(for: crossAxis)) / 2
+                    case .stretch:
+                        child.box.position[crossAxis] = currentLead +
+                            child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
+                        if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCross) {
+                            let childWidth: Double
+                            let childHeight: Double
+                            if isMainAxisRow {
+                                childWidth = child.box.measuredWidth +
+                                    child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+                                childHeight = lineHeight
+                            } else {
+                                childWidth = lineHeight
+                                childHeight = child.box.measuredHeight +
+                                    child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth)
+                            }
+                            // !(a == b && c == d) => a != b || c != d
+                            if childWidth != child.box.measuredWidth || childHeight != child.box.measuredHeight {
+                                _ = child.layoutInternal(width: childWidth, height: childHeight,
+                                    widthMode: MeasureMode.exactly, heightMode: MeasureMode.exactly,
+                                    parentWidth: availableInnerWidth, parentHeight: availableInnerHeight,
+                                    direction: direction, layout: true, reason: "multiline-stretch")
+                            }
+                        }
+                    case .baseline:
+                        child.box.position.top = currentLead + maxAscentForCurrentLine -
+                            child.baseline() + child.style.leadingPosition(for: .column, size: availableInnerCross)
+                    }
+                }
+            }
+            currentLead += lineHeight
+        }
+    }
+
+    // STEP 9: COMPUTING FINAL DIMENSIONS
+    private func step9() {
+        node.box.measuredWidth = style.bound(axis: FlexDirection.row,
+            value: availableWidth - marginRow, axisSize: ownerWidth, width: ownerWidth)
+        node.box.measuredHeight = style.bound(axis: FlexDirection.column,
+            value: availableHeight - marginColumn, axisSize: ownerHeight, width: ownerWidth)
+        if mainMeasureMode.isUndefined || (!style.overflow.scrolled && mainMeasureMode.isAtMost) {
+            let size: Double = style.bound(axis: mainAxis, value: maxLineMainDim,
+                axisSize: mainAxisOwnerSize, width: ownerWidth)
+            node.box.setMeasuredDimension(for: mainAxis, size: size)
+        } else if mainMeasureMode.isAtMost && style.overflow.scrolled {
+            var size: Double = style.bound(for: mainAxis, value: maxLineMainDim, size: mainAxisOwnerSize)
+            size = fmax(fmin(availableInnerMain + totalInnerMain, size), totalInnerMain)
+            node.box.setMeasuredDimension(for: mainAxis, size: size)
+        }
+        if crossMeasureMode.isUndefined || (!style.overflow.scrolled && crossMeasureMode.isAtMost) {
+            let size: Double = style.bound(axis: crossAxis, value: totalLineCrossDim + totalInnerCross,
+                axisSize: crossAxisOwnerSize, width: ownerWidth)
+            node.box.setMeasuredDimension(for: crossAxis, size: size)
+        } else if crossMeasureMode.isAtMost && style.overflow.scrolled {
+            var size: Double = style.bound(for: crossAxis, value: totalLineCrossDim + totalInnerCross,
+                size: crossAxisOwnerSize)
+            size = fmax(fmin(availableInnerCross + totalInnerCross, size), totalInnerCross)
+            node.box.setMeasuredDimension(for: crossAxis, size: size)
+        }
+        guard performLayout && style.flexWrap == FlexWrap.wrapReverse else {
+            return
+        }
+        for child in node.children where child.style.relativeLayout {
+            child.box.position[crossAxis] = node.box.measuredDimension(for: crossAxis) -
+                child.box.position[crossAxis] -
+                child.box.measuredDimension(for: crossAxis)
+        }
+    }
+
+    // STEP 10: SIZING AND POSITIONING ABSOLUTE CHILDREN
+    private func step10() {
+        guard performLayout else {
+            return
+        }
+        for child in node.children where child.style.absoluteLayout {
+            node.absoluteLayout(child: child, width: availableInnerWidth,
+                widthMode: (isMainAxisRow ? mainMeasureMode : crossMeasureMode),
+                height: availableInnerHeight, direction: direction)
+        }
+    }
+
+    // STEP 11: SETTING TRAILING POSITIONS FOR CHILDREN
+    private func step11() {
+        let needsMainTrailingPos: Bool = mainAxis.reversed
+        let needsCrossTrailingPos: Bool = crossAxis.reversed
+        guard needsMainTrailingPos || needsCrossTrailingPos else {
+            return
+        }
+        for child: FlexLayout in node.children where !child.style.hidden {
+            if needsMainTrailingPos {
+                node.setChildTrailingPosition(child: child, direction: mainAxis)
+            }
+            if needsCrossTrailingPos {
+                node.setChildTrailingPosition(child: child, direction: crossAxis)
+            }
+        }
+    }
+
+    // YGNodeComputeFlexBasisForChildren
+    private func computeFlexBasis() -> Double {
+        var totalOuterFlexBasis: Double = 0.0
+        let singleFlexChild: FlexLayout? = mainMeasureMode.isExactly ? node.findFlexChild() : nil
+        for child: FlexLayout in node.children {
+            child.resolveDimensions()
+            if child.style.display == Display.none {
+                child.zeroLayout()
+                child.hasNewLayout = true
+                child.dirty = false
+                continue
+            }
+            if (performLayout) {
+                let childDirection: Direction = child.style.resolveDirection(by: direction)
+                let mainSize: Double = mainAxis.isRow ? availableInnerWidth : availableInnerHeight
+                let crossSize: Double = mainAxis.isRow ? availableInnerHeight : availableInnerWidth
+                child.setPosition(for: childDirection, main: mainSize, cross: crossSize,
+                    width: availableInnerWidth)
+            }
+            if (child.style.absoluteLayout) {
+                continue
+            }
+            if (child == singleFlexChild) {
+                child.box.computedFlexBasis = 0
+            } else {
+                node.resolveFlexBasis(for: child,
+                    width: availableInnerWidth, widthMode: widthMeasureMode,
+                    height: availableInnerHeight, heightMode: heightMeasureMode,
+                    parentWidth: availableInnerWidth, parentHeight: availableInnerHeight,
+                    direction: direction)
+            }
+            totalOuterFlexBasis += child.box.computedFlexBasis +
+                child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+        }
+        let flexBasisOverflows = mainMeasureMode.isUndefined ? false : totalOuterFlexBasis > availableInnerWidth
+        let isNodeFlexWrap = style.wrapped
+        if isNodeFlexWrap && flexBasisOverflows && mainMeasureMode.isAtMost {
+            mainMeasureMode = MeasureMode.exactly
+        }
+        return totalOuterFlexBasis
+    }
+
+    // YGResolveFlexibleLength
+    private func resolveFlexibleLength(items: CollectFlexItems) {
+        let originalFreeSpace = items.remainingFreeSpace
+        distributeFreeSpace(items)
+        let size = distributeFreeSpace2(items)
+        items.remainingFreeSpace = originalFreeSpace - size
+    }
+
+    // YGDistributeFreeSpaceFirstPass
+    private func distributeFreeSpace(_ items: CollectFlexItems) {
+        var flexShrinkScaledFactor = 0.0
+        var flexGrowFactor = 0.0
+        var baseMainSize = 0.0
+        var boundMainSize = 0.0
+        var deltaFreeSpace = 0.0
+        for child in items.relativeChildren {
+            let childFlexBasis = child.style.bound(for: mainAxis,
+                value: child.box.computedFlexBasis, size: mainAxisOwnerSize)
+            if items.remainingFreeSpace < 0 {
+                flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
+                // Is this child able to shrink?
+                if !flexShrinkScaledFactor.isNaN && flexShrinkScaledFactor != 0 {
+                    baseMainSize = childFlexBasis + items.remainingFreeSpace /
+                        items.totalFlexShrinkScaledFactors * flexShrinkScaledFactor
+                    boundMainSize = child.style.bound(axis: mainAxis, value: baseMainSize,
+                        axisSize: availableInnerMain, width: availableInnerWidth)
+                    if !baseMainSize.isNaN && !boundMainSize.isNaN && baseMainSize != boundMainSize {
+                        // By excluding this item's size and flex factor from remaining, this
+                        // item's min/max constraints should also trigger in the second pass
+                        // resulting in the item's size calculation being identical in the
+                        // first and second passes.
+                        deltaFreeSpace += boundMainSize - childFlexBasis
+                        items.totalFlexShrinkScaledFactors -= flexShrinkScaledFactor
+                    }
+                }
+            } else if !items.remainingFreeSpace.isNaN && items.remainingFreeSpace > 0 {
+                flexGrowFactor = child.computedFlexGrow
+                // Is this child able to grow?
+                if !flexGrowFactor.isNaN && flexGrowFactor != 0 {
+                    baseMainSize = childFlexBasis + items.remainingFreeSpace /
+                        items.totalFlexGrowFactors * flexGrowFactor
+                    boundMainSize = child.style.bound(axis: mainAxis, value: baseMainSize,
+                        axisSize: availableInnerMain, width: availableInnerWidth)
+                    if !baseMainSize.isNaN && !boundMainSize.isNaN && baseMainSize != boundMainSize {
+                        deltaFreeSpace += boundMainSize - childFlexBasis
+                        items.totalFlexGrowFactors -= flexGrowFactor
+                    }
+                }
+            }
+        }
+        items.remainingFreeSpace -= deltaFreeSpace
+    }
+
+    // YGDistributeFreeSpaceSecondPass
+    private func distributeFreeSpace2(_ items: CollectFlexItems) -> Double {
+        var flexShrinkScaledFactor = 0.0
+        var flexGrowFactor = 0.0
+        var deltaFreeSpace = 0.0
+        for child in items.relativeChildren {
+            let childFlexBasis = child.style.bound(for: mainAxis,
+                value: child.box.computedFlexBasis, size: mainAxisOwnerSize)
+            var updatedMainSize = childFlexBasis
+            if !items.remainingFreeSpace.isNaN && items.remainingFreeSpace < 0 {
+                flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
+                // Is this child able to shrink?
+                if flexShrinkScaledFactor != 0 {
+                    let childSize: Double
+                    if !items.totalFlexShrinkScaledFactors.isNaN && items.totalFlexShrinkScaledFactors == 0 {
+                        childSize = childFlexBasis + flexShrinkScaledFactor
+                    } else {
+                        childSize = childFlexBasis + items.remainingFreeSpace /
+                            items.totalFlexShrinkScaledFactors * flexShrinkScaledFactor
+                    }
+                    updatedMainSize = child.style.bound(axis: mainAxis, value: childSize,
+                        axisSize: availableInnerMain, width: availableInnerWidth)
+                }
+            } else if !items.remainingFreeSpace.isNaN && items.remainingFreeSpace > 0 {
+                flexGrowFactor = child.computedFlexGrow
+                // Is this child able to grow?
+                if !flexGrowFactor.isNaN && flexGrowFactor != 0 {
+                    updatedMainSize = child.style.bound(axis: mainAxis,
+                        value: childFlexBasis + items.remainingFreeSpace / items.totalFlexGrowFactors * flexGrowFactor,
+                        axisSize: availableInnerMain, width: availableInnerWidth)
+                }
+            }
+            deltaFreeSpace += updatedMainSize - childFlexBasis
+            let marginMain = child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+            let marginCross = child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth)
+            var childCrossSize = 0.0
+            var childMainSize = updatedMainSize + marginMain
+            var childCrossMeasureMode = MeasureMode.undefined
+            var childMainMeasureMode = MeasureMode.exactly
+            if !child.style.aspectRatio.isNaN {
+                let ratio = child.style.aspectRatio
+                if isMainAxisRow {
+                    childCrossSize = (childMainSize - marginMain) / ratio
+                } else {
+                    childCrossSize = (childMainSize - marginMain) * ratio
+                }
+                childCrossMeasureMode = MeasureMode.exactly
+                childCrossSize += marginCross
+            } else if (!availableInnerCross.isNaN &&
+                !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCross) &&
+                crossMeasureMode.isExactly &&
+                !(isNodeFlexWrap && flexBasisOverflows) &&
+                node.computedAlignItem(child: child) == AlignItems.stretch &&
+                child.style.margin.leading(direction: crossAxis) != StyleValue.auto &&
+                child.style.margin.trailing(direction: crossAxis) != StyleValue.auto) {
+                childCrossSize = availableInnerCross
+                childCrossMeasureMode = MeasureMode.exactly
+            } else if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCross) {
+                childCrossSize = availableInnerCross
+                childCrossMeasureMode = childCrossSize.isNaN ? MeasureMode.undefined : MeasureMode.atMost
+            } else {
+                let size: StyleValue = child.box.computedDimension(by: crossAxis)
+                let flag: Bool
+                if case StyleValue.percentage = size {
+                    flag = true
+                } else {
+                    flag = false
+                }
+                childCrossSize = size.resolve(by: availableInnerCross) + marginCross
+                // isLoosePercentageMeasurement
+                let loose = flag && !crossMeasureMode.isExactly
+                childCrossMeasureMode = (childCrossSize.isNaN || loose) ? MeasureMode.undefined : MeasureMode.exactly
+            }
+            (childMainMeasureMode, childMainSize) = child.style.constrainMaxSize(axis: mainAxis,
+                parentAxisSize: availableInnerMain, parentWidth: availableInnerWidth,
+                mode: childMainMeasureMode, size: childMainSize)
+            (childCrossMeasureMode, childCrossSize) = child.style.constrainMaxSize(axis: crossAxis,
+                parentAxisSize: availableInnerCross, parentWidth: availableInnerWidth,
+                mode: childCrossMeasureMode, size: childCrossSize)
+            let requiresStretchLayout = !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCross) &&
+                node.computedAlignItem(child: child) == AlignItems.stretch &&
+                child.style.margin.leading(direction: crossAxis) != StyleValue.auto &&
+                child.style.margin.trailing(direction: crossAxis) != StyleValue.auto
+            let childWidth = isMainAxisRow ? childMainSize : childCrossSize
+            let childHeight = !isMainAxisRow ? childMainSize : childCrossSize
+            let childWidthMeasureMode = isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode
+            let childHeightMeasureMode = isMainAxisRow ? childCrossMeasureMode : childMainMeasureMode
+            _ = child.layoutInternal(width: childWidth, height: childHeight,
+                widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode,
+                parentWidth: availableInnerWidth, parentHeight: availableInnerHeight,
+                direction: direction, layout: performLayout && !requiresStretchLayout,
+                reason: "flex")
+            node.box.hasOverflow = node.box.hasOverflow || child.box.hasOverflow
+        }
+        return deltaFreeSpace
+    }
+
+    // YGCalculateCollectFlexItemsRowValues
+    private func calculateCollectFlexItems(_ lineCount: Int, _ startOfLineIndex: Int) -> CollectFlexItems {
+        let items = CollectFlexItems()
+        items.relativeChildren.reserveCapacity(node.children.count)
+        // sizeConsumedOnCurrentLineIncludingMinConstraint
+        var sizeConsumed: Double = 0.0
+        var endOfLineIndex: Int = startOfLineIndex
+        for child in node.children[startOfLineIndex...] {
+            if (child.style.hidden || child.style.absoluteLayout) {
+                endOfLineIndex += 1
+                continue
+            }
+            child.lineIndex = lineCount
+            let childMarginMain = child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+            // flexBasisWithMinAndMaxConstraints
+            let flexBasis = child.style.bound(for: mainAxis, value: child.box.computedFlexBasis,
+                size: mainAxisOwnerSize)
+            if sizeConsumed + flexBasis + childMarginMain > availableInnerMain &&
+                   isNodeFlexWrap && items.itemsOnLine > 0 {
+                break
+            }
+            sizeConsumed += flexBasis + childMarginMain
+            items.sizeConsumedOnCurrentLine += flexBasis + childMarginMain
+            items.itemsOnLine += 1
+            if child.flexible {
+                items.totalFlexGrowFactors += child.computedFlexGrow
+                items.totalFlexShrinkScaledFactors += (0 - child.computedFlexShrink) * child.box.computedFlexBasis
+            }
+            items.relativeChildren.append(child)
+            endOfLineIndex += 1
+        }
+        // The total flex factor needs to be floored to 1.
+        if items.totalFlexGrowFactors > 0 && items.totalFlexGrowFactors < 1 {
+            items.totalFlexGrowFactors = 1
+        }
+        // The total flex shrink factor needs to be floored to 1.
+        if items.totalFlexShrinkScaledFactors > 0 && items.totalFlexShrinkScaledFactors < 1 {
+            items.totalFlexShrinkScaledFactors = 1
+        }
+        items.endOfLineIndex = endOfLineIndex
+        return items
+    }
+
+    // YGJustifyMainAxis
+    private func justifyMainAxis(_ items: CollectFlexItems, _ startOfLineIndex: Int) {
+        let leadingInnerMain = style.totalLeadingSize(for: mainAxis, width: ownerWidth)
+        let trailingInnerMain = style.totalTrailingSize(for: mainAxis, width: ownerWidth)
+        if mainMeasureMode.isAtMost && items.remainingFreeSpace > 0 {
+            let minMainSize = style.minDimension(by: mainAxis).resolve(by: mainAxisOwnerSize)
+            if !minMainSize.isNaN {
+                let minAvailableMain: Double = minMainSize - leadingInnerMain - trailingInnerMain
+                // occupiedSpaceByChildNodes
+                let occupied: Double = availableInnerMain - items.remainingFreeSpace
+                items.remainingFreeSpace = fmax(0, minAvailableMain - occupied)
+            } else {
+                items.remainingFreeSpace = 0
+            }
+        }
+        var numberOfAutoMarginsOnCurrentLine: Int = 0
+        for child: FlexLayout in node.children[startOfLineIndex..<items.endOfLineIndex]
+            where child.style.relativeLayout {
+            if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
+                numberOfAutoMarginsOnCurrentLine += 1
+            }
+            if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
+                numberOfAutoMarginsOnCurrentLine += 1
+            }
+        }
+        var leadingMainDim: Double = 0.0
+        var betweenMainDim: Double = 0.0
+        if numberOfAutoMarginsOnCurrentLine == 0 {
+            switch style.justifyContent {
+            case .center:
+                leadingMainDim = items.remainingFreeSpace / 2
+            case .flexEnd:
+                leadingMainDim = items.remainingFreeSpace
+            case .spaceBetween:
+                if items.itemsOnLine > 1 {
+                    betweenMainDim = fmax(items.remainingFreeSpace, 0) / Double(items.itemsOnLine - 1)
+                } else {
+                    betweenMainDim = 0
+                }
+            case .spaceEvenly: // Space is distributed evenly across all elements
+                betweenMainDim = items.remainingFreeSpace / Double(items.itemsOnLine + 1)
+                leadingMainDim = betweenMainDim
+            case .spaceAround:
+                betweenMainDim = items.remainingFreeSpace / Double(items.itemsOnLine)
+                leadingMainDim = betweenMainDim / 2
+            case .flexStart:
+                break
+            }
+        }
+        items.mainDim = leadingInnerMain + leadingMainDim
+        items.crossDim = 0.0
+        let baselineLayout: Bool = node.isBaselineLayout
+        var maxAscentForCurrentLine: Double = 0.0
+        var maxDescentForCurrentLine: Double = 0.0
+        for child: FlexLayout in node.children[startOfLineIndex..<items.endOfLineIndex]
+            where !child.style.hidden {
+            if child.style.absoluteLayout && child.style.isLeadingPositionDefined(for: mainAxis) {
+                if performLayout {
+                    // In case the child is position absolute and has left/top being defined,
+                    // we override the position to whatever the user said (and margin/border).
+                    child.box.position[mainAxis] = style.leadingBorder(for: mainAxis) +
+                        child.style.leadingPosition(for: mainAxis, size: availableInnerMain) +
+                        child.style.leadingMargin(for: mainAxis, width: availableInnerWidth)
+                }
+            } else {
+                // Now that we placed the element, we need to update the variables.
+                // We need to do that only for relative elements. Absolute elements do not
+                // take part in that phase.
+                if child.style.relativeLayout {
+                    if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
+                        items.mainDim += items.remainingFreeSpace / Double(numberOfAutoMarginsOnCurrentLine)
+                    }
+                    if performLayout {
+                        child.box.position[mainAxis] += items.mainDim
+                    }
+                    if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
+                        items.mainDim += items.remainingFreeSpace / Double(numberOfAutoMarginsOnCurrentLine)
+                    }
+                    let canSkipFlex = !performLayout && crossMeasureMode.isExactly
+                    if canSkipFlex {
+                        items.mainDim += betweenMainDim + child.box.computedFlexBasis +
+                            child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
+                        items.crossDim = availableInnerCross
+                    } else {
+                        items.mainDim += betweenMainDim + child.dimensionWithMargin(for: mainAxis, width: availableInnerWidth)
+                        if baselineLayout {
+                            let ascent = child.baseline() + child.style.leadingMargin(for: .column,
+                                width: availableInnerWidth)
+                            let descent = child.box.measuredHeight + child.style.totalOuterSize(for: .column,
+                                width: availableInnerWidth) - ascent
+                            maxAscentForCurrentLine = fmax(maxAscentForCurrentLine, ascent)
+                            maxDescentForCurrentLine = fmax(maxDescentForCurrentLine, descent)
+                        } else {
+                            items.crossDim = fmax(items.crossDim, child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth))
+                        }
+                    }
+                } else if performLayout {
+                    child.box.position[mainAxis] += style.leadingBorder(for: mainAxis) + leadingMainDim
+                }
+            }
+        }
+        items.mainDim += trailingInnerMain
+        if baselineLayout {
+            items.crossDim = maxAscentForCurrentLine + maxDescentForCurrentLine
+        }
+    }
+    
+    // YGNodeCalculateAvailableInnerDim
+    private func availableInnerSize(for axis: FlexDirection, availableSize: Double, size: Double) -> Double {
+        let isWidth = axis.isRow
+        let direction: FlexDirection = isWidth ? FlexDirection.row : FlexDirection.column
+        let margin = style.totalOuterSize(for: direction, width: size)
+        let innerSize = style.totalInnerSize(for: direction, width: size)
+        let available = availableSize - margin - innerSize
+        if available.isNaN {
+            return available
+        }
+        var minSize: Double
+        var manSize: Double
+        if isWidth {
+            minSize = style.minWidth.resolve(by: size)
+            manSize = style.computedMaxWidth.resolve(by: size)
+        } else {
+            minSize = style.minHeight.resolve(by: size)
+            manSize = style.computedMaxHeight.resolve(by: size)
+        }
+        minSize = minSize.isNaN ? 0.0 : minSize - innerSize
+        manSize = manSize.isNaN ? Double.greatestFiniteMagnitude : manSize - innerSize
+        return fmax(fmin(available, manSize), minSize)
+    }
+}
+
 extension FlexLayout {
-    // YGResolveDimensions
+    // YGNode::resolveDimension
     func resolveDimensions() {
         if let maxWidth = style.maxWidth {
             box.resolvedWidth = (maxWidth == style.minWidth) ? maxWidth : style.width
@@ -54,21 +885,22 @@ extension FlexLayout {
         return (result, mode)
     }
 
-    // YGNodeSetPosition
-    func setPosition(direction: Direction, mainSize: Double, crossSize: Double, parentWidth: Double) {
+    // YGNode::setPosition
+    func setPosition(for direction: Direction, main mainSize: Double, cross crossSize: Double,
+                     width ownerWidth: Double) {
         let direction = parent != nil ? direction : Direction.ltr
-        let mainDirection = style.resolveFlexDirection(by: direction)
-        let crossDirection = mainDirection.cross(by: direction)
-        let mainPosition = style.relativePosition(for: mainDirection, size: mainSize)
-        let crossPosition = style.relativePosition(for: crossDirection, size: crossSize)
-        box.setLeadingPosition(for: mainDirection,
-            size: style.leadingMargin(for: mainDirection, width: parentWidth) + mainPosition)
-        box.setTrailingPosition(for: mainDirection,
-            size: style.leadingMargin(for: mainDirection, width: parentWidth) + mainPosition)
-        box.setLeadingPosition(for: crossDirection,
-            size: style.leadingMargin(for: crossDirection, width: parentWidth) + crossPosition)
-        box.setTrailingPosition(for: crossDirection,
-            size: style.leadingMargin(for: crossDirection, width: parentWidth) + crossPosition)
+        let mainAxis = style.resolveFlexDirection(by: direction)
+        let crossAxis = mainAxis.cross(by: direction)
+        let mainPosition = style.relativePosition(for: mainAxis, size: mainSize)
+        let crossPosition = style.relativePosition(for: crossAxis, size: crossSize)
+        box.setLeadingPosition(for: mainAxis,
+            size: style.leadingMargin(for: mainAxis, width: ownerWidth) + mainPosition)
+        box.setTrailingPosition(for: mainAxis,
+            size: style.leadingMargin(for: mainAxis, width: ownerWidth) + mainPosition)
+        box.setLeadingPosition(for: crossAxis,
+            size: style.leadingMargin(for: crossAxis, width: ownerWidth) + crossPosition)
+        box.setTrailingPosition(for: crossAxis,
+            size: style.leadingMargin(for: crossAxis, width: ownerWidth) + crossPosition)
     }
 
     // YGRoundToPixelGrid
@@ -91,14 +923,12 @@ extension FlexLayout {
     @inline(__always)
     func findFlexChild() -> FlexLayout? {
         var result: FlexLayout? = nil
-        for child in children {
-            if result != nil {
-                if child.flexed {
-                    // There is already a flexible child, abort.
-                    result = nil
-                    break
-                }
-            } else if (child.computedFlexGrow > 0.0 && child.computedFlexShrink > 0.0) {
+        for child in children where child.flexible {
+            if (result != nil || child.computedFlexGrow ~~ 0.0 ||
+                child.computedFlexShrink ~~ 0.0) {
+                result = nil
+                break
+            } else {
                 result = child
             }
         }
@@ -175,33 +1005,33 @@ extension FlexLayout {
             let marginColumn: Double = child.style.totalOuterSize(for: .column, width: parentWidth)
             if isRowStyleDimDefined {
                 childWidth = child.box.resolvedWidth.resolve(by: parentWidth) + marginRow
-                childWidthMeasureMode = .exactly
+                childWidthMeasureMode = MeasureMode.exactly
             }
             if isColumnStyleDimDefined {
                 childHeight = child.box.resolvedHeight.resolve(by: parentWidth) + marginColumn
-                childHeightMeasureMode = .exactly
+                childHeightMeasureMode = MeasureMode.exactly
             }
             // The W3C spec doesn't say anything about the 'overflow' property,
             // but all major browsers appear to implement the following logic.
             if !isMainAxisRow && style.overflow.scrolled || !style.overflow.scrolled {
                 if childWidth.isNaN && !width.isNaN {
                     childWidth = width
-                    childWidthMeasureMode = .atMost
+                    childWidthMeasureMode = MeasureMode.atMost
                 }
             }
             if isMainAxisRow && style.overflow.scrolled || !style.overflow.scrolled {
                 if childHeight.isNaN && !height.isNaN {
                     childHeight = height
-                    childHeightMeasureMode = .atMost
+                    childHeightMeasureMode = MeasureMode.atMost
                 }
             }
             if !child.style.aspectRatio.isNaN {
                 if !isMainAxisRow && childWidthMeasureMode.isExactly {
-                    childHeight = (childWidth - marginRow) / child.style.aspectRatio
-                    childHeightMeasureMode = .exactly
+                    childHeight = marginColumn + (childWidth - marginRow) / child.style.aspectRatio
+                    childHeightMeasureMode = MeasureMode.exactly
                 } else if isMainAxisRow && childHeightMeasureMode.isExactly {
                     childWidth = (childHeight - marginColumn) * child.style.aspectRatio
-                    childWidthMeasureMode = .exactly
+                    childWidthMeasureMode = MeasureMode.exactly
                 }
             }
             // If child has no defined size in the cross axis and is set to stretch, set the cross axis to be measured
@@ -210,20 +1040,20 @@ extension FlexLayout {
             let childWidthStretch: Bool = computedAlignItem(child: child) == AlignItems.stretch && !childWidthMeasureMode.isExactly
             if !isMainAxisRow && !isRowStyleDimDefined && hasExactWidth && childWidthStretch {
                 childWidth = width
-                childWidthMeasureMode = .exactly
+                childWidthMeasureMode = MeasureMode.exactly
                 if !child.style.aspectRatio.isNaN {
                     childHeight = (childWidth - marginRow) / child.style.aspectRatio
-                    childHeightMeasureMode = .exactly
+                    childHeightMeasureMode = MeasureMode.exactly
                 }
             }
             let hasExactHeight: Bool = !height.isNaN && heightMode.isExactly
             let childHeightStretch: Bool = computedAlignItem(child: child) == AlignItems.stretch && !childHeightMeasureMode.isExactly
             if isMainAxisRow && !isColumnStyleDimDefined && hasExactHeight && childHeightStretch {
                 childHeight = height
-                childHeightMeasureMode = .exactly
+                childHeightMeasureMode = MeasureMode.exactly
                 if !child.style.aspectRatio.isNaN {
                     childWidth = (childHeight - marginColumn) * child.style.aspectRatio
-                    childWidthMeasureMode = .exactly
+                    childWidthMeasureMode = MeasureMode.exactly
                 }
             }
             (childWidthMeasureMode, childWidth) = child.style.constrainMaxSize(axis: .row, parentAxisSize: parentWidth, parentWidth: parentWidth, mode: childWidthMeasureMode, size: childWidth)
@@ -238,16 +1068,9 @@ extension FlexLayout {
     internal func layoutInternal(width: Double, height: Double, widthMode: MeasureMode, heightMode: MeasureMode,
                                  parentWidth: Double, parentHeight: Double, direction: Direction,
                                  layout: Bool, reason: String) -> Bool {
-        let layoutNeeded: Bool
-        if let lastParentDirection = self.lastParentDirection {
-//            // Notice: A `layout` with measure function and marked dirty should layout in case its content changed.
-//            layoutNeeded = (dirty && (box.generation != FlexBox.totalGeneration || measureSelf)) ||
-//            lastParentDirection != direction
-            layoutNeeded = (dirty && box.generation != FlexBox.totalGeneration) || lastParentDirection != direction
-        } else {
-            layoutNeeded = true
-        }
+        let layoutNeeded = (dirty && box.generation != FlexBox.totalGeneration) || lastParentDirection != direction
         if layoutNeeded {
+            // Invalidate the cached results.
             cachedLayout = nil
             cachedMeasurements.removeAll()
         }
@@ -392,10 +1215,10 @@ extension FlexLayout {
         let outerRow = style.totalOuterSize(for: .row, width: parentWidth)
         // marginAxisColumn
         let outerColumn = style.totalOuterSize(for: .column, width: parentWidth)
-        let width: Double = (!widthMode.isExactly) ? innerRow : (width - outerRow)
-        box.measuredWidth = style.bound(axis: .row, value: width, axisSize: parentWidth, width: parentWidth)
-        let height: Double = (!heightMode.isExactly) ? innerColumn : (height - outerColumn)
-        box.measuredHeight = style.bound(axis: .column, value: height, axisSize: parentHeight, width: parentWidth)
+        let _width: Double = (!widthMode.isExactly) ? innerRow : (width - outerRow)
+        box.measuredWidth = style.bound(axis: .row, value: _width, axisSize: parentWidth, width: parentWidth)
+        let _height: Double = (!heightMode.isExactly) ? innerColumn : (height - outerColumn)
+        box.measuredHeight = style.bound(axis: .column, value: _height, axisSize: parentHeight, width: parentWidth)
     }
 
     // YGNodeFixedSizeSetMeasuredDimensions
@@ -415,592 +1238,27 @@ extension FlexLayout {
     }
 
     // YGNodelayoutImpl
-    func flexLayout(width: Double, height: Double, direction: Direction, widthMode: MeasureMode, heightMode: MeasureMode, parentWidth: Double, parentHeight: Double, layout performLayout: Bool) {
+    func flexLayout(width: Double, height: Double, direction: Direction,
+                    widthMode: MeasureMode, heightMode: MeasureMode,
+                    parentWidth: Double, parentHeight: Double, layout performLayout: Bool) {
         // If we're not being asked to perform a full layout we can skip the algorithm if we already know the size
-        if !performLayout && fixedLayout(width: width, height: height, widthMode: widthMode, heightMode: heightMode, parentWidth: parentWidth, parentHeight: parentHeight) {
+        if !performLayout && fixedLayout(width: width, height: height, widthMode: widthMode,
+            heightMode: heightMode, parentWidth: parentWidth, parentHeight: parentHeight) {
             return
         }
         copyChildrenIfNeeded()
         // Reset layout flags, as they could have changed.
         box.hasOverflow = false
-        let direction = style.resolveDirection(by: direction)
-        // STEP 1: CALCULATE VALUES FOR REMAINDER OF ALGORITHM
-        let mainAxis = style.flexDirection.resolve(by: direction)
-        let crossAxis = mainAxis.cross(by: direction)
-        let isMainAxisRow = mainAxis.isRow
-        let paddingAndBorderAxisMain = style.totalInnerSize(for: mainAxis, width: parentWidth)
-        let paddingAndBorderAxisCross = style.totalInnerSize(for: crossAxis, width: parentWidth)
-        let paddingAndBorderAxisRow = isMainAxisRow ? paddingAndBorderAxisMain : paddingAndBorderAxisCross
-        let paddingAndBorderAxisColumn = isMainAxisRow ? paddingAndBorderAxisCross : paddingAndBorderAxisMain
-        let marginAxisRow: Double = style.totalOuterSize(for: .row, width: parentWidth)
-        let marginAxisColumn: Double = style.totalOuterSize(for: .column, width: parentWidth)
-        // STEP 2: DETERMINE AVAILABLE SIZE IN MAIN AND CROSS DIRECTIONS
-        let minInnerWidth = style.minWidth.resolve(by: width) - paddingAndBorderAxisRow
-        let maxInnerWidth = style.computedMaxWidth.resolve(by: width) - paddingAndBorderAxisRow
-        let minInnerHeight = style.minHeight.resolve(by: height) - paddingAndBorderAxisColumn
-        let maxInnerHeight = style.computedMaxHeight.resolve(by: height) - paddingAndBorderAxisColumn
-        let minInnerMainDim = isMainAxisRow ? minInnerWidth : minInnerHeight
-        let maxInnerMainDim = isMainAxisRow ? maxInnerWidth : maxInnerHeight
-        var availableInnerWidth = width - marginAxisRow - paddingAndBorderAxisRow
-        if (!availableInnerWidth.isNaN) {
-            availableInnerWidth = inner(availableInnerWidth, min: minInnerWidth, max: maxInnerWidth)
-        }
-        var availableInnerHeight = height - marginAxisColumn - paddingAndBorderAxisColumn
-        if (!availableInnerHeight.isNaN) {
-            availableInnerHeight = inner(availableInnerHeight, min: minInnerHeight, max: maxInnerHeight)
-        }
-        var availableInnerMainDim: Double = isMainAxisRow ? availableInnerWidth : availableInnerHeight
-        let availableInnerCrossDim: Double = isMainAxisRow ? availableInnerHeight : availableInnerWidth
-        let singleFlexChild: FlexLayout?
-        var measureModeMainDim = isMainAxisRow ? widthMode : heightMode
-        if measureModeMainDim.isExactly {
-            singleFlexChild = findFlexChild()
-        } else {
-            singleFlexChild = nil
-        }
-        var totalOuterFlexBasis = 0.0
-        // STEP 3: DETERMINE FLEX BASIS FOR EACH ITEM
-        var firstAbsoluteChild: FlexLayout? = nil
-        var currentAbsoluteChild: FlexLayout? = nil
-        for child in children {
-            if child.style.display == Display.none {
-                child.zeroLayout()
-                child.dirty = false
-                continue
-            }
-            child.resolveDimensions()
-            if performLayout {
-                let childDirection = child.style.resolveDirection(by: direction)
-                child.setPosition(direction: childDirection, mainSize: availableInnerMainDim, crossSize: availableInnerCrossDim, parentWidth: availableInnerWidth)
-            }
-            if child.style.absoluteLayout {
-                if firstAbsoluteChild == nil {
-                    firstAbsoluteChild = child
-                }
-                currentAbsoluteChild?.nextChild = child
-                currentAbsoluteChild = child
-                child.nextChild = nil
-            } else {
-                if let singleFlexChild = singleFlexChild, child == singleFlexChild {
-                    child.box.computedFlexBasis = 0
-                } else {
-                    resolveFlexBasis(for: child, width: availableInnerWidth, widthMode: widthMode, height: availableInnerHeight, heightMode: heightMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction)
-                }
-            }
-            totalOuterFlexBasis += child.box.computedFlexBasis + child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
-        }
-        let flexBasisOverflows = measureModeMainDim == MeasureMode.undefined ? false : totalOuterFlexBasis > availableInnerWidth
-        let isNodeFlexWrap = style.wrapped
-        if isNodeFlexWrap && flexBasisOverflows && measureModeMainDim.isAtMost {
-            measureModeMainDim = .exactly
-        }
-        // STEP 4: COLLECT FLEX ITEMS INTO FLEX LINES
-        var startOfLineIndex = 0
-        var endOfLineIndex = 0
-        let childCount = children.count
-        var lineCount = 0
-        var totalLineCrossDim = 0.0
-        var maxLineMainDim = 0.0
-        let mainAxisParentSize = isMainAxisRow ? parentWidth : parentHeight
-        let crossAxisParentSize = isMainAxisRow ? parentHeight : parentWidth
-        let leadingPaddingAndBorderMain = style.totalLeadingSize(for: mainAxis, width: parentWidth)
-        let trailingPaddingAndBorderMain = style.totalTrailingSize(for: mainAxis, width: parentWidth)
-        let leadingPaddingAndBorderCross = style.totalLeadingSize(for: crossAxis, width: parentWidth)
-        let measureModeCrossDim = isMainAxisRow ? heightMode : widthMode
-        while endOfLineIndex < childCount {
-            var itemsOnLine = 0
-            var sizeConsumedOnCurrentLine = 0.0
-            var sizeConsumedOnCurrentLineIncludingMinConstraint = 0.0
-            var totalFlexGrowFactors = 0.0
-            var totalFlexShrinkScaledFactors = 0.0
-            var firstRelativeChild: FlexLayout? = nil
-            var currentRelativeChild: FlexLayout? = nil
-            for child in children[startOfLineIndex..<childCount] {
-                if child.style.hidden {
-                    endOfLineIndex += 1
-                    continue
-                }
-                child.lineIndex = lineCount
-                if !child.style.absoluteLayout {
-                    let childMarginMainAxis = child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
-                    // NOTE: min(nan, 0) => nan, min(0, nan) => 0
-                    let flexBasisWithMaxConstraints = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis)
-                    let flexBasisWithMinAndMaxConstraints = fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), flexBasisWithMaxConstraints)
-                    if sizeConsumedOnCurrentLineIncludingMinConstraint + flexBasisWithMinAndMaxConstraints + childMarginMainAxis > availableInnerMainDim && isNodeFlexWrap && itemsOnLine > 0 {
-                        break
-                    }
-                    sizeConsumedOnCurrentLineIncludingMinConstraint += flexBasisWithMinAndMaxConstraints + childMarginMainAxis
-                    sizeConsumedOnCurrentLine += flexBasisWithMinAndMaxConstraints + childMarginMainAxis
-                    itemsOnLine += 1
-                    if child.flexed {
-                        totalFlexGrowFactors += child.computedFlexGrow
-                        totalFlexShrinkScaledFactors += (0 - child.computedFlexShrink) * child.box.computedFlexBasis
-                    }
-                    if firstRelativeChild == nil {
-                        firstRelativeChild = child
-                    }
-                    currentRelativeChild?.nextChild = child
-                    currentRelativeChild = child
-                    child.nextChild = nil
-                }
-                endOfLineIndex += 1
-            }
-            if totalFlexGrowFactors > 0 && totalFlexGrowFactors < 1 {
-                totalFlexGrowFactors = 1
-            }
-            if totalFlexShrinkScaledFactors > 0 && totalFlexShrinkScaledFactors < 1 {
-                totalFlexShrinkScaledFactors = 1
-            }
-            let canSkipFlex = !performLayout && measureModeCrossDim.isExactly
-            var leadingMainDim = 0.0
-            var betweenMainDim = 0.0
-            // STEP 5: RESOLVING FLEXIBLE LENGTHS ON MAIN AXIS
-            var sizeBasedOnContent = false
-            if measureModeMainDim != MeasureMode.exactly {
-                if !minInnerMainDim.isNaN && sizeConsumedOnCurrentLine < minInnerMainDim {
-                    availableInnerMainDim = minInnerMainDim
-                } else if !maxInnerMainDim.isNaN && sizeConsumedOnCurrentLine > maxInnerMainDim {
-                    availableInnerMainDim = maxInnerMainDim
-                } else {
-                    if totalFlexGrowFactors == 0 || computedFlexGrow == 0 {
-                        availableInnerMainDim = sizeConsumedOnCurrentLine
-                    }
-                    sizeBasedOnContent = true
-                }
-            }
-            var remainingFreeSpace = 0.0
-            if !sizeBasedOnContent && !availableInnerMainDim.isNaN {
-                remainingFreeSpace = availableInnerMainDim - sizeConsumedOnCurrentLine
-            } else if sizeConsumedOnCurrentLine < 0 {
-                remainingFreeSpace = 0 - sizeConsumedOnCurrentLine
-            }
-            let originalRemainingFreeSpace = remainingFreeSpace
-            var deltaFreeSpace = 0.0
-            if !canSkipFlex {
-                var childFlexBasis = 0.0
-                var flexShrinkScaledFactor = 0.0
-                var flexGrowFactor = 0.0
-                var baseMainSize = 0.0
-                var boundMainSize = 0.0
-                var deltaFlexShrinkScaledFactors = 0.0
-                var deltaFlexGrowFactors = 0.0
-                currentRelativeChild = firstRelativeChild
-                while currentRelativeChild != nil {
-                    guard let child = currentRelativeChild else {
-                        break
-                    }
-                    childFlexBasis = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize),
-                        fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis))
-                    if remainingFreeSpace < 0 {
-                        flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
-                        if flexShrinkScaledFactor != 0 {
-                            baseMainSize =
-                                childFlexBasis +
-                                    remainingFreeSpace / totalFlexShrinkScaledFactors * flexShrinkScaledFactor
-                            boundMainSize = child.style.bound(axis: mainAxis, value: baseMainSize, axisSize: availableInnerMainDim, width: availableInnerWidth)
-                            if baseMainSize != boundMainSize {
-                                deltaFreeSpace -= boundMainSize - childFlexBasis
-                                deltaFlexShrinkScaledFactors -= flexShrinkScaledFactor
-                            }
-                        }
-                    } else if remainingFreeSpace > 0 {
-                        flexGrowFactor = child.computedFlexGrow
-                        if flexGrowFactor != 0 {
-                            baseMainSize =
-                                childFlexBasis + remainingFreeSpace / totalFlexGrowFactors * flexGrowFactor
-                            boundMainSize = child.style.bound(axis: mainAxis, value: baseMainSize, axisSize: availableInnerMainDim, width: availableInnerWidth)
-                            if baseMainSize != boundMainSize {
-                                deltaFreeSpace -= boundMainSize - childFlexBasis
-                                deltaFlexGrowFactors -= flexGrowFactor
-                            }
-                        }
-                    }
-                    currentRelativeChild = currentRelativeChild?.nextChild
-                }
-                totalFlexShrinkScaledFactors += deltaFlexShrinkScaledFactors
-                totalFlexGrowFactors += deltaFlexGrowFactors
-                remainingFreeSpace += deltaFreeSpace
-                deltaFreeSpace = 0
-                currentRelativeChild = firstRelativeChild
-                while currentRelativeChild != nil {
-                    guard let child = currentRelativeChild else {
-                        break
-                    }
-                    childFlexBasis = fmin(child.style.maxDimension(by: mainAxis).resolve(by: mainAxisParentSize), fmax(child.style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize), child.box.computedFlexBasis))
-                    var updatedMainSize = childFlexBasis
-                    if remainingFreeSpace < 0 {
-                        flexShrinkScaledFactor = (0 - child.computedFlexShrink) * childFlexBasis
-                        if flexShrinkScaledFactor != 0 {
-                            let childSize: Double
-                            if totalFlexShrinkScaledFactors == 0 {
-                                childSize = childFlexBasis + flexShrinkScaledFactor
-                            } else {
-                                childSize = childFlexBasis + (remainingFreeSpace / totalFlexShrinkScaledFactors) * flexShrinkScaledFactor
-                            }
-                            updatedMainSize = child.style.bound(axis: mainAxis, value: childSize, axisSize: availableInnerMainDim, width: availableInnerWidth)
-                        }
-                    } else if remainingFreeSpace > 0 {
-                        flexGrowFactor = child.computedFlexGrow
-                        if flexGrowFactor != 0 {
-                            updatedMainSize = child.style.bound(axis: mainAxis, value: childFlexBasis + remainingFreeSpace / totalFlexGrowFactors * flexGrowFactor, axisSize: availableInnerMainDim, width: availableInnerWidth)
-                        }
-                    }
-                    deltaFreeSpace -= updatedMainSize - childFlexBasis
-                    let marginMain = child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
-                    let marginCross = child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth)
-                    var childCrossSize = 0.0
-                    var childMainSize = updatedMainSize + marginMain
-                    var childCrossMeasureMode = MeasureMode.undefined
-                    var childMainMeasureMode = MeasureMode.exactly
-                    if !child.style.aspectRatio.isNaN {
-                        let ratio = child.style.aspectRatio
-                        if isMainAxisRow {
-                            childCrossSize = (childMainSize - marginMain) / ratio
-                        } else {
-                            childCrossSize = (childMainSize - marginMain) * ratio
-                        }
-                        childCrossMeasureMode = .exactly
-                        childCrossSize += marginCross
-                    } else if !availableInnerCrossDim.isNaN && !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && measureModeCrossDim.isExactly && !(isNodeFlexWrap && flexBasisOverflows) && computedAlignItem(child: child) == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto && child.style.margin.trailing(direction: crossAxis) != StyleValue.auto {
-                        childCrossSize = availableInnerCrossDim
-                        childCrossMeasureMode = MeasureMode.exactly
-                    } else if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) {
-                        childCrossSize = availableInnerCrossDim
-                        childCrossMeasureMode = childCrossSize.isNaN ? .undefined : .atMost
-                    } else {
-                        let t: StyleValue = child.box.computedDimension(by: crossAxis)
-                        let f: Bool
-                        if case StyleValue.percentage = t {
-                            f = true
-                        } else {
-                            f = false
-                        }
-                        childCrossSize = t.resolve(by: availableInnerCrossDim) + marginCross
-                        let isLoosePercentageMeasurement = f && measureModeCrossDim != MeasureMode.exactly
-                        childCrossMeasureMode = (childCrossSize.isNaN || isLoosePercentageMeasurement) ? .undefined : .exactly
-                    }
-                    (childMainMeasureMode, childMainSize) = child.style.constrainMaxSize(axis: mainAxis, parentAxisSize: availableInnerMainDim, parentWidth: availableInnerWidth, mode: childMainMeasureMode, size: childMainSize)
-                    (childCrossMeasureMode, childCrossSize) = child.style.constrainMaxSize(axis: crossAxis, parentAxisSize: availableInnerCrossDim, parentWidth: availableInnerWidth, mode: childCrossMeasureMode, size: childCrossSize)
-                    let requiresStretchLayout = !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) && computedAlignItem(child: child) == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto && child.style.margin.trailing(direction: crossAxis) != StyleValue.auto
-                    let childWidth = isMainAxisRow ? childMainSize : childCrossSize
-                    let childHeight = !isMainAxisRow ? childMainSize : childCrossSize
-                    let childWidthMeasureMode = isMainAxisRow ? childMainMeasureMode : childCrossMeasureMode
-                    let childHeightMeasureMode = isMainAxisRow ? childCrossMeasureMode : childMainMeasureMode
-                    _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction, layout: performLayout && !requiresStretchLayout, reason: "flex")
-                    box.hasOverflow = box.hasOverflow || child.box.hasOverflow
-                    currentRelativeChild = child.nextChild
-                }
-            }
-            remainingFreeSpace = originalRemainingFreeSpace + deltaFreeSpace
-            box.hasOverflow = box.hasOverflow || (remainingFreeSpace < 0)
-            // STEP 6: MAIN-AXIS JUSTIFICATION & CROSS-AXIS SIZE DETERMINATION
-            if measureModeMainDim.isAtMost && remainingFreeSpace > 0 {
-                if style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize) >= 0 {
-                    remainingFreeSpace = fmax(0, style.minDimension(by: mainAxis).resolve(by: mainAxisParentSize) - (availableInnerMainDim - remainingFreeSpace))
-                } else {
-                    remainingFreeSpace = 0
-                }
-            }
-            var numberOfAutoMarginsOnCurrentLine: Double = 0.0
-            for child in children[startOfLineIndex..<endOfLineIndex] {
-                if child.style.relativeLayout {
-                    if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
-                        numberOfAutoMarginsOnCurrentLine += 1.0
-                    }
-                    if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
-                        numberOfAutoMarginsOnCurrentLine += 1.0
-                    }
-                }
-            }
-            if numberOfAutoMarginsOnCurrentLine < 1 {
-                switch style.justifyContent {
-                case .center:
-                    leadingMainDim = remainingFreeSpace / 2
-                case .flexEnd:
-                    leadingMainDim = remainingFreeSpace
-                case .spaceBetween:
-                    if itemsOnLine > 1 {
-                        betweenMainDim = fmax(remainingFreeSpace, 0) / Double(itemsOnLine - 1)
-                    } else {
-                        betweenMainDim = 0
-                    }
-                case .spaceEvenly: // Space is distributed evenly across all elements
-                    betweenMainDim = remainingFreeSpace / Double(itemsOnLine + 1)
-                    leadingMainDim = betweenMainDim
-                case .spaceAround:
-                    betweenMainDim = remainingFreeSpace / Double(itemsOnLine)
-                    leadingMainDim = betweenMainDim / 2
-                case .flexStart:
-                    break
-                }
-            }
-            var mainDim = leadingPaddingAndBorderMain + leadingMainDim
-            var crossDim = 0.0
-            for child in children[startOfLineIndex..<endOfLineIndex] {
-                if child.style.hidden {
-                    continue
-                }
-                if child.style.absoluteLayout && child.style.isLeadingPositionDefined(for: mainAxis) {
-                    if performLayout {
-                        // In case the child is position absolute and has left/top being
-                        // defined, we override the position to whatever the user said
-                        // (and margin/border).
-                        child.box.position[mainAxis] = child.style.leadingPosition(for: mainAxis, size: availableInnerMainDim) +
-                            style.leadingBorder(for: mainAxis) +
-                            child.style.leadingMargin(for: mainAxis, width: availableInnerWidth)
-                    }
-                } else {
-                    if child.style.relativeLayout {
-                        if child.style.margin.leading(direction: mainAxis) == StyleValue.auto {
-                            mainDim += remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
-                        }
-                        if performLayout {
-                            child.box.position[mainAxis] += mainDim
-                        }
-                        if child.style.margin.trailing(direction: mainAxis) == StyleValue.auto {
-                            mainDim += remainingFreeSpace / numberOfAutoMarginsOnCurrentLine
-                        }
-                        if canSkipFlex {
-                            mainDim += betweenMainDim + child.box.computedFlexBasis +
-                                child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
-                            crossDim = availableInnerCrossDim
-                        } else {
-                            mainDim += betweenMainDim + child.dimensionWithMargin(for: mainAxis, width: availableInnerWidth)
-                            crossDim = fmax(crossDim, child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth))
-                        }
-                    } else if performLayout {
-                        child.box.position[mainAxis] += style.leadingBorder(for: mainAxis) + leadingMainDim
-                    }
-                }
-            }
-            mainDim += trailingPaddingAndBorderMain
-            var containerCrossAxis = availableInnerCrossDim
-            if measureModeCrossDim == MeasureMode.undefined || measureModeCrossDim.isAtMost {
-                containerCrossAxis = style.bound(axis: crossAxis, value: crossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize, width: parentWidth) - paddingAndBorderAxisCross
-            }
-            if !isNodeFlexWrap && measureModeCrossDim.isExactly {
-                crossDim = availableInnerCrossDim
-            }
-            crossDim = style.bound(axis: crossAxis, value: crossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize, width: parentWidth) - paddingAndBorderAxisCross
-            // STEP 7: CROSS-AXIS ALIGNMENT
-            if performLayout {
-                for child in children[startOfLineIndex..<endOfLineIndex] {
-                    if child.style.hidden {
-                        continue
-                    }
-                    if child.style.absoluteLayout {
-                        // If the child is absolutely positioned and has a top/left/bottom/right
-                        // set, override all the previously computed positions to set it correctly.
-                        let isLeadingPositionDefined = child.style.isLeadingPositionDefined(for: crossAxis)
-                        if child.style.isLeadingPositionDefined(for: crossAxis) {
-                            child.box.position[crossAxis] = child.style.leadingPosition(for: crossAxis, size: availableInnerCrossDim) +
-                                style.leadingBorder(for: crossAxis) +
-                                child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
-                        }
-                        if !isLeadingPositionDefined || child.box.position.leading(direction: crossAxis).isNaN {
-                            // If leading position is not defined or calculations result in Nan, default to border + margin
-                            child.box.position[crossAxis] = style.leadingBorder(for: crossAxis) +
-                                child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
-                        }
-                    } else {
-                        var leadingCrossDim = leadingPaddingAndBorderCross
-                        let alignItem = computedAlignItem(child: child)
-                        if alignItem == AlignItems.stretch && child.style.margin.leading(direction: crossAxis) != StyleValue.auto &&
-                               child.style.margin.trailing(direction: crossAxis) != StyleValue.auto {
-                            if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) {
-                                var childMainSize = child.box.measuredDimension(for: mainAxis)
-                                var childCrossSize = crossDim
-                                if !child.style.aspectRatio.isNaN {
-                                    let size = isMainAxisRow ? childMainSize / child.style.aspectRatio : childMainSize * child.style.aspectRatio
-                                    childCrossSize = child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth) + size
-                                }
-                                childMainSize += child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)
-                                var childMainMeasureMode = MeasureMode.exactly
-                                var childCrossMeasureMode = MeasureMode.exactly
-                                (childMainMeasureMode, childMainSize) = child.style.constrainMaxSize(axis: mainAxis, parentAxisSize: availableInnerMainDim, parentWidth: availableInnerWidth, mode: childMainMeasureMode, size: childMainSize)
-                                (childCrossMeasureMode, childCrossSize) = child.style.constrainMaxSize(axis: crossAxis, parentAxisSize: availableInnerCrossDim, parentWidth: availableInnerWidth, mode: childCrossMeasureMode, size: childCrossSize)
-                                let childWidth = isMainAxisRow ? childMainSize : childCrossSize
-                                let childHeight = isMainAxisRow ? childCrossSize : childMainSize
-                                let childWidthMeasureMode: MeasureMode = childWidth.isNaN ? .undefined : .exactly
-                                let childHeightMeasureMode: MeasureMode = childHeight.isNaN ? .undefined : .exactly
-                                _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction, layout: true, reason: "stretch")
-                            }
-                        } else {
-                            let remainingCrossDim = containerCrossAxis - child.dimensionWithMargin(for: crossAxis, width: availableInnerWidth)
-                            if child.style.margin.leading(direction: crossAxis) == StyleValue.auto {
-                                if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
-                                    leadingCrossDim += fmax(0, remainingCrossDim / 2)
-                                } else {
-                                    leadingCrossDim += fmax(0, remainingCrossDim)
-                                }
-                            } else if child.style.margin.trailing(direction: crossAxis) == StyleValue.auto {
-                                // No-op
-                            } else if alignItem == AlignItems.center {
-                                leadingCrossDim += remainingCrossDim / 2
-                            } else if alignItem == AlignItems.flexStart {
-                                // No-op
-                            } else {
-                                leadingCrossDim += remainingCrossDim
-                            }
-                        }
-                        child.box.position[crossAxis] += totalLineCrossDim + leadingCrossDim
-                    }
-                }
-            }
-            totalLineCrossDim += crossDim
-            maxLineMainDim = fmax(maxLineMainDim, mainDim)
-            lineCount += 1
-            startOfLineIndex = endOfLineIndex
-        }
-        // STEP 8: MULTI-LINE CONTENT ALIGNMENT
-        if performLayout && (lineCount > 1 || isBaselineLayout) && !availableInnerCrossDim.isNaN {
-            let remainingAlignContentDim = availableInnerCrossDim - totalLineCrossDim
-            var crossDimLead = 0.0
-            var currentLead = leadingPaddingAndBorderCross
-            switch style.alignContent {
-            case .flexEnd:
-                currentLead += remainingAlignContentDim
-            case .center:
-                currentLead += remainingAlignContentDim / 2
-            case .stretch:
-                if availableInnerCrossDim > totalLineCrossDim {
-                    crossDimLead = remainingAlignContentDim / Double(lineCount)
-                }
-            case .spaceAround:
-                if availableInnerCrossDim > totalLineCrossDim {
-                    currentLead += remainingAlignContentDim / Double(2 * lineCount)
-                    if lineCount > 1 {
-                        crossDimLead = remainingAlignContentDim / Double(lineCount)
-                    }
-                } else {
-                    currentLead += remainingAlignContentDim / 2
-                }
-            case .spaceBetween:
-                if availableInnerCrossDim > totalLineCrossDim && lineCount > 1 {
-                    crossDimLead = remainingAlignContentDim / Double(lineCount - 1)
-                }
-            default:
-                break
-            }
-            var endIndex = 0
-            for i in 0..<lineCount {
-                let startIndex = endIndex
-                var lineHeight = 0.0
-                var maxAscentForCurrentLine = 0.0
-                var maxDescentForCurrentLine = 0.0
-                var ii = startIndex
-                for child in children[startIndex..<children.count] {
-                    if child.style.hidden {
-                        ii += 1
-                        continue
-                    }
-                    if !child.style.absoluteLayout {
-                        if child.lineIndex != i {
-                            break
-                        }
-                        if child.box.isLayoutDimensionDefined(for: crossAxis) {
-                            lineHeight = fmax(lineHeight, child.box.measuredDimension(for: crossAxis) +
-                                child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth))
-                        }
-                        if computedAlignItem(child: child) == AlignItems.baseline {
-                            let ascent = child._baseline +
-                                child.style.leadingMargin(for: .column, width: availableInnerWidth)
-                            let descent = child.box.measuredDimension(for: .column) +
-                                child.style.totalOuterSize(for: .column, width: availableInnerWidth) - ascent
-                            maxAscentForCurrentLine = fmax(maxAscentForCurrentLine, ascent)
-                            maxDescentForCurrentLine = fmax(maxDescentForCurrentLine, descent)
-                            lineHeight = fmax(lineHeight, maxAscentForCurrentLine + maxDescentForCurrentLine)
-                        }
-                    }
-                    ii += 1
-                }
-                endIndex = ii
-                lineHeight += crossDimLead
-                if performLayout {
-                    for child in children[startIndex..<endIndex] {
-                        if child.style.hidden {
-                            continue
-                        }
-                        if !child.style.absoluteLayout {
-                            switch computedAlignItem(child: child) {
-                            case .flexStart:
-                                child.box.position[crossAxis] = currentLead + child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
-                            case .flexEnd:
-                                child.box.position[crossAxis] = currentLead + lineHeight -
-                                    child.style.trailingMargin(for: crossAxis, width: availableInnerWidth) -
-                                    child.box.measuredDimension(for: crossAxis)
-                            case .center:
-                                child.box.position[crossAxis] = currentLead +
-                                    (lineHeight - child.box.measuredDimension(for: crossAxis)) / 2
-                            case .stretch:
-                                child.box.position[crossAxis] = currentLead +
-                                    child.style.leadingMargin(for: crossAxis, width: availableInnerWidth)
-                                if !child.box.isDimensionDefined(for: crossAxis, size: availableInnerCrossDim) {
-                                    let childWidth: Double = isMainAxisRow ? (child.box.measuredWidth + child.style.totalOuterSize(for: mainAxis, width: availableInnerWidth)) : lineHeight
-                                    let childHeight: Double = isMainAxisRow ? lineHeight : (child.box.measuredHeight + child.style.totalOuterSize(for: crossAxis, width: availableInnerWidth))
-                                    if !((childWidth == child.box.measuredWidth) && (childHeight == child.box.measuredHeight)) {
-                                        _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: .exactly, heightMode: .exactly, parentWidth: availableInnerWidth, parentHeight: availableInnerHeight, direction: direction, layout: true, reason: "multiline-stretch")
-                                    }
-                                }
-                            case .baseline:
-                                child.box.position.top = currentLead + maxAscentForCurrentLine - child._baseline + child.style.leadingPosition(for: .column, size: availableInnerCrossDim)
-                            }
-                        }
-                    }
-                }
-                currentLead += lineHeight
-            }
-        }
-        // STEP 9: COMPUTING FINAL DIMENSIONS
-        box.measuredWidth = style.bound(axis: .row, value: width - marginAxisRow, axisSize: parentWidth, width: parentWidth)
-        box.measuredHeight = style.bound(axis: .column, value: height - marginAxisColumn, axisSize: parentHeight, width: parentWidth)
-        if measureModeMainDim == MeasureMode.undefined || (!style.overflow.scrolled && measureModeMainDim.isAtMost) {
-            box.setMeasuredDimension(for: mainAxis, size: style.bound(axis: mainAxis, value: maxLineMainDim, axisSize: mainAxisParentSize, width: parentWidth))
-        } else if measureModeMainDim.isAtMost && style.overflow.scrolled {
-            box.setMeasuredDimension(for: mainAxis, size: fmax(fmin(availableInnerMainDim + paddingAndBorderAxisMain, style.bound(axis: mainAxis, value: maxLineMainDim, axisSize: mainAxisParentSize)), paddingAndBorderAxisMain))
-        }
-        if measureModeCrossDim == MeasureMode.undefined || (!style.overflow.scrolled && measureModeCrossDim.isAtMost) {
-            box.setMeasuredDimension(for: crossAxis, size: style.bound(axis: crossAxis, value: totalLineCrossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize, width: parentWidth))
-        } else if measureModeCrossDim.isAtMost && style.overflow.scrolled {
-            box.setMeasuredDimension(for: crossAxis, size: fmax(fmin(availableInnerCrossDim + paddingAndBorderAxisCross, style.bound(axis: crossAxis, value: totalLineCrossDim + paddingAndBorderAxisCross, axisSize: crossAxisParentSize)), paddingAndBorderAxisCross))
-        }
-        if performLayout && style.flexWrap == FlexWrap.wrapReverse {
-            for child in children {
-                if !child.style.absoluteLayout {
-                    child.box.position[crossAxis] = box.measuredDimension(for: crossAxis) - child.box.position[crossAxis] - child.box.measuredDimension(for: crossAxis)
-                }
-            }
-        }
-        if performLayout {
-            // STEP 10: SIZING AND POSITIONING ABSOLUTE CHILDREN
-            currentAbsoluteChild = firstAbsoluteChild
-            while (currentAbsoluteChild != nil) {
-                if let child = currentAbsoluteChild {
-                    absoluteLayout(child: child, width: availableInnerWidth, widthMode: (isMainAxisRow ? measureModeMainDim : measureModeCrossDim), height: availableInnerHeight, direction: direction)
-                }
-                currentAbsoluteChild = currentAbsoluteChild?.nextChild
-            }
-            // STEP 11: SETTING TRAILING POSITIONS FOR CHILDREN
-            let needsMainTrailingPos = mainAxis.reversed
-            let needsCrossTrailingPos: Bool = crossAxis.reversed
-            if needsMainTrailingPos || needsCrossTrailingPos {
-                for child in children {
-                    if child.style.hidden {
-                        continue
-                    }
-                    if needsMainTrailingPos {
-                        setChildTrailingPosition(child: child, direction: mainAxis)
-                    }
-                    if needsCrossTrailingPos {
-                        setChildTrailingPosition(child: child, direction: crossAxis)
-                    }
-                }
-            }
-        }
+        let algorithm = FlexAlgorithm(for: self, ownerDirection: direction,
+            availableWidth: width, availableHeight: height,
+            widthMeasureMode: widthMode, heightMeasureMode: heightMode,
+            ownerWidth: parentWidth, ownerHeight: parentHeight, performLayout: performLayout)
+        algorithm.steps()
     }
 
     // YGNodeAbsoluteLayoutChild
-    func absoluteLayout(child: FlexLayout, width: Double, widthMode: MeasureMode, height: Double, direction: Direction) {
+    func absoluteLayout(child: FlexLayout, width: Double, widthMode: MeasureMode, height: Double,
+                        direction: Direction) {
         let mainAxis = style.flexDirection.resolve(by: direction)
         let crossAxis = mainAxis.cross(by: direction)
         let isMainAxisRow = mainAxis.isRow
@@ -1016,7 +1274,9 @@ extension FlexLayout {
             // If the child doesn't have a specified width, compute the width based
             // on the left/right offsets if they're defined.
             if child.style.isLeadingPositionDefined(for: .row) && child.style.isTrailingPositionDefined(for: .row) {
-                childWidth = box.measuredWidth - style.totalBorder(for: .row) - child.style.leadingPosition(for: .row, size: width) - child.style.trailingPosition(for: .row, size: width)
+                childWidth = box.measuredWidth - style.totalBorder(for: .row) -
+                    child.style.leadingPosition(for: .row, size: width) -
+                    child.style.trailingPosition(for: .row, size: width)
                 childWidth = child.style.bound(axis: .row, value: childWidth, axisSize: width, width: width)
             }
         }
@@ -1025,13 +1285,18 @@ extension FlexLayout {
         } else {
             // If the child doesn't have a specified height, compute the height
             // based on the top/bottom offsets if they're defined.
-            if child.style.isLeadingPositionDefined(for: .column) && child.style.isTrailingPositionDefined(for: .column) {
-                childHeight = box.measuredHeight - style.totalBorder(for: .column) - child.style.leadingPosition(for: .column, size: height) - child.style.trailingPosition(for: .column, size: height)
+            if (child.style.isLeadingPositionDefined(for: .column) &&
+                child.style.isTrailingPositionDefined(for: .column)) {
+                childHeight = box.measuredHeight - style.totalBorder(for: .column) -
+                    child.style.leadingPosition(for: .column, size: height) -
+                    child.style.trailingPosition(for: .column, size: height)
                 childHeight = child.style.bound(axis: .column, value: childHeight, axisSize: height, width: width)
             }
         }
-        // true  ^ true  = false true  ^ false = true
-        // false ^ true  = true  false ^ false = false
+        // true  ^ true  = false
+        // true  ^ false = true
+        // false ^ true  = true
+        // false ^ false = false
         // Exactly one dimension needs to be defined for us to be able to do aspect ratio
         // calculation. One dimension being the anchor and the other being flexible.
         if childWidth.isNaN != childHeight.isNaN {
@@ -1054,28 +1319,45 @@ extension FlexLayout {
                 childWidth = width
                 childWidthMeasureMode = .atMost
             }
-            _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode, parentWidth: childWidth, parentHeight: childHeight, direction: direction, layout: false, reason: "abs-measure")
+            _ = child.layoutInternal(width: childWidth, height: childHeight,
+                widthMode: childWidthMeasureMode, heightMode: childHeightMeasureMode,
+                parentWidth: childWidth, parentHeight: childHeight, direction: direction,
+                layout: false, reason: "abs-measure")
             childWidth = child.box.measuredWidth + child.style.totalOuterSize(for: .row, width: width)
             childHeight = child.box.measuredHeight + child.style.totalOuterSize(for: .column, width: width)
         }
-        _ = child.layoutInternal(width: childWidth, height: childHeight, widthMode: .exactly, heightMode: .exactly, parentWidth: childWidth, parentHeight: childHeight, direction: direction, layout: true, reason: "abs-layout")
-        if child.style.isTrailingPositionDefined(for: mainAxis) && !child.style.isLeadingPositionDefined(for: mainAxis) {
-            let size: Double = box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis) - style.trailingBorder(for: mainAxis) - child.style.trailingMargin(for: mainAxis, width: width) - child.style.trailingPosition(for: mainAxis, size: (isMainAxisRow ? width : height))
+        _ = child.layoutInternal(width: childWidth, height: childHeight,
+            widthMode: .exactly, heightMode: .exactly, parentWidth: childWidth,
+            parentHeight: childHeight, direction: direction, layout: true, reason: "abs-layout")
+        if (child.style.isTrailingPositionDefined(for: mainAxis) &&
+            !child.style.isLeadingPositionDefined(for: mainAxis)) {
+            let size: Double = box.measuredDimension(for: mainAxis) -
+                child.box.measuredDimension(for: mainAxis) - style.trailingBorder(for: mainAxis) -
+                child.style.trailingMargin(for: mainAxis, width: width) -
+                child.style.trailingPosition(for: mainAxis, size: (isMainAxisRow ? width : height))
             child.box.position.setLeading(direction: mainAxis, size: size)
-        } else if !child.style.isLeadingPositionDefined(for: mainAxis) && style.justifyContent == JustifyContent.center {
+        } else if (!child.style.isLeadingPositionDefined(for: mainAxis) &&
+            style.justifyContent == JustifyContent.center) {
             let size: Double = (box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis)) / 2
             child.box.position.setLeading(direction: mainAxis, size: size)
-        } else if !child.style.isTrailingPositionDefined(for: crossAxis) && style.justifyContent == JustifyContent.flexEnd {
+        } else if (!child.style.isTrailingPositionDefined(for: crossAxis) &&
+            style.justifyContent == JustifyContent.flexEnd) {
             let size = box.measuredDimension(for: mainAxis) - child.box.measuredDimension(for: mainAxis)
             child.box.position.setLeading(direction: mainAxis, size: size)
         }
-        if child.style.isTrailingPositionDefined(for: crossAxis) && !child.style.isLeadingPositionDefined(for: crossAxis) {
-            let size: Double = box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis) - style.trailingBorder(for: crossAxis) - child.style.trailingMargin(for: crossAxis, width: width) - child.style.trailingPosition(for: crossAxis, size: (isMainAxisRow ? height : width))
+        if (child.style.isTrailingPositionDefined(for: crossAxis) &&
+            !child.style.isLeadingPositionDefined(for: crossAxis)) {
+            let size: Double = box.measuredDimension(for: crossAxis) -
+                child.box.measuredDimension(for: crossAxis) - style.trailingBorder(for: crossAxis) -
+                child.style.trailingMargin(for: crossAxis, width: width) -
+                child.style.trailingPosition(for: crossAxis, size: (isMainAxisRow ? height : width))
             child.box.position.setLeading(direction: crossAxis, size: size)
-        } else if !child.style.isLeadingPositionDefined(for: crossAxis) && computedAlignItem(child: child) == AlignItems.center {
+        } else if (!child.style.isLeadingPositionDefined(for: crossAxis) &&
+            computedAlignItem(child: child) == AlignItems.center) {
             let size: Double = (box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis)) / 2
             child.box.position.setLeading(direction: crossAxis, size: size)
-        } else if !child.style.isTrailingPositionDefined(for: crossAxis) && ((computedAlignItem(child: child) == AlignItems.flexEnd) != (style.flexWrap == FlexWrap.wrapReverse)) {
+        } else if (!child.style.isTrailingPositionDefined(for: crossAxis) &&
+            ((computedAlignItem(child: child) == AlignItems.flexEnd) != (style.flexWrap == FlexWrap.wrapReverse))) {
             let size = box.measuredDimension(for: crossAxis) - child.box.measuredDimension(for: crossAxis)
             child.box.position.setLeading(direction: crossAxis, size: size)
         }

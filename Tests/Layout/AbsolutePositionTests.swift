@@ -38,7 +38,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(10))
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -76,7 +76,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(bottom: StyleValue.length(10))
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -114,7 +114,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(10))
         root_child0.position(trailing: StyleValue.length(10))
         root_child0.position(bottom: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -154,7 +154,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(bottom: StyleValue.length(10))
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -192,12 +192,12 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.position(leading: StyleValue.length(0))
         root_child0.position(top: StyleValue.length(0))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(100))
         root_child0_child0.height(StyleValue.length(100))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -257,7 +257,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(0))
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.positionType(PositionType.absolute)
@@ -265,7 +265,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child1.position(bottom: StyleValue.length(0))
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.positionType(PositionType.absolute)
@@ -277,7 +277,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child2.margin(bottom: StyleValue.length(10))
         root_child2.width(StyleValue.length(50))
         root_child2.height(StyleValue.length(50))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
 
         let root_child3 = FlexLayout()
         root_child3.positionType(PositionType.absolute)
@@ -289,7 +289,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child3.margin(bottom: StyleValue.length(10))
         root_child3.width(StyleValue.length(50))
         root_child3.height(StyleValue.length(50))
-        root.append(root_child3)
+        root.insert(root_child3, at: 3)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 10)
@@ -358,7 +358,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -397,7 +397,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -435,7 +435,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -473,7 +473,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -511,7 +511,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -551,7 +551,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(top: StyleValue.length(10))
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -591,7 +591,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(bottom: StyleValue.length(10))
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -631,7 +631,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(left: StyleValue.length(5))
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -671,7 +671,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(right: StyleValue.length(5))
         root_child0.width(StyleValue.length(60))
         root_child0.height(StyleValue.length(40))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -729,21 +729,21 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.position(top: StyleValue.percentage(50))
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.positionType(PositionType.absolute)
         root_child1.position(bottom: StyleValue.percentage(50))
         root_child1.width(StyleValue.length(10))
         root_child1.height(StyleValue.length(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.positionType(PositionType.absolute)
         root_child2.position(top: StyleValue.percentage(10))
         root_child2.position(bottom: StyleValue.percentage(10))
         root_child2.width(StyleValue.length(10))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -800,7 +800,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -838,7 +838,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -876,7 +876,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -915,7 +915,7 @@ class AbsolutePositionTests: FlexTestCase {
         root_child0.positionType(PositionType.absolute)
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

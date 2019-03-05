@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2017 qazyn951230 qazyn951230@gmail.com
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ import XCTest
 
 // Generated from YGTreeMutationTest.cpp
 class TreeMutationTests: FlexTestCase {
+
     // Generated from test: set_children_adds_children_to_parent
     func testSetChildrenAddsChildrenToParent() {
         let root = FlexLayout()

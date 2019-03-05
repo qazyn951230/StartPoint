@@ -59,7 +59,7 @@ class PaddingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -98,7 +98,7 @@ class PaddingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -136,7 +136,7 @@ class PaddingTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -176,7 +176,7 @@ class PaddingTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -217,7 +217,7 @@ class PaddingTests: FlexTestCase {
         root_child0.padding(bottom: StyleValue.length(20))
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

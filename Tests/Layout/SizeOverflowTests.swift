@@ -33,12 +33,12 @@ class SizeOverflowTests: FlexTestCase {
         root.height(StyleValue.length(100))
 
         let root_child0 = FlexLayout()
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(200))
         root_child0_child0.height(StyleValue.length(200))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -83,12 +83,12 @@ class SizeOverflowTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(200))
         root_child0_child0.height(StyleValue.length(200))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -132,12 +132,12 @@ class SizeOverflowTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(100))
         root_child0_child0.height(StyleValue.length(200))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

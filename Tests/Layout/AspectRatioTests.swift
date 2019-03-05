@@ -25,7 +25,6 @@ import XCTest
 
 // Generated from YGAspectRatioTest.cpp
 class AspectRatioTests: FlexTestCase {
-
     func _measure(width: Double, widthMode: MeasureMode, height: Double, heightMode _: MeasureMode) -> Size {
         let width: Double = widthMode.isExactly ? width : 50
         let height: Double = widthMode.isExactly ? height : 50
@@ -35,7 +34,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_cross_defined
     func testAspectRatioCrossDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -55,7 +54,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_main_defined
     func testAspectRatioMainDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -76,7 +75,7 @@ class AspectRatioTests: FlexTestCase {
     func testAspectRatioBothDimensionsDefinedRow() {
         let root = FlexLayout()
         root.flexDirection(FlexDirection.row)
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -97,7 +96,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_both_dimensions_defined_column
     func testAspectRatioBothDimensionsDefinedColumn() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -136,7 +135,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_flex_grow
     func testAspectRatioFlexGrow() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -157,7 +156,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_flex_shrink
     func testAspectRatioFlexShrink() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -209,7 +208,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_basis
     func testAspectRatioBasis() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -273,7 +272,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_with_max_cross_defined
     func testAspectRatioWithMaxCrossDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -294,7 +293,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_with_max_main_defined
     func testAspectRatioWithMaxMainDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -315,7 +314,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_with_min_cross_defined
     func testAspectRatioWithMinCrossDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -336,7 +335,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_with_min_main_defined
     func testAspectRatioWithMinMainDefined() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -357,7 +356,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_double_cross
     func testAspectRatioDoubleCross() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -377,7 +376,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_half_cross
     func testAspectRatioHalfCross() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -397,7 +396,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_double_main
     func testAspectRatioDoubleMain() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -417,7 +416,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_half_main
     func testAspectRatioHalfMain() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -437,7 +436,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_with_measure_func
     func testAspectRatioWithMeasureFunc() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -458,7 +457,7 @@ class AspectRatioTests: FlexTestCase {
     func testAspectRatioWidthHeightFlexGrowRow() {
         let root = FlexLayout()
         root.flexDirection(FlexDirection.row)
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(200))
 
@@ -480,7 +479,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_width_height_flex_grow_column
     func testAspectRatioWidthHeightFlexGrowColumn() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(200))
         root.height(StyleValue.length(100))
 
@@ -502,7 +501,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_height_as_flex_basis
     func testAspectRatioHeightAsFlexBasis() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.flexDirection(FlexDirection.row)
         root.width(StyleValue.length(200))
         root.height(StyleValue.length(200))
@@ -535,7 +534,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_width_as_flex_basis
     func testAspectRatioWidthAsFlexBasis() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(200))
         root.height(StyleValue.length(200))
 
@@ -567,7 +566,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_overrides_flex_grow_row
     func testAspectRatioOverridesFlexGrowRow() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.flexDirection(FlexDirection.row)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
@@ -589,7 +588,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_overrides_flex_grow_column
     func testAspectRatioOverridesFlexGrowColumn() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -693,7 +692,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_allow_child_overflow_parent_size
     func testAspectRatioAllowChildOverflowParentSize() {
         let root = FlexLayout()
-        root.alignItems(.flexStart)
+        root.alignItems(AlignItems.flexStart)
         root.width(StyleValue.length(100))
 
         let root_child0 = FlexLayout()
@@ -713,7 +712,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_defined_main_with_margin
     func testAspectRatioDefinedMainWithMargin() {
         let root = FlexLayout()
-        root.alignItems(.center)
+        root.alignItems(AlignItems.center)
         root.justifyContent(JustifyContent.center)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
@@ -737,7 +736,7 @@ class AspectRatioTests: FlexTestCase {
     // Generated from test: aspect_ratio_defined_cross_with_margin
     func testAspectRatioDefinedCrossWithMargin() {
         let root = FlexLayout()
-        root.alignItems(.center)
+        root.alignItems(AlignItems.center)
         root.justifyContent(JustifyContent.center)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
@@ -758,9 +757,32 @@ class AspectRatioTests: FlexTestCase {
         XCTAssertEqual(root_child0.box.height, 50)
     }
 
+    // Generated from test: aspect_ratio_defined_cross_with_main_margin
+    func testAspectRatioDefinedCrossWithMainMargin() {
+        let root = FlexLayout()
+        root.alignItems(AlignItems.center)
+        root.justifyContent(JustifyContent.center)
+        root.width(StyleValue.length(100))
+        root.height(StyleValue.length(100))
+
+        let root_child0 = FlexLayout()
+        root_child0.width(StyleValue.length(50))
+        root_child0.aspectRatio(1)
+        root_child0.margin(top: StyleValue.length(10))
+        root_child0.margin(bottom: StyleValue.length(10))
+        root.insert(root_child0, at: 0)
+
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.width, 100)
+        XCTAssertEqual(root.box.height, 100)
+
+        XCTAssertEqual(root_child0.box.width, 50)
+        XCTAssertEqual(root_child0.box.height, 50)
+    }
+
     // Generated from test: aspect_ratio_should_prefer_explicit_height
     func testAspectRatioShouldPreferExplicitHeight() { // YGConfigSetUseWebDefaults(config, true);
-
         let root = FlexLayout()
         root.flexDirection(FlexDirection.column)
 
@@ -787,16 +809,15 @@ class AspectRatioTests: FlexTestCase {
     }
 
     // Generated from test: aspect_ratio_should_prefer_explicit_width
-    func testAspectRatioShouldPreferExplicitWidth() { // YGConfigSetUseWebDefaults(config, true);
-
-        let root = FlexLayout()
+    func testAspectRatioShouldPreferExplicitWidth() {
+        let root = webLayout()
         root.flexDirection(FlexDirection.row)
 
-        let root_child0 = FlexLayout()
+        let root_child0 = webLayout()
         root_child0.flexDirection(FlexDirection.row)
         root.insert(root_child0, at: 0)
 
-        let root_child0_child0 = FlexLayout()
+        let root_child0_child0 = webLayout()
         root_child0_child0.flexDirection(FlexDirection.row)
         root_child0_child0.width(StyleValue.length(100))
         root_child0_child0.aspectRatio(0.5)

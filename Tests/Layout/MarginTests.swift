@@ -36,7 +36,7 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.margin(leading: StyleValue.length(10))
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -71,7 +71,7 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.margin(top: StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -108,7 +108,7 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.margin(trailing: StyleValue.length(10))
         root_child0.width(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -144,7 +144,7 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.margin(bottom: StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -181,7 +181,7 @@ class MarginTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.margin(leading: StyleValue.length(10))
         root_child0.margin(trailing: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -217,7 +217,7 @@ class MarginTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.margin(top: StyleValue.length(10))
         root_child0.margin(bottom: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -254,7 +254,7 @@ class MarginTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.margin(top: StyleValue.length(10))
         root_child0.margin(bottom: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -290,7 +290,7 @@ class MarginTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.margin(leading: StyleValue.length(10))
         root_child0.margin(trailing: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -326,11 +326,11 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.margin(trailing: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -375,11 +375,11 @@ class MarginTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.margin(bottom: StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -426,12 +426,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(bottom: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -478,12 +478,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(top: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -531,12 +531,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(bottom: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -584,12 +584,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(bottom: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -636,18 +636,18 @@ class MarginTests: FlexTestCase {
         root_child0.margin(top: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.margin(top: StyleValue.auto)
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(50))
         root_child2.height(StyleValue.length(50))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -705,18 +705,18 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.margin(right: StyleValue.auto)
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(50))
         root_child2.height(StyleValue.length(50))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -775,12 +775,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -827,12 +827,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -881,12 +881,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(trailing: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -933,12 +933,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(trailing: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -986,12 +986,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1038,28 +1038,28 @@ class MarginTests: FlexTestCase {
         root_child0.margin(left: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
-//        root.calculate(direction: Direction.ltr)
-        //
-//        XCTAssertEqual(root.box.left, 0)
-//        XCTAssertEqual(root.box.top, 0)
-//        XCTAssertEqual(root.box.width, 200)
-//        XCTAssertEqual(root.box.height, 200)
-        //
-//        XCTAssertEqual(root_child0.box.left, 150)
-//        XCTAssertEqual(root_child0.box.top, 0)
-//        XCTAssertEqual(root_child0.box.width, 50)
-//        XCTAssertEqual(root_child0.box.height, 50)
-        //
-//        XCTAssertEqual(root_child1.box.left, 75)
-//        XCTAssertEqual(root_child1.box.top, 50)
-//        XCTAssertEqual(root_child1.box.width, 50)
-//        XCTAssertEqual(root_child1.box.height, 50)
+        root.insert(root_child1, at: 1)
+        root.calculate(direction: Direction.ltr)
+
+        XCTAssertEqual(root.box.left, 0)
+        XCTAssertEqual(root.box.top, 0)
+        XCTAssertEqual(root.box.width, 200)
+        XCTAssertEqual(root.box.height, 200)
+
+        XCTAssertEqual(root_child0.box.left, 150)
+        XCTAssertEqual(root_child0.box.top, 0)
+        XCTAssertEqual(root_child0.box.width, 50)
+        XCTAssertEqual(root_child0.box.height, 50)
+
+        XCTAssertEqual(root_child1.box.left, 75)
+        XCTAssertEqual(root_child1.box.top, 50)
+        XCTAssertEqual(root_child1.box.width, 50)
+        XCTAssertEqual(root_child1.box.height, 50)
 
         root.calculate(direction: Direction.rtl)
 
@@ -1090,12 +1090,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1143,12 +1143,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1195,12 +1195,12 @@ class MarginTests: FlexTestCase {
         root_child0.margin(bottom: StyleValue.auto)
         root_child0.width(StyleValue.length(50))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1247,7 +1247,7 @@ class MarginTests: FlexTestCase {
         root_child0.width(StyleValue.length(100))
         root_child0.height(StyleValue.length(100))
         root_child0.maxHeight(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1284,7 +1284,7 @@ class MarginTests: FlexTestCase {
         root_child0.width(StyleValue.length(100))
         root_child0.maxWidth(StyleValue.length(100))
         root_child0.height(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1322,7 +1322,7 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(72))
         root_child0.height(StyleValue.length(72))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1359,7 +1359,7 @@ class MarginTests: FlexTestCase {
         root_child0.margin(left: StyleValue.auto)
         root_child0.width(StyleValue.length(72))
         root_child0.height(StyleValue.length(72))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1397,7 +1397,7 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.auto)
         root_child0.width(StyleValue.length(72))
         root_child0.height(StyleValue.length(72))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1435,7 +1435,7 @@ class MarginTests: FlexTestCase {
         root_child0.margin(right: StyleValue.length(10))
         root_child0.width(StyleValue.length(72))
         root_child0.height(StyleValue.length(72))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1473,12 +1473,12 @@ class MarginTests: FlexTestCase {
         root_child0.flexShrink(1)
         root_child0.flexBasis(FlexBasis.percentage(0))
         root_child0.margin(top: StyleValue.auto)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1526,12 +1526,12 @@ class MarginTests: FlexTestCase {
         root_child0.flexShrink(1)
         root_child0.flexBasis(FlexBasis.percentage(0))
         root_child0.margin(left: StyleValue.auto)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(50))
         root_child1.height(StyleValue.length(50))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

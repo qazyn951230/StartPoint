@@ -116,8 +116,8 @@ class PersistenceTests: FlexTestCase {
         XCTAssertEqual(root2_child1.box.height, 75)
     }
 
-    // Generated from test: mutating_children_of_a_clone_clones
-    func testMutatingChildrenOfACloneClones() {
+    // Generated from test: mutating_children_of_a_clone_clones_only_after_layout
+    func testMutatingChildrenOfACloneClonesOnlyAfterLayout() {
         let root = FlexLayout()
         XCTAssertEqual(root.children.count, 0)
 
@@ -149,6 +149,11 @@ class PersistenceTests: FlexTestCase {
         XCTAssertEqual(root3.children.count, 2)
         XCTAssertEqual(root4.children.count, 1)
         XCTAssertNotEqual(root4.child(at: 0), root3.child(at: 0))
+
+        root4.calculate(direction: Direction.ltr)
+        XCTAssertNotEqual(root3.child(at: 0), root4.child(at: 0))
+        root3.calculate(direction: Direction.ltr)
+        XCTAssertNotEqual(root2.child(at: 0), root3.child(at: 0))
     }
 
     // Generated from test: cloning_two_levels
@@ -207,7 +212,7 @@ class PersistenceTests: FlexTestCase {
         XCTAssertEqual(root2_child1.box.height, 60)
 
         // The deeper children are untouched.
-        XCTAssertEqual(root2_child1.child(at: 0)!, root_child1_0)
-        XCTAssertEqual(root2_child1.child(at: 1)!, root_child1_1)
+        XCTAssertEqual(root2_child1.child(at: 0), root_child1_0)
+        XCTAssertEqual(root2_child1.child(at: 1), root_child1_1)
     }
 }

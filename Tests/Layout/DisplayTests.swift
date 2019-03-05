@@ -35,12 +35,12 @@ class DisplayTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.display(Display.none)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -85,13 +85,13 @@ class DisplayTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.width(StyleValue.length(20))
         root_child1.height(StyleValue.length(20))
         root_child1.display(Display.none)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -142,11 +142,11 @@ class DisplayTests: FlexTestCase {
         root_child0.width(StyleValue.length(20))
         root_child0.height(StyleValue.length(20))
         root_child0.display(Display.none)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -193,14 +193,14 @@ class DisplayTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexShrink(1)
         root_child0.flexBasis(FlexBasis.percentage(0))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.flexShrink(1)
         root_child1.flexBasis(FlexBasis.percentage(0))
         root_child1.display(Display.none)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.flexGrow(1)
@@ -209,13 +209,13 @@ class DisplayTests: FlexTestCase {
         root_child1_child0.width(StyleValue.length(20))
         root_child1_child0.minWidth(StyleValue.length(0))
         root_child1_child0.minHeight(StyleValue.length(0))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
 
         let root_child2 = FlexLayout()
         root_child2.flexGrow(1)
         root_child2.flexShrink(1)
         root_child2.flexBasis(FlexBasis.percentage(0))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -280,13 +280,13 @@ class DisplayTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.position(top: StyleValue.length(10))
         root_child1.display(Display.none)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

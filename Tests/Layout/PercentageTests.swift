@@ -36,7 +36,7 @@ class PercentageTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.percentage(30))
         root_child0.height(StyleValue.percentage(30))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -74,7 +74,7 @@ class PercentageTests: FlexTestCase {
         root_child0.position(top: StyleValue.percentage(20))
         root_child0.width(StyleValue.percentage(45))
         root_child0.height(StyleValue.percentage(55))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -112,7 +112,7 @@ class PercentageTests: FlexTestCase {
         root_child0.position(bottom: StyleValue.percentage(10))
         root_child0.width(StyleValue.percentage(55))
         root_child0.height(StyleValue.percentage(15))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -148,12 +148,12 @@ class PercentageTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.flexBasis(FlexBasis.percentage(25))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -198,12 +198,12 @@ class PercentageTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
         root_child1.flexBasis(FlexBasis.percentage(25))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -248,12 +248,12 @@ class PercentageTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.flexGrow(1)
         root_child0.minHeight(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(2)
         root_child1.minHeight(StyleValue.percentage(10))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -300,13 +300,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(10))
         root_child0.maxHeight(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(10))
         root_child1.maxHeight(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -352,13 +352,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(10))
         root_child0.maxHeight(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(10))
         root_child1.maxHeight(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -405,13 +405,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(15))
         root_child0.maxWidth(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(10))
         root_child1.maxWidth(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -457,13 +457,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(10))
         root_child0.maxWidth(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(15))
         root_child1.maxWidth(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -510,13 +510,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(15))
         root_child0.minWidth(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(10))
         root_child1.minWidth(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -562,13 +562,13 @@ class PercentageTests: FlexTestCase {
         root_child0.flexGrow(1)
         root_child0.flexBasis(FlexBasis.percentage(10))
         root_child0.minWidth(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(15))
         root_child1.minWidth(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -622,7 +622,7 @@ class PercentageTests: FlexTestCase {
         root_child0.padding(right: StyleValue.length(3))
         root_child0.padding(bottom: StyleValue.length(3))
         root_child0.minWidth(StyleValue.percentage(60))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.margin(left: StyleValue.length(5))
@@ -634,7 +634,7 @@ class PercentageTests: FlexTestCase {
         root_child0_child0.padding(right: StyleValue.percentage(3))
         root_child0_child0.padding(bottom: StyleValue.percentage(3))
         root_child0_child0.width(StyleValue.percentage(50))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         let root_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0.margin(left: StyleValue.percentage(5))
@@ -646,13 +646,13 @@ class PercentageTests: FlexTestCase {
         root_child0_child0_child0.padding(right: StyleValue.length(3))
         root_child0_child0_child0.padding(bottom: StyleValue.length(3))
         root_child0_child0_child0.width(StyleValue.percentage(45))
-        root_child0_child0.append(root_child0_child0_child0)
+        root_child0_child0.insert(root_child0_child0_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(4)
         root_child1.flexBasis(FlexBasis.percentage(15))
         root_child1.minWidth(StyleValue.percentage(20))
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -720,12 +720,12 @@ class PercentageTests: FlexTestCase {
         root_child0.margin(top: StyleValue.percentage(10))
         root_child0.margin(right: StyleValue.percentage(10))
         root_child0.margin(bottom: StyleValue.percentage(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(10))
         root_child0_child0.height(StyleValue.length(10))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -773,12 +773,12 @@ class PercentageTests: FlexTestCase {
         root_child0.padding(top: StyleValue.percentage(10))
         root_child0.padding(right: StyleValue.percentage(10))
         root_child0.padding(bottom: StyleValue.percentage(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.length(10))
         root_child0_child0.height(StyleValue.length(10))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -826,7 +826,7 @@ class PercentageTests: FlexTestCase {
         root_child0.position(top: StyleValue.percentage(10))
         root_child0.width(StyleValue.length(10))
         root_child0.height(StyleValue.length(10))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -859,7 +859,7 @@ class PercentageTests: FlexTestCase {
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.percentage(50))
         root_child0.height(StyleValue.percentage(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -894,19 +894,19 @@ class PercentageTests: FlexTestCase {
 
         let root_child0 = FlexLayout()
         root_child0.width(StyleValue.length(100))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child1 = FlexLayout()
         root_child1.flexGrow(1)
-        root.append(root_child1)
+        root.insert(root_child1, at: 1)
 
         let root_child1_child0 = FlexLayout()
         root_child1_child0.width(StyleValue.percentage(100))
-        root_child1.append(root_child1_child0)
+        root_child1.insert(root_child1_child0, at: 0)
 
         let root_child2 = FlexLayout()
         root_child2.width(StyleValue.length(100))
-        root.append(root_child2)
+        root.insert(root_child2, at: 2)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -971,23 +971,23 @@ class PercentageTests: FlexTestCase {
         root.height(StyleValue.length(200))
 
         let root_child0 = FlexLayout()
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.flexDirection(FlexDirection.row)
         root_child0_child0.justifyContent(JustifyContent.center)
         root_child0_child0.width(StyleValue.percentage(100))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         let root_child0_child0_child0 = FlexLayout()
         root_child0_child0_child0.width(StyleValue.length(50))
         root_child0_child0_child0.height(StyleValue.length(50))
-        root_child0_child0.append(root_child0_child0_child0)
+        root_child0_child0.insert(root_child0_child0_child0, at: 0)
 
         let root_child0_child0_child1 = FlexLayout()
         root_child0_child0_child1.width(StyleValue.length(50))
         root_child0_child0_child1.height(StyleValue.length(50))
-        root_child0_child0.append(root_child0_child0_child1)
+        root_child0_child0.insert(root_child0_child0_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)
@@ -1055,15 +1055,15 @@ class PercentageTests: FlexTestCase {
         root_child0.position(left: StyleValue.percentage(50))
         root_child0.width(StyleValue.percentage(100))
         root_child0.height(StyleValue.length(50))
-        root.append(root_child0)
+        root.insert(root_child0, at: 0)
 
         let root_child0_child0 = FlexLayout()
         root_child0_child0.width(StyleValue.percentage(100))
-        root_child0.append(root_child0_child0)
+        root_child0.insert(root_child0_child0, at: 0)
 
         let root_child0_child1 = FlexLayout()
         root_child0_child1.width(StyleValue.percentage(100))
-        root_child0.append(root_child0_child1)
+        root_child0.insert(root_child0_child1, at: 1)
         root.calculate(direction: Direction.ltr)
 
         XCTAssertEqual(root.box.left, 0)

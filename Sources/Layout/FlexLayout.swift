@@ -20,11 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public class FlexLayout: Equatable {
+public final class FlexLayout: Equatable {
     // MARK: Public properties
     public let style: FlexStyle = FlexStyle()
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
+    public internal(set) var hasNewLayout: Bool = false
     public internal(set) var dirty: Bool = false
     // nodeType
     public var layoutType: LayoutType = .default
@@ -33,6 +34,7 @@ public class FlexLayout: Equatable {
             layoutType = measureSelf == nil ? .default : .text
         }
     }
+    public var baselineMethod: ((Double, Double) -> Double)?
     // MARK: Internal properties
     let box: FlexBox = FlexBox()
     weak var nextChild: FlexLayout? = nil
@@ -40,8 +42,9 @@ public class FlexLayout: Equatable {
     var cachedLayout: LayoutCache? = nil // performLayout == true
     var cachedMeasurements: [LayoutCache] = [] // performLayout == false
     var lineIndex = 0
+    var isReferenceBaseline = false
 
-    public required init() {
+    public init() {
         // Do nothing.
     }
 
@@ -55,35 +58,8 @@ public class FlexLayout: Equatable {
         // Root nodes flexShrink should always be 0
         return (parent == nil || style.flex.shrink.isNaN) ? 0 : style.flex.shrink
     }
-    var flexed: Bool {
+    var flexible: Bool {
         return style.positionType == .relative && (computedFlexGrow != 0 || computedFlexShrink != 0)
-    }
-    var _baseline: Double { // YGBaseline
-        let value = baseline(width: box.measuredWidth, height: box.measuredHeight)
-        if (!value.isNaN) {
-            return value
-        }
-        var baselineChild: FlexLayout? = nil
-        for child in children {
-            if child.lineIndex > 0 {
-                break
-            }
-            if child.style.absoluteLayout {
-                continue
-            }
-            if computedAlignItem(child: child) == AlignItems.baseline {
-                baselineChild = child
-                break
-            }
-            if baselineChild == nil {
-                baselineChild = child
-            }
-        }
-        if let c = baselineChild {
-            return c._baseline + c.box.position[FlexDirection.column]
-        } else {
-            return box.measuredDimension(for: FlexDirection.column)
-        }
     }
     // YGIsBaselineLayout
     var isBaselineLayout: Bool {
@@ -110,7 +86,7 @@ public class FlexLayout: Equatable {
     }
 
     // markDirtyAndPropogate
-    internal func _markDirty() {
+    func _markDirty() {
         if dirty {
             return
         }
@@ -119,7 +95,7 @@ public class FlexLayout: Equatable {
         parent?._markDirty()
     }
 
-    open func invalidate() {
+    public func invalidate() {
         box.invalidate()
         cachedLayout = nil
         cachedMeasurements.removeAll()
@@ -147,15 +123,15 @@ public class FlexLayout: Equatable {
     }
 
     // YGNodeClone
-    open func copy<Layout: FlexLayout>() -> Layout {
-        let layout = Layout()
+    public func copy() -> FlexLayout {
+        let layout = FlexLayout()
         layout.copy(from: self)
         layout.children = children
         layout.parent = nil
         return layout
     }
 
-    open func copyChildrenIfNeeded() {
+    public func copyChildrenIfNeeded() {
         guard children.count > 0 else {
             return
         }
@@ -275,7 +251,7 @@ public class FlexLayout: Equatable {
         return self
     }
 
-    // YGNodeCalculateLayout
+    // YGNodeCalculateLayout, YGNodeCalculateLayoutWithContext
     public func calculate(width: Double = .nan, height: Double = .nan, direction: Direction = .ltr) {
         FlexBox.totalGeneration += 1
         resolveDimensions()
@@ -286,17 +262,45 @@ public class FlexLayout: Equatable {
         let success = layoutInternal(width: _width, height: _height, widthMode: widthMode, heightMode: heightMode,
             parentWidth: width, parentHeight: height, direction: direction, layout: true, reason: "initial")
         if success {
-            setPosition(direction: style.direction, mainSize: width, crossSize: height, parentWidth: width)
+            setPosition(for: style.direction, main: width, cross: height, width: width)
             roundPosition(scale: FlexStyle.scale, absoluteLeft: 0, absoluteTop: 0)
         }
     }
 
-    open func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
+    func measure(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
         return measureSelf?(width, widthMode, height, heightMode) ?? Size.zero
     }
 
-    open func baseline(width: Double, height: Double) -> Double {
-        return Double.nan
+    func baseline(width: Double, height: Double) -> Double {
+        return baselineMethod?(width, height) ?? 0.0
+    }
+
+    // YGBaseline
+    func baseline() -> Double {
+        if baselineMethod != nil {
+            return baseline(width: box.measuredWidth, height: box.measuredHeight)
+        }
+        var baselineChild: FlexLayout? = nil
+        for child: FlexLayout in children {
+            if child.lineIndex > 0 {
+                break
+            }
+            if child.style.absoluteLayout {
+                continue
+            }
+            if computedAlignItem(child: child) == AlignItems.baseline || child.isReferenceBaseline {
+                baselineChild = child
+                break
+            }
+            if baselineChild == nil {
+                baselineChild = child
+            }
+        }
+        if let child = baselineChild {
+            return child.baseline() + child.box.position.top
+        } else {
+            return box.measuredHeight
+        }
     }
 
     // MARK: Equatable

@@ -68,19 +68,19 @@ public class FlexStyle: Equatable {
         }
     }
 
-    public internal(set) var positionType: PositionType = .relative
-    public internal(set) var position: Position = .zero
+    public internal(set) var positionType: PositionType = PositionType.relative
+    public internal(set) var position: Position = Position.zero
 
-    public internal(set) var margin: StyleInsets = .zero
-    public internal(set) var padding: StyleInsets = .zero
-    public internal(set) var border: StyleInsets = .zero
-
-    public internal(set) var width: StyleValue = .auto
-    public internal(set) var height: StyleValue = .auto
-
-    public internal(set) var minWidth: StyleValue = .length(0)
-    public internal(set) var minHeight: StyleValue = .length(0)
-
+    public internal(set) var margin: StyleInsets = StyleInsets.zero
+    public internal(set) var padding: StyleInsets = StyleInsets.zero
+    public internal(set) var border: StyleInsets = StyleInsets.zero
+    // dimensions
+    public internal(set) var width: StyleValue = StyleValue.auto
+    public internal(set) var height: StyleValue = StyleValue.auto
+    // minDimensions
+    public internal(set) var minWidth: StyleValue = StyleValue.length(0.0)
+    public internal(set) var minHeight: StyleValue = StyleValue.length(0.0)
+    // maxDimensions, Optional<T> => `CompactValue::isUndefined`
     public internal(set) var maxWidth: StyleValue? = nil
     public internal(set) var maxHeight: StyleValue? = nil
 
@@ -95,7 +95,7 @@ public class FlexStyle: Equatable {
 #if canImport(UIKit)
     public static var scale: Double = Double(UIScreen.main.scale)
 #elseif canImport(Cocoa)
-    public static var scale: Double = Double(NSScreen.main?.backingScaleFactor ?? 0)
+    public static var scale: Double = Double(NSScreen.main?.backingScaleFactor ?? 1)
 #else
     public static var scale: Double = 1
 #endif
@@ -269,42 +269,42 @@ public class FlexStyle: Equatable {
         }
     }
 
-    // getLeadingMargin | YGNodeLeadingMargin
+    // YGNode::getLeadingMargin
     func leadingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.leading(direction: direction)
         let result = value.resolve(by: width)
         return result.isNaN ? 0 : result
     }
 
-    // YGNodeTrailingMargin
+    // YGNode::getTrailingMargin
     func trailingMargin(for direction: FlexDirection, width: Double) -> Double {
         let value = margin.trailing(direction: direction)
         let result = value.resolve(by: width)
         return result.isNaN ? 0 : result
     }
 
-    // YGNodeLeadingPadding
+    // YGNode::getLeadingPadding
     func leadingPadding(for direction: FlexDirection, width: Double) -> Double {
         let value = padding.leading(direction: direction)
         let result = value.resolve(by: width)
         return result > 0 ? result : 0
     }
 
-    // YGNodeTrailingPadding
+    // YGNode::getTrailingPadding
     func trailingPadding(for direction: FlexDirection, width: Double) -> Double {
         let value = padding.trailing(direction: direction)
         let result = value.resolve(by: width)
         return result > 0 ? result : 0
     }
 
-    // YGNodeLeadingBorder
+    // YGNode::getLeadingBorder
     func leadingBorder(for direction: FlexDirection) -> Double {
         let value = border.leading(direction: direction)
         let result = value.resolve(by: 0)
         return result > 0 ? result : 0
     }
 
-    // YGNodeTrailingBorder
+    // YGNode::getTrailingBorder
     func trailingBorder(for direction: FlexDirection) -> Double {
         let value = border.trailing(direction: direction)
         let result = value.resolve(by: 0)
@@ -316,17 +316,17 @@ public class FlexStyle: Equatable {
         return totalLeadingSize(for: direction, width: width) + totalTrailingSize(for: direction, width: width)
     }
 
-    // YGNodeLeadingPaddingAndBorder
+    // YGNode::getLeadingPaddingAndBorder
     func totalLeadingSize(for direction: FlexDirection, width: Double) -> Double {
         return leadingPadding(for: direction, width: width) + leadingBorder(for: direction)
     }
 
-    // YGNodeTrailingPaddingAndBorder
+    // YGNode::getTrailingPaddingAndBorder
     func totalTrailingSize(for direction: FlexDirection, width: Double) -> Double {
         return trailingPadding(for: direction, width: width) + trailingBorder(for: direction)
     }
 
-    // getMarginForAxis | YGNodeMarginForAxis
+    // YGNode::getMarginForAxis
     func totalOuterSize(for direction: FlexDirection, width: Double) -> Double {
         return leadingMargin(for: direction, width: width) + trailingMargin(for: direction, width: width)
     }
@@ -340,15 +340,15 @@ public class FlexStyle: Equatable {
     }
 
     // YGNodeBoundAxisWithinMinAndMax
-    func bound(axis direction: FlexDirection, value: Double, axisSize: Double) -> Double {
+    func bound(for direction: FlexDirection, value: Double, size: Double) -> Double {
         let min: Double
         let max: Double
         if direction.isColumn {
-            min = minHeight.resolve(by: axisSize)
-            max = computedMaxHeight.resolve(by: axisSize)
+            min = minHeight.resolve(by: size)
+            max = computedMaxHeight.resolve(by: size)
         } else {
-            min = minWidth.resolve(by: axisSize)
-            max = computedMaxWidth.resolve(by: axisSize)
+            min = minWidth.resolve(by: size)
+            max = computedMaxWidth.resolve(by: size)
         }
         var bound = value
         if max >= 0.0 && bound > max {
@@ -363,7 +363,7 @@ public class FlexStyle: Equatable {
     // YGNodeBoundAxis(node, axis, value, axisSize, widthSize)
     // TODO: Rename method and parameters
     func bound(axis direction: FlexDirection, value: Double, axisSize: Double, width: Double) -> Double {
-        return fmax(bound(axis: direction, value: value, axisSize: axisSize),
+        return fmax(bound(for: direction, value: value, size: axisSize),
             totalInnerSize(for: direction, width: width))
     }
 
@@ -385,7 +385,7 @@ public class FlexStyle: Equatable {
         }
     }
 
-    // YGNodeResolveDirection
+    // YGNode::resolveDirection
     func resolveDirection(by direction: Direction) -> Direction {
         if self.direction == Direction.inherit {
             return direction != Direction.inherit ? direction : .ltr

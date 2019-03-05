@@ -25,6 +25,9 @@ import XCTest
 
 // Generated from YGRoundingFunctionTest.cpp
 class RoundingFunctionTests: FlexTestCase {
+    func measureText(width: Double, widthMode: MeasureMode, height: Double, heightMode: MeasureMode) -> Size {
+        return Size(width: 10, height: 10)
+    }
 
     // Generated from test: rounding_value
     func testRoundingValue() {
@@ -35,6 +38,13 @@ class RoundingFunctionTests: FlexTestCase {
         XCTAssertEqual(FlexBox.round(5.999999, scale: 2.0, ceil: false, floor: false), 6.0)
         XCTAssertEqual(FlexBox.round(5.999999, scale: 2.0, ceil: true, floor: false), 6.0)
         XCTAssertEqual(FlexBox.round(5.999999, scale: 2.0, ceil: false, floor: true), 6.0)
+        // Same tests for negative numbers
+        XCTAssertEqual(FlexBox.round(-6.000001, scale: 2.0, ceil: false, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-6.000001, scale: 2.0, ceil: true, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-6.000001, scale: 2.0, ceil: false, floor: true), -6.0)
+        XCTAssertEqual(FlexBox.round(-5.999999, scale: 2.0, ceil: false, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-5.999999, scale: 2.0, ceil: true, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-5.999999, scale: 2.0, ceil: false, floor: true), -6.0)
 
         // Test that numbers with fraction are rounded correctly accounting for ceil/floor flags
         XCTAssertEqual(FlexBox.round(6.01, scale: 2.0, ceil: false, floor: false), 6.0)
@@ -43,5 +53,37 @@ class RoundingFunctionTests: FlexTestCase {
         XCTAssertEqual(FlexBox.round(5.99, scale: 2.0, ceil: false, floor: false), 6.0)
         XCTAssertEqual(FlexBox.round(5.99, scale: 2.0, ceil: true, floor: false), 6.0)
         XCTAssertEqual(FlexBox.round(5.99, scale: 2.0, ceil: false, floor: true), 5.5)
+        // Same tests for negative numbers
+        XCTAssertEqual(FlexBox.round(-6.01, scale: 2.0, ceil: false, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-6.01, scale: 2.0, ceil: true, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-6.01, scale: 2.0, ceil: false, floor: true), -6.5)
+        XCTAssertEqual(FlexBox.round(-5.99, scale: 2.0, ceil: false, floor: false), -6.0)
+        XCTAssertEqual(FlexBox.round(-5.99, scale: 2.0, ceil: true, floor: false), -5.5)
+        XCTAssertEqual(FlexBox.round(-5.99, scale: 2.0, ceil: false, floor: true), -6.0)
+    }
+    
+    // Generated from test: consistent_rounding_during_repeated_layouts
+    func testConsistentRoundingDuringRepeatedLayouts() {
+        FlexStyle.scale = 2
+        
+        let root = FlexLayout()
+        root.margin(top: StyleValue.length(-1.49))
+        root.width(StyleValue.length(500))
+        root.height(StyleValue.length(500))
+        
+        let node0 = FlexLayout()
+        root.insert(node0, at: 0)
+        
+        let node1 = FlexLayout()
+        node1.measureSelf = measureText
+        root.insert(node1, at: 1)
+        
+        for i in 0..<5 {
+            // Dirty the tree so YGRoundToPixelGrid runs again
+            root.margin(left: StyleValue.length(Double(i)))
+
+            root.calculate(direction: Direction.ltr)
+            XCTAssertEqual(node1.box.height, 10)
+        }
     }
 }

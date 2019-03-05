@@ -23,6 +23,12 @@
 @testable import StartPoint
 import XCTest
 
+func _baseline(_ context: Double) -> (Double, Double) -> Double {
+    return { (_, _) in
+        return context
+    }
+}
+
 // Generated from YGBaselineFuncTest.cpp
 class BaselineFuncTests: FlexTestCase {
 
@@ -30,7 +36,7 @@ class BaselineFuncTests: FlexTestCase {
     func testAlignBaselineCustomerFunc() {
         let root = FlexLayout()
         root.flexDirection(FlexDirection.row)
-        root.alignItems(.baseline)
+        root.alignItems(AlignItems.baseline)
         root.width(StyleValue.length(100))
         root.height(StyleValue.length(100))
 
@@ -44,9 +50,9 @@ class BaselineFuncTests: FlexTestCase {
         root_child1.height(StyleValue.length(20))
         root.insert(root_child1, at: 1)
 
-        let root_child1_child0 = BaselineLayout()
+        let root_child1_child0 = FlexLayout()
         root_child1_child0.width(StyleValue.length(50))
-        root_child1_child0.base = { (_: Double, _: Double) in 10.0 }
+        root_child1_child0.baselineMethod = _baseline(10)
         root_child1_child0.height(StyleValue.length(20))
         root_child1.insert(root_child1_child0, at: 0)
         root.calculate(direction: Direction.ltr)
