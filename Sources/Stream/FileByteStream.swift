@@ -37,12 +37,12 @@ public final class FileByteStream: ByteStream, RandomAccessStream {
         bytes.deallocate()
     }
 
-    public override var available: Bool {
+    public override var effective: Bool {
         return index > -1 && index < count
     }
 
     public override func peek() -> UInt8 {
-        return available ? current.pointee : 0
+        return effective ? current.pointee : 0
     }
 
     public override func peek(offset: Int) -> UInt8 {
@@ -77,7 +77,7 @@ public final class FileByteStream: ByteStream, RandomAccessStream {
     // bool peek(Value* pointer);
     func peek(into pointer: UnsafeMutablePointer<UInt8>) -> Bool {
         pointer.initialize(to: current.pointee)
-        return available
+        return effective
     }
 
     // size_t peek(Value* pointer size_t size);
@@ -103,10 +103,10 @@ public final class FileByteStream: ByteStream, RandomAccessStream {
     @discardableResult
     public override func move() -> Bool {
         index += 1
-        if available {
+        if effective {
             current = current.advanced(by: 1)
         }
-        return available
+        return effective
     }
 
     @discardableResult
@@ -124,10 +124,10 @@ public final class FileByteStream: ByteStream, RandomAccessStream {
         case .end:
             index = count + offset
         }
-        if available {
+        if effective {
             current = bytes.advanced(by: index)
         }
-        return available
+        return effective
     }
 
     private static func open(path: String) -> (UnsafeMutablePointer<UInt8>?, Int) {

@@ -135,7 +135,6 @@ public final class PropertyListArray: PropertyList {
 
     public init(_ value: [PropertyList]) {
         self.value = value
-//        super.init()
     }
 
     public override var description: String {
@@ -148,7 +147,6 @@ public final class PropertyListDictionary: PropertyList {
 
     public init(_ value: [String: PropertyList]) {
         self.value = value
-//        super.init()
     }
 
     public override var description: String {

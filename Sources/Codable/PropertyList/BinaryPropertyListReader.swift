@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://opensource.apple.com/source/CF/CF-1153.18/CFBinaryPList.c.auto.html
 final class BinaryPropertyListReader: PropertyListReader {
     let stream: FileByteStream
     var offsetWidth: Int = 0

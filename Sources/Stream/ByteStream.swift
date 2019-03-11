@@ -25,7 +25,7 @@ import Darwin.C
 public class ByteStream: ReadableStream {
     public typealias Value = UInt8
 
-    public var available: Bool {
+    public var effective: Bool {
         return false
     }
 
@@ -75,12 +75,12 @@ public final class Int8Stream: ByteStream {
         nullTerminated = size < 1
     }
 
-    public override var available: Bool {
+    public override var effective: Bool {
         return nullTerminated ? !terminated : index < size
     }
 
     public override func peek() -> UInt8 {
-        return available ? UInt8(bitPattern: current.pointee) : 0
+        return effective ? UInt8(bitPattern: current.pointee) : 0
     }
 
     public override func peek(offset: Int) -> UInt8 {
@@ -114,7 +114,7 @@ public final class Int8Stream: ByteStream {
         } else {
             current = current.advanced(by: 1)
             index += 1
-            return available
+            return effective
         }
     }
 
@@ -139,7 +139,7 @@ public final class Int8Stream: ByteStream {
                 current = current.advanced(by: offset)
                 index += offset
             }
-            return available
+            return effective
         }
     }
 }
@@ -159,12 +159,12 @@ public final class UInt8Stream: ByteStream {
         nullTerminated = size < 1
     }
 
-    public override var available: Bool {
+    public override var effective: Bool {
         return nullTerminated ? !terminated : index < size
     }
 
     public override func peek() -> UInt8 {
-        return available ? current.pointee : 0
+        return effective ? current.pointee : 0
     }
 
     public override func peek(offset: Int) -> UInt8 {
@@ -198,7 +198,7 @@ public final class UInt8Stream: ByteStream {
         } else {
             current = current.advanced(by: 1)
             index += 1
-            return available
+            return effective
         }
     }
 
@@ -223,7 +223,7 @@ public final class UInt8Stream: ByteStream {
                 current = current.advanced(by: offset)
                 index += offset
             }
-            return available
+            return effective
         }
     }
 }

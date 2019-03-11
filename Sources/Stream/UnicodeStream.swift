@@ -31,7 +31,7 @@ public final class UTF8Provider: UnicodeProvider {
     public let stream: ByteStream
     
     public var available: Bool {
-        return stream.available
+        return stream.effective
     }
 
     public init(stream: ByteStream) {
@@ -42,7 +42,7 @@ public final class UTF8Provider: UnicodeProvider {
         var byte = stream.peek()
         var value: UInt32 = 0
         var state: UInt32 = 0
-        while stream.available {
+        while stream.effective {
             stream.move()
             if UTF8Provider.decode(byte: byte, value: &value, state: &state) {
                 return value
@@ -124,7 +124,7 @@ public final class UnicodeStream: ReadableStream {
         data.deallocate()
     }
 
-    public var available: Bool {
+    public var effective: Bool {
         return index < count
     }
 
@@ -173,7 +173,7 @@ public final class UnicodeStream: ReadableStream {
 
     public func peek() -> UInt32 {
         decode(offset: 0)
-        return available ? current.pointee : 0
+        return effective ? current.pointee : 0
     }
 
     public func peek(offset: Int) -> UInt32 {
@@ -189,7 +189,7 @@ public final class UnicodeStream: ReadableStream {
     @discardableResult
     public func move() -> Bool {
         decode(offset: 0)
-        if available {
+        if effective {
             current = current.successor()
             index += 1
         }
