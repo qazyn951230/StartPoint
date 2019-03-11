@@ -99,7 +99,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         Layout(view: pageControl).right().bottom()
             .size(size).apply()
         imageViews.forEachIndexed { view, i in
-            view.frame = CGRect(x: bounds.width * CGFloat(i), y: 0, size: bounds.size)
+            view.frame = bounds.setOrigin(x: bounds.width * CGFloat(i), y: 0)
         }
         if infinite {
             scrollView.contentSize = CGSize(width: bounds.width * CGFloat(count + 2), height: bounds.height)
@@ -163,7 +163,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         infinite = count > 1
         let size = frame.size
         guard infinite else {
-            let imageView0 = UIImageView(frame: CGRect(x: 0, y: 0, size: size))
+            let imageView0 = UIImageView(frame: CGRect(origin: .zero, size: size))
             delegate.bannerView(self, configImageView: imageView0, at: 0)
             scrollView.addSubview(imageView0)
             imageViews.append(imageView0)
@@ -172,18 +172,18 @@ public final class BannerView: UIView, UIScrollViewDelegate {
             return
         }
         // First image view,  data index = count - 1
-        let imageView1 = UIImageView(frame: CGRect(x: 0, y: 0, size: size))
+        let imageView1 = UIImageView(frame: CGRect(origin: .zero, size: size))
         delegate.bannerView(self, configImageView: imageView1, at: count - 1)
         scrollView.addSubview(imageView1)
         imageViews.append(imageView1)
         for i in 0..<count {
-            let imageView = UIImageView(frame: CGRect(x: size.width * CGFloat(i + 1), y: 0, size: size))
+            let imageView = UIImageView(frame: CGRect(origin: CGPoint(x: size.width * CGFloat(i + 1), y: 0), size: size))
             delegate.bannerView(self, configImageView: imageView, at: i)
             scrollView.addSubview(imageView)
             imageViews.append(imageView)
         }
         // Last image view, data index = 0
-        let imageView2 = UIImageView(frame: CGRect(x: size.width * CGFloat(count + 1), y: 0, size: size))
+        let imageView2 = UIImageView(frame: CGRect(origin: CGPoint(x: size.width * CGFloat(count + 1), y: 0), size: size))
         delegate.bannerView(self, configImageView: imageView2, at: 0)
         scrollView.addSubview(imageView2)
         imageViews.append(imageView2)

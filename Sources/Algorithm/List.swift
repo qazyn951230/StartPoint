@@ -33,11 +33,11 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
     }
 
     public init<S>(_ elements: S) where S: Sequence, Element == S.Element {
-        store = Array(elements)
+        store = Array<Element>(elements)
     }
 
-    public init(repeating repeatedValue: List.Element, count: Int) {
-        store = Array(repeating: repeatedValue, count: count)
+    public init(repeating repeatedValue: Element, count: Int) {
+        store = Array<Element>(repeating: repeatedValue, count: count)
     }
 
     public var isEmpty: Bool {

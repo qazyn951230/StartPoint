@@ -78,7 +78,7 @@ public class PagingView: UIView, UIScrollViewDelegate {
             .right(float: insets.right).bottom(float: insets.bottom)
             .apply()
         for (index, view) in pagingViews {
-            view.frame = CGRect(x: scrollView.bounds.width * CGFloat(index), y: 0, size: scrollView.bounds.size)
+            view.frame = CGRect(origin: CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0), size: scrollView.bounds.size)
         }
     }
 

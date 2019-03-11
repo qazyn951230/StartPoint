@@ -479,7 +479,6 @@ public class Layout {
         _width = _width.isNaN || _width < 0 ? 0 : _width
         _height = _height.isNaN || _height < 0 ? 0 : _height
 
-        view.frame = CGRect(x: _left.ceiled, y: _top.ceiled,
-            width: _width.ceiled, height: _height.ceiled)
+        view.frame = CGRect(x: _left, y: _top, width: _width, height: _height).ceiled
     }
 }

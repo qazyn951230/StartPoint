@@ -37,11 +37,11 @@ public final class ListSlice<Element>: MutableCollection, RandomAccessCollection
     }
 
     public init<S>(_ elements: S) where S: Sequence, Element == S.Element {
-        store = ArraySlice(elements)
+        store = ArraySlice<Element>(elements)
     }
 
-    public init(repeating repeatedValue: ListSlice.Element, count: Int) {
-        store = ArraySlice(repeating: repeatedValue, count: count)
+    public init(repeating repeatedValue: Element, count: Int) {
+        store = ArraySlice<Element>(repeating: repeatedValue, count: count)
     }
 
     public var isEmpty: Bool {

@@ -85,7 +85,7 @@ public final class StartLabel: UIView, AsyncLayerDelegate {
     // AsyncLayerDelegate
     public func asyncLayer(_ layer: AsyncLayer, display asynchronous: Bool) {
 //        UIGraphicsBeginImageContextWithOptions(bounds.size, layer.isOpaque, layer.contentsScale)
-        UIGraphicsBeginImageContextWithOptions(CGSize(200, 200), layer.isOpaque, layer.contentsScale)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 200, height: 200), layer.isOpaque, layer.contentsScale)
         guard let context = UIGraphicsGetCurrentContext() else {
             return
         }

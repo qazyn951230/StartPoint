@@ -64,6 +64,29 @@ public extension UIColor {
         return hexColor(value, alpha: alpha, creator: UIColor.init(red:green:blue:alpha:))
     }
 
+    // red:
+    // On return, the red component of the color object. On applications linked for iOS 10 or later,
+    // the red component is specified in an extended range sRGB color space and can have any value.
+    // Values between 0.0 and 1.0 are inside the sRGB color gamut. On earlier versions of iOS,
+    // the specified value is always between 0.0 and 1.0.
+    public func rgba() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        _  = self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (r, g, b, a)
+    }
+
+    public func rgbaHex() -> UInt32 {
+        let (r, g, b, a) = self.rgba()
+        var value: UInt32 = UInt32(a * 255) << 24
+        value += UInt32(r * 255) << 16
+        value += UInt32(g * 255) << 8
+        value += UInt32(b * 255)
+        return value
+    }
+
 #if DEBUG
     public static var random: UIColor {
         return UIColor.hex(UInt32.random(in: 0...0xFFFFFF))

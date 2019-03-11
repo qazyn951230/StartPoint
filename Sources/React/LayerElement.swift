@@ -70,30 +70,9 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     public override var loaded: Bool {
         return layer != nil
     }
-    override var _layer: CALayer? {
-        return layer
-    }
-
-    override var layered: Bool {
-        return true
-    }
 
     deinit {
         creator = nil
-        if let layer = self.layer {
-            if Runner.isMain() {
-                layer.removeFromSuperlayer()
-            } else {
-                DispatchQueue.main.async {
-                    layer.removeFromSuperlayer()
-                }
-            }
-        }
-    }
-
-    override func _removeFromOwner() {
-        super._removeFromOwner()
-        layer?.removeFromSuperlayer()
     }
 
     public func layerLoaded(then method: @escaping (BasicLayerElement<Layer>) -> Void) {
@@ -104,9 +83,17 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
+    // MARK: - Managing the elements hierarchy
+    override func removeFromOwner() {
+        super.removeFromOwner()
+        if let _layer = layer {
+            Runner.onMain(_layer.removeFromSuperlayer)
+        }
+    }
+
+    // MARK: - Create a Layer Object
     public override func build(in view: UIView) {
         build(in: view.layer)
-        onLoaded()
     }
 
     public override func build(in layer: CALayer) {
@@ -124,40 +111,46 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
 
     public func buildLayer() -> Layer {
         assertMainThread()
-        if let l = self.layer {
-            return l
+        if let oldLayer = self.layer {
+            return oldLayer
         }
-        let this = _createLayer()
-        applyState(to: this)
-        buildChildren(in: this)
-        return this
-    }
-
-    func _createLayer() -> Layer {
-        assertMainThread()
-        if let layer = self.layer {
-            return layer
-        }
-        let this = creator?() ?? Layer.init()
-        creator = nil
-        if let container = this as? ElementContainer {
+        let _layer = createLayer()
+        self.layer = _layer
+        if let container = _layer as? ElementContainer {
             container.element = self
         } else {
-            this._element = self
+            _layer._element = self
         }
-        self.layer = this
-        return this
+        applyState(to: _layer)
+        buildChildren(in: _layer)
+        onLoaded()
+        return _layer
     }
 
-    public override func apply() {
+    func buildChildren(in layer: CALayer) {
+        if children.isEmpty {
+            return
+        }
+        children.forEach { child in
+            child.build(in: layer)
+        }
+    }
+
+    func createLayer() -> Layer {
+        let _layer: Layer = creator?() ?? Layer.init()
+        creator = nil
+        return _layer
+    }
+
+    // MARK: - Manage pending state
+    override func applyState() {
         assertMainThread()
         if let layer = self.layer {
             applyState(to: layer)
         }
     }
 
-    public func applyState(to layer: Layer) {
-        assertMainThread()
+    func applyState(to layer: Layer) {
         _pendingState?.apply(layer: layer)
     }
 
@@ -168,15 +161,7 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         super.registerPendingState()
     }
 
-    public func buildChildren(in layer: CALayer) {
-        if children.isEmpty {
-            return
-        }
-        children.forEach {
-            $0.build(in: layer)
-        }
-    }
-
+    // MARK: - Debugging Flex Layout
 #if DEBUG
     public override func debugMode() {
         backgroundColor(UIColor.random)
@@ -184,9 +169,8 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     }
 #endif
 
-    override func removeFromSuperView() {
-        assertMainThread()
-        layer?.removeFromSuperlayer()
+    override func accept(visitor: ElementVisitor) {
+        visitor.visit(layer: self)
     }
 
     // MARK: - Configuring a Element’s Visual Appearance

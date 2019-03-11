@@ -149,7 +149,7 @@ public final class StartAlertView: BasicAlertView {
 
     public override init() {
         super.init()
-        root.addChild(content)
+        root.addElement(content)
     }
 
     public override func buildView() {
@@ -165,7 +165,7 @@ public final class StartAlertView: BasicAlertView {
             .style { flex in
                 flex.margin(horizontal: 16)
             }
-        content.addChild(label)
+        content.addElement(label)
         return self
     }
 
@@ -184,7 +184,7 @@ public final class StartAlertView: BasicAlertView {
             .style { flex in
                 flex.margin(horizontal: 16).margin(top: 1)
             }
-        content.addChild(label)
+        content.addElement(label)
         return self
     }
 
@@ -204,7 +204,7 @@ public final class StartAlertView: BasicAlertView {
     @discardableResult
     public func button(_ value: ButtonElement) -> StartAlertView {
         value.layout.flex(1).height(float: 44)
-        buttonsElement().addChild(value)
+        buttonsElement().addElement(value)
         return self
     }
 
@@ -225,7 +225,7 @@ public final class StartAlertView: BasicAlertView {
         let footer = BasicElement(children: [line, element]).style { flex in
             flex.margin(top: 18).width(.match)
         }
-        content.addChild(footer)
+        content.addElement(footer)
         return element
     }
 

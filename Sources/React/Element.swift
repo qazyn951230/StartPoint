@@ -42,18 +42,6 @@ open class Element<View: UIView>: BasicElement {
         return view != nil
     }
 
-    override var _view: UIView? {
-        return view
-    }
-
-    var layer: CALayer? {
-        return view?.layer
-    }
-
-    var layersCount: Int {
-        return view?.layer.sublayers?.count ?? 0
-    }
-
     override var _frame: Rect {
         didSet {
             if Runner.isMain(), let view = self.view {
@@ -79,91 +67,23 @@ open class Element<View: UIView>: BasicElement {
 
     deinit {
         creator = nil
-        if let view = self.view {
-            Runner.onMain {
-                view.removeFromSuperview()
-            }
+    }
+
+    // MARK: - Managing the elements hierarchy
+    override func removeFromOwner() {
+        super.removeFromOwner()
+        if let _view = view {
+            Runner.onMain(_view.removeFromSuperview)
         }
     }
 
-    public override func addChild(_ element: BasicElement) {
-        assertThreadAffinity(for: self)
-        if let old = element.owner, old == self {
-            return
-        }
-        let index = children.count
-        let layerIndex = layersCount
-        insertChild(element, at: index, at: layerIndex, remove: nil)
-    }
-
-    public override func insertChild(_ element: BasicElement, at index: Int) {
-        assertThreadAffinity(for: self)
-        guard index > -1 && index < children.count else {
-            assertFail("Insert index illegal: \(index)")
-            return
-        }
-        let index = children.count
-        let layerIndex: Int?
-        if let layer = self.layer, let slayer = element._layer,
-           let i = layer.sublayers?.index(of: slayer) {
-            layerIndex = i + 1
-        } else {
-            layerIndex = nil
-        }
-        insertChild(element, at: index, at: layerIndex, remove: nil)
-    }
-
-    // FIXME: insert view
-//    override func insertChild(_ element: BasicElement, at index: Int, at layerIndex: Int?,
-//                              remove oldElement: BasicElement?) {
-//    }
-
-    override func _removeFromOwner() {
-        super._removeFromOwner()
-        view?.removeFromSuperview()
-    }
-
-    public func viewLoaded(_ method: @escaping (Element<View>) -> Void) {
-        if Runner.isMain(), loaded {
-            method(self)
-        } else {
-            actions.loadAction(self, method)
-        }
-    }
-
-    public func bind<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
-        if Runner.isMain(), loaded {
-            method(target)
-        } else {
-            actions.loadAction(target, method)
-        }
-    }
-
-    public func bind<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
-        if Runner.isMain(), loaded {
-            method(target)(self)
-        } else {
-            let action: ElementAction.Action = { [weak target, weak self] in
-                if let _target = target, let this = self {
-                    method(_target)(this)
-                }
-            }
-            actions.load.append(action)
-        }
-    }
-
-    public func tap<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
-        let action: ElementAction.Action = { [weak target, weak self] in
-            if let _target = target, let this = self {
-                method(_target)(this)
-            }
-        }
-        super.tap(action)
-    }
-
+    // MARK: - Create a View Object
     public override func build(in view: UIView) {
         assertMainThread()
+        // 1. build itself and children, then call loaded callback
         let this = buildView()
+        // 2. check superview
+        // FIXME: Do we need this check?
         if let superview = this.superview {
             if superview != view {
                 this.removeFromSuperview()
@@ -172,44 +92,42 @@ open class Element<View: UIView>: BasicElement {
         } else {
             view.addSubview(this)
         }
-        onLoaded()
     }
 
     public func buildView() -> View {
         assertMainThread()
-        if let v = self.view {
-            return v
+        if let oldView = self.view {
+            return oldView
         }
-        let this = _createView()
-        applyState(to: this)
-        buildChildren()
-        return this
-    }
-
-    func _createView() -> View {
-        assertMainThread()
-        if let view = self.view {
-            return view
-        }
-        let this = creator?() ?? View.init(frame: .zero)
-        creator = nil
-        if let container = this as? ElementContainer {
+        let _view = createView()
+        self.view = _view
+        if let container = _view as? ElementContainer {
             container.element = self
         } else {
-            this._element = self
+            _view._element = self
         }
-        self.view = this
-        return this
+        applyState(to: _view)
+        buildChildren(in: _view)
+        onLoaded()
+        return _view
     }
 
-    public override func apply() {
+    // Only do view create
+    func createView() -> View {
+        let _view: View = creator?() ?? View.init(frame: .zero)
+        creator = nil
+        return _view
+    }
+
+    // MARK: - Manage pending state
+    override func applyState() {
+        assertMainThread()
         if let view = self.view {
             applyState(to: view)
         }
     }
 
-    public func applyState(to view: View) {
-        assertMainThread()
+    func applyState(to view: View) {
         _pendingState?.apply(view: view)
     }
 
@@ -220,22 +138,7 @@ open class Element<View: UIView>: BasicElement {
         super.registerPendingState()
     }
 
-    public override func buildChildren(in view: UIView) {
-        if children.isEmpty {
-            return
-        }
-        let sorted = children.sorted(by: BasicElement.sortZIndex)
-        sorted.forEach { child in
-            child.build(in: view)
-        }
-    }
-
-    public func buildChildren() {
-        if let view = self.view {
-            buildChildren(in: view)
-        }
-    }
-
+    // MARK: - Debugging Flex Layout
 #if DEBUG
     public override func debugMode() {
         backgroundColor(UIColor.random)
@@ -243,9 +146,8 @@ open class Element<View: UIView>: BasicElement {
     }
 #endif
 
-    override func removeFromSuperView() {
-        assertMainThread()
-        view?.removeFromSuperview()
+    override func accept(visitor: ElementVisitor) {
+        visitor.visit(view: self)
     }
 
     // MARK: - Configuring a Element’s Visual Appearance

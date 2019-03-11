@@ -46,7 +46,8 @@ public class DataStream: WritableStream {
     }
 
     public func write(byte value: UInt8) throws {
-        try write(bytes: [value])
+        let data = Data([value])
+        try write(data)
     }
 
     public func write(bytes value: [UInt8]) throws {

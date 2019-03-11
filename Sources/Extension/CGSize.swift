@@ -23,10 +23,6 @@
 import CoreGraphics
 
 public extension CGSize {
-    public init(_ width: LayoutValue, _ height: LayoutValue) {
-        self.init(width: width.value, height: height.value)
-    }
-
     public var ceiled: CGSize {
         return CGSize(width: ceil(width), height: ceil(height))
     }
@@ -45,11 +41,11 @@ public extension CGSize {
         return CGSize(width: w, height: h)
     }
 
-    public func setWidth(_ width: LayoutValue) -> CGSize {
-        return CGSize(width: width.value, height: height)
+    public func setWidth(_ width: CGFloat) -> CGSize {
+        return CGSize(width: width, height: height)
     }
 
-    public func setHeight(_ height: LayoutValue) -> CGSize {
-        return CGSize(width: width, height: height.value)
+    public func setHeight(_ height: CGFloat) -> CGSize {
+        return CGSize(width: width, height: height)
     }
 }

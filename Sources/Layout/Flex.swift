@@ -24,8 +24,10 @@
 import UIKit
 #endif
 import CoreGraphics
+import Darwin.C
 
-public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral,
+    CustomStringConvertible {
     case length(Double)
     case percentage(Double)
     case auto
@@ -128,6 +130,18 @@ public enum StyleValue: Equatable, ExpressibleByIntegerLiteral, ExpressibleByFlo
             return .percentage(a - b)
         default: // error
             return .length(0)
+        }
+    }
+
+    // CustomStringConvertible
+    public var description: String {
+        switch self {
+        case .auto:
+            return "auto"
+        case let .length(l):
+            return "\(l)px"
+        case let .percentage(p):
+            return "\(p)%"
         }
     }
 }
@@ -715,4 +729,12 @@ func inner<T: Comparable>(_ value: T?, min: T?, max: T?) -> T? {
         result = Swift.max(result, min)
     }
     return result
+}
+
+@inline(__always)
+func /*approximately*/equal(_ lhs: Double, _ rhs: Double) -> Bool {
+    if !lhs.isNaN && !rhs.isNaN {
+        return fabs(lhs - rhs) < 0.0001
+    }
+    return lhs.isNaN && rhs.isNaN
 }

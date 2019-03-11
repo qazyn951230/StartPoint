@@ -202,10 +202,7 @@ public class FlexStyle: Equatable {
             return false
         }
         _equal = lhs.aspectRatio ~~ rhs.aspectRatio
-        if !_equal {
-            return false
-        }
-        return true
+        return _equal
     }
 
     public func copy(from style: FlexStyle) {

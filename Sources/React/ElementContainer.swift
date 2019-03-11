@@ -24,7 +24,7 @@ import UIKit
 import QuartzCore
 
 public protocol ElementContainer: class {
-    var element: BasicElement? { get set }
+    /*weak*/ var element: BasicElement? { get set }
 }
 
 private var X4CKjWv89vFWzSPC = "X4CKjWv89vFWzSPC"

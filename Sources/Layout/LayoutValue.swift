@@ -22,42 +22,6 @@
 
 import CoreGraphics
 
-public protocol LayoutValue {
-    var value: CGFloat { get }
-}
-
-public extension LayoutValue {
-    public var ceiled: CGFloat {
-        return ceil(value)
-    }
-
-    public var floored: CGFloat {
-        return floor(value)
-    }
-
-    public var rounded: CGFloat {
-        return round(value)
-    }
-}
-
-extension CGFloat: LayoutValue {
-    public var value: CGFloat {
-        return self
-    }
-}
-
-extension Int: LayoutValue {
-    public var value: CGFloat {
-        return CGFloat(self)
-    }
-}
-
-extension Double: LayoutValue {
-    public var value: CGFloat {
-        return CGFloat(self)
-    }
-}
-
 public struct Size: Equatable {
     public let width: Double
     public let height: Double
@@ -120,6 +84,11 @@ public struct Rect: Equatable {
         return CGRect(x: x, y: y, width: width, height: height)
     }
 
+    var valid: Rect {
+        return Rect(x: x.isNaN ? 0 : x, y: y.isNaN ? 0 : y,
+            width: width.isNaN ? 0 : width, height: height.isNaN ? 0 : height)
+    }
+
     public init(x: Double, y: Double, width: Double, height: Double) {
         self.x = x
         self.y = y
@@ -149,6 +118,17 @@ public struct Rect: Equatable {
 
     public var maxY: Double {
         return y + width
+    }
+
+    public func contains(point: Point) -> Bool {
+        guard width > 0 && height > 0 else {
+            return false
+        }
+        let px = point.x
+        let py = point.y
+        let maxX = x + width
+        let maxY = y + height
+        return x <= px && px <= maxX && y <= py && py <= maxY
     }
 
     public func contains(point: CGPoint) -> Bool {

@@ -58,7 +58,7 @@ open class TableCellElement: BasicElement, Identified {
             cell._element = self
         }
         if old != nil {
-            old?.removeFromSuperView()
+            old?.removeFromOwner()
         } else {
             for subview in cell.contentView.subviews {
                 subview.removeFromSuperview()

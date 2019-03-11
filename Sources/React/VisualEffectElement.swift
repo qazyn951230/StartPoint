@@ -30,7 +30,7 @@ open class VisualEffectElement: Element<UIVisualEffectView> {
         }
     }
 
-    public override func buildChildren() {
+    override func buildChildren(in view: UIView /* is UIVisualEffectView */) {
         if let view = self.view {
             super.buildChildren(in: view.contentView)
         }

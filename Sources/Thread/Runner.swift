@@ -67,10 +67,12 @@ public final class Runner {
         return pthread_main_np() != 0
     }
 
+    @inline(__always)
     public static func main() -> Runner {
         return Runner(DispatchQueue.main)
     }
 
+    @inline(__always)
     public static func onMain(_ method: @escaping () -> Void) {
         if Runner.isMain() {
             method()
@@ -79,11 +81,13 @@ public final class Runner {
         }
     }
 
-    public static func main(method: @escaping () -> Void) {
+    @inline(__always)
+    public static func main(async method: @escaping () -> Void) {
         DispatchQueue.main.async(execute: method)
     }
 
-    public static func main(after: TimeInterval, _ method: @escaping () -> Void) {
+    @inline(__always)
+    public static func main(after: TimeInterval, async method: @escaping () -> Void) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + after, execute: method)
     }
 }

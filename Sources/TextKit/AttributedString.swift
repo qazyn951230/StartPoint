@@ -134,15 +134,15 @@ extension AttributedString {
     }
 
     @discardableResult
-    public func systemFont(_ size: LayoutValue, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: size.value), range: range)
+    public func systemFont(_ size: CGFloat, range: NSRange? = nil) -> AttributedString {
+        return setAttribute(key: NSAttributedString.Key.font, value: UIFont.systemFont(ofSize: size), range: range)
     }
 
     @discardableResult
-    public func systemFont(_ size: LayoutValue, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
+    public func systemFont(_ size: CGFloat, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
         if #available(iOS 8.2, *) {
             return setAttribute(key: NSAttributedString.Key.font,
-                value: UIFont.systemFont(ofSize: size.value, weight: weight.weight),
+                value: UIFont.systemFont(ofSize: size, weight: weight.weight),
                 range: range)
         } else {
             return systemFont(size, range: range)
@@ -215,10 +215,10 @@ extension AttributedString {
     }
 
     @discardableResult
-    public func shadow(offset: CGSize, radius: LayoutValue, color: UIColor, range: NSRange? = nil) -> AttributedString {
+    public func shadow(offset: CGSize, radius: CGFloat, color: UIColor, range: NSRange? = nil) -> AttributedString {
         let t = NSShadow()
         t.shadowOffset = offset
-        t.shadowBlurRadius = radius.value
+        t.shadowBlurRadius = radius
         t.shadowColor = color
         return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
     }
@@ -316,14 +316,14 @@ extension AttributedString {
     }
 
     @discardableResult
-    public func systemFont(_ size: LayoutValue, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSAttributedString.Key.font, value: NSFont.systemFont(ofSize: size.value), range: range)
+    public func systemFont(_ size: CGFloat, range: NSRange? = nil) -> AttributedString {
+        return setAttribute(key: NSAttributedString.Key.font, value: NSFont.systemFont(ofSize: size), range: range)
     }
 
     @discardableResult
-    public func systemFont(_ size: LayoutValue, weight: NSFont.Weight, range: NSRange? = nil) -> AttributedString {
+    public func systemFont(_ size: CGFloat, weight: NSFont.Weight, range: NSRange? = nil) -> AttributedString {
         return setAttribute(key: NSAttributedString.Key.font,
-            value: NSFont.systemFont(ofSize: size.value, weight: weight),
+            value: NSFont.systemFont(ofSize: size, weight: weight),
             range: range)
     }
 
@@ -393,10 +393,10 @@ extension AttributedString {
     }
 
     @discardableResult
-    public func shadow(offset: CGSize, radius: LayoutValue, color: NSColor, range: NSRange? = nil) -> AttributedString {
+    public func shadow(offset: CGSize, radius: CGFloat, color: NSColor, range: NSRange? = nil) -> AttributedString {
         let t = NSShadow()
         t.shadowOffset = offset
-        t.shadowBlurRadius = radius.value
+        t.shadowBlurRadius = radius
         t.shadowColor = color
         return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
     }

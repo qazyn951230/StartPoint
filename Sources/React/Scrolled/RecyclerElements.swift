@@ -34,6 +34,7 @@ open class RecyclerCellElement: Element<UIView>, Identified {
         return ElementCollectionCell.identifier
     }
 
+    // FIXME: a.hash == b.hash => a == b?
     public override func hash(into hasher: inout Hasher) {
         hasher.combine(key)
     }

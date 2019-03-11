@@ -20,49 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Dispatch
+final class ElementAction {
+    typealias Action = (() -> Void)
+    var load: [Action] = []
+    var tap: Action?
 
-public final class PendingStateManager {
-    let lock = Lock.make()
-    var elements: [BasicElement] = []
-    var scheduling = false
-
-    public static let share = PendingStateManager()
-
-    public func register(element: BasicElement) {
-        assertTrue(element.loaded)
-        lock.lock()
-        defer {
-            lock.unlock()
-        }
-        if element.registered {
-            return
-        }
-        elements.append(element)
-        element.registered = true
-        schedule()
+    func loadAction<T>(_ target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
+        load.append(ElementAction.action(target, method))
     }
 
-    func schedule() {
-        if scheduling {
-            return
-        }
-        scheduling = true
-        DispatchQueue.main.async { [weak self] in
-            self?.flush()
-        }
-    }
-
-    func flush() {
-        assertMainThread()
-        lock.lock()
-        let array = elements
-        elements.removeAll()
-        scheduling = false
-        lock.unlock()
-        for item in array {
-            item.registered = false
-            item.applyState()
+    @inline(__always)
+    static func action<T>(_ target: T, _ method: @escaping (T) -> Void) -> Action where T: AnyObject {
+        return { [weak target] in
+            if let _target = target {
+                method(_target)
+            }
         }
     }
 }

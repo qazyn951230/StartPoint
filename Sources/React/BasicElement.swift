@@ -23,30 +23,14 @@
 import UIKit
 import QuartzCore
 import CoreGraphics
-import Dispatch
-import RxSwift
 
-final class ElementAction {
-    typealias Action = (() -> Void)
-    var load: [Action] = []
-    var tap: Action?
-
-    @inline(__always)
-    func action<T>(target: T, _ method: @escaping (T) -> Void) -> Action where T: AnyObject {
-        return { [weak target] in
-            if let _target = target {
-                method(_target)
-            }
-        }
-    }
-
-    func loadAction<T>(_ target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
-        load.append(action(target: target, method))
-    }
-}
-
-open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+open class BasicElement: Hashable, CustomStringConvertible {
+    // MARK: - Public properties
     public let layout = FlexLayout()
+    public var zIndex: Int = 0
+    public private(set) weak var owner: BasicElement?
+    public internal(set) var children: [BasicElement]
+    public let lock = MutexLock(recursive: true)
 
     let actions = ElementAction()
     let framed: Bool
@@ -60,13 +44,9 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     var _pendingState: ElementState?
     var registered = false
 
-    public var zIndex: Int = 0
-
-#if DEBUG
-    public var name = String.empty
-    var debug = false
-    var debugView: UIView?
-#endif
+    // MARK: - Configuring the Event-Related Behavior
+    public var interactive: Bool = true
+    public var alpha: Double = 1.0
 
     init(framed: Bool, children: [BasicElement]) {
         self.framed = framed
@@ -81,179 +61,16 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         self.init(framed: false, children: children)
     }
 
-    deinit {
-        owner = nil
-    }
-
-    public var frame: CGRect {
-        return _frame.cgRect
-    }
-
-    public var bounds: CGRect {
-        return _bounds.cgRect
-    }
-
-    public var center: CGPoint {
-        return _center.cgPoint
-    }
-
-    public var pendingState: ElementState {
-        let state = _pendingState ?? ElementState()
-        if _pendingState == nil {
-            _pendingState = state
-        }
-        return state
-    }
-
     public var loaded: Bool {
         return children.first(where: { $0.framed })?.loaded ?? false
     }
 
-    // For convenience
-    var _view: UIView? {
-        return nil
+    // MARK: CustomStringConvertible
+    public var description: String {
+        return String(describing: type(of: self))
     }
 
-    // For convenience
-    var _layer: CALayer? {
-        return nil
-    }
-
-    var layered: Bool {
-        return false
-    }
-
-    // CustomStringConvertible
-    public var description: String { // "BasicElement:0xffffff"
-        return String(describing: type(of: self)) + ":" + address(of: self)
-    }
-
-    // CustomDebugStringConvertible
-    public var debugDescription: String { // "BasicElement:0xffffff"
-        return String(describing: type(of: self)) + ":" + address(of: self)
-    }
-
-    // MARK: - Managing the Responder Chain
-    public var next: BasicElement? {
-        return owner
-    }
-
-    public func loaded(_ method: @escaping () -> Void) {
-        if Runner.isMain(), loaded {
-            method()
-        } else {
-            actions.load.append(method)
-        }
-    }
-
-    open func onLoaded() {
-        assertMainThread()
-        let methods = actions.load
-        actions.load.removeAll()
-        for method in methods {
-            method()
-        }
-    }
-
-    // MARK: - Responding to Touch Events
-    public func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
-        if let element = hitTest(point: event.location, event: nil) {
-            if element.onTouchEvent(event) {
-                return true
-            } else {
-                var next = element.next
-                while next != nil {
-                    if next?.onTouchEvent(event) == true {
-                        return true
-                    }
-                    next = next?.next
-                }
-            }
-        }
-        return false
-    }
-
-    public func onTouchEvent(_ event: TouchEvent) -> Bool {
-        guard let tap = actions.tap else {
-            return false
-        }
-        switch event.action {
-        case .touchUp:
-            DispatchQueue.main.async {
-                tap()
-            }
-        default:
-            break
-        }
-        return true
-    }
-
-    // MARK: - Create a View Object
-    public func build(in view: UIView) {
-        assertMainThread()
-#if DEBUG
-        if debug {
-            let this = debugBuildView()
-            if let superview = this.superview {
-                if superview != view {
-                    this.removeFromSuperview()
-                    view.addSubview(this)
-                }
-            } else {
-                view.addSubview(this)
-            }
-        } else {
-            buildChildren(in: view)
-        }
-#else
-        buildChildren(in: view)
-#endif
-        onLoaded()
-    }
-
-#if DEBUG
-    func debugBuildView() -> UIView {
-        assertMainThread()
-        if let v = debugView {
-            return v
-        }
-        let this = UIView()
-        _pendingState?.apply(view: this)
-        this.randomBackgroundColor()
-        buildChildren(in: this)
-        return this
-    }
-#endif
-
-    public func buildChildren(in view: UIView) {
-        let sorted = children.sorted(by: BasicElement.sortZIndex)
-        sorted.forEach { child in
-            child.build(in: view)
-        }
-    }
-
-    internal static func sortZIndex(lhs: BasicElement, rhs: BasicElement) -> Bool {
-        return lhs.zIndex < rhs.zIndex
-    }
-
-    public func build(in layer: CALayer) {
-        assertMainThread()
-    }
-
-    // FIXME: Remove or rename this method
-    public func build(to view: UIScrollView) {
-        assertMainThread()
-        build(in: view)
-        view.contentSize = _frame.cgSize
-    }
-
-    // MARK: - Configuring the Event-Related Behavior
-    public var interactive: Bool = true
-    public var alpha: Double = 1.0
-
-    // MARK: - Managing the Element Hierarchy
-    public private(set) weak var owner: BasicElement?
-    public internal(set) var children: [BasicElement]
+    // MARK: - Managing the elements hierarchy
     var root: BasicElement {
         var parent = owner
         while parent != nil {
@@ -262,43 +79,37 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return owner ?? self
     }
 
-    public func addChild(_ element: BasicElement) {
-        if let old = element.owner, old == self {
+    // MARK: insert
+    public func addElement(_ element: BasicElement) {
+        assertFalse(loaded, "Current only support add child before it create a view")
+        if element == self || element.owner == self {
             return
         }
-        let index = children.count
-        insertChild(element, at: index, at: nil, remove: nil)
+        assertEqual(children.count, layout.children.count, "Children array not synchronized with layout array")
+        children.append(element)
+        layout.append(element.layout)
+        element.owner = self
     }
 
-    public func insertChild(_ element: BasicElement, at index: Int) {
-        guard index > -1 && index < children.count else {
-            assertFail("Insert index illegal: \(index)")
+    public func insertElement(_ element: BasicElement, at index: Int) {
+        assertFalse(loaded, "Current only support add child before it create a view")
+        if element == self || element.owner == self {
             return
         }
-        let index = children.count
-        insertChild(element, at: index, at: nil, remove: nil)
-    }
-
-    // layered ✔， element.layered ✔ => ✔
-    // layered ✔， element.layered ✘ => ✘
-    // layered ✘， element.layered ✔ => ✔
-    // layered ✘， element.layered ✘ => ✔
-    func insertChild(_ element: BasicElement, at index: Int, at layerIndex: Int?, remove oldElement: BasicElement?) {
-        assertFalse(layered && !element.layered, "A layer element cannot add a view element as subelement")
-        assertEqual(children.count, layout.children.count)
-        guard element != self else {
+        guard index > -1 && index <= children.count else {
+            assertFail("Cannot insert a element at index \(index). Count is \(children.count)")
             return
         }
-        let count = children.count
-        guard index > -1 && index <= count else {
-            assertFail("Insert index illegal: \(index)")
-            return
-        }
-        element.removeFromOwner()
-        oldElement?.removeFromOwner()
+        assertEqual(children.count, layout.children.count, "Children array not synchronized with layout array")
         children.insert(element, at: index)
         layout.insert(element.layout, at: index)
         element.owner = self
+    }
+
+    // MARK: Remove
+    func removeFromOwner() {
+        owner?.removeElement(self)
+        owner = nil
     }
 
     func removeElement(_ element: BasicElement) {
@@ -317,44 +128,135 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         }
 #endif
         layout.remove(element.layout)
-        element._removeFromOwner()
-    }
-
-    public func removeFromOwner() {
-        owner?.removeElement(self)
-    }
-
-    func removeFromSuperView() {
-        fatalError("Subclass must implement `removeFromSuperView`")
     }
 
     // MARK: - Observing Element-Related Changes
-    func _removeFromOwner() { // For remove element directly
-        owner = nil
+    public func loaded(then method: @escaping () -> Void) {
+        if Runner.isMain(), loaded {
+            method()
+        } else {
+            actions.load.append(method)
+        }
+    }
+
+    func onLoaded() {
+        assertMainThread()
+        let methods = actions.load
+        actions.load.removeAll()
+        for method in methods {
+            method()
+        }
+    }
+
+    // MARK: - Create a View Object
+    /// Every element can build itself in a UIView, even if it has not a backed UIView or CALayer.
+    /// Default implantation is build children in the view (via `buildChildren(in:)`)
+    /// Then call loaded callback.
+    public func build(in view: UIView) {
+        assertMainThread()
+#if DEBUG
+        if debug {
+            let _view: UIView = debugBuildView()
+            if let superview = _view.superview {
+                if superview != _view {
+                    _view.removeFromSuperview()
+                    view.addSubview(_view)
+                }
+            } else {
+                view.addSubview(_view)
+            }
+        } else {
+            buildChildren(in: view)
+        }
+#else
+        buildChildren(in: view)
+#endif
+        onLoaded()
+    }
+
+    // For layer element
+    func build(in layer: CALayer) {
+        // Do nothing.
+    }
+
+    func buildChildren(in view: UIView) {
+        if children.isEmpty {
+            return
+        }
+        // TODO: Use ordered list
+        let sorted = children.sorted(by: BasicElement.sortZIndex)
+        sorted.forEach { child in
+            child.build(in: view)
+        }
+    }
+
+    // MARK: - Manage pending state
+    public var pendingState: ElementState {
+        let state = _pendingState ?? ElementState()
+        if _pendingState == nil {
+            _pendingState = state
+        }
+        return state
+    }
+
+    func applyState() {
+        // Needs by PendingStateManager
+    }
+
+    public func registerPendingState() {
+        if registered {
+            return
+        }
+        PendingStateManager.share.register(element: self)
     }
 
     // MARK: - Measuring in Flex Layout
-    @discardableResult
-    public func style(_ method: (FlexLayout) -> Void) -> Self {
-        method(layout)
-        return self
-    }
-
-    public func layout(width: Double = .nan, height: Double = .nan) {
+    public func layout(width: Double = Double.nan, height: Double = Double.nan) {
         layout.calculate(width: width, height: height, direction: .ltr)
         calculateFrame(left: 0, top: 0)
     }
 
-    public func layout(width: CGFloat, height: CGFloat) {
-        layout(width: Double(width), height: Double(height))
+    func calculateFrame(left: Double, top: Double) {
+        // TODO: Ensure flex layout algorithm return a valid rect
+        _frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
+            width: layout.box.width, height: layout.box.height).valid
+        let _left = framed ? 0 : _frame.x
+        let _top = framed ? 0 : _frame.y
+        children.forEach { child in
+            child.calculateFrame(left: _left, top: _top)
+        }
     }
 
-    public func layout(width: Int, height: Int) {
-        layout(width: Double(width), height: Double(height))
+    // MARK: - Debugging Flex Layout
+#if DEBUG
+    var debug = false
+    var debugView: UIView?
+
+    public func debugMode() {
+        debug = true
+        children.forEach { child in
+            child.debugMode()
+        }
     }
 
-    public func layout(within view: UIView) {
-        layout(width: Double(view.frame.width), height: Double(view.frame.height))
+    func debugBuildView() -> UIView {
+        assertMainThread()
+        if let v = debugView {
+            return v
+        }
+        let this = UIView()
+        _pendingState?.apply(view: this)
+        this.randomBackgroundColor()
+        buildChildren(in: this)
+        return this
+    }
+#endif
+
+    // FIXME: Remove or rename this method
+    public func build(to view: UIScrollView) {
+        assertMainThread()
+        build(in: view)
+        view.contentSize = _frame.cgSize
     }
 
     // MARK: - Converting Between Element Coordinate Systems
@@ -426,16 +328,18 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return interactive && alpha > 0.01
     }
 
-    public func hitTest(point: CGPoint, event: UIEvent?) -> BasicElement? {
+    public func hitTest(point: Point, event: UIEvent?) -> BasicElement? {
         guard enableHitTest && pointInside(point, event: event) else {
             return nil
         }
         for child in children {
-            let p: CGPoint
+            let p: Point
             if framed {
-                p = CGPoint(x: point.x - CGFloat(child._frame.x), y: point.y - CGFloat(child._frame.y))
+                p = Point(x: point.x - child._frame.x,
+                    y: point.y - child._frame.y)
             } else {
-                p = CGPoint(x: point.x - CGFloat(child._frame.x - _frame.x), y: point.y - CGFloat(child._frame.y - _frame.y))
+                p = Point(x: point.x - child._frame.x - _frame.x,
+                    y: point.y - child._frame.y - _frame.y)
             }
             if let c = child.hitTest(point: p, event: event) {
                 return c
@@ -444,77 +348,56 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
         return self
     }
 
-    public func pointInside(_ point: CGPoint, event: UIEvent?) -> Bool {
+    public func pointInside(_ point: Point, event: UIEvent?) -> Bool {
         return _bounds.contains(point: point)
     }
 
-    public func apply() {
-        // Do nothing.
+    // MARK: - Managing the Responder Chain
+    // Required by dispatchTouchEvent(:)
+    public var next: BasicElement? {
+        return owner
     }
 
-    public func registerPendingState() {
-        if registered {
-            return
+    // MARK: - Responding to Touch Events
+    // When `ElementView` receive a touch event, it will call this method.
+    func dispatchTouchEvent(_ event: TouchEvent) -> Bool {
+        if let element = hitTest(point: event.location, event: nil) {
+            if element.onTouchEvent(event) {
+                return true
+            } else {
+                var next = element.next
+                while next != nil {
+                    if next?.onTouchEvent(event) == true {
+                        return true
+                    }
+                    next = next?.next
+                }
+            }
         }
-        PendingStateManager.share.register(element: self)
+        return false
     }
 
-    func calculateFrame(left: Double, top: Double) {
-        var left = left
-        var top = top
-        let frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
-            width: layout.box.width, height: layout.box.height)
-        if _frame != frame {
-            _frame = frame
+    func onTouchEvent(_ event: TouchEvent) -> Bool {
+        guard let tap = actions.tap else {
+            return false
         }
-        if framed {
-            left = 0
-            top = 0
-        } else {
-            left += layout.box.left
-            top += layout.box.top
+        switch event.action {
+        case .touchUp:
+            Runner.main(async: tap)
+        default:
+            break
         }
-        children.forEach {
-            $0.calculateFrame(left: left, top: top)
-        }
+        return true
     }
 
-#if DEBUG
-    public func debugMode() {
-        debug = true
-        children.forEach {
-            $0.debugMode()
-        }
-    }
-#endif
-
-    // MARK: - Touch
+    // MARK: - Register the Tap Callback
     public func tap(_ method: @escaping () -> Void) {
         actions.tap = method
         interactive = true
     }
 
-    public func tap<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
-        self.tap(actions.action(target: target, method))
-    }
-
-    public func tap<T>(target: T, method: @escaping (T) -> () -> Void) where T: AnyObject {
-        let action: ElementAction.Action = { [weak target] in
-            if let _target = target {
-                method(_target)()
-            }
-        }
-        self.tap(action)
-    }
-
-    public func tap<T, Value>(target: T, any value: Value, _ method: @escaping (T) -> (Value) -> Void)
-        where T: AnyObject {
-        let action: ElementAction.Action = { [weak target] in
-            if let _target = target {
-                method(_target)(value)
-            }
-        }
-        self.tap(action)
+    func accept(visitor: ElementVisitor) {
+        visitor.visit(basic: self)
     }
 
     // MARK: - Hashable
@@ -524,5 +407,9 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
 
     public static func ==(lhs: BasicElement, rhs: BasicElement) -> Bool {
         return lhs === rhs
+    }
+
+    static func sortZIndex(lhs: BasicElement, rhs: BasicElement) -> Bool {
+        return lhs.zIndex < rhs.zIndex
     }
 }

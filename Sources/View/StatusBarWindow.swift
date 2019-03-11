@@ -67,7 +67,7 @@ public final class StatusBarWindow: UIWindow {
     public override func layoutSubviews() {
         super.layoutSubviews()
         let height = UIApplication.shared.statusBarFrame.height
-        let frame = CGRect(origin: .zero, width: Device.width, height: height)
+        let frame = CGRect(origin: .zero, size: CGSize(width: Device.width, height: height))
         statusBarLayer.frame = frame
         let z = zIndex()
         if z > statusBarLayer.zPosition {

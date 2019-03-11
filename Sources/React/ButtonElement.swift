@@ -120,11 +120,13 @@ open class ButtonElement: Element<UIButton> {
         return self
     }
 
-    public override func buildChildren(in view: UIView) {
-        for child in children {
-            if child != title && child != image {
-                child.build(in: view)
-            }
+    override func buildChildren(in view: UIView) {
+        if children.isEmpty {
+            return
+        }
+        let sorted = children.sorted(by: BasicElement.sortZIndex)
+        for child in sorted where child != title && child != image {
+            child.build(in: view)
         }
     }
 

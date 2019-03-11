@@ -23,16 +23,6 @@
 import CoreGraphics
 
 public extension CGRect {
-    public init(x: LayoutValue, y: LayoutValue, size: CGSize) {
-        let point = CGPoint(x: x.value, y: y.value)
-        self.init(origin: point, size: size)
-    }
-
-    public init(origin: CGPoint, width: LayoutValue, height: LayoutValue) {
-        let size = CGSize(width: width.value, height: height.value)
-        self.init(origin: origin, size: size)
-    }
-
     public var center: CGPoint {
         return CGPoint(x: width / 2, y: height / 2)
     }
@@ -69,31 +59,31 @@ public extension CGRect {
         return CGRect(origin: origin, size: value)
     }
 
-    public func setSize(width: LayoutValue, height: LayoutValue) -> CGRect {
-        return CGRect(x: origin.x, y: origin.y, width: width.value, height: height.value)
+    public func setSize(width: CGFloat, height: CGFloat) -> CGRect {
+        return CGRect(x: origin.x, y: origin.y, width: width, height: height)
     }
 
     public func setOrigin(_ value: CGPoint) -> CGRect {
         return CGRect(origin: value, size: size)
     }
 
-    public func setOrigin(x: LayoutValue, y: LayoutValue) -> CGRect {
-        return CGRect(x: x.value, y: y.value, width: width, height: height)
+    public func setOrigin(x: CGFloat, y: CGFloat) -> CGRect {
+        return CGRect(x: x, y: y, width: width, height: height)
     }
 
-    public func setWidth(_ value: LayoutValue) -> CGRect {
-        return CGRect(x: origin.x, y: origin.y, width: value.value, height: size.height)
+    public func setWidth(_ value: CGFloat) -> CGRect {
+        return CGRect(x: origin.x, y: origin.y, width: value, height: size.height)
     }
 
-    public func setHeight(_ value: LayoutValue) -> CGRect {
-        return CGRect(x: origin.x, y: origin.y, width: size.width, height: value.value)
+    public func setHeight(_ value: CGFloat) -> CGRect {
+        return CGRect(x: origin.x, y: origin.y, width: size.width, height: value)
     }
 
-    public func setX(_ value: LayoutValue) -> CGRect {
-        return CGRect(x: value.value, y: origin.y, width: size.width, height: size.height)
+    public func setX(_ value: CGFloat) -> CGRect {
+        return CGRect(x: value, y: origin.y, width: size.width, height: size.height)
     }
 
-    public func setY(_ value: LayoutValue) -> CGRect {
-        return CGRect(x: origin.x, y: value.value, width: size.width, height: size.height)
+    public func setY(_ value: CGFloat) -> CGRect {
+        return CGRect(x: origin.x, y: value, width: size.width, height: size.height)
     }
 }

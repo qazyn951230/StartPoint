@@ -23,10 +23,6 @@
 import CoreGraphics
 
 public extension CGPoint {
-    public init(_ x: LayoutValue, _ y: LayoutValue) {
-        self.init(x: x.value, y: y.value)
-    }
-
     public var ceiled: CGPoint {
         return CGPoint(x: ceil(x), y: ceil(y))
     }
@@ -39,11 +35,11 @@ public extension CGPoint {
         return CGPoint(x: round(x), y: round(y))
     }
 
-    public func setX(_ x: LayoutValue) -> CGPoint {
-        return CGPoint(x: x.value, y: y)
+    public func setX(_ x: CGFloat) -> CGPoint {
+        return CGPoint(x: x, y: y)
     }
 
-    public func setY(_ y: LayoutValue) -> CGPoint {
-        return CGPoint(x: x, y: y.value)
+    public func setY(_ y: CGFloat) -> CGPoint {
+        return CGPoint(x: x, y: y)
     }
 }
