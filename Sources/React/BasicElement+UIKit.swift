@@ -44,6 +44,12 @@ extension BasicElement {
         return self
     }
 
+    @discardableResult
+    public func hidden(_ value: Bool) -> Self {
+        layout.display(value ? Display.none : Display.flex)
+        return self
+    }
+
     // MARK: - Measuring in Flex Layout
     public func layout(width: CGFloat, height: CGFloat) {
         layout(width: Double(width), height: Double(height))

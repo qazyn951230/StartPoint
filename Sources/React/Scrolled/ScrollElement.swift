@@ -98,36 +98,15 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
 
     public private(set) var content: StackElement
 
-//    public override init(children: [BasicElement] = []) {
-//        content = StackElement(children: [])
-//            .layout { flex in
-//                flex.positionType(.absolute)
-//            }
-//        var array = children
-//        array.insert(content, at: 0)
-//        super.init(children: array)
-//    }
-
-    public init(content: StackElement) {
-#if DEBUG
-        if content.layout.style.positionType  != PositionType.absolute {
-            Log.warn("Scroll content \(content) should use absolute position type")
-        }
-#endif
-        self.content = content
-        super.init(children: [content])
+    public override convenience init(children: [BasicElement] = []) {
+        let stack = StackElement(children: children)
+        self.init(content: stack)
     }
 
-    public convenience init(children: [BasicElement] = [], direction: UICollectionView.ScrollDirection? = nil) {
-        let content = StackElement(children: children)
-        if direction == UICollectionView.ScrollDirection.horizontal {
-            content.layout.positionType(.absolute)
-                .flexDirection(.row).height(.match)
-        } else if direction == UICollectionView.ScrollDirection.vertical {
-            content.layout.positionType(.absolute)
-                .flexDirection(.column).width(.match)
-        }
-        self.init(content: content)
+    public init(content: StackElement) {
+        self.content = content
+        super.init(children: [content])
+        layout.overflow(.scroll)
     }
 
     public override var pendingState: ScrollElementState {
@@ -156,10 +135,17 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         guard let view = self.view else {
             return
         }
-        if content != self.content {
-            content.layout.copy(from: self.content.layout)
-        }
         content.layout(width: _frame.width, height: _frame.height)
+        view.contentSize = content._frame.cgSize
+        self.content.removeFromOwner()
+        content.build(in: view)
+        self.content = content
+    }
+
+    public func reloadData2(content: StackElement) {
+        guard let view = self.view else {
+            return
+        }
         view.contentSize = content._frame.cgSize
         self.content.removeFromOwner()
         content.build(in: view)

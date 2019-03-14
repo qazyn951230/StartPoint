@@ -188,6 +188,17 @@ public final class FlexLayout: Equatable {
         }
         _markDirty()
     }
+    
+    public func replace(at index: Int, with element: FlexLayout) {
+        guard let old = children.elementOrNil(at: index) else {
+            return
+        }
+        children.replace(at: index, with: element)
+        old.invalidate()
+        old.parent = nil
+        element.parent = self
+        _markDirty()
+    }
 
     public func replaceAll<C>(_ newElements: C) where C.Element == FlexLayout, C: Collection {
         replace(0..<children.count, with: newElements)

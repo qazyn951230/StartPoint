@@ -61,7 +61,7 @@ open class StartViewController<View: UIView>: UIViewController, UIGestureRecogni
 
 #if DEBUG
     deinit {
-        Log.debug(self, "deinit")
+        Log.debug(String(describing: self), "deinit")
     }
 #endif
 

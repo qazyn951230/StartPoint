@@ -24,6 +24,13 @@ import UIKit
 import QuartzCore
 import CoreGraphics
 
+final class ElementStatus {
+    var enteringHierarchy: Bool = false
+    var exitingHierarchy: Bool = false
+    var inHierarchy: Bool = false
+    var deallocating: Bool = false
+}
+
 open class BasicElement: Hashable, CustomStringConvertible {
     // MARK: - Public properties
     public let layout = FlexLayout()
@@ -32,7 +39,8 @@ open class BasicElement: Hashable, CustomStringConvertible {
     public internal(set) var children: [BasicElement]
     public let lock = MutexLock(recursive: true)
 
-    let actions = ElementAction()
+    let status: ElementStatus = ElementStatus()
+    let actions: ElementAction = ElementAction()
     let framed: Bool
     var _frame: Rect = Rect.zero {
         didSet {
@@ -71,6 +79,12 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     // MARK: - Managing the elements hierarchy
+    public var inHierarchy: Bool {
+        return lock.locking {
+            self.status.inHierarchy
+        }
+    }
+
     var root: BasicElement {
         var parent = owner
         while parent != nil {
@@ -104,6 +118,21 @@ open class BasicElement: Hashable, CustomStringConvertible {
         children.insert(element, at: index)
         layout.insert(element.layout, at: index)
         element.owner = self
+    }
+    
+    public func replaceElement(_ element: BasicElement, with other: BasicElement) {
+        assertFalse(element == self || other == self)
+        if element == self || other == self {
+            return
+        }
+        guard let index = children.firstIndex(of: element) else {
+            assertFail("Cannot find child: \(element)")
+            return
+        }
+        children.replace(at: index, with: other)
+        layout.replace(at: index, with: other.layout)
+        element.owner = nil
+        other.owner = self
     }
 
     // MARK: Remove
@@ -398,6 +427,12 @@ open class BasicElement: Hashable, CustomStringConvertible {
 
     func accept(visitor: ElementVisitor) {
         visitor.visit(basic: self)
+    }
+
+    // MARK: - Animating Elements with Block Objects
+    public func transition(duration: Double, animations: @escaping () -> Void,
+                           completion: ((Bool) -> Void)? = nil) {
+        
     }
 
     // MARK: - Hashable

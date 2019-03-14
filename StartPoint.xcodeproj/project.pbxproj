@@ -699,8 +699,13 @@
 			isa = PBXGroup;
 			children = (
 				AC96A37F4922CCB61BDB2997 /* BasicElement.swift */,
+				AC96A58853AF6DC9705678B1 /* BasicElement+Debug.swift */,
+				AC96A192237851A0D790CB7C /* BasicElement+UIKit.swift */,
 				AC96A664648AA4B30AE21432 /* ButtonElement.swift */,
+				AC96A05B3B0690B7B3B3C8B8 /* ControlElement.swift */,
 				AC96A5E6DA3952501D318D1F /* Element.swift */,
+				AC96ADB24EF29B19D12D48A8 /* Element+UIKit.swift */,
+				AC96AD4A79DBEB87604D804C /* ElementAction.swift */,
 				AC96A05651F2A36DE50AD01A /* ElementContainer.swift */,
 				AC96AC568512717B29819623 /* ElementState.swift */,
 				AC96A6F3F80B8DC6E1B808A7 /* Event.swift */,
@@ -715,11 +720,6 @@
 				AC96AC83BDD35D46748896B8 /* Scrolled */,
 				AC96AD5234F1B36160AAAFA9 /* View */,
 				AC96AAE2F759AB36B3AE9A83 /* ViewController */,
-				AC96A05B3B0690B7B3B3C8B8 /* ControlElement.swift */,
-				AC96A192237851A0D790CB7C /* BasicElement+UIKit.swift */,
-				AC96AD4A79DBEB87604D804C /* ElementAction.swift */,
-				AC96ADB24EF29B19D12D48A8 /* Element+UIKit.swift */,
-				AC96A58853AF6DC9705678B1 /* BasicElement+Debug.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";

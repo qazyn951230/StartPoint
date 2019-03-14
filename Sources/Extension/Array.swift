@@ -43,11 +43,16 @@ public extension Array {
         }
     }
 
+    // [1], 0..<0 => [2, 1]
+    // [1], 0..<1 => [2]
+    // [1], 1..<1 => [1, 2]
+    // [1], 0...0 => [2]
+    // [1], 1...1 => ERROR
     public mutating func replace(at index: Int, with element: Element) {
         guard index >= self.startIndex && index < self.endIndex else {
             return
         }
-        replaceSubrange(index..<index, with: [element])
+        replaceSubrange(index...index, with: [element])
     }
 
     public func replaced(at index: Int, with element: Element) -> Array<Element> {
