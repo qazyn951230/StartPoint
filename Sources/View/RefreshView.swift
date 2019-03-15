@@ -101,7 +101,7 @@ public class RefreshView: UIView, Refresher {
         guard let content = self.content else {
             return
         }
-        content.layout(width: Double(frame.width))
+        content.layout(width: frame.width)
         content.build(in: self)
         let height: CGFloat = content.frame.height
         frame = CGRect(x: frame.minX, y: 0 - height - initInset.top, width: frame.width, height: height)

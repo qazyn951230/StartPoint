@@ -94,7 +94,7 @@ final class RecyclerDataController: UICollectionViewLayout, DataController,
             return
         }
         editingQueue?.async {
-            map.layout(width: width)
+            map.layout(width: width, height: Double.nan)
             completion()
         }
     }

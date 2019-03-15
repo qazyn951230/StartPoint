@@ -37,9 +37,9 @@ final class ElementHtmlPrinter: DataStreamWriter, ElementVisitor {
     }
 
     func print(basic element: BasicElement) {
-        flexPrinter.header()
+//        flexPrinter.header()
         process(basic: element)
-        flexPrinter.footer()
+//        flexPrinter.footer()
     }
 
     func process(basic element: BasicElement) {
@@ -70,22 +70,28 @@ final class ElementHtmlPrinter: DataStreamWriter, ElementVisitor {
     }
 
     func visit<View: UIView>(view element: Element<View>) {
-        flexPrinter.visit(box: element.layout.box)
-        write("style=\"")
-        flexPrinter.process(style: element.layout.style)
-        var hex: UInt32 = 0
-        if Runner.isMain(), let view = element.view {
-            hex = view.backgroundColor?.rgbaHex() ?? 0
-        } else if let background = element.pendingState.backgroundColor {
-            hex = background?.rgbaHex() ?? 0
-        } else {
-            hex = UInt32.random(in: 0...0xffffff)
-        }
-        write("background-color:#")
-        hex = hex & 0xffffff
-        write(String(hex, radix: 16, uppercase: true))
-        flexPrinter.endProperty()
+        write("layout=\"")
+        write("width: \(element._frame.width); ")
+        write("height: \(element._frame.height); ")
+        write("top: \(element._frame.y); ")
+        write("left: \(element._frame.x); ")
         write("\" ")
+//        flexPrinter.visit(box: element.layout.box)
+//        write("style=\"")
+//        flexPrinter.process(style: element.layout.style)
+//        var hex: UInt32 = 0
+//        if Runner.isMain(), let view = element.view {
+//            hex = view.backgroundColor?.rgbaHex() ?? 0
+//        } else if let background = element.pendingState.backgroundColor {
+//            hex = background?.rgbaHex() ?? 0
+//        } else {
+//            hex = UInt32.random(in: 0...0xffffff)
+//        }
+//        write("background-color:#")
+//        hex = hex & 0xffffff
+//        write(String(hex, radix: 16, uppercase: true))
+//        flexPrinter.endProperty()
+//        write("\" ")
     }
 
     func visit<Layer: CALayer>(layer element: BasicLayerElement<Layer>) {

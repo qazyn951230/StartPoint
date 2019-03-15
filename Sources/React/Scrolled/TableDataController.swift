@@ -75,7 +75,7 @@ final class TableDataController: NSObject, DataController, UITableViewDelegate, 
             let queue = DispatchQueue.global(qos: .default)
             queue.apply(iterations: array.count) { index in
                 let element: BasicElement = array[index]
-                element.layout(width: width)
+                element.layout(width: width, height: Double.nan)
             }
             completion()
         }

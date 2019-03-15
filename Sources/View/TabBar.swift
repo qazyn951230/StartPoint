@@ -22,19 +22,18 @@
 
 import UIKit
 
-open class FlexView: UIView {
+open class TabBar: UITabBar {
     public let root: BasicElement = BasicElement()
+    private var _items: [UITabBarItem]?
 
-    open override var bounds: CGRect {
-        didSet {
-            // TODO: Is it needed?
-            if bounds.size != oldValue.size {
-                root.layout.size(bounds.size)
-                // TODO: assertMainThread()
-                setNeedsLayout()
-            }
-        }
-    }
+//    open override var items: [UITabBarItem]? {
+//        get {
+//            return _items
+//        }
+//        set {
+//            _items = newValue
+//        }
+//    }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,13 +46,13 @@ open class FlexView: UIView {
     }
 
     open func initialization() {
-        // Do nothing.
+        root.layout.justifyContent(.center)
     }
 
     open func layout() {
-        // TODO: If bounds == CGSize.zero?
-        root.layout(width: bounds.width, height: bounds.height)
+        root.layout(width: Device.width, height: 49)
         root.build(in: self)
+//        root.layout.print(options: .layout)
     }
 
     open override func layoutSubviews() {
@@ -61,8 +60,39 @@ open class FlexView: UIView {
         layout()
     }
 
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        root.layout(width: size.width, height: size.height)
-        return root._frame.cgSize
+//    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+//        root.layout(width: size.width, height: size.height)
+//        return root._frame.cgSize
+//    }
+
+    open override func setItems(_ items: [UITabBarItem]?, animated: Bool) {
+//         super.setItems(items, animated: animated)
+        if _items != nil {
+            return
+        }
+        _items = items
+        if let array = items {
+            let list = array.map(TabBar.tabButton)
+            list.forEachIndexed { (v, i) in
+                root.insertElement(v, at: i)
+            }
+            setNeedsLayout()
+        }
+    }
+
+    private static func tabButton(_ item: UITabBarItem) -> FlexButtonElement {
+        let button = FlexButtonElement()
+        button.backgroundColor(UIColor.white)
+        let title = AttributedString(any: item.title)?.systemFont(12)
+            .color(hex: 0x333333).done()
+        button.title(title).image(item.image, for: .normal)
+            .image(item.selectedImage, for: .selected)
+        button.imageStyle { flex in
+            flex.size(24).margin(bottom: 4)
+        }
+        button.style { flex in
+            flex.flex(1).flexDirection(.column)
+        }
+        return button
     }
 }

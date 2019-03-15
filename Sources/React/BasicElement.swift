@@ -95,7 +95,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
 
     // MARK: insert
     public func addElement(_ element: BasicElement) {
-        assertFalse(loaded, "Current only support add child before it create a view")
+//        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
         }
@@ -106,7 +106,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     public func insertElement(_ element: BasicElement, at index: Int) {
-        assertFalse(loaded, "Current only support add child before it create a view")
+//        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
         }
@@ -240,7 +240,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     // MARK: - Measuring in Flex Layout
-    public func layout(width: Double = Double.nan, height: Double = Double.nan) {
+    public func layout(width: Double, height: Double) {
         layout.calculate(width: width, height: height, direction: .ltr)
         calculateFrame(left: 0, top: 0)
     }

@@ -34,14 +34,14 @@ public class ButtonElementState: ElementState {
     public var backgroundImages: [UIControl.State: UIImage?]?
 
     public override func apply(view: UIView) {
-        if let button = view as? UIButton {
+        if let button = view as? UIButtonType {
             apply(button: button)
         } else {
             super.apply(view: view)
         }
     }
 
-    public func apply(button view: UIButton) {
+    public func apply(button view: UIButtonType) {
         if let titles = self.titles {
             for (state, title) in titles {
                 view.setAttributedTitle(title, for: state)
@@ -68,32 +68,28 @@ public class ButtonElementState: ElementState {
     }
 }
 
-open class ButtonElement: Element<UIButton> {
-    public let title: LabelElement?
-    public let image: BasicElement?
+public protocol ButtonType {
+    func setTitle(_ title: String?, for state: UIControl.State)
+    func setAttributedTitle(_ title: NSAttributedString?, for state: UIControl.State)
+    func setImage(_ image: UIImage?, for state: UIControl.State)
+    func setBackgroundImage(_ image: UIImage?, for state: UIControl.State)
+}
+public typealias UIButtonType = UIControl & ButtonType
 
-    public override init(children: [BasicElement]) {
-        let array: [BasicElement]
-        if children.isEmpty {
-            let _label = LabelElement()
-            let _image = ImageElement()
-            array = [_label, _image]
-            title = _label
-            image = _image
-        } else {
-            title = nil
-            image = nil
-            array = children
-        }
+extension UIButton: ButtonType {
+    // Do nothing.
+}
+
+open class BasicButtonElement<Button: UIButtonType>: Element<Button> {
+    public let titleElement: LabelElement
+    public let imageElement: BasicElement
+
+    public override init(children: [BasicElement] = []) {
+        titleElement = LabelElement()
+        imageElement = ImageElement()
+        var array: [BasicElement] = [imageElement, titleElement]
+        array.append(contentsOf: children)
         super.init(children: array)
-        layout.flexDirection(.row)
-    }
-
-    public convenience init(type: UIButton.ButtonType = .custom, children: [BasicElement] = []) {
-        self.init(children: children)
-        creator = {
-            UIButton(type: type)
-        }
     }
 
     var _buttonState: ButtonElementState?
@@ -108,15 +104,13 @@ open class ButtonElement: Element<UIButton> {
 
     @discardableResult
     public func titleStyle(_ method: (FlexLayout) -> Void) -> Self {
-        let layout = title?.layout
-        layout.maybe(method)
+        method(titleElement.layout)
         return self
     }
 
     @discardableResult
     public func imageStyle(_ method: (FlexLayout) -> Void) -> Self {
-        let layout = image?.layout
-        layout.maybe(method)
+        method(imageElement.layout)
         return self
     }
 
@@ -125,78 +119,16 @@ open class ButtonElement: Element<UIButton> {
             return
         }
         let sorted = children.sorted(by: BasicElement.sortZIndex)
-        for child in sorted where child != title && child != image {
+        for child in sorted where child != titleElement && child != imageElement {
             child.build(in: view)
         }
     }
 
-    public override func applyState(to view: UIButton) {
+    public override func applyState(to view: Button) {
         super.applyState(to: view)
         if actions.tap != nil {
             view.addTarget(self, action: #selector(tapAction(sender:)), for: .touchUpInside)
         }
-        let (title, image) = edgeInsets()
-        if self.title != nil {
-            view.titleEdgeInsets = title
-        }
-        if self.image != nil {
-            view.imageEdgeInsets = image
-        }
-        view.contentEdgeInsets = paddingEdgeInsets(for: self)
-    }
-
-    func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
-        let buttonSize: CGSize = frame.size
-        let titleSize: CGSize = title?.frame.size ?? CGSize.zero
-        let titleInsets = marginEdgeInsets(for: title)
-        let imageSize: CGSize = image?.frame.size ?? CGSize.zero
-        let imageInsets = marginEdgeInsets(for: image)
-        let padding = CGFloat(layout.style.totalPadding(for: .column, width: _frame.width))
-        let titleEdgeInsets: UIEdgeInsets
-        let imageEdgeInsets: UIEdgeInsets
-        switch layout.style.flexDirection {
-        case .row:
-            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top, left: titleInsets.left + imageInsets.left,
-                bottom: titleInsets.bottom, right: titleInsets.right - imageInsets.right)
-            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top, left: imageInsets.left - titleInsets.left,
-                bottom: imageInsets.bottom, right: imageInsets.right + titleInsets.right)
-        case .rowReverse:
-            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top,
-                left: titleInsets.left - imageSize.width - imageInsets.horizontal,
-                bottom: titleInsets.bottom, right: imageSize.width + titleInsets.right)
-            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top,
-                left: titleSize.width + imageSize.width + titleInsets.horizontal + imageInsets.left,
-                bottom: imageInsets.bottom, right: imageSize.width + imageInsets.right)
-        case .column:
-            titleEdgeInsets = UIEdgeInsets(top: 0, left: titleInsets.left - imageSize.width,
-                bottom: titleSize.height - buttonSize.height + padding + titleInsets.bottom * 2,
-                right: titleInsets.right)
-            imageEdgeInsets = UIEdgeInsets(top: imageSize.height - buttonSize.height + padding + imageInsets.top * 2,
-                left: imageInsets.left, bottom: 0, right: imageInsets.right - titleSize.width)
-        case .columnReverse:
-            titleEdgeInsets = UIEdgeInsets(top: titleSize.height - buttonSize.height + padding + titleInsets.top * 2,
-                left: titleInsets.left - imageSize.width, bottom: 0, right: titleInsets.right)
-            imageEdgeInsets = UIEdgeInsets(top: 0, left: imageInsets.left,
-                bottom: imageSize.height - buttonSize.height + padding + imageInsets.bottom * 2,
-                right: imageInsets.right - titleSize.width)
-        }
-        return (titleEdgeInsets, imageEdgeInsets)
-    }
-
-    func marginEdgeInsets(for element: BasicElement?) -> UIEdgeInsets {
-        guard let element = element else {
-            return UIEdgeInsets.zero
-        }
-        let margin = element.layout.style.margin
-        return margin.edgeInsets(style: element.layout.style, size: element._frame.size)
-    }
-
-    func paddingEdgeInsets(for element: BasicElement?) -> UIEdgeInsets {
-        guard let element = element else {
-            return UIEdgeInsets.zero
-        }
-        let padding = element.layout.style.padding
-        return padding.edgeInsets(style: element.layout.style, size: element._frame.size)
     }
 
     @objc public func tapAction(sender: UIButton) {
@@ -215,7 +147,7 @@ open class ButtonElement: Element<UIButton> {
             titles[UIControl.State.normal] = value
             _state.titles = titles
         }
-        title?.text(value)
+        titleElement.text(value)
         return self
     }
 
@@ -231,7 +163,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if state == UIControl.State.normal {
-            title?.text(value)
+            titleElement.text(value)
         }
         return self
     }
@@ -252,7 +184,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if states.contains(.normal) {
-            title?.text(value)
+            titleElement.text(value)
         }
         return self
     }
@@ -268,7 +200,7 @@ open class ButtonElement: Element<UIButton> {
             _state.images = images
             registerPendingState()
         }
-        image?.layout.size(value?.size ?? CGSize.zero)
+        imageElement.layout.size(value?.size ?? CGSize.zero)
         return self
     }
 
@@ -315,7 +247,7 @@ open class ButtonElement: Element<UIButton> {
             _state.images = images
             registerPendingState()
         }
-        image?.layout.size(value?.size ?? CGSize.zero)
+        imageElement.layout.size(value?.size ?? CGSize.zero)
         return self
     }
 
@@ -331,7 +263,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if state == UIControl.State.normal {
-            image?.layout.size(value?.size ?? CGSize.zero)
+            imageElement.layout.size(value?.size ?? CGSize.zero)
         }
         return self
     }
@@ -352,7 +284,7 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         if states.contains(.normal) {
-            image?.layout.size(value?.size ?? CGSize.zero)
+            imageElement.layout.size(value?.size ?? CGSize.zero)
         }
         return self
     }
@@ -401,5 +333,87 @@ open class ButtonElement: Element<UIButton> {
             registerPendingState()
         }
         return self
+    }
+}
+
+public class ButtonElement: BasicButtonElement<UIButton> {
+    public override init(children: [BasicElement] = []) {
+        super.init(children: children)
+        layout.flexDirection(.row)
+    }
+
+    public convenience init(type: UIButton.ButtonType = .custom, children: [BasicElement] = []) {
+        self.init(children: children)
+        creator = {
+            UIButton(type: type)
+        }
+    }
+
+    public override func applyState(to view: UIButton) {
+        super.applyState(to: view)
+        let (title, image) = edgeInsets()
+        view.titleEdgeInsets = title
+        view.imageEdgeInsets = image
+        view.contentEdgeInsets = paddingEdgeInsets(for: self)
+    }
+
+    func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
+        let buttonSize: CGSize = frame.size
+        let titleSize: CGSize = titleElement.frame.size
+        let titleInsets = marginEdgeInsets(for: titleElement)
+        let imageSize: CGSize = imageElement.frame.size
+        let imageInsets = marginEdgeInsets(for: imageElement)
+        let padding = CGFloat(layout.style.totalPadding(for: .column, width: _frame.width))
+        let titleEdgeInsets: UIEdgeInsets
+        let imageEdgeInsets: UIEdgeInsets
+        switch layout.style.flexDirection {
+        case .row:
+            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top, left: titleInsets.left + imageInsets.left,
+                bottom: titleInsets.bottom, right: titleInsets.right - imageInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top, left: imageInsets.left - titleInsets.left,
+                bottom: imageInsets.bottom, right: imageInsets.right + titleInsets.right)
+        case .rowReverse:
+            titleEdgeInsets = UIEdgeInsets(top: titleInsets.top,
+                left: titleInsets.left - imageSize.width - imageInsets.horizontal,
+                bottom: titleInsets.bottom, right: imageSize.width + titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageInsets.top,
+                left: titleSize.width + imageSize.width + titleInsets.horizontal + imageInsets.left,
+                bottom: imageInsets.bottom, right: imageSize.width + imageInsets.right)
+        case .column:
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: titleInsets.left - imageSize.width,
+                bottom: titleSize.height - buttonSize.height + padding + titleInsets.bottom * 2,
+                right: titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: imageSize.height - buttonSize.height + padding + imageInsets.top * 2,
+                left: imageInsets.left, bottom: 0, right: imageInsets.right - titleSize.width)
+        case .columnReverse:
+            titleEdgeInsets = UIEdgeInsets(top: titleSize.height - buttonSize.height + padding + titleInsets.top * 2,
+                left: titleInsets.left - imageSize.width, bottom: 0, right: titleInsets.right)
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: imageInsets.left,
+                bottom: imageSize.height - buttonSize.height + padding + imageInsets.bottom * 2,
+                right: imageInsets.right - titleSize.width)
+        }
+        return (titleEdgeInsets, imageEdgeInsets)
+    }
+
+    func marginEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
+        let margin = element.layout.style.margin
+        return margin.edgeInsets(style: element.layout.style, size: element._frame.size)
+    }
+
+    func paddingEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
+        let padding = element.layout.style.padding
+        return padding.edgeInsets(style: element.layout.style, size: element._frame.size)
+    }
+}
+
+public class FlexButtonElement: BasicButtonElement<ElementButton> {
+    public override init(children: [BasicElement] = []) {
+        super.init(children: children)
+        layout.alignItems(.center).justifyContent(.center)
+    }
+
+    public override func applyState(to view: ElementButton) {
+        super.applyState(to: view)
+        view.bindFrame(title: titleElement.frame, image: imageElement.frame)
     }
 }

@@ -64,7 +64,7 @@ final class ListDataController: NSObject, DataController, UITableViewDelegate, U
             return
         }
         editingQueue?.async {
-            map.layout(width: width)
+            map.layout(width: width, height: Double.nan)
             completion()
         }
     }

@@ -51,7 +51,7 @@ extension BasicElement {
     }
 
     // MARK: - Measuring in Flex Layout
-    public func layout(width: CGFloat, height: CGFloat) {
+    public func layout(width: CGFloat = CGFloat.nan, height: CGFloat = CGFloat.nan) {
         layout(width: Double(width), height: Double(height))
     }
 

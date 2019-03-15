@@ -22,47 +22,46 @@
 
 import UIKit
 
-open class FlexView: UIView {
-    public let root: BasicElement = BasicElement()
+public final class FlexButton: UIControl {
+    let root: BasicElement
+    let imageElement: ImageElement
+    let titleElement: LabelElement
 
-    open override var bounds: CGRect {
-        didSet {
-            // TODO: Is it needed?
-            if bounds.size != oldValue.size {
-                root.layout.size(bounds.size)
-                // TODO: assertMainThread()
-                setNeedsLayout()
-            }
-        }
+    init(root: BasicElement, image: ImageElement, title: LabelElement) {
+        self.root = root
+        self.imageElement = image
+        self.titleElement = title
+        super.init(frame: CGRect.zero)
     }
 
     public override init(frame: CGRect) {
+        imageElement = ImageElement()
+        titleElement = LabelElement()
+        root = StackElement(children: [imageElement, titleElement])
         super.init(frame: frame)
-        initialization()
     }
 
     public required init?(coder aDecoder: NSCoder) {
+        imageElement = ImageElement()
+        titleElement = LabelElement()
+        root = StackElement(children: [imageElement, titleElement])
         super.init(coder: aDecoder)
-        initialization()
     }
 
-    open func initialization() {
+    public var imageView: UIImageView? {
+        return imageElement.view
+    }
+    public var titleLabel: UILabel? {
+        return titleElement.view
+    }
+
+    func initialization() {
         // Do nothing.
     }
 
-    open func layout() {
-        // TODO: If bounds == CGSize.zero?
+    public override func layoutSubviews() {
+        super.layoutSubviews()
         root.layout(width: bounds.width, height: bounds.height)
         root.build(in: self)
-    }
-
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        layout()
-    }
-
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        root.layout(width: size.width, height: size.height)
-        return root._frame.cgSize
     }
 }
