@@ -35,6 +35,22 @@ public struct Size: Equatable {
         self.init(width: Double(cgSize.width), height: Double(cgSize.height))
     }
 
+    public var ceiled: Size {
+        return Size(width: ceil(width), height: ceil(height))
+    }
+
+    public var floored: Size {
+        return Size(width: floor(width), height: floor(height))
+    }
+
+    public var rounded: Size {
+        return Size(width: round(width), height: round(height))
+    }
+
+    var isZero: Bool {
+        return width == 0 && height == 0
+    }
+
     public static var zero = Size(width: 0, height: 0)
 
     public static func ==(lhs: Size, rhs: Size) -> Bool {

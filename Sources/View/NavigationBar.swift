@@ -22,18 +22,8 @@
 
 import UIKit
 
-public class TabBar: UITabBar {
+public final class NavigationBar: UINavigationBar {
     public let root: BasicElement = BasicElement()
-    private var _items: [UITabBarItem]?
-
-    open override var items: [UITabBarItem]? {
-        get {
-            return _items
-        }
-        set {
-            _items = newValue
-        }
-    }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,45 +40,15 @@ public class TabBar: UITabBar {
             .justifyContent(.center)
     }
 
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        root.layout(width: Device.width, height: 49)
-        root.build(in: self)
+    public override func pushItem(_ item: UINavigationItem, animated: Bool) {
+        super.pushItem(item, animated: animated)
     }
 
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        root.layout(width: Device.width, height: 49)
-        return root._frame.cgSize
+    public override func popItem(animated: Bool) -> UINavigationItem? {
+        return super.popItem(animated: animated)
     }
 
-    open override func setItems(_ items: [UITabBarItem]?, animated: Bool) {
-//         super.setItems(items, animated: animated)
-        if _items != nil {
-            return
-        }
-        _items = items
-        if let array = items {
-            let list = array.map(TabBar.tabButton)
-            list.forEachIndexed { (v, i) in
-                root.insertChild(v, at: i)
-            }
-            setNeedsLayout()
-        }
-    }
-
-    private static func tabButton(_ item: UITabBarItem) -> FlexButtonElement {
-        let button = FlexButtonElement()
-        button.backgroundColor(UIColor.white)
-        let title = AttributedString(any: item.title)?.systemFont(10)
-            .color(hex: 0x333333).done()
-        button.title(title).image(item.image, for: .normal)
-            .image(item.selectedImage, for: .selected)
-        button.imageStyle { flex in
-            flex.size(24).margin(bottom: 4)
-        }
-        button.style { flex in
-            flex.flex(1).flexDirection(.column)
-        }
-        return button
+    public override func setItems(_ items: [UINavigationItem]?, animated: Bool) {
+        super.setItems(items, animated: animated)
     }
 }

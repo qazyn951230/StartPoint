@@ -38,7 +38,7 @@ public enum FontWeight {
     case heavy
     case black
 
-    @available(iOS 8.2, *)
+    // @available(iOS 8.2, *)
     public var weight: UIFont.Weight {
         switch self {
         case .ultraLight:
@@ -79,7 +79,7 @@ public final class AttributedString {
 
     public init(_ string: String) {
         self.string = NSMutableAttributedString(string: string)
-        wholeRange = NSRange(location: 0, length: string.count)
+        wholeRange = NSRange(location: 0, length: self.string.length)
         attributes = [:]
     }
 
@@ -90,9 +90,13 @@ public final class AttributedString {
         self.init(value)
     }
 
+    // Note: If `range != nil`, we can't store it in `attributes`.
+    // Apply partial attributes will cause ERROR.
     public func setAttribute(key: NSAttributedString.Key, value: Any?,
                              range: NSRange? = nil) -> AttributedString {
-        attributes[key] = value
+        if range == nil {
+            attributes[key] = value
+        }
         if let value = value {
             string.addAttribute(key, value: value, range: range ?? wholeRange)
         } else {
@@ -101,14 +105,14 @@ public final class AttributedString {
         return self
     }
 
-    public func append(_ attrString: NSAttributedString) -> AttributedString {
-        string.append(attrString)
+    public func append(_ other: NSAttributedString) -> AttributedString {
+        string.append(other)
         wholeRange = NSRange(location: 0, length: string.length)
         return self
     }
 
-    public func append(_ attrString: AttributedString) -> AttributedString {
-        string.append(attrString.done())
+    public func append(_ other: AttributedString) -> AttributedString {
+        string.append(other.done())
         wholeRange = NSRange(location: 0, length: string.length)
         return self
     }
@@ -121,7 +125,7 @@ public final class AttributedString {
         return NSMutableAttributedString(string: string, attributes: attributes)
     }
 
-    public static func template(_ string: String?) -> AttributedString {
+    public static func template() -> AttributedString {
         return AttributedString(String.empty)
     }
 }
@@ -140,13 +144,9 @@ extension AttributedString {
 
     @discardableResult
     public func systemFont(_ size: CGFloat, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
-        if #available(iOS 8.2, *) {
-            return setAttribute(key: NSAttributedString.Key.font,
-                value: UIFont.systemFont(ofSize: size, weight: weight.weight),
-                range: range)
-        } else {
-            return systemFont(size, range: range)
-        }
+        return setAttribute(key: NSAttributedString.Key.font,
+            value: UIFont.systemFont(ofSize: size, weight: weight.weight),
+            range: range)
     }
 
     @discardableResult
@@ -216,31 +216,31 @@ extension AttributedString {
 
     @discardableResult
     public func shadow(offset: CGSize, radius: CGFloat, color: UIColor, range: NSRange? = nil) -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = offset
-        t.shadowBlurRadius = radius
-        t.shadowColor = color
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = offset
+        value.shadowBlurRadius = radius
+        value.shadowColor = color
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
     public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, color: UIColor, range: NSRange? = nil)
             -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = CGSize(width: x, height: y)
-        t.shadowBlurRadius = blur
-        t.shadowColor = color.withAlphaComponent(alpha)
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = CGSize(width: x, height: y)
+        value.shadowBlurRadius = blur
+        value.shadowColor = color.withAlphaComponent(alpha)
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
     public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32, range: NSRange? = nil)
             -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = CGSize(width: x, height: y)
-        t.shadowBlurRadius = blur
-        t.shadowColor = UIColor.hex(hex).withAlphaComponent(alpha)
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = CGSize(width: x, height: y)
+        value.shadowBlurRadius = blur
+        value.shadowColor = UIColor.hex(hex).withAlphaComponent(alpha)
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
@@ -261,7 +261,11 @@ extension AttributedString {
 
     @discardableResult
     public func link(_ value: String, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSAttributedString.Key.link, value: URL(string: value), range: range)
+        guard let url = URL(string: value) else {
+            Log.error("\(value) is not valid URL")
+            return self
+        }
+        return setAttribute(key: NSAttributedString.Key.link, value: url, range: range)
     }
 
     @discardableResult
@@ -394,31 +398,31 @@ extension AttributedString {
 
     @discardableResult
     public func shadow(offset: CGSize, radius: CGFloat, color: NSColor, range: NSRange? = nil) -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = offset
-        t.shadowBlurRadius = radius
-        t.shadowColor = color
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = offset
+        value.shadowBlurRadius = radius
+        value.shadowColor = color
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
     public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, color: NSColor, range: NSRange? = nil)
             -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = CGSize(width: x, height: y)
-        t.shadowBlurRadius = blur
-        t.shadowColor = color.withAlphaComponent(alpha)
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = CGSize(width: x, height: y)
+        value.shadowBlurRadius = blur
+        value.shadowColor = color.withAlphaComponent(alpha)
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
     public func shadow(alpha: CGFloat, blur: CGFloat, x: CGFloat, y: CGFloat, hex: UInt32, range: NSRange? = nil)
             -> AttributedString {
-        let t = NSShadow()
-        t.shadowOffset = CGSize(width: x, height: y)
-        t.shadowBlurRadius = blur
-        t.shadowColor = NSColor.hex(hex).withAlphaComponent(alpha)
-        return setAttribute(key: NSAttributedString.Key.shadow, value: t, range: range)
+        let value = NSShadow()
+        value.shadowOffset = CGSize(width: x, height: y)
+        value.shadowBlurRadius = blur
+        value.shadowColor = NSColor.hex(hex).withAlphaComponent(alpha)
+        return setAttribute(key: NSAttributedString.Key.shadow, value: value, range: range)
     }
 
     @discardableResult
@@ -439,7 +443,11 @@ extension AttributedString {
 
     @discardableResult
     public func link(_ value: String, range: NSRange? = nil) -> AttributedString {
-        return setAttribute(key: NSAttributedString.Key.link, value: URL(string: value), range: range)
+        guard let url = URL(string: value) else {
+            Log.error("\(value) is not valid URL")
+            return self
+        }
+        return setAttribute(key: NSAttributedString.Key.link, value: url, range: range)
     }
 
     @discardableResult

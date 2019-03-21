@@ -337,7 +337,7 @@ open class BasicButtonElement<Button: UIButtonType>: Element<Button> {
 }
 
 public class ButtonElement: BasicButtonElement<UIButton> {
-    public override init(children: [BasicElement] = []) {
+    public override init(children: [BasicElement]) {
         super.init(children: children)
         layout.flexDirection(.row)
     }

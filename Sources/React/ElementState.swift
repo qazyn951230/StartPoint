@@ -25,6 +25,7 @@ import CoreGraphics
 import QuartzCore
 
 public class ElementState {
+    var applyToLayer = false
     // For UIView
     public var frame: CGRect?
     public var backgroundColor: UIColor??
@@ -43,6 +44,8 @@ public class ElementState {
     public var shadowOffset: CGSize?
     public var shadowColor: CGColor??
     public var shadowPath: CGPath??
+
+    public var needsDisplay: Bool = false
 
     public required init() {
         // Do nothing.
@@ -99,6 +102,13 @@ public class ElementState {
         if let shadowPath = self.shadowPath {
             layer.shadowPath = shadowPath
         }
+        if needsDisplay {
+            if applyToLayer {
+                layer.setNeedsDisplay()
+            } else {
+                view.setNeedsDisplay()
+            }
+        }
         invalidate()
     }
 
@@ -143,6 +153,9 @@ public class ElementState {
         if let shadowPath = self.shadowPath {
             layer.shadowPath = shadowPath
         }
+        if needsDisplay {
+            layer.setNeedsDisplay()
+        }
         invalidate()
     }
 
@@ -163,5 +176,6 @@ public class ElementState {
         shadowOffset = nil
         shadowColor = nil
         shadowPath = nil
+        needsDisplay = false
     }
 }

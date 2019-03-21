@@ -41,16 +41,17 @@ open class BasicElement: Hashable, CustomStringConvertible {
 
     let status: ElementStatus = ElementStatus()
     let actions: ElementAction = ElementAction()
+    // TODO: Remove this
     let framed: Bool
     var _frame: Rect = Rect.zero {
         didSet {
             _bounds = _frame.setOrigin(.zero)
         }
     }
+    var registered = false
     var _bounds: Rect = Rect.zero
     var _center: Point = Point.zero
     var _pendingState: ElementState?
-    var registered = false
 
     // MARK: - Configuring the Event-Related Behavior
     public var interactive: Bool = true
@@ -94,7 +95,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     // MARK: insert
-    public func addElement(_ element: BasicElement) {
+    public func addChild(_ element: BasicElement) {
 //        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
@@ -105,7 +106,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
         element.owner = self
     }
 
-    public func insertElement(_ element: BasicElement, at index: Int) {
+    public func insertChild(_ element: BasicElement, at index: Int) {
 //        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
@@ -120,7 +121,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
         element.owner = self
     }
     
-    public func replaceElement(_ element: BasicElement, with other: BasicElement) {
+    public func replaceChild(_ element: BasicElement, with other: BasicElement) {
         assertFalse(element == self || other == self)
         if element == self || other == self {
             return
@@ -242,7 +243,11 @@ open class BasicElement: Hashable, CustomStringConvertible {
     // MARK: - Measuring in Flex Layout
     public func layout(width: Double, height: Double) {
         layout.calculate(width: width, height: height, direction: .ltr)
-        calculateFrame(left: 0, top: 0)
+        calculateFrame(left: _frame.x, top: _frame.y)
+    }
+
+    public func partialLayout() {
+
     }
 
     func calculateFrame(left: Double, top: Double) {
@@ -254,6 +259,26 @@ open class BasicElement: Hashable, CustomStringConvertible {
         children.forEach { child in
             child.calculateFrame(left: _left, top: _top)
         }
+    }
+
+    // Partial Layout
+    final func doLayout() {
+        let size = _bounds.size
+        layout.calculate(width: size.width, height: size.height, direction: .ltr)
+        let newSize = _bounds.size
+        if newSize != size {
+
+        }
+    }
+
+    final func doRootLayout() {
+        var width = _bounds.size.width == 0 ? Double.nan : _bounds.size.width
+        var height = _bounds.size.height == 0 ? Double.nan : _bounds.size.height
+        if let cache = layout.cachedLayout {
+            width = cache.width
+            height = cache.height
+        }
+        root.layout(width: width, height: height)
     }
 
     // MARK: - Debugging Flex Layout

@@ -22,34 +22,50 @@
 
 import QuartzCore
 import Dispatch
+import UIKit
 
-public protocol AsyncLayerDelegate: class {
-    func asyncLayerWillDisplay(_ layer: AsyncLayer)
-    func asyncLayer(_ layer: AsyncLayer, display asynchronous: Bool)
-    func asyncLayer(_ layer: AsyncLayer, didDisplay finished: Bool)
+public protocol AsyncLayerTask {
+    var layer: AsyncLayer { get }
+
+    func willDisplay()
+    func display(cancelled: () -> Bool) -> UIImage?
+    func didDisplay(finished: Bool)
 }
 
-public extension AsyncLayerDelegate {
-    public func asyncLayerWillDisplay(_ layer: AsyncLayer) {
+public extension AsyncLayerTask {
+    public func willDisplay() {
         // Do nothing.
     }
 
-    public func asyncLayer(_ layer: AsyncLayer, didDisplay finished: Bool) {
+    public func didDisplay(finished: Bool) {
         // Do nothing.
     }
+}
+
+public protocol AsyncLayerDelegate: class {
+    func asyncLayerDisplayTask(for layer: AsyncLayer) -> AsyncLayerTask
 }
 
 public final class AsyncLayer: CALayer {
-    @objc public var asynchronous: Bool = true
-    weak var _delegate: AsyncLayerDelegate?
+    @objc public var asynchronous: Bool = false
+    private weak var _delegate: AsyncLayerDelegate?
+    private let version: UnsafeMutablePointer<Int>
 
     public override init() {
+        version = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+        version.initialize(to: 0)
         super.init()
-        contentsScale = Device.scale
     }
 
     public required init?(coder aDecoder: NSCoder) {
+        version = UnsafeMutablePointer<Int>.allocate(capacity: 1)
+        version.initialize(to: 0)
         super.init(coder: aDecoder)
+    }
+
+    deinit {
+        version.pointee += 1
+        version.deallocate()
     }
 
     public override var delegate: CALayerDelegate? {
@@ -58,15 +74,43 @@ public final class AsyncLayer: CALayer {
         }
     }
 
+    public override func setNeedsDisplay() {
+        cancelAsyncDisplay()
+        super.setNeedsDisplay()
+    }
+
     public override func display() {
         assertMainThread()
+        // clean `setNeedsDisplay`
         super.contents = super.contents
         display(asynchronous: asynchronous)
     }
 
     public func display(asynchronous: Bool) {
         assertMainThread()
-        _delegate?.asyncLayer(self, display: asynchronous)
+        guard let task = _delegate?.asyncLayerDisplayTask(for: self) else {
+            return
+        }
+        if asynchronous {
+            let version = self.version
+            let _version = self.version.pointee
+            let cancelled: () -> Bool = {
+                _version != version.pointee
+            }
+            AsyncLayer.displayQueue.async { [weak self] in
+                guard let this = self else {
+                    return
+                }
+                AsyncLayer.runTask(layer: this, task: task, cancelled: cancelled)
+            }
+        } else {
+            cancelAsyncDisplay()
+            AsyncLayer.runTask(layer: self, task: task)
+        }
+    }
+
+    public func cancelAsyncDisplay() {
+        version.pointee += 1
     }
 
     static let displayQueue: DispatchQueue = {
@@ -77,9 +121,51 @@ public final class AsyncLayer: CALayer {
 
     public override class func defaultValue(forKey key: String) -> Any? {
         if key == #keyPath(AsyncLayer.asynchronous) {
-            // TODO: Use NSNumber instead of Bool?
-            return true
+            return false
         }
         return super.defaultValue(forKey: key)
+    }
+
+    private static func runTask(layer: AsyncLayer, task: AsyncLayerTask) {
+        task.willDisplay()
+        let rawImage = task.display() {
+            false
+        }
+        if let image = rawImage {
+            layer.contents = image.cgImage
+            task.didDisplay(finished: true)
+        } else {
+#if DEBUG
+            Log.error("AsyncLayerTask drawn nothing.")
+#endif
+        }
+    }
+
+    private static func runTask(layer: AsyncLayer, task: AsyncLayerTask, cancelled: () -> Bool) {
+        if cancelled() {
+            return
+        }
+        task.willDisplay()
+        if cancelled() {
+            task.didDisplay(finished: false)
+            return
+        }
+        let rawImage = task.display(cancelled: cancelled)
+        if cancelled() {
+            task.didDisplay(finished: false)
+            return
+        }
+        if let image = rawImage {
+            if cancelled() {
+                task.didDisplay(finished: false)
+            } else {
+                layer.contents = image.cgImage
+                task.didDisplay(finished: true)
+            }
+        } else {
+#if DEBUG
+            Log.error("AsyncLayerTask drawn nothing.")
+#endif
+        }
     }
 }
