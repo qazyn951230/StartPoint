@@ -42,16 +42,16 @@ open class Element<View: UIView>: BasicElement {
         return view != nil
     }
 
-    override var _frame: Rect {
-        didSet {
-            if Runner.isMain(), let view = self.view {
-                view.frame = _frame.cgRect
-            } else {
-                pendingState.frame = _frame.cgRect
-                registerPendingState()
-            }
-        }
-    }
+//    override var _frame: Rect {
+//        didSet {
+//            if Runner.isMain(), let view = self.view {
+//                view.frame = _frame.cgRect
+//            } else {
+//                pendingState.frame = _frame.cgRect
+//                registerPendingState()
+//            }
+//        }
+//    }
 
     public override var interactive: Bool {
         didSet {
@@ -94,13 +94,17 @@ open class Element<View: UIView>: BasicElement {
         }
     }
 
+    final override func _buildView() -> UIView {
+        return buildView()
+    }
+
     public func buildView() -> View {
         assertMainThread()
-        if let oldView = self.view {
-            return oldView
-        }
         let _view = createView()
         self.view = _view
+        self._view = _view
+        _layer = _view.layer
+        layered = false
         if let container = _view as? ElementContainer {
             container.element = self
         } else {
@@ -114,6 +118,9 @@ open class Element<View: UIView>: BasicElement {
 
     // Only do view create
     func createView() -> View {
+        if let oldView = self.view {
+            return oldView
+        }
         let _view: View = creator?() ?? View.init(frame: .zero)
         creator = nil
         return _view
@@ -150,7 +157,6 @@ open class Element<View: UIView>: BasicElement {
         visitor.visit(view: self)
     }
 
-    // MARK: - Configuring a Element’s Visual Appearance
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
         if Runner.isMain(), let view = self.view {

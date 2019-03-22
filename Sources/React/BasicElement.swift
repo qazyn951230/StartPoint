@@ -43,14 +43,47 @@ open class BasicElement: Hashable, CustomStringConvertible {
     let actions: ElementAction = ElementAction()
     // TODO: Remove this
     let framed: Bool
-    var _frame: Rect = Rect.zero {
+#if DEBUG
+    // Adjusted frame, which represent the View's or Layer's frame
+    final var _frame: Rect = Rect.zero {
         didSet {
-            _bounds = _frame.setOrigin(.zero)
+            if !debug {
+                _bounds = _frame.setOrigin(x: _bounds.x, y: _bounds.y)
+                _center = Point(x: _frame.x + _frame.width * _anchor.x,
+                    y: _frame.y + _frame.height * _anchor.y)
+            }
         }
     }
+    // Absolute frame, which represent the Element's frame, equal to Flex box frame
+    final var _rect: Rect = Rect.zero {
+        didSet {
+            if debug {
+                _bounds = _frame.setOrigin(x: _bounds.x, y: _bounds.y)
+                _center = Point(x: _frame.x + _frame.width * _anchor.x,
+                    y: _frame.y + _frame.height * _anchor.y)
+            }
+        }
+    }
+#else
+    final var _frame: Rect = Rect.zero {
+        didSet {
+            _bounds = _frame.setOrigin(x: _bounds.x, y: _bounds.y)
+            _center = Point(x: _frame.x + _frame.width * _anchor.x,
+                y: _frame.y + _frame.height * _anchor.y)
+        }
+    }
+    final var _rect: Rect = Rect.zero
+#endif
+
+    final var _bounds: Rect = Rect.zero
+    final var _center: Point = Point.zero
+    final var _anchor: Point = Point(x: 0.5, y: 0.5)
+
+    var _view: UIView?
+    var _layer: CALayer?
+    var layered: Bool = false
+
     var registered = false
-    var _bounds: Rect = Rect.zero
-    var _center: Point = Point.zero
     var _pendingState: ElementState?
 
     // MARK: - Configuring the Event-Related Behavior
@@ -71,7 +104,11 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     public var loaded: Bool {
-        return children.first(where: { $0.framed })?.loaded ?? false
+#if Debug
+        return debug ? _view != nil : false
+#else
+        return false
+#endif
     }
 
     // MARK: CustomStringConvertible
@@ -120,10 +157,11 @@ open class BasicElement: Hashable, CustomStringConvertible {
         layout.insert(element.layout, at: index)
         element.owner = self
     }
-    
+
     public func replaceChild(_ element: BasicElement, with other: BasicElement) {
-        assertFalse(element == self || other == self)
         if element == self || other == self {
+            assertNotEqual(element, self)
+            assertNotEqual(other, self)
             return
         }
         guard let index = children.firstIndex(of: element) else {
@@ -133,6 +171,8 @@ open class BasicElement: Hashable, CustomStringConvertible {
         children.replace(at: index, with: other)
         layout.replace(at: index, with: other.layout)
         element.owner = nil
+        // FIXME: Remove the view or layer
+        element.removeFromOwner()
         other.owner = self
     }
 
@@ -179,6 +219,31 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     // MARK: - Create a View Object
+    func _buildView() -> UIView {
+        assertMainThread()
+#if DEBUG
+        let temp: UIView
+        if let oldView = debugView {
+            return oldView
+        } else {
+            temp = UIView(frame: .zero)
+            _view = temp
+        }
+        _pendingState?.apply(view: temp)
+        temp.randomBackgroundColor()
+        buildChildren(in: temp)
+        onLoaded()
+        return temp
+#else
+        return UIView(frame: .zero)
+#endif
+    }
+
+    func _buildLayer() -> CALayer {
+        assertMainThread()
+        return CALayer()
+    }
+
     /// Every element can build itself in a UIView, even if it has not a backed UIView or CALayer.
     /// Default implantation is build children in the view (via `buildChildren(in:)`)
     /// Then call loaded callback.
@@ -186,7 +251,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
         assertMainThread()
 #if DEBUG
         if debug {
-            let _view: UIView = debugBuildView()
+            let _view: UIView = _buildView()
             if let superview = _view.superview {
                 if superview != _view {
                     _view.removeFromSuperview()
@@ -243,42 +308,82 @@ open class BasicElement: Hashable, CustomStringConvertible {
     // MARK: - Measuring in Flex Layout
     public func layout(width: Double, height: Double) {
         layout.calculate(width: width, height: height, direction: .ltr)
-        calculateFrame(left: _frame.x, top: _frame.y)
+        calculateFrame(left: _frame.x, top: _frame.y, apply: true)
     }
 
     public func partialLayout() {
 
     }
 
-    func calculateFrame(left: Double, top: Double) {
-        // TODO: Ensure flex layout algorithm return a valid rect
-        _frame = Rect(x: left + layout.box.left, y: top + layout.box.top,
-            width: layout.box.width, height: layout.box.height).valid
+    func calculateFrame(left: Double, top: Double, apply: Bool) {
+        _rect = layout.frame(left: 0, top: 0)
+        _frame = layout.frame(left: left, top: top)
+        assertEqual(_frame, _frame.valid)
+        assertEqual(_rect, _rect.valid)
+        if apply {
+#if DEBUG
+            if debug {
+                self.frame(_rect.cgRect)
+            } else {
+                self.frame(_frame.cgRect)
+            }
+#else
+            self.frame(_frame.cgRect)
+            layout.hasNewLayout = false
+#endif
+        }
         let _left = framed ? 0 : _frame.x
         let _top = framed ? 0 : _frame.y
         children.forEach { child in
-            child.calculateFrame(left: _left, top: _top)
+            child.calculateFrame(left: _left, top: _top, apply: apply)
         }
     }
 
-    // Partial Layout
-    final func doLayout() {
-        let size = _bounds.size
-        layout.calculate(width: size.width, height: size.height, direction: .ltr)
-        let newSize = _bounds.size
-        if newSize != size {
-
+    func forEach(_ body: (BasicElement) -> Void) {
+        body(self)
+        children.forEach { child in
+            child.forEach(body)
         }
+    }
+
+    func frame(_ value: CGRect) {
+        pendingState.bounds = _bounds.cgRect
+        pendingState.center = _center.cgPoint
+        if Runner.notMain() && loaded {
+            registerPendingState()
+        }
+    }
+
+    func applyFrame() {
+        assertMainThread()
+        layout.hasNewLayout = false
+        if layered {
+            _layer?.bounds = bounds
+            _layer?.position = center
+        } else {
+            _view?.bounds = bounds
+            _view?.center = center
+        }
+    }
+
+    final func doLayout(width: Double, height: Double) {
+        layout.calculate(width: width, height: height, direction: .ltr)
+        calculateFrame(left: _frame.x, top: _frame.y, apply: false)
     }
 
     final func doRootLayout() {
+        root._doRootLayout()
+    }
+
+    func _doRootLayout() {
+//        assertNil(owner)
         var width = _bounds.size.width == 0 ? Double.nan : _bounds.size.width
         var height = _bounds.size.height == 0 ? Double.nan : _bounds.size.height
         if let cache = layout.cachedLayout {
             width = cache.width
             height = cache.height
         }
-        root.layout(width: width, height: height)
+        doLayout(width: width, height: height)
     }
 
     // MARK: - Debugging Flex Layout
@@ -292,19 +397,14 @@ open class BasicElement: Hashable, CustomStringConvertible {
             child.debugMode()
         }
     }
-
-    func debugBuildView() -> UIView {
-        assertMainThread()
-        if let v = debugView {
-            return v
-        }
-        let this = UIView()
-        _pendingState?.apply(view: this)
-        this.randomBackgroundColor()
-        buildChildren(in: this)
-        return this
-    }
 #endif
+
+    // MARK: - Laying out Sub-elements
+    // TODO: I don't like this name
+    func setNeedsLayout() {
+        // Mark current layout dirty. Then, schedule the real layout method.
+        // But we don't have a task queue, so, use the UIKit layout logic.
+    }
 
     // FIXME: Remove or rename this method
     public func build(to view: UIScrollView) {
@@ -455,10 +555,37 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
 
     // MARK: - Animating Elements with Block Objects
-    public func transition(duration: Double, animations: @escaping () -> Void,
-                           completion: ((Bool) -> Void)? = nil) {
-        
+    public final func transition(mutation: (() -> Void)?) {
+        // 1. Do a root layout
+        // 2. Collect layout changes
+        // 3. Apply this changes in main thread
+        Log.debug("print")
+        layout.print(options: .layout)
+        if let method = mutation {
+            method()
+            calculateFrame(left: _frame.x, top: _frame.y, apply: false)
+        } else {
+            _doRootLayout()
+        }
+        let transition = LayoutTransition(root: self)
+        forEach { element in
+            if element.layout.hasNewLayout {
+                transition.append(element: element, bounds: element.bounds, center: element.center)
+            }
+        }
+        transition.commit()
     }
+
+//    private func rootTransition() {
+//        _doRootLayout()
+//        let transition = LayoutTransition(root: self)
+//        forEach { element in
+//            if element.layout.hasNewLayout {
+//                transition.append(element: element, bounds: element.bounds, center: element.center)
+//            }
+//        }
+//        transition.commit()
+//    }
 
     // MARK: - Hashable
     public func hash(into hasher: inout Hasher) {

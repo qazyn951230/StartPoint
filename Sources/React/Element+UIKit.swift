@@ -32,26 +32,26 @@ extension Element {
         }
     }
 
-    public func bind<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
-        if Runner.isMain(), loaded {
-            method(target)
-        } else {
-            actions.loadAction(target, method)
-        }
-    }
+//    public func bind<T>(target: T, _ method: @escaping (T) -> Void) where T: AnyObject {
+//        if Runner.isMain(), loaded {
+//            method(target)
+//        } else {
+//            actions.loadAction(target, method)
+//        }
+//    }
 
-    public func bind<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
-        if Runner.isMain(), loaded {
-            method(target)(self)
-        } else {
-            let action: ElementAction.Action = { [weak target, weak self] in
-                if let _target = target, let this = self {
-                    method(_target)(this)
-                }
-            }
-            actions.load.append(action)
-        }
-    }
+//    public func bind<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
+//        if Runner.isMain(), loaded {
+//            method(target)(self)
+//        } else {
+//            let action: ElementAction.Action = { [weak target, weak self] in
+//                if let _target = target, let this = self {
+//                    method(_target)(this)
+//                }
+//            }
+//            actions.load.append(action)
+//        }
+//    }
 
     // MARK: - Register the Tap Callback
     public func tap<T>(target: T, source method: @escaping (T) -> (Element<View>) -> Void) where T: AnyObject {
@@ -60,6 +60,7 @@ extension Element {
                 method(_target)(this)
             }
         }
-        super.tap(action)
+        actions.tap = action
+        interactive = true
     }
 }

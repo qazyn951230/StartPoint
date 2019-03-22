@@ -230,6 +230,20 @@ open class TextFieldElement: Element<UITextField> {
         return view
     }
 
+    // MARK: - Observing Element-Related Changes
+    public func bind<T>(target: T, source method: @escaping (T) -> (TextFieldElement) -> Void) where T: AnyObject {
+        if Runner.isMain(), loaded {
+            method(target)(self)
+        } else {
+            let action: ElementAction.Action = { [weak target, weak self] in
+                if let _target = target, let this = self {
+                    method(_target)(this)
+                }
+            }
+            actions.load.append(action)
+        }
+    }
+
     // MARK: - UITextFieldDelegate
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         assertMainThread()

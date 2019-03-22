@@ -29,10 +29,14 @@ public protocol BinderText {
     var attributedText: Binder<NSAttributedString?>? { get }
 
     func text(from object: Driver<String>) -> Disposable?
+    func text(from object: Observable<String>) -> Disposable?
     func text(any object: Driver<String?>) -> Disposable?
+    func text(any object: Observable<String?>) -> Disposable?
 
     func attributedText(from object: Driver<NSAttributedString>) -> Disposable?
+    func attributedText(from object: Observable<NSAttributedString>) -> Disposable?
     func attributedText(any object: Driver<NSAttributedString?>) -> Disposable?
+    func attributedText(any object: Observable<NSAttributedString?>) -> Disposable?
 }
 
 public extension BinderText {
@@ -52,6 +56,22 @@ public extension BinderText {
         return object.drive(value)
     }
 
+    public func text(from object: Observable<String>) -> Disposable? {
+        assertMainThread()
+        guard let value = text else {
+            return nil
+        }
+        return object.bind(to: value)
+    }
+
+    public func text(any object: Observable<String?>) -> Disposable? {
+        assertMainThread()
+        guard let value = text else {
+            return nil
+        }
+        return object.bind(to: value)
+    }
+
     public func attributedText(from object: Driver<NSAttributedString>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
@@ -67,14 +87,20 @@ public extension BinderText {
         }
         return object.drive(value)
     }
-}
 
-extension Element: BinderText where View: UILabel {
-    public var text: Binder<String?>? {
-        return view?.rx.text
+    public func attributedText(from object: Observable<NSAttributedString>) -> Disposable? {
+        assertMainThread()
+        guard let value = attributedText else {
+            return nil
+        }
+        return object.bind(to: value)
     }
 
-    public var attributedText: Binder<NSAttributedString?>? {
-        return view?.rx.attributedText
+    public func attributedText(any object: Observable<NSAttributedString?>) -> Disposable? {
+        assertMainThread()
+        guard let value = attributedText else {
+            return nil
+        }
+        return object.bind(to: value)
     }
 }

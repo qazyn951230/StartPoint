@@ -25,8 +25,9 @@ public final class FlexLayout: Equatable {
     public let style: FlexStyle = FlexStyle()
     public internal(set) weak var parent: FlexLayout? = nil
     public internal(set) var children: [FlexLayout] = []
-    public internal(set) var hasNewLayout: Bool = false
     public internal(set) var dirty: Bool = false
+    // When owner apply new layout, it should set to false
+    public var hasNewLayout: Bool = false
     // nodeType
     public var layoutType: LayoutType = .default
     public var measureSelf: ((Double, MeasureMode, Double, MeasureMode) -> Size)? {
@@ -147,6 +148,10 @@ public final class FlexLayout: Equatable {
             child.parent = self
             return child
         }
+    }
+
+    func frame(left: Double, top: Double) -> Rect {
+        return Rect(x: left + box.left, y: top + box.top, width: box.width, height: box.height)
     }
 
     // MARK: - Managing Child layouts

@@ -57,9 +57,8 @@ open class RecyclerCellElement: Element<UIView>, Identified {
         }
     }
 
-    public override func applyState(to view: UIView) {
-        pendingState.frame = pendingState.frame?.setOrigin(.zero)
-        super.applyState(to: view)
+    override func calculateFrame(left: Double, top: Double, apply: Bool) {
+        super.calculateFrame(left: 0, top: 0, apply: apply)
     }
 }
 

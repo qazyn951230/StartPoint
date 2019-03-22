@@ -68,6 +68,11 @@ public final class Runner {
     }
 
     @inline(__always)
+    public static func notMain() -> Bool {
+        return pthread_main_np() == 0
+    }
+
+    @inline(__always)
     public static func main() -> Runner {
         return Runner(DispatchQueue.main)
     }

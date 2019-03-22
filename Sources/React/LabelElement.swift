@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 public class LabelElementState: ElementState {
     public var text: NSAttributedString??
@@ -61,8 +63,10 @@ public class LabelElementState: ElementState {
     }
 }
 
-public final class LabelElement: Element<UILabel> {
+public final class LabelElement: Element<UILabel>, BinderText {
+    var _rawText: String?
     var _text: NSAttributedString?
+    var _attributes: [NSAttributedString.Key: Any]?
     var lines: Int = 1
     var autoLines: Bool = false
     var _labelState: LabelElementState?
@@ -76,10 +80,34 @@ public final class LabelElement: Element<UILabel> {
         return state
     }
 
+    public var text: Binder<String?>? {
+        assertMainThread()
+        return view?.rx.text
+    }
+
+    public var attributedText: Binder<NSAttributedString?>? {
+        assertMainThread()
+        return view?.rx.attributedText
+    }
+
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
         layout.measureSelf = { [weak self] (w, wm, h, hm) in
             LabelElement.measureText(self, width: w, widthMode: wm, height: h, heightMode: hm)
+        }
+    }
+
+    // MARK: - Observing Element-Related Changes
+    public func bind<T>(target: T, source method: @escaping (T) -> (LabelElement) -> Void) where T: AnyObject {
+        if Runner.isMain(), loaded {
+            method(target)(self)
+        } else {
+            let action: ElementAction.Action = { [weak target, weak self] in
+                if let _target = target, let this = self {
+                    method(_target)(this)
+                }
+            }
+            actions.load.append(action)
         }
     }
 
@@ -146,11 +174,79 @@ public final class LabelElement: Element<UILabel> {
         return self
     }
 
+    @discardableResult
+    public func attributes(_ value: [NSAttributedString.Key: Any], text: String?) -> Self {
+        _attributes = value
+        _rawText = text
+        if let _text = text {
+            return self.text(NSAttributedString(string: _text, attributes: value))
+        } else {
+            return self.text(nil)
+        }
+    }
+
+    // BinderText
+    public func text(from object: Driver<String>) -> Disposable? {
+        assertMainThread()
+        if let map = _attributes, let _text = attributedText {
+            return object.map { (v: String) in
+                return NSAttributedString(string: v, attributes: map)
+            }.drive(_text)
+        } else if let _text2 = text {
+            return object.drive(_text2)
+        }
+        return nil
+    }
+
+    public func text(any object: Driver<String?>) -> Disposable? {
+        assertMainThread()
+        if let map = _attributes, let _text = attributedText {
+            return object.map { (v: String?) -> NSAttributedString? in
+                if let t = v {
+                    return NSAttributedString(string: t, attributes: map)
+                }
+                return nil
+            }.drive(_text)
+        } else if let _text2 = text {
+            return object.drive(_text2)
+        }
+        return nil
+    }
+
+    public func text(from object: Observable<String>) -> Disposable? {
+        assertMainThread()
+        if let map = _attributes, let _text = attributedText {
+            return object.map { (v: String) in
+                return NSAttributedString(string: v, attributes: map)
+            }.bind(to: _text)
+        } else if let _text2 = text {
+            return object.bind(to: _text2)
+        }
+        return nil
+    }
+
+    public func text(any object: Observable<String?>) -> Disposable? {
+        assertMainThread()
+        if let map = _attributes, let _text = attributedText {
+            return object.map { (v: String?) -> NSAttributedString? in
+                if let t = v {
+                    return NSAttributedString(string: t, attributes: map)
+                }
+                return nil
+            }.bind(to: _text)
+        } else if let _text2 = text {
+            return object.bind(to: _text2)
+        }
+        return nil
+    }
+
     static func measureText(_ element: LabelElement?, width: Double, widthMode: MeasureMode,
                             height: Double, heightMode: MeasureMode) -> Size {
-        guard let element = element, let text = element._text else {
+        guard let element = element else {
             return Size.zero
         }
+        let text = element._text ?? NSAttributedString(string: element._rawText ?? "永",
+            attributes: element._attributes)
         let w = width.isNaN ? Double.greatestFiniteMagnitude : width
         let h = height.isNaN ? Double.greatestFiniteMagnitude : height
         let size = CGSize(width: w, height: h)
@@ -213,9 +309,8 @@ public final class AsyncLabelElement: Element<AsyncLabel>, AsyncLabelDelegate {
         return view
     }
 
-    override func calculateFrame(left: Double, top: Double) {
-        super.calculateFrame(left: left, top: top)
-        Log.debug(_frame)
+    override func calculateFrame(left: Double, top: Double, apply: Bool) {
+        super.calculateFrame(left: left, top: top, apply: apply)
         textContainer.size = _frame.cgSize
         layoutManager.ensureLayout(for: textContainer)
     }

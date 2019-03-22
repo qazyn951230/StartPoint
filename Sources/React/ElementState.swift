@@ -27,7 +27,8 @@ import QuartzCore
 public class ElementState {
     var applyToLayer = false
     // For UIView
-    public var frame: CGRect?
+    public var bounds: CGRect?
+    public var center: CGPoint?
     public var backgroundColor: UIColor??
     public var clips: Bool?
     public var hidden: Bool?
@@ -46,6 +47,7 @@ public class ElementState {
     public var shadowPath: CGPath??
 
     public var needsDisplay: Bool = false
+    public var needsLayout: Bool = false
 
     public required init() {
         // Do nothing.
@@ -53,8 +55,11 @@ public class ElementState {
 
     public func apply(view: UIView) {
         assertMainThread()
-        if let frame = self.frame {
-            view.frame = frame
+        if let bounds = self.bounds {
+            view.bounds = bounds
+        }
+        if let center = self.center {
+            view.center = center
         }
         if let backgroundColor = self.backgroundColor {
             view.backgroundColor = backgroundColor
@@ -114,8 +119,11 @@ public class ElementState {
 
     public func apply(layer: CALayer) {
         assertMainThread()
-        if let frame = self.frame {
-            layer.frame = frame
+        if let bounds = self.bounds {
+            layer.bounds = bounds
+        }
+        if let center = self.center {
+            layer.position = center
         }
         if let backgroundColor = self.backgroundColor {
             layer.backgroundColor = backgroundColor?.cgColor
@@ -160,7 +168,8 @@ public class ElementState {
     }
 
     public func invalidate() {
-        frame = nil
+        bounds = nil
+        center = nil
         backgroundColor = nil
         clips = nil
         hidden = nil

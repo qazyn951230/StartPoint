@@ -942,9 +942,10 @@ extension FlexLayout {
         box.height = 0
         box.measuredWidth = 0
         box.measuredHeight = 0
+        hasNewLayout = true
         copyChildrenIfNeeded()
-        children.forEach {
-            $0.zeroLayout()
+        children.forEach { child in
+            child.zeroLayout()
         }
     }
 
@@ -1120,6 +1121,7 @@ extension FlexLayout {
         if layout {
             box.width = box.measuredWidth
             box.height = box.measuredHeight
+            hasNewLayout = true
             dirty = false
         }
         box.generation = FlexBox.totalGeneration

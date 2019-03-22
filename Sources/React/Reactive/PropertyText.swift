@@ -95,13 +95,3 @@ public extension PropertyText {
         return value.bind(to: object)
     }
 }
-
-extension Element: PropertyText where View: UITextField {
-    public var text: ControlProperty<String?>? {
-        return view?.rx.text
-    }
-
-    public var attributedText: ControlProperty<NSAttributedString?>? {
-        return view?.rx.attributedText
-    }
-}

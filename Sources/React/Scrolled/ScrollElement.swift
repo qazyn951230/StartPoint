@@ -96,7 +96,7 @@ public class ScrollElementState: ElementState {
 open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
     var _scrollState: ScrollElementState?
 
-    public private(set) var content: StackElement
+    public private(set) var content: BasicElement
 
     public override convenience init(children: [BasicElement] = []) {
         let stack = StackElement(children: children)
@@ -142,7 +142,7 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         self.content = content
     }
 
-    public func reloadData2(content: StackElement) {
+    public func reloadData2(content: BasicElement) {
         guard let view = self.view else {
             return
         }

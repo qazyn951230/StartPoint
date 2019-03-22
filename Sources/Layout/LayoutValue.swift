@@ -112,6 +112,10 @@ public struct Rect: Equatable {
         self.height = height
     }
 
+    public init(origin: Point, size: Size) {
+        self.init(x: origin.x, y: origin.y, width: size.width, height: size.height)
+    }
+
     public var minX: Double {
         return x
     }

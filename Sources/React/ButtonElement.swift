@@ -74,6 +74,7 @@ public protocol ButtonType {
     func setImage(_ image: UIImage?, for state: UIControl.State)
     func setBackgroundImage(_ image: UIImage?, for state: UIControl.State)
 }
+
 public typealias UIButtonType = UIControl & ButtonType
 
 extension UIButton: ButtonType {
@@ -357,7 +358,21 @@ public class ButtonElement: BasicButtonElement<UIButton> {
         view.contentEdgeInsets = paddingEdgeInsets(for: self)
     }
 
-    func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
+    // MARK: - Observing Element-Related Changes
+    public func bind<T>(target: T, source method: @escaping (T) -> (ButtonElement) -> Void) where T: AnyObject {
+        if Runner.isMain(), loaded {
+            method(target)(self)
+        } else {
+            let action: ElementAction.Action = { [weak target, weak self] in
+                if let _target = target, let this = self {
+                    method(_target)(this)
+                }
+            }
+            actions.load.append(action)
+        }
+    }
+
+    private func edgeInsets() -> (UIEdgeInsets, UIEdgeInsets) {
         let buttonSize: CGSize = frame.size
         let titleSize: CGSize = titleElement.frame.size
         let titleInsets = marginEdgeInsets(for: titleElement)
@@ -395,12 +410,12 @@ public class ButtonElement: BasicButtonElement<UIButton> {
         return (titleEdgeInsets, imageEdgeInsets)
     }
 
-    func marginEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
+    private func marginEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
         let margin = element.layout.style.margin
         return margin.edgeInsets(style: element.layout.style, size: element._frame.size)
     }
 
-    func paddingEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
+    private func paddingEdgeInsets(for element: BasicElement) -> UIEdgeInsets {
         let padding = element.layout.style.padding
         return padding.edgeInsets(style: element.layout.style, size: element._frame.size)
     }

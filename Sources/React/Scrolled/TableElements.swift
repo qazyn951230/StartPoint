@@ -72,8 +72,8 @@ open class TableCellElement: BasicElement, Identified {
     // Cell height do include separator bar
     // eg. cell calculated height   => 44
     //     cell content height      => 43.5 @2x
-    override func calculateFrame(left: Double, top: Double) {
-        super.calculateFrame(left: 0, top: 0)
+    override func calculateFrame(left: Double, top: Double, apply: Bool) {
+        super.calculateFrame(left: 0, top: 0, apply: apply)
     }
 
     @discardableResult

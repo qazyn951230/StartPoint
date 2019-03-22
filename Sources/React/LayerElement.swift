@@ -32,16 +32,16 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     var _loaded: [(BasicLayerElement<Layer>, Layer) -> Void]?
     private let _children: [BasicLayerElement]
 
-    override var _frame: Rect {
-        didSet {
-            if Runner.isMain(), let layer = self.layer {
-                layer.frame = _frame.cgRect
-            } else {
-                pendingState.frame = _frame.cgRect
-                registerPendingState()
-            }
-        }
-    }
+//    override var _frame: Rect {
+//        didSet {
+//            if Runner.isMain(), let layer = self.layer {
+//                layer.frame = _frame.cgRect
+//            } else {
+//                pendingState.frame = _frame.cgRect
+//                registerPendingState()
+//            }
+//        }
+//    }
 
     public override var alpha: Double {
         didSet {
@@ -109,13 +109,16 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
         }
     }
 
+    final override func _buildLayer() -> CALayer {
+        return buildLayer()
+    }
+
     public func buildLayer() -> Layer {
         assertMainThread()
-        if let oldLayer = self.layer {
-            return oldLayer
-        }
         let _layer = createLayer()
         self.layer = _layer
+        self._layer = _layer
+        layered = true
         if let container = _layer as? ElementContainer {
             container.element = self
         } else {
@@ -137,6 +140,9 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     }
 
     func createLayer() -> Layer {
+        if let oldLayer = self.layer {
+            return oldLayer
+        }
         let _layer: Layer = creator?() ?? Layer.init()
         creator = nil
         return _layer
@@ -174,6 +180,15 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
     }
 
     // MARK: - Configuring a Element’s Visual Appearance
+//    override func frame(_ value: CGRect) {
+//        if Runner.isMain(), let layer = self.layer {
+//            layer.frame = value
+//        } else {
+//            pendingState.frame = value
+//            registerPendingState()
+//        }
+//    }
+
     @discardableResult
     public func backgroundColor(_ value: UIColor?) -> Self {
         if Runner.isMain(), let layer = layer {
