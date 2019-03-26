@@ -74,17 +74,25 @@ open class BasicElement: Hashable, CustomStringConvertible {
     }
     final var _rect: Rect = Rect.zero
 #endif
+    final var hasNewLayout: Bool {
+        get {
+            return layout.hasNewLayout
+        }
+        set {
+            layout.hasNewLayout = newValue
+        }
+    }
 
     final var _bounds: Rect = Rect.zero
     final var _center: Point = Point.zero
     final var _anchor: Point = Point(x: 0.5, y: 0.5)
 
-    var _view: UIView?
-    var _layer: CALayer?
-    var layered: Bool = false
+    final var _view: UIView?
+    final var _layer: CALayer?
+    final var layered: Bool = false
 
-    var registered = false
-    var _pendingState: ElementState?
+    final var registered = false
+    final var _pendingState: ElementState?
 
     // MARK: - Configuring the Event-Related Behavior
     public var interactive: Bool = true

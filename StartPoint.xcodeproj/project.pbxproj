@@ -174,6 +174,7 @@
 		AC96AA7D0690ECBB71DCB299 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
 		AC96AA8241BC807A2B9AA28D /* ContactPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC5D3212FC05F7BB00A7 /* ContactPermission.swift */; };
 		AC96AA85FA1F2C826AB36E16 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FC10F6CE9C8040980B /* Double.swift */; };
+		AC96AABC058DC9A519625FE0 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACDEDF59889A1286E0CB /* Validation.swift */; };
 		AC96AADCAB6572A1AE8135A5 /* Notated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEA321B74FAE31017D55 /* Notated.swift */; };
 		AC96AAFA3740F97365D179FE /* FlexStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4E8D250CE870B0E5FA7 /* FlexStyle.swift */; };
 		AC96AB1166AEEE839B575C37 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEC6503E25A2408613CD /* Lock.swift */; };
@@ -273,6 +274,7 @@
 		AC96AFF24F16A29B7B39125B /* RunLoopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A46B8B71C16C26CBE55F /* RunLoopQueue.swift */; };
 		AC96AFF35A40C6045FE901F8 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2AF396B00CCEA2B44AD /* CGPoint.swift */; };
 		AC96AFF3F8E252980091E724 /* AlignItemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */; };
+		AC96AFF6CF3DD235A0C09F17 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACDEDF59889A1286E0CB /* Validation.swift */; };
 		BC034E0821BFACF600F3627A /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A14D82B441745E497381 /* ParseTests.swift */; };
 		BC034E0921BFACF900F3627A /* JSONValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A94D0C76F766ADC30426 /* JSONValuesTests.swift */; };
 		BC034E0B21BFADA100F3627A /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC034E0A21BFADA100F3627A /* StreamTests.swift */; };
@@ -480,6 +482,7 @@
 		AC96AC81FAF819B3E8886240 /* AttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedString.swift; sourceTree = "<group>"; };
 		AC96AC8280B7520BCAC87885 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		AC96ACA4EDB3AEDEECC4CD2D /* PropertyText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyText.swift; sourceTree = "<group>"; };
+		AC96ACDEDF59889A1286E0CB /* Validation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validation.swift; sourceTree = "<group>"; };
 		AC96ACE47E7EB175A48EE7B9 /* PendingStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingStateManager.swift; sourceTree = "<group>"; };
 		AC96AD02911AF1F3434D4E4E /* TextPropertyListReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextPropertyListReader.swift; sourceTree = "<group>"; };
 		AC96AD12818C18C53C61ACF2 /* ElementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementView.swift; sourceTree = "<group>"; };
@@ -781,6 +784,7 @@
 				BCA2A4591F3DA5BC007A772A /* View */,
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
 				AC96A6EE3974D2ADC971C1E1 /* Stream */,
+				AC96ACDEDF59889A1286E0CB /* Validation.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1478,6 +1482,7 @@
 				AC96A252FCC7567DA7945ACD /* OrderedList.swift in Sources */,
 				AC96A66487C58511EAF6203F /* FlexLayout+Debug.swift in Sources */,
 				AC96A98A641773C6154F3EC6 /* DataStreamWriter.swift in Sources */,
+				AC96AABC058DC9A519625FE0 /* Validation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1650,6 +1655,7 @@
 				AC96AC2C7CD08737FFDC7399 /* ElementButton.swift in Sources */,
 				AC96A9A7106A1A5F5849A00F /* LayoutTransition.swift in Sources */,
 				AC96A67380CA50B78F47B256 /* NavigationBar.swift in Sources */,
+				AC96AFF6CF3DD235A0C09F17 /* Validation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

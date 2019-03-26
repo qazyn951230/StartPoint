@@ -26,42 +26,6 @@ import Cocoa
 #endif
 #if canImport(UIKit)
 import UIKit
-
-public enum FontWeight {
-    case ultraLight
-    case thin
-    case light
-    case regular
-    case medium
-    case semibold
-    case bold
-    case heavy
-    case black
-
-    // @available(iOS 8.2, *)
-    public var weight: UIFont.Weight {
-        switch self {
-        case .ultraLight:
-            return UIFont.Weight.ultraLight
-        case .thin:
-            return UIFont.Weight.thin
-        case .light:
-            return UIFont.Weight.light
-        case .regular:
-            return UIFont.Weight.regular
-        case .medium:
-            return UIFont.Weight.medium
-        case .semibold:
-            return UIFont.Weight.semibold
-        case .bold:
-            return UIFont.Weight.bold
-        case .heavy:
-            return UIFont.Weight.heavy
-        case .black:
-            return UIFont.Weight.black
-        }
-    }
-}
 #endif // canImport(UIKit)
 
 public enum LigatureLevel: Int {
@@ -143,9 +107,9 @@ extension AttributedString {
     }
 
     @discardableResult
-    public func systemFont(_ size: CGFloat, weight: FontWeight, range: NSRange? = nil) -> AttributedString {
+    public func systemFont(_ size: CGFloat, weight: UIFont.Weight, range: NSRange? = nil) -> AttributedString {
         return setAttribute(key: NSAttributedString.Key.font,
-            value: UIFont.systemFont(ofSize: size, weight: weight.weight),
+            value: UIFont.systemFont(ofSize: size, weight: weight),
             range: range)
     }
 

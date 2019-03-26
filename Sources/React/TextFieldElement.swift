@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 public class TextFieldElementState: ElementState {
     public var text: NSAttributedString??
@@ -196,7 +198,7 @@ public final class TextFieldDelegate: NSObject, UITextFieldDelegate {
     }
 }
 
-open class TextFieldElement: Element<UITextField> {
+open class TextFieldElement: Element<UITextField>, PropertyText {
     var _text: NSAttributedString?
     var placeholder: NSAttributedString?
 
@@ -214,6 +216,16 @@ open class TextFieldElement: Element<UITextField> {
     public weak var delegate: TextFieldElementDelegate?
     public var validation: ((String) -> Bool)?
     public var returnAction: (() -> Bool)?
+
+    public final var text: ControlProperty<String?>? {
+        assertMainThread()
+        return view?.rx.text
+    }
+
+    public final var attributedText: ControlProperty<NSAttributedString?>? {
+        assertMainThread()
+        return view?.rx.attributedText
+    }
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
@@ -407,10 +419,10 @@ open class TextFieldElement: Element<UITextField> {
     }
 
     @discardableResult
-    public func systemFont(size: CGFloat, weight: FontWeight = .regular) -> Self {
+    public func systemFont(size: CGFloat, weight: UIFont.Weight = .regular) -> Self {
         let font: UIFont
         if #available(iOS 8.2, *) {
-            font = UIFont.systemFont(ofSize: size, weight: weight.weight)
+            font = UIFont.systemFont(ofSize: size, weight: weight)
         } else {
             font = UIFont.systemFont(ofSize: size)
         }

@@ -29,13 +29,13 @@ public protocol BinderText {
     var attributedText: Binder<NSAttributedString?>? { get }
 
     func text(from object: Driver<String>) -> Disposable?
-    func text(from object: Observable<String>) -> Disposable?
     func text(any object: Driver<String?>) -> Disposable?
+    func text(from object: Observable<String>) -> Disposable?
     func text(any object: Observable<String?>) -> Disposable?
 
     func attributedText(from object: Driver<NSAttributedString>) -> Disposable?
-    func attributedText(from object: Observable<NSAttributedString>) -> Disposable?
     func attributedText(any object: Driver<NSAttributedString?>) -> Disposable?
+    func attributedText(from object: Observable<NSAttributedString>) -> Disposable?
     func attributedText(any object: Observable<NSAttributedString?>) -> Disposable?
 }
 
