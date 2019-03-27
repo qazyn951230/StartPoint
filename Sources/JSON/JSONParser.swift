@@ -51,26 +51,26 @@ public final class JSONParser {
         }
     }
 
-    func parserNull(in iterator: inout IndexingIterator<String>) {
+    func parserNull(in iterator: inout String.Iterator) {
         consume(in: &iterator, as: "u")
         consume(in: &iterator, as: "l")
         consume(in: &iterator, as: "l")
     }
 
-    func parserTrue(in iterator: inout IndexingIterator<String>) {
+    func parserTrue(in iterator: inout String.Iterator) {
         consume(in: &iterator, as: "r")
         consume(in: &iterator, as: "u")
         consume(in: &iterator, as: "e")
     }
 
-    func parserFalse(in iterator: inout IndexingIterator<String>) {
+    func parserFalse(in iterator: inout String.Iterator) {
         consume(in: &iterator, as: "a")
         consume(in: &iterator, as: "l")
         consume(in: &iterator, as: "s")
         consume(in: &iterator, as: "e")
     }
 
-    func parserString(in iterator: inout IndexingIterator<String>) {
+    func parserString(in iterator: inout String.Iterator) {
         var result: [Character] = []
         var flag = true
         let q: Character = "\""
@@ -83,7 +83,7 @@ public final class JSONParser {
         } while flag
     }
 
-    func consume(in iterator: inout IndexingIterator<String>, as char: Character) {
+    func consume(in iterator: inout String.Iterator, as char: Character) {
         error = iterator.next() == char
     }
 }
