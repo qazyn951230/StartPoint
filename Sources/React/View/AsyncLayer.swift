@@ -33,11 +33,11 @@ public protocol AsyncLayerTask {
 }
 
 public extension AsyncLayerTask {
-    public func willDisplay() {
+    func willDisplay() {
         // Do nothing.
     }
 
-    public func didDisplay(finished: Bool) {
+    func didDisplay(finished: Bool) {
         // Do nothing.
     }
 }

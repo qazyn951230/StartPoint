@@ -157,7 +157,7 @@ public final class FlexLayout: Equatable {
     // MARK: - Managing Child layouts
     public func append(_ child: FlexLayout) {
         guard child.parent == nil else {
-            assertFail("Append a layout with parent")
+//            assertFail("Append a layout with parent")
             return
         }
         copyChildrenIfNeeded()
@@ -169,7 +169,7 @@ public final class FlexLayout: Equatable {
     // YGNodeInsertChild
     public func insert(_ child: FlexLayout, at index: Int) {
         guard child.parent == nil else {
-            assertFail("Append a layout with parent")
+//            assertFail("Append a layout with parent")
             return
         }
         copyChildrenIfNeeded()

@@ -34,14 +34,18 @@ public final class Weak<T: AnyObject & Equatable>: Equatable {
 
 public final class WeakHash<T: AnyObject & Hashable>: Hashable {
     public weak var value: T?
-    public let hashValue: Int
+    public let _hashValue: Int
 
     public init(_ value: T) {
         self.value = value
-        hashValue = value.hashValue
+        _hashValue = value.hashValue
     }
 
     public static func ==(lhs: WeakHash<T>, rhs: WeakHash<T>) -> Bool {
         return lhs.value == rhs.value
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(_hashValue)
     }
 }

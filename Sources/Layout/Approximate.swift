@@ -33,11 +33,11 @@ public protocol Approximate {
 }
 
 public extension Approximate where Self: Comparable {
-    public static func <~(lhs: Self, rhs: Self) -> Bool {
+    static func <~(lhs: Self, rhs: Self) -> Bool {
         return lhs < rhs || lhs ~~ rhs
     }
 
-    public static func >~(lhs: Self, rhs: Self) -> Bool {
+    static func >~(lhs: Self, rhs: Self) -> Bool {
         return lhs > rhs || lhs ~~ rhs
     }
 }

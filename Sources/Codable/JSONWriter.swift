@@ -41,34 +41,34 @@ public protocol JSONWriterType: JSONVisitor {
 }
 
 public extension JSONWriterType {
-    public func writeIntent() {
+    func writeIntent() {
         if hasIntent && level > 0 {
             let intent = Array<UInt8>(repeating: 0x20, count: level * 2)
             try? stream.write(bytes: intent)
         }
     }
 
-    public func write(_ data: Data) {
+    func write(_ data: Data) {
         try? stream.write(data)
     }
 
-    public func write(_ string: String) {
+    func write(_ string: String) {
         try? stream.write(string: string)
     }
 
-    public func write(_ byte: UInt8) {
+    func write(_ byte: UInt8) {
         try? stream.write(byte: byte)
     }
 
-    public func flush() throws {
+    func flush() throws {
         try stream.flush()
     }
 
-    public func newline() {
+    func newline() {
         write(0x0a)
     }
 
-    public func comma() {
+    func comma() {
         write(0x2c)
     }
 }

@@ -35,18 +35,18 @@ public protocol ReadableStream {
 }
 
 public extension ReadableStream {
-    public func next() -> Value {
+    func next() -> Value {
         _ = move()
         return peek()
     }
 
-    public func take() -> Value {
+    func take() -> Value {
         let value = peek()
         _ = move()
         return value
     }
 
-    public func take(size: Int) -> [Value] {
+    func take(size: Int) -> [Value] {
         precondition(size > -1)
         var result: [Value] = []
         for _ in 0..<size {
@@ -77,15 +77,15 @@ public protocol RandomAccessStream: ReadableStream {
 }
 
 public extension RandomAccessStream {
-    public func peek(offset: Int) -> Value {
+    func peek(offset: Int) -> Value {
         return self.peek(offset: offset, seek: .current)
     }
 
-    public func move(offset: Int) -> Bool {
+    func move(offset: Int) -> Bool {
         return self.move(offset: offset, seek: .current)
     }
 
-    public subscript(position: Int) -> Value {
+    subscript(position: Int) -> Value {
         return self.peek(offset: position, seek: .start)
     }
 }

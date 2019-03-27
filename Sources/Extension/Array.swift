@@ -22,7 +22,7 @@
 
 public extension Array {
     // TODO: Move to RandomAccessCollection or MutableCollection
-    public func object(at index: Int) -> Element? {
+    func object(at index: Int) -> Element? {
         guard index >= self.startIndex && index < self.endIndex else {
             return nil
         }
@@ -30,14 +30,14 @@ public extension Array {
     }
 
     // TODO: Move to RangeReplaceableCollection
-    public mutating func insert(any element: Element?, at index: Int) {
+    mutating func insert(any element: Element?, at index: Int) {
         if let object = element {
             insert(object, at: index)
         }
     }
 
     // TODO: Move to RangeReplaceableCollection
-    public mutating func append(any element: Element?) {
+    mutating func append(any element: Element?) {
         if let object = element {
             append(object)
         }
@@ -48,20 +48,20 @@ public extension Array {
     // [1], 1..<1 => [1, 2]
     // [1], 0...0 => [2]
     // [1], 1...1 => ERROR
-    public mutating func replace(at index: Int, with element: Element) {
+    mutating func replace(at index: Int, with element: Element) {
         guard index >= self.startIndex && index < self.endIndex else {
             return
         }
         replaceSubrange(index...index, with: [element])
     }
 
-    public func replaced(at index: Int, with element: Element) -> Array<Element> {
+    func replaced(at index: Int, with element: Element) -> Array<Element> {
         var this = self
         this.replace(at: index, with: element)
         return this
     }
 
-    public static func from(_ value: Element?...) -> Array<Element> {
+    static func from(_ value: Element?...) -> Array<Element> {
         return value.compactMap(Function.this)
     }
 }

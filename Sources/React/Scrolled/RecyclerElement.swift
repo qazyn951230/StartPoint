@@ -34,7 +34,7 @@ public extension RecyclerElementDelegate {
         return true
     }
 
-    public func recyclerElement(_ Element: RecyclerElement, didSelectItemAt indexPath: IndexPath) {
+    func recyclerElement(_ Element: RecyclerElement, didSelectItemAt indexPath: IndexPath) {
         // Do nothing.
     }
 

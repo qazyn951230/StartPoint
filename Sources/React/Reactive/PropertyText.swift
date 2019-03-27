@@ -43,7 +43,7 @@ public protocol PropertyText {
 }
 
 public extension PropertyText {
-    public func text(from object: Driver<String>) -> Disposable? {
+    func text(from object: Driver<String>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -51,7 +51,7 @@ public extension PropertyText {
         return object.drive(value)
     }
 
-    public func text(any object: Driver<String?>) -> Disposable? {
+    func text(any object: Driver<String?>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -59,7 +59,7 @@ public extension PropertyText {
         return object.drive(value)
     }
 
-    public func text(to object: BehaviorRelay<String>) -> Disposable? {
+    func text(to object: BehaviorRelay<String>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -67,7 +67,7 @@ public extension PropertyText {
         return value.orEmpty.bind(to: object)
     }
 
-    public func text(any object: BehaviorRelay<String?>) -> Disposable? {
+    func text(any object: BehaviorRelay<String?>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -75,7 +75,7 @@ public extension PropertyText {
         return value.bind(to: object)
     }
 
-    public func text(from object: Observable<String>) -> Disposable? {
+    func text(from object: Observable<String>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -83,7 +83,7 @@ public extension PropertyText {
         return object.bind(to: value)
     }
 
-    public func text(any object: Observable<String?>) -> Disposable? {
+    func text(any object: Observable<String?>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -91,7 +91,7 @@ public extension PropertyText {
         return object.bind(to: value)
     }
 
-    public func attributedText(from object: Driver<NSAttributedString>) -> Disposable? {
+    func attributedText(from object: Driver<NSAttributedString>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -99,7 +99,7 @@ public extension PropertyText {
         return object.drive(value)
     }
 
-    public func attributedText(any object: Driver<NSAttributedString?>) -> Disposable? {
+    func attributedText(any object: Driver<NSAttributedString?>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -107,7 +107,7 @@ public extension PropertyText {
         return object.drive(value)
     }
 
-    public func attributedText(any object: BehaviorRelay<NSAttributedString?>) -> Disposable? {
+    func attributedText(any object: BehaviorRelay<NSAttributedString?>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -115,7 +115,7 @@ public extension PropertyText {
         return value.bind(to: object)
     }
 
-    public func attributedText(from object: Observable<NSAttributedString>) -> Disposable? {
+    func attributedText(from object: Observable<NSAttributedString>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -123,7 +123,7 @@ public extension PropertyText {
         return object.bind(to: value)
     }
 
-    public func attributedText(any object: Observable<NSAttributedString?>) -> Disposable? {
+    func attributedText(any object: Observable<NSAttributedString?>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil

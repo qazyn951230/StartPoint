@@ -35,43 +35,43 @@ public protocol JSONVisitor {
 }
 
 public extension JSONVisitor {
-    public func visit(array value: JSONArray) {
+    func visit(array value: JSONArray) {
         visit(value)
     }
 
-    public func visit(dictionary value: JSONObject) {
+    func visit(dictionary value: JSONObject) {
         visit(value)
     }
 
-    public func visit(null value: JSONNull) {
+    func visit(null value: JSONNull) {
         visit(value)
     }
 
-    public func visit(string value: JSONString) {
+    func visit(string value: JSONString) {
         visit(value)
     }
 
-    public func visit(bool value: JSONBool) {
+    func visit(bool value: JSONBool) {
         visit(value)
     }
 
-    public func visit(double value: JSONDouble) {
+    func visit(double value: JSONDouble) {
         visit(value)
     }
 
-    public func visit(int value: JSONInt) {
+    func visit(int value: JSONInt) {
         visit(value)
     }
 
-    public func visit(int64 value: JSONInt64) {
+    func visit(int64 value: JSONInt64) {
         visit(value)
     }
 
-    public func visit(uint value: JSONUInt) {
+    func visit(uint value: JSONUInt) {
         visit(value)
     }
 
-    public func visit(uint64 value: JSONUInt64) {
+    func visit(uint64 value: JSONUInt64) {
         visit(value)
     }
 }

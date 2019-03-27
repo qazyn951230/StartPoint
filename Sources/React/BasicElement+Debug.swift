@@ -115,7 +115,7 @@ final class ElementHtmlPrinter: DataStreamWriter, ElementVisitor {
 }
 
 public extension BasicElement {
-    public func print() {
+    func print() {
         let printer = ElementHtmlPrinter()
         printer.print(basic: self)
     }

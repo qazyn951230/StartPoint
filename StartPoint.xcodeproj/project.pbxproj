@@ -280,7 +280,6 @@
 		BC034E0B21BFADA100F3627A /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC034E0A21BFADA100F3627A /* StreamTests.swift */; };
 		BC034E0C21BFADA100F3627A /* StreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC034E0A21BFADA100F3627A /* StreamTests.swift */; };
 		BC0350BF22253DC000E41B97 /* AlignBaselineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0350BE22253DC000E41B97 /* AlignBaselineTests.swift */; };
-		BC0350C022253DC000E41B97 /* AlignBaselineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0350BE22253DC000E41B97 /* AlignBaselineTests.swift */; };
 		BC1C2E601F7F895F00CA9C99 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */; };
 		BC25D0A5212BF86600697244 /* Double.c in Sources */ = {isa = PBXBuildFile; fileRef = AC96A000E4E77DEB157E178F /* Double.c */; };
 		BC4A4A712119479E002564C6 /* StartPoint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC4A4A682119479E002564C6 /* StartPoint.framework */; };
@@ -1322,6 +1321,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				"zh-CN",
+				Base,
 			);
 			mainGroup = BC6BA19F1F2DC08600772AA8;
 			productRefGroup = BC6BA1AA1F2DC08700772AA8 /* Products */;
@@ -1490,7 +1490,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC0350C022253DC000E41B97 /* AlignBaselineTests.swift in Sources */,
 				BC034E0C21BFADA100F3627A /* StreamTests.swift in Sources */,
 				BC993298222646EE001E0645 /* ByteStreamTests.swift in Sources */,
 				AC96A949E79F5201FB432F27 /* ParseTests.swift in Sources */,

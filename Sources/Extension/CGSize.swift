@@ -23,29 +23,29 @@
 import CoreGraphics
 
 public extension CGSize {
-    public var ceiled: CGSize {
+    var ceiled: CGSize {
         return CGSize(width: ceil(width), height: ceil(height))
     }
 
-    public var floored: CGSize {
+    var floored: CGSize {
         return CGSize(width: floor(width), height: floor(height))
     }
 
-    public var rounded: CGSize {
+    var rounded: CGSize {
         return CGSize(width: round(width), height: round(height))
     }
 
-    public static func max(width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
+    static func max(width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let w = width ?? CGFloat.greatestFiniteMagnitude
         let h = height ?? CGFloat.greatestFiniteMagnitude
         return CGSize(width: w, height: h)
     }
 
-    public func setWidth(_ width: CGFloat) -> CGSize {
+    func setWidth(_ width: CGFloat) -> CGSize {
         return CGSize(width: width, height: height)
     }
 
-    public func setHeight(_ height: CGFloat) -> CGSize {
+    func setHeight(_ height: CGFloat) -> CGSize {
         return CGSize(width: width, height: height)
     }
 }

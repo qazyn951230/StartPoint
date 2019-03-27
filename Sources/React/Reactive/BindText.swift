@@ -40,7 +40,7 @@ public protocol BinderText {
 }
 
 public extension BinderText {
-    public func text(from object: Driver<String>) -> Disposable? {
+    func text(from object: Driver<String>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -48,7 +48,7 @@ public extension BinderText {
         return object.drive(value)
     }
 
-    public func text(any object: Driver<String?>) -> Disposable? {
+    func text(any object: Driver<String?>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -56,15 +56,7 @@ public extension BinderText {
         return object.drive(value)
     }
 
-    public func text(from object: Observable<String>) -> Disposable? {
-        assertMainThread()
-        guard let value = text else {
-            return nil
-        }
-        return object.bind(to: value)
-    }
-
-    public func text(any object: Observable<String?>) -> Disposable? {
+    func text(from object: Observable<String>) -> Disposable? {
         assertMainThread()
         guard let value = text else {
             return nil
@@ -72,7 +64,15 @@ public extension BinderText {
         return object.bind(to: value)
     }
 
-    public func attributedText(from object: Driver<NSAttributedString>) -> Disposable? {
+    func text(any object: Observable<String?>) -> Disposable? {
+        assertMainThread()
+        guard let value = text else {
+            return nil
+        }
+        return object.bind(to: value)
+    }
+
+    func attributedText(from object: Driver<NSAttributedString>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -80,7 +80,7 @@ public extension BinderText {
         return object.drive(value)
     }
 
-    public func attributedText(any object: Driver<NSAttributedString?>) -> Disposable? {
+    func attributedText(any object: Driver<NSAttributedString?>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -88,7 +88,7 @@ public extension BinderText {
         return object.drive(value)
     }
 
-    public func attributedText(from object: Observable<NSAttributedString>) -> Disposable? {
+    func attributedText(from object: Observable<NSAttributedString>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil
@@ -96,7 +96,7 @@ public extension BinderText {
         return object.bind(to: value)
     }
 
-    public func attributedText(any object: Observable<NSAttributedString?>) -> Disposable? {
+    func attributedText(any object: Observable<NSAttributedString?>) -> Disposable? {
         assertMainThread()
         guard let value = attributedText else {
             return nil

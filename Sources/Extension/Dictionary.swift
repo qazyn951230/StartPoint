@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 public extension Dictionary {
-    public func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> [Key: T] {
+    func compactMapValues<T>(_ transform: (Value) throws -> T?) rethrows -> [Key: T] {
         var map: [Key: T] = [:]
         for (key, value) in self {
             if let item = try transform(value) {

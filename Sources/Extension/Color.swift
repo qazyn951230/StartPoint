@@ -56,11 +56,11 @@ fileprivate func hexColor<T>(_ value: UInt32, alpha: CGFloat,
 
 #if canImport(UIKit)
 public extension UIColor {
-    public static func hex(_ value: UInt32) -> UIColor {
+    static func hex(_ value: UInt32) -> UIColor {
         return hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
+    static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
         return hexColor(value, alpha: alpha, creator: UIColor.init(red:green:blue:alpha:))
     }
 
@@ -69,7 +69,7 @@ public extension UIColor {
     // the red component is specified in an extended range sRGB color space and can have any value.
     // Values between 0.0 and 1.0 are inside the sRGB color gamut. On earlier versions of iOS,
     // the specified value is always between 0.0 and 1.0.
-    public func rgba() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+    func rgba() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0
@@ -78,7 +78,7 @@ public extension UIColor {
         return (r, g, b, a)
     }
 
-    public func rgbaHex() -> UInt32 {
+    func rgbaHex() -> UInt32 {
         let (r, g, b, a) = self.rgba()
         var value: UInt32 = UInt32(a * 255) << 24
         value += UInt32(r * 255) << 16
@@ -88,18 +88,18 @@ public extension UIColor {
     }
 
 #if DEBUG
-    public static var random: UIColor {
+    static var random: UIColor {
         return UIColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
 #endif
 }
 
 public extension CGColor {
-    public static func hex(_ value: UInt32) -> CGColor {
+    static func hex(_ value: UInt32) -> CGColor {
         return UIColor.hex(value).cgColor
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
+    static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
         return UIColor.hex(value, alpha: alpha).cgColor
     }
 }
@@ -135,32 +135,32 @@ extension BasicLayerElement {
 
 #if canImport(AppKit)
 public extension NSColor {
-    public static func hex(_ value: UInt32) -> NSColor {
+    static func hex(_ value: UInt32) -> NSColor {
         return hexColor(value, creator: NSColor.init(red:green:blue:alpha:))
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> NSColor {
+    static func hex(_ value: UInt32, alpha: CGFloat) -> NSColor {
         return hexColor(value, alpha: alpha, creator: NSColor.init(red:green:blue:alpha:))
     }
 
 #if DEBUG
-    public static var random: NSColor {
+    static var random: NSColor {
         return NSColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
 #endif
 }
 
 public extension CGColor {
-    public static func hex(_ value: UInt32) -> CGColor {
+    static func hex(_ value: UInt32) -> CGColor {
         return hexColor(value, creator: CGColor.init(red:green:blue:alpha:))
     }
 
-    public static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
+    static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
         return hexColor(value, alpha: alpha, creator: CGColor.init(red:green:blue:alpha:))
     }
 
 #if DEBUG
-    public static var random: CGColor {
+    static var random: CGColor {
         return CGColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
 #endif

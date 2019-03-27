@@ -31,7 +31,7 @@ public protocol Locking {
 public extension Locking {
     @discardableResult
     @inline(__always)
-    public func locking<T>(_ method: () throws -> T) rethrows -> T {
+    func locking<T>(_ method: () throws -> T) rethrows -> T {
         lock()
         defer {
             unlock()
@@ -41,7 +41,7 @@ public extension Locking {
 
     @discardableResult
     @inline(__always)
-    public func unlocking<T>(_ method: () throws -> T) rethrows -> T {
+    func unlocking<T>(_ method: () throws -> T) rethrows -> T {
         unlock()
         defer {
             lock()

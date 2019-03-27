@@ -54,87 +54,87 @@ public protocol Notated {
 }
 
 public extension Notated {
-    public var exists: Bool {
+    var exists: Bool {
         return true
     }
 
-    public var boolValue: Bool? {
+    var boolValue: Bool? {
         return nil
     }
 
-    public var bool: Bool {
+    var bool: Bool {
         return false
     }
 
-    public var stringValue: String? {
+    var stringValue: String? {
         return nil
     }
 
-    public var string: String {
+    var string: String {
         return String.empty
     }
 
-    public var doubleValue: Double? {
+    var doubleValue: Double? {
         return nil
     }
 
-    public var double: Double {
+    var double: Double {
         return 0
     }
 
-    public var floatValue: Float? {
+    var floatValue: Float? {
         return nil
     }
 
-    public var float: Float {
+    var float: Float {
         return 0
     }
 
-    public var intValue: Int? {
+    var intValue: Int? {
         return nil
     }
 
-    public var int: Int {
+    var int: Int {
         return 0
     }
 
-    public var int32Value: Int32? {
+    var int32Value: Int32? {
         return nil
     }
 
-    public var int32: Int32 {
+    var int32: Int32 {
         return 0
     }
 
-    public var int64Value: Int64? {
+    var int64Value: Int64? {
         return nil
     }
 
-    public var int64: Int64 {
+    var int64: Int64 {
         return 0
     }
 
-    public var uintValue: UInt? {
+    var uintValue: UInt? {
         return nil
     }
 
-    public var uint: UInt {
+    var uint: UInt {
         return 0
     }
 
-    public var uint32Value: UInt32? {
+    var uint32Value: UInt32? {
         return nil
     }
 
-    public var uint32: UInt32 {
+    var uint32: UInt32 {
         return 0
     }
 
-    public var uint64Value: UInt64? {
+    var uint64Value: UInt64? {
         return nil
     }
 
-    public var uint64: UInt64 {
+    var uint64: UInt64 {
         return 0
     }
 }

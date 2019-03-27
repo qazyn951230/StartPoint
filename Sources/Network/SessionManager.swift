@@ -38,7 +38,7 @@ extension DataRequest: ReactiveRequest {
 }
 
 public extension Reactive where Base: SessionManager {
-    public func request<Request>(request: Request) -> Observable<Request>
+    func request<Request>(request: Request) -> Observable<Request>
         where Request: ReactiveRequest {
         let manager: SessionManager = self.base
         let start = manager.startRequestsImmediately
@@ -60,21 +60,21 @@ public extension Reactive where Base: SessionManager {
         }
     }
 
-    public func request<Request>(creator: @escaping (SessionManager) throws -> Request) -> Observable<Request>
+    func request<Request>(creator: @escaping (SessionManager) throws -> Request) -> Observable<Request>
         where Request: ReactiveRequest {
         return Observable.just(base)
             .map(creator)
             .flatMap(request(request:))
     }
 
-    public func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>)
+    func request<Request>(creator: @escaping (SessionManager) throws -> Observable<Request>)
             -> Observable<Request> where Request: ReactiveRequest {
         return Observable.just(base)
             .flatMap(creator)
             .flatMap(request(request:))
     }
 
-    public func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
+    func request(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
                         encoding: ParameterEncoding = URLEncoding.default, headers: HTTPHeaders? = nil)
             -> Observable<DataRequest> {
         return request { manager in
@@ -83,7 +83,7 @@ public extension Reactive where Base: SessionManager {
         }
     }
 
-    public func upload(formData: @escaping (MultipartFormData) -> Void,
+    func upload(formData: @escaping (MultipartFormData) -> Void,
                        with urlRequest: URLRequestConvertible) -> Observable<UploadRequest> {
         let manager: SessionManager = self.base
         return Observable<UploadRequest>.create { observer in
@@ -100,7 +100,7 @@ public extension Reactive where Base: SessionManager {
         }
     }
 
-    public func upload(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
+    func upload(_ url: URLConvertible, method: HTTPMethod = .get, parameters: Parameters? = nil,
                        formData: @escaping (MultipartFormData) -> Void,
                        encoding: ParameterEncoding = URLEncoding.default,
                        headers: HTTPHeaders? = nil) -> Observable<UploadRequest> {

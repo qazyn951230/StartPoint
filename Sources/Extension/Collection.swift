@@ -21,30 +21,30 @@
 // SOFTWARE.
 
 public extension Collection {
-    public var isNotEmpty: Bool {
+    var isNotEmpty: Bool {
         return !isEmpty
     }
 
-    public func element(at index: Index) -> Element {
+    func element(at index: Index) -> Element {
         // IndexOutOfBoundsException
         return self[index]
     }
 
-    public func element(at index: Index, or value: (Index) throws -> Element) rethrows -> Element {
+    func element(at index: Index, or value: (Index) throws -> Element) rethrows -> Element {
         guard index >= startIndex && index < endIndex else {
             return try value(index)
         }
         return self[index]
     }
 
-    public func elementOrNil(at index: Index) -> Element? {
+    func elementOrNil(at index: Index) -> Element? {
         guard index >= startIndex && index < endIndex else {
             return nil
         }
         return self[index]
     }
 
-    public func filterIndexed(_ isIncluded: (Element, Index) throws -> Bool) rethrows -> [Element] {
+    func filterIndexed(_ isIncluded: (Element, Index) throws -> Bool) rethrows -> [Element] {
         if isEmpty {
             return []
         }
@@ -59,7 +59,7 @@ public extension Collection {
         return result
     }
 
-    public func mapIndexed<T>(_ transform: (Element, Index) throws -> T) rethrows -> [T] {
+    func mapIndexed<T>(_ transform: (Element, Index) throws -> T) rethrows -> [T] {
         if isEmpty {
             return []
         }
@@ -73,7 +73,7 @@ public extension Collection {
         return result
     }
 
-    public func forEachIndexed(_ body: (Element, Index) throws -> Void) rethrows {
+    func forEachIndexed(_ body: (Element, Index) throws -> Void) rethrows {
         if isEmpty {
             return
         }
@@ -84,7 +84,7 @@ public extension Collection {
         } while i < endIndex
     }
 
-    public func split(upTo count: Int) -> [SubSequence] {
+    func split(upTo count: Int) -> [SubSequence] {
         guard isNotEmpty && count > 0 else {
             return []
         }
@@ -111,7 +111,7 @@ public extension Collection {
 }
 
 public extension String {
-    public func split(upTo count: Int) -> [Substring] {
+    func split(upTo count: Int) -> [Substring] {
         guard isNotEmpty && count > 0 else {
             return []
         }

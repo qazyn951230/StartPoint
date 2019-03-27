@@ -31,9 +31,9 @@ open class BasicAlertView: Hashable {
             flex.size(Device.size).alignItems(.center).justifyContent(.center)
         }
     }
-
-    public var hashValue: Int {
-        return address(of: self).hashValue
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(address(of: self))
     }
 
     open func buildView() {

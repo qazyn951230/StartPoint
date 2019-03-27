@@ -27,7 +27,7 @@ import Foundation
 public extension DataRequest {
     private static let emptyDataStatusCodes: Set<Int> = [204, 205]
 
-    public static func serializeResponseJSON2(options: JSONParser.Options, response: HTTPURLResponse?,
+    static func serializeResponseJSON2(options: JSONParser.Options, response: HTTPURLResponse?,
                                               data: Data?, error: Error?) -> Result<JSON> {
         if let e = error {
             return .failure(e)
@@ -49,14 +49,14 @@ public extension DataRequest {
         }
     }
 
-    public static func jsonResponseSerializer2(options: JSONParser.Options = []) -> DataResponseSerializer<JSON> {
+    static func jsonResponseSerializer2(options: JSONParser.Options = []) -> DataResponseSerializer<JSON> {
         return DataResponseSerializer { _, response, data, error in
             return DataRequest.serializeResponseJSON2(options: options, response: response, data: data, error: error)
         }
     }
 
     @discardableResult
-    public func responseJSON2(queue: DispatchQueue? = nil, options: JSONParser.Options = [],
+    func responseJSON2(queue: DispatchQueue? = nil, options: JSONParser.Options = [],
                              completionHandler: @escaping (Alamofire.DataResponse<JSON>) -> Swift.Void) -> Self {
         return response(queue: queue,
             responseSerializer: DataRequest.jsonResponseSerializer2(options: options),

@@ -54,11 +54,11 @@ public protocol IntentTarget: IntentSource, Creatable {
 private var tr0gSJaB = "tr0gSJaB"
 
 public extension IntentTarget where Self: UIViewController {
-    public var intentController: UIViewController {
+    var intentController: UIViewController {
         return self
     }
 
-    public var intent: Intent? {
+    var intent: Intent? {
         get {
             return associatedObject(key: &tr0gSJaB)
         }
@@ -67,11 +67,11 @@ public extension IntentTarget where Self: UIViewController {
         }
     }
 
-    public func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
+    func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
         return self
     }
 
-    public func finish(result: IntentResult? = nil, interactive: Bool) {
+    func finish(result: IntentResult? = nil, interactive: Bool) {
         if let intent = self.intent {
             intent.end(for: result, interactive: interactive)
             setAssociatedObject(key: &tr0gSJaB, object: nil as Intent?)

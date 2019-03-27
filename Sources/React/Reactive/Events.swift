@@ -32,12 +32,12 @@ public protocol TapEvent {
 }
 
 public extension TapEvent {
-    public func tap(to object: BehaviorRelay<Void>) -> Disposable? {
+    func tap(to object: BehaviorRelay<Void>) -> Disposable? {
         assertMainThread()
         return self.tap?.bind(to: object)
     }
 
-    public func tap(to object: PublishRelay<Void>) -> Disposable? {
+    func tap(to object: PublishRelay<Void>) -> Disposable? {
         assertMainThread()
         return self.tap?.bind(to: object)
     }

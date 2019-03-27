@@ -30,19 +30,19 @@ public protocol ListElementDelegate: class {
 }
 
 public extension ListElementDelegate {
-    public func listElement(_ element: ListElement, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    func listElement(_ element: ListElement, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         return indexPath
     }
 
-    public func listElement(_ element: ListElement, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+    func listElement(_ element: ListElement, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         return indexPath
     }
 
-    public func listElement(_ element: ListElement, didSelectRowAt indexPath: IndexPath) {
+    func listElement(_ element: ListElement, didSelectRowAt indexPath: IndexPath) {
         // Do nothing.
     }
 
-    public func listElement(_ element: ListElement, didDeselectRowAt indexPath: IndexPath) {
+    func listElement(_ element: ListElement, didDeselectRowAt indexPath: IndexPath) {
         // Do nothing.
     }
 }

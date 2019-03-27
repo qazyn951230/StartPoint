@@ -23,23 +23,23 @@
 import CoreGraphics
 
 public extension CGPoint {
-    public var ceiled: CGPoint {
+    var ceiled: CGPoint {
         return CGPoint(x: ceil(x), y: ceil(y))
     }
 
-    public var floored: CGPoint {
+    var floored: CGPoint {
         return CGPoint(x: floor(x), y: floor(y))
     }
 
-    public var rounded: CGPoint {
+    var rounded: CGPoint {
         return CGPoint(x: round(x), y: round(y))
     }
 
-    public func setX(_ x: CGFloat) -> CGPoint {
+    func setX(_ x: CGFloat) -> CGPoint {
         return CGPoint(x: x, y: y)
     }
 
-    public func setY(_ y: CGFloat) -> CGPoint {
+    func setY(_ y: CGFloat) -> CGPoint {
         return CGPoint(x: x, y: y)
     }
 }

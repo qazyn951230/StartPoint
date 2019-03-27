@@ -60,19 +60,19 @@ public protocol TableElementDataSource: class {
 }
 
 public extension TableElementDataSource {
-    public func tableElement(_ table: TableElement, headerIn section: Int) -> ViewElement? {
+    func tableElement(_ table: TableElement, headerIn section: Int) -> ViewElement? {
         return nil
     }
 
-    public func tableElement(_ table: TableElement, footerIn section: Int) -> ViewElement? {
+    func tableElement(_ table: TableElement, footerIn section: Int) -> ViewElement? {
         return nil
     }
 
-    public func tableElement(_ table: TableElement, headerTitleIn section: Int) -> NSAttributedString? {
+    func tableElement(_ table: TableElement, headerTitleIn section: Int) -> NSAttributedString? {
         return nil
     }
 
-    public func tableElement(_ table: TableElement, footerTitleIn section: Int) -> NSAttributedString? {
+    func tableElement(_ table: TableElement, footerTitleIn section: Int) -> NSAttributedString? {
         return nil
     }
 }

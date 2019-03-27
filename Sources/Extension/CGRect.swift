@@ -23,67 +23,67 @@
 import CoreGraphics
 
 public extension CGRect {
-    public var center: CGPoint {
+    var center: CGPoint {
         return CGPoint(x: width / 2, y: height / 2)
     }
 
-    public var topLeft: CGPoint {
+    var topLeft: CGPoint {
         return origin
     }
 
-    public var topRight: CGPoint {
+    var topRight: CGPoint {
         return CGPoint(x: origin.x + width, y: origin.y)
     }
 
-    public var bottomLeft: CGPoint {
+    var bottomLeft: CGPoint {
         return CGPoint(x: origin.x, y: origin.y + height)
     }
 
-    public var bottomRight: CGPoint {
+    var bottomRight: CGPoint {
         return CGPoint(x: origin.x + width, y: origin.y + height)
     }
 
-    public var ceiled: CGRect {
+    var ceiled: CGRect {
         return CGRect(origin: origin.ceiled, size: size.ceiled)
     }
 
-    public var floored: CGRect {
+    var floored: CGRect {
         return CGRect(origin: origin.floored, size: size.floored)
     }
 
-    public var rounded: CGRect {
+    var rounded: CGRect {
         return CGRect(origin: origin.rounded, size: size.rounded)
     }
 
-    public func setSize(_ value: CGSize) -> CGRect {
+    func setSize(_ value: CGSize) -> CGRect {
         return CGRect(origin: origin, size: value)
     }
 
-    public func setSize(width: CGFloat, height: CGFloat) -> CGRect {
+    func setSize(width: CGFloat, height: CGFloat) -> CGRect {
         return CGRect(x: origin.x, y: origin.y, width: width, height: height)
     }
 
-    public func setOrigin(_ value: CGPoint) -> CGRect {
+    func setOrigin(_ value: CGPoint) -> CGRect {
         return CGRect(origin: value, size: size)
     }
 
-    public func setOrigin(x: CGFloat, y: CGFloat) -> CGRect {
+    func setOrigin(x: CGFloat, y: CGFloat) -> CGRect {
         return CGRect(x: x, y: y, width: width, height: height)
     }
 
-    public func setWidth(_ value: CGFloat) -> CGRect {
+    func setWidth(_ value: CGFloat) -> CGRect {
         return CGRect(x: origin.x, y: origin.y, width: value, height: size.height)
     }
 
-    public func setHeight(_ value: CGFloat) -> CGRect {
+    func setHeight(_ value: CGFloat) -> CGRect {
         return CGRect(x: origin.x, y: origin.y, width: size.width, height: value)
     }
 
-    public func setX(_ value: CGFloat) -> CGRect {
+    func setX(_ value: CGFloat) -> CGRect {
         return CGRect(x: value, y: origin.y, width: size.width, height: size.height)
     }
 
-    public func setY(_ value: CGFloat) -> CGRect {
+    func setY(_ value: CGFloat) -> CGRect {
         return CGRect(x: origin.x, y: value, width: size.width, height: size.height)
     }
 }

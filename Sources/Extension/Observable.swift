@@ -24,7 +24,7 @@ import RxSwift
 
 public extension ObservableType {
     @inlinable
-    public static func first(_ method: () throws -> E) -> Observable<E> {
+    static func first(_ method: () throws -> E) -> Observable<E> {
         do {
             let e = try method()
             return Observable<E>.just(e)

@@ -21,21 +21,21 @@
 // SOFTWARE.
 
 public extension Sequence {
-    public func all(predicate: (Element) throws -> Bool) rethrows -> Bool {
+    func all(predicate: (Element) throws -> Bool) rethrows -> Bool {
         for item in self where (try predicate(item)) == false {
             return false
         }
         return true
     }
 
-    public func any(predicate: (Element) throws -> Bool) rethrows -> Bool {
+    func any(predicate: (Element) throws -> Bool) rethrows -> Bool {
         for item in self where (try predicate(item)) == true {
             return false
         }
         return true
     }
 
-    public func associate<K: Hashable, V>(_ transform: (Element) throws -> (K, V)) rethrows -> [K: V] {
+    func associate<K: Hashable, V>(_ transform: (Element) throws -> (K, V)) rethrows -> [K: V] {
         var map: [K: V] = [:]
         for item in self {
             let (k, v) = try transform(item)
@@ -44,7 +44,7 @@ public extension Sequence {
         return map
     }
 
-    public func associate<K: Hashable>(by keySelector: (Element) -> K) -> [K: Element] {
+    func associate<K: Hashable>(by keySelector: (Element) -> K) -> [K: Element] {
         var map: [K: Element] = [:]
         for item in self {
             let key = keySelector(item)
@@ -53,7 +53,7 @@ public extension Sequence {
         return map
     }
 
-    public func associate<K: Hashable, T>(by keySelector: (Element) -> K,
+    func associate<K: Hashable, T>(by keySelector: (Element) -> K,
                                           _ transform: (Element) throws -> T) rethrows -> [K: T] {
         var map: [K: T] = [:]
         for item in self {
@@ -63,15 +63,15 @@ public extension Sequence {
         return map
     }
 
-//    public func chunked(size: Int) -> List<List<Element>> {
+//    func chunked(size: Int) -> List<List<Element>> {
 //
 //    }
 
-    public func filter<T>(as: T.Type) -> [T] {
+    func filter<T>(as: T.Type) -> [T] {
         return compactMap { $0 as? T }
     }
 
-    public func group<K: Hashable>(by keySelector: (Element) -> K) -> [K: List<Element>] {
+    func group<K: Hashable>(by keySelector: (Element) -> K) -> [K: List<Element>] {
         var map: [K: List<Element>] = [:]
         for item in self {
             let key = keySelector(item)
@@ -84,7 +84,7 @@ public extension Sequence {
         return map
     }
 
-    public func group<K: Hashable, T>(by keySelector: (Element) -> K, _ transform: (Element) throws -> T) rethrows
+    func group<K: Hashable, T>(by keySelector: (Element) -> K, _ transform: (Element) throws -> T) rethrows
             -> [K: List<T>] {
         var map: [K: List<T>] = [:]
         for item in self {
@@ -99,7 +99,7 @@ public extension Sequence {
         return map
     }
 
-//    public func windowed(size: Int, step: Int = 1, partialWindows: Bool = false) {
+//    func windowed(size: Int, step: Int = 1, partialWindows: Bool = false) {
 //
 //    }
 }

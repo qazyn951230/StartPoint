@@ -36,11 +36,11 @@ public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegatePro
 }
 
 public extension Reactive where Base: UIImagePickerController {
-    public var pickerDelegate: DelegateProxy<UINavigationController, UINavigationControllerDelegate> {
+    var pickerDelegate: DelegateProxy<UINavigationController, UINavigationControllerDelegate> {
         return RxImagePickerDelegateProxy.proxy(for: base)
     }
 
-    public var didFinishPickingMediaWithInfo: Observable<[String: Any]> {
+    var didFinishPickingMediaWithInfo: Observable<[String: Any]> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:))
         return pickerDelegate.methodInvoked(selector)
             .map { object in
@@ -52,7 +52,7 @@ public extension Reactive where Base: UIImagePickerController {
             }
     }
 
-    public var didCancel: Observable<Void> {
+    var didCancel: Observable<Void> {
         let selector = #selector(UIImagePickerControllerDelegate.imagePickerControllerDidCancel(_:))
         return pickerDelegate.methodInvoked(selector)
             .map(Function.nothing)
@@ -60,7 +60,7 @@ public extension Reactive where Base: UIImagePickerController {
 }
 
 public extension UIImagePickerController {
-    public static func rxController(_ picker: UIImagePickerController, in viewController: UIViewController,
+    static func rxController(_ picker: UIImagePickerController, in viewController: UIViewController,
                                     animated: Bool = true) -> Observable<UIImagePickerController> {
         return Observable<UIImagePickerController>.create { observer in
             let disposable = picker.rx.didCancel

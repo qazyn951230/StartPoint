@@ -25,15 +25,15 @@ import Foundation
 import UIKit
 
 public extension NSAttributedString {
-    public func boundingSize(width: CGFloat, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
+    func boundingSize(width: CGFloat, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingSize(size: CGSize(width: width, height: .greatestFiniteMagnitude), options: options)
     }
 
-    public func boundingSize(height: CGFloat, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
+    func boundingSize(height: CGFloat, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingSize(size: CGSize(width: .greatestFiniteMagnitude, height: height), options: options)
     }
 
-    public func boundingSize(size: CGSize = CGSize.max(),
+    func boundingSize(size: CGSize = CGSize.max(),
                              options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingRect(with: size, options: options, context: nil).size
     }
@@ -44,15 +44,15 @@ public extension NSAttributedString {
 import Cocoa
 
 public extension NSAttributedString {
-    public func boundingSize(width: CGFloat, options: NSString.DrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
+    func boundingSize(width: CGFloat, options: NSString.DrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingSize(size: CGSize(width: width, height: .greatestFiniteMagnitude), options: options)
     }
 
-    public func boundingSize(height: CGFloat, options: NSString.DrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
+    func boundingSize(height: CGFloat, options: NSString.DrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingSize(size: CGSize(width: .greatestFiniteMagnitude, height: height), options: options)
     }
 
-    public func boundingSize(size: CGSize = CGSize.max(),
+    func boundingSize(size: CGSize = CGSize.max(),
                              options: NSString.DrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingRect(with: size, options: options, context: nil).size
     }

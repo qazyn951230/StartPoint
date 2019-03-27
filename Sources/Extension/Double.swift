@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 public extension Double {
-    public func normalize() -> Double {
+    func normalize() -> Double {
         return isNaN ? 0 : self
     }
 }

@@ -54,11 +54,11 @@ public extension Date {
         return calendar.date(byAdding: components, to: self) ?? self
     }
 
-    public func add(_ date: DateComponent...) -> Date {
+    func add(_ date: DateComponent...) -> Date {
         return _add(date)
     }
 
-    public mutating func adding(_ date: DateComponent...) {
+    mutating func adding(_ date: DateComponent...) {
         self = _add(date)
     }
 
@@ -84,11 +84,11 @@ public extension Date {
         return calendar.date(byAdding: components, to: self) ?? self
     }
 
-    public func subtract(_ date: DateComponent...) -> Date {
+    func subtract(_ date: DateComponent...) -> Date {
         return _subtract(date)
     }
 
-    public mutating func subtracting(_ date: DateComponent...) {
+    mutating func subtracting(_ date: DateComponent...) {
         self = _subtract(date)
     }
 }

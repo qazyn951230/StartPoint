@@ -22,7 +22,7 @@
 
 class DataStreamWriter {
     let stream: DataStream
-    internal(set) var level: Int = 0
+    var level: Int = 0
 
     convenience init() {
         self.init(stream: DataStream.standardOutput())

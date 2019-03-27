@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 public extension Optional {
-    public func maybe(_ method: (Wrapped) throws -> Void) rethrows {
+    func maybe(_ method: (Wrapped) throws -> Void) rethrows {
         if let value = self {
             try method(value)
         }
@@ -59,38 +59,38 @@ extension Optional where Wrapped: Comparable {
 }
 
 public extension Optional where Wrapped: BinaryInteger {
-    public func add(_ other: Wrapped?, origin: Wrapped? = nil) -> Wrapped? {
+    func add(_ other: Wrapped?, origin: Wrapped? = nil) -> Wrapped? {
         if let left = self ?? origin, let right = other {
             return left + right
         }
         return nil
     }
 
-    public mutating func adding(_ other: Wrapped?, origin: Wrapped? = nil) {
+    mutating func adding(_ other: Wrapped?, origin: Wrapped? = nil) {
         self = (self ?? origin).add(other)
     }
 
-    public func subtract(_ other: Wrapped?, origin: Wrapped? = nil) -> Wrapped? {
+    func subtract(_ other: Wrapped?, origin: Wrapped? = nil) -> Wrapped? {
         if let left = self ?? origin, let right = other {
             return left - right
         }
         return nil
     }
 
-    public mutating func subtracting(_ other: Wrapped?, origin: Wrapped? = nil) {
+    mutating func subtracting(_ other: Wrapped?, origin: Wrapped? = nil) {
         self = (self ?? origin).subtract(other)
     }
 }
 
 public extension Optional where Wrapped == String {
-    public var orEmpty: String {
+    var orEmpty: String {
         if let value = self {
             return value
         }
         return String.empty
     }
 
-    public var notEmpty: String? {
+    var notEmpty: String? {
         if let value = self {
             return value.isEmpty ? nil : value
         }

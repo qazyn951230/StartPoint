@@ -342,7 +342,7 @@ public struct FlexPrintOptions: OptionSet {
 }
 
 public extension FlexLayout {
-    public func print(options: FlexPrintOptions? = nil) {
+    func print(options: FlexPrintOptions? = nil) {
         let _options = options ?? [FlexPrintOptions.layout, .style, .fullHtml, .randomBackground]
         let printer = FlexHtmlPrinter(stream: DataStream.standardOutput(), options: _options)
         printer.print(layout: self)

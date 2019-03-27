@@ -54,21 +54,21 @@ public protocol RawNotation: StaticNotation, RawRepresentable {
 }
 
 public extension RawNotation where RawValue == String {
-    public static func create(from notated: Notated) -> Self {
+    static func create(from notated: Notated) -> Self {
         let temp: Self? = self.init(rawValue: notated.string)
         return temp ?? Self.default
     }
 }
 
 public extension RawNotation where RawValue == UInt {
-    public static func create(from notated: Notated) -> Self {
+    static func create(from notated: Notated) -> Self {
         let temp: Self? = self.init(rawValue: notated.uint)
         return temp ?? Self.default
     }
 }
 
 public extension Notation {
-    public static func objects(from notated: Notated) -> [Self] {
+    static func objects(from notated: Notated) -> [Self] {
         return notated.list.map { (value: Notated) -> Self in
             Self.init(from: value)
         }
@@ -76,7 +76,7 @@ public extension Notation {
 }
 
 public extension FailableNotation {
-    public static func objects(from notated: Notated) -> [Self] {
+    static func objects(from notated: Notated) -> [Self] {
         return notated.list.compactMap { (value: Notated) -> Self? in
             Self.init(from: value)
         }
@@ -84,7 +84,7 @@ public extension FailableNotation {
 }
 
 public extension StaticNotation {
-    public static func objects(from notated: Notated) -> [Self] {
+    static func objects(from notated: Notated) -> [Self] {
         return notated.list.map { (value: Notated) -> Self in
             Self.create(from: value)
         }

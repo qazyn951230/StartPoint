@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 public extension String {
-    public static let empty: String = ""
+    static let empty: String = ""
 
-    public func split(at index: String.Index) -> (Substring, Substring) {
+    func split(at index: String.Index) -> (Substring, Substring) {
         if index < startIndex {
             return (Substring(), self[startIndex...])
         }
@@ -33,36 +33,36 @@ public extension String {
         return (self[..<index], self[index...])
     }
 
-    public func split(firstOf element: Character) -> (Substring, Substring) {
+    func split(firstOf element: Character) -> (Substring, Substring) {
         let index = firstIndex(of: element) ?? startIndex
         return split(at: index)
     }
 
-    public func split(lastOf element: Character) -> (Substring, Substring) {
+    func split(lastOf element: Character) -> (Substring, Substring) {
         let index = lastIndex(of: element) ?? endIndex
         return split(at: index)
     }
 
-    public func string(upTo index: String.Index) -> String {
+    func string(upTo index: String.Index) -> String {
         return String(self[..<index])
     }
 
-    public func string(through index: String.Index) -> String {
+    func string(through index: String.Index) -> String {
         return String(self[...index])
     }
 
-    public func string(from index: String.Index) -> String {
+    func string(from index: String.Index) -> String {
         return String(self[index...])
     }
 
-    public func remove(prefix: String) -> String {
+    func remove(prefix: String) -> String {
         if hasPrefix(prefix) {
             return String(self[prefix.endIndex...])
         }
         return self
     }
 
-    public func remove(suffix: String) -> String {
+    func remove(suffix: String) -> String {
         if hasSuffix(suffix) {
             let end = index(endIndex, offsetBy: -suffix.count)
             return String(self[..<end])
@@ -70,7 +70,7 @@ public extension String {
         return self
     }
 
-    public static func decodeFixedArray<T>(_ value: T, keyPath: PartialKeyPath<T>, count: Int) -> String? {
+    static func decodeFixedArray<T>(_ value: T, keyPath: PartialKeyPath<T>, count: Int) -> String? {
         guard let offset = MemoryLayout<T>.offset(of: keyPath) else {
             return nil
         }

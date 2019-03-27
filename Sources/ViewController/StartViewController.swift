@@ -159,7 +159,7 @@ open class StartViewController<View: UIView>: UIViewController, UIGestureRecogni
 }
 
 public extension StartViewController where View: UIScrollView {
-    public func adjustsViewInsets(_ adjusts: Bool) {
+    func adjustsViewInsets(_ adjusts: Bool) {
         if #available(iOS 11.0, *) {
             rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never
         } else {

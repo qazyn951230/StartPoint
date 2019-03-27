@@ -24,7 +24,7 @@ import Dispatch
 import Foundation
 
 public extension DispatchQueue {
-    public func apply(iterations: Int, work: @escaping (Int) -> Void) {
+    func apply(iterations: Int, work: @escaping (Int) -> Void) {
         __dispatch_apply(iterations, self, work)
     }
 }

@@ -123,7 +123,7 @@ public protocol TextFieldElementDelegate: class {
 }
 
 public extension TextFieldElementDelegate {
-    public func textFieldShouldBeginEditing(_ textField: TextFieldElement) -> Bool {
+    func textFieldShouldBeginEditing(_ textField: TextFieldElement) -> Bool {
         return true
     }
 
