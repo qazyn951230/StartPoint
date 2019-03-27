@@ -60,67 +60,67 @@ func assertThreadAffinity(for element: BasicElement, file: StaticString = #file,
 #endif
 
 public func assertFail(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
-    assert(false, message, file: file, line: line)
+    assert(false, message(), file: file, line: line)
 }
 
 public func assertNil(_ expression: @autoclosure () -> Any?, _ message: @autoclosure () -> String = "",
                       file: StaticString = #file, line: UInt = #line) {
-    assert(expression() == nil, message, file: file, line: line)
+    assert(expression() == nil, message(), file: file, line: line)
 }
 
 public func assertNotNil(_ expression: @autoclosure () -> Any?, _ message: @autoclosure () -> String = "",
                          file: StaticString = #file, line: UInt = #line) {
-    assert(expression() != nil, message, file: file, line: line)
+    assert(expression() != nil, message(), file: file, line: line)
 }
 
 public func assertTrue(_ expression: @autoclosure () -> Bool, _ message: @autoclosure () -> String = "",
                        file: StaticString = #file, line: UInt = #line) {
-    assert(expression() == true, message, file: file, line: line)
+    assert(expression() == true, message(), file: file, line: line)
 }
 
 public func assertFalse(_ expression: @autoclosure () -> Bool, _ message: @autoclosure () -> String = "",
                         file: StaticString = #file, line: UInt = #line) {
-    assert(expression() == false, message, file: file, line: line)
+    assert(expression() == false, message(), file: file, line: line)
 }
 
 public func assertEqual<T: Equatable>(_ expression1: @autoclosure () -> T,
                                       _ expression2: @autoclosure () -> T,
                                       _ message: @autoclosure () -> String = "",
                                       file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() == expression2(), message, file: file, line: line)
+    assert(expression1() == expression2(), message(), file: file, line: line)
 }
 
 public func assertNotEqual<T: Equatable>(_ expression1: @autoclosure () -> T,
                                          _ expression2: @autoclosure () -> T,
                                          _ message: @autoclosure () -> String = "",
                                          file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() != expression2(), message, file: file, line: line)
+    assert(expression1() != expression2(), message(), file: file, line: line)
 }
 
 public func assertLessThan<T: Comparable>(_ expression1: @autoclosure () -> T,
                                           _ expression2: @autoclosure () -> T,
                                           _ message: @autoclosure () -> String = "",
                                           file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() < expression2(), message, file: file, line: line)
+    assert(expression1() < expression2(), message(), file: file, line: line)
 }
 
 public func assertGreaterThan<T: Comparable>(_ expression1: @autoclosure () -> T,
                                              _ expression2: @autoclosure () -> T,
                                              _ message: @autoclosure () -> String = "",
                                              file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() > expression2(), message, file: file, line: line)
+    assert(expression1() > expression2(), message(), file: file, line: line)
 }
 
 public func assertLessThanOrEqual<T: Comparable>(_ expression1: @autoclosure () -> T,
                                                  _ expression2: @autoclosure () -> T,
                                                  _ message: @autoclosure () -> String = "",
                                                  file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() <= expression2(), message, file: file, line: line)
+    assert(expression1() <= expression2(), message(), file: file, line: line)
 }
 
 public func assertGreaterThanOrEqual<T: Comparable>(_ expression1: @autoclosure () -> T,
                                                     _ expression2: @autoclosure () -> T,
                                                     _ message: @autoclosure () -> String = "",
                                                     file: StaticString = #file, line: UInt = #line) {
-    assert(expression1() >= expression2(), message, file: file, line: line)
+    assert(expression1() >= expression2(), message(), file: file, line: line)
 }

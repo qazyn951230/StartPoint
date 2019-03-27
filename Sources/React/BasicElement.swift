@@ -195,7 +195,7 @@ open class BasicElement: Hashable, CustomStringConvertible {
             return
         }
 #if DEBUG
-        if let index = children.index(of: element) {
+        if let index = children.firstIndex(of: element) {
             children.remove(at: index)
         } else {
             assertFail("\(self) own \(element), but doesn't contain in children array")

@@ -1305,12 +1305,12 @@
 					};
 					BC6BA1A81F2DC08600772AA8 = {
 						CreatedOnToolsVersion = 8.3.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Manual;
 					};
 					BC6BA1B11F2DC08700772AA8 = {
 						CreatedOnToolsVersion = 8.3.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1806,6 +1806,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1815,6 +1816,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -1829,6 +1831,7 @@
 				);
 				INFOPLIST_FILE = Tests/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1843,6 +1846,7 @@
 				);
 				INFOPLIST_FILE = Tests/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

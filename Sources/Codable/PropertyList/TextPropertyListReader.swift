@@ -190,7 +190,10 @@ final class TextPropertyListReader: PropertyListReader {
         }
     }
 
-    private static func nextStepLatinEncoding(pointer: UnsafePointer<Int8>) -> CFString? {
+    private static func nextStepLatinEncoding(pointer: UnsafeRawBufferPointer) -> CFString? {
+        guard let pointer = pointer.baseAddress?.assumingMemoryBound(to: Int8.self) else {
+            return nil
+        }
         return CFStringCreateWithCString(kCFAllocatorDefault, pointer,
             CFStringBuiltInEncodings.nextStepLatin.rawValue)
     }

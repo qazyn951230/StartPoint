@@ -92,7 +92,7 @@ open class BasicAlertView: Hashable {
                 BasicAlertView.alerts.removeAll()
             }
         }
-        if let index = BasicAlertView.alerts.index(of: self) {
+        if let index = BasicAlertView.alerts.firstIndex(of: self) {
             BasicAlertView.alerts.remove(at: index)
         }
     }

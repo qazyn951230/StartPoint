@@ -37,7 +37,7 @@ open class VisualEffectElement: Element<UIVisualEffectView> {
     }
 
     @discardableResult
-    public override func cornerRadius(_ value: CGFloat) -> VisualEffectElement {
+    public override func cornerRadius(_ value: CGFloat) -> Self {
         if Runner.isMain(), let view = self.view {
             view.layer.cornerRadius = value
             view.layer.masksToBounds = true

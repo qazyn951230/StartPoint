@@ -90,6 +90,8 @@ open class TableCellElement: BasicElement, Identified {
             layout.padding(right: .length(39 + TableCellElement.offset))
         case .detailButton:
             layout.padding(right: .length(47 + TableCellElement.offset))
+        @unknown default:
+            break
         }
         return self
     }

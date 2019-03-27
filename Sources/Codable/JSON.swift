@@ -262,7 +262,10 @@ public class JSON: TypeNotated, Comparable, CustomStringConvertible {
     }
 
     public static func parse(_ data: Data, option: JSONParser.Options = []) throws -> JSON {
-        return try data.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) in
+        return try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return JSON.null
+            }
             let stream = ByteStream.uint8(pointer)
             let parser = JSONParser(stream: stream, options: option)
             return try parser.parse()

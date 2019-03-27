@@ -45,6 +45,8 @@ public class Toast {
             margin = 40
         case .tv:
             margin = 60
+        @unknown default:
+            margin = 0
         }
         return UIScreen.main.bounds.width - margin * 2
     }
@@ -119,6 +121,8 @@ public class Toast {
             margin = 40
         case .tv:
             margin = 60
+        @unknown default:
+            margin = 0
         }
         return UIScreen.main.bounds.width - margin * 2
     }()
