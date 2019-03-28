@@ -339,7 +339,6 @@ open class BasicElement: Hashable, CustomStringConvertible {
             }
 #else
             self.frame(_frame.cgRect)
-            layout.hasNewLayout = false
 #endif
         }
         let _left = framed ? 0 : _frame.x
@@ -359,7 +358,10 @@ open class BasicElement: Hashable, CustomStringConvertible {
     func frame(_ value: CGRect) {
         pendingState.bounds = _bounds.cgRect
         pendingState.center = _center.cgPoint
-        if Runner.isMain() && loaded {
+        guard loaded else {
+            return
+        }
+        if Runner.isMain() {
             applyFrame()
         } else {
             registerPendingState()
