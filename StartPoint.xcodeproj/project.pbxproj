@@ -720,6 +720,7 @@
 				AC96A88DAF244E5EAAC1C668 /* ImageElement.swift */,
 				AC96A6D3BCF3DB8BC2134433 /* LabelElement.swift */,
 				AC96A5C24B6B105C043B2099 /* LayerElement.swift */,
+				AC96A9A0E8F5A6B7780EDC70 /* LayoutTransition.swift */,
 				AC96AF3F8868F5EA5FAD39E7 /* ShapeElement.swift */,
 				AC96A7F9F536530BF5EF9AD8 /* StackElement.swift */,
 				AC96ABCB4BAAB4012A8B8F3C /* TextFieldElement.swift */,
@@ -728,7 +729,6 @@
 				AC96AC83BDD35D46748896B8 /* Scrolled */,
 				AC96AD5234F1B36160AAAFA9 /* View */,
 				AC96AAE2F759AB36B3AE9A83 /* ViewController */,
-				AC96A9A0E8F5A6B7780EDC70 /* LayoutTransition.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -764,6 +764,7 @@
 				AC96A6E346C2C0DFF901CEF2 /* PackageInfo.swift */,
 				AC96A8F7A138D61BC5B15CBB /* R.swift */,
 				AC96A2429CD251C00FABFCD1 /* SafeArea.swift */,
+				AC96ACDEDF59889A1286E0CB /* Validation.swift */,
 				AC96AC43E9E297FB3F8CDCCB /* WebBridge.swift */,
 				AC96A8969BE859EBD00C9FBC /* Algorithm */,
 				AC96A4F759648AD64C5789D1 /* Codable */,
@@ -778,12 +779,11 @@
 				AC96A29D32606AE8F369DBB7 /* React */,
 				AC96A0C820BE78FDF5CE1C28 /* Renderer */,
 				AC96A12D115789E979840DE8 /* Router */,
+				AC96A6EE3974D2ADC971C1E1 /* Stream */,
 				AC96A0F03295044FF278F44A /* TextKit */,
 				AC96AD3B11145102758B9C19 /* Thread */,
 				BCA2A4591F3DA5BC007A772A /* View */,
 				AC96AE58B0B945BBAD762FBD /* ViewController */,
-				AC96A6EE3974D2ADC971C1E1 /* Stream */,
-				AC96ACDEDF59889A1286E0CB /* Validation.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -1085,9 +1085,9 @@
 		BC86B873211ADD6100C02605 /* Project */ = {
 			isa = PBXGroup;
 			children = (
+				BC86B876211ADD6100C02605 /* Project-Debug.xcconfig */,
 				BC86B874211ADD6100C02605 /* Project-Release.xcconfig */,
 				BC86B875211ADD6100C02605 /* Project.xcconfig */,
-				BC86B876211ADD6100C02605 /* Project-Debug.xcconfig */,
 			);
 			path = Project;
 			sourceTree = "<group>";
@@ -1756,16 +1756,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC33768F211D771C006DF19C /* macOS-Test.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = Tests/macOS.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.undev.StartPoint-macOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
@@ -1773,16 +1765,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC33768F211D771C006DF19C /* macOS-Test.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = Tests/macOS.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.undev.StartPoint-macOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1806,7 +1790,6 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1816,7 +1799,6 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -1824,14 +1806,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Tests/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1839,14 +1815,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */;
 			buildSettings = {
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
 				INFOPLIST_FILE = Tests/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

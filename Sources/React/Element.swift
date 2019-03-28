@@ -71,10 +71,9 @@ open class Element<View: UIView>: BasicElement {
 
     // MARK: - Managing the elements hierarchy
     override func removeFromOwner() {
+        assertThreadAffinity(for: self)
         super.removeFromOwner()
-        if let _view = view {
-            Runner.onMain(_view.removeFromSuperview)
-        }
+        view?.removeFromSuperview()
     }
 
     // MARK: - Create a View Object

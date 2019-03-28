@@ -141,18 +141,13 @@ open class BasicElement: Hashable, CustomStringConvertible {
 
     // MARK: insert
     public func addChild(_ element: BasicElement) {
-//        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
         }
-        assertEqual(children.count, layout.children.count, "Children array not synchronized with layout array")
-        children.append(element)
-        layout.append(element.layout)
-        element.owner = self
+        insertChild(element, at: children.count, remove: nil)
     }
 
     public func insertChild(_ element: BasicElement, at index: Int) {
-//        assertFalse(loaded, "Current only support add child before it create a view")
         if element == self || element.owner == self {
             return
         }
@@ -160,7 +155,14 @@ open class BasicElement: Hashable, CustomStringConvertible {
             assertFail("Cannot insert a element at index \(index). Count is \(children.count)")
             return
         }
+        insertChild(element, at: index, remove: nil)
+    }
+
+    func insertChild(_ element: BasicElement, at index: Int, remove oldElement: BasicElement?) {
+        assertThreadAffinity(for: self)
         assertEqual(children.count, layout.children.count, "Children array not synchronized with layout array")
+        element.removeFromOwner()
+        oldElement?.removeFromOwner()
         children.insert(element, at: index)
         layout.insert(element.layout, at: index)
         element.owner = self
@@ -179,13 +181,13 @@ open class BasicElement: Hashable, CustomStringConvertible {
         children.replace(at: index, with: other)
         layout.replace(at: index, with: other.layout)
         element.owner = nil
-        // FIXME: Remove the view or layer
         element.removeFromOwner()
         other.owner = self
     }
 
     // MARK: Remove
     func removeFromOwner() {
+        assertThreadAffinity(for: self)
         owner?.removeElement(self)
         owner = nil
     }
@@ -357,7 +359,9 @@ open class BasicElement: Hashable, CustomStringConvertible {
     func frame(_ value: CGRect) {
         pendingState.bounds = _bounds.cgRect
         pendingState.center = _center.cgPoint
-        if Runner.notMain() && loaded {
+        if Runner.isMain() && loaded {
+            applyFrame()
+        } else {
             registerPendingState()
         }
     }

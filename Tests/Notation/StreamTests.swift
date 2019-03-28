@@ -26,7 +26,10 @@ import XCTest
 class StreamTests: XCTestCase {
     func testDataStream() {
         let value = "foobar➕😁".data(using: .utf8)!
-        let array: [UInt8] =  value.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) in
+        let array: [UInt8] =  value.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return []
+            }
             let stream = ByteStream.uint8(pointer)
             var array: [UInt8] = []
             while stream.peek() > 0 {

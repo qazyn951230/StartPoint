@@ -85,10 +85,9 @@ open class BasicLayerElement<Layer: CALayer>: BasicElement {
 
     // MARK: - Managing the elements hierarchy
     override func removeFromOwner() {
+        assertThreadAffinity(for: self)
         super.removeFromOwner()
-        if let _layer = layer {
-            Runner.onMain(_layer.removeFromSuperlayer)
-        }
+        layer?.removeFromSuperlayer()
     }
 
     // MARK: - Create a Layer Object
