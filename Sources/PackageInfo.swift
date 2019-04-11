@@ -24,10 +24,6 @@ import Foundation
 
 public struct PackageInfo {
     public static var bundle: Bundle? {
-#if os(iOS)
-        return Bundle(identifier: "com.undev.iOS.StartPoint")
-#else
-        return Bundle(identifier: "com.undev.macOS.StartPoint")
-#endif
+        return Bundle(identifier: "com.undev.StartPoint")
     }
 }

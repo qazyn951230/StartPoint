@@ -37,6 +37,11 @@ public protocol Notation: BaseNotation {
     init(from notated: Notated)
 }
 
+public protocol KeyedNotation: BaseNotation {
+    init(key: String, from notated: Notated)
+    static func objects(map notated: [String: Notated]) -> [Self]
+}
+
 public protocol FailableNotation: BaseNotation {
     init?(from notated: Notated)
 }
@@ -71,6 +76,20 @@ public extension Notation {
     static func objects(from notated: Notated) -> [Self] {
         return notated.list.map { (value: Notated) -> Self in
             Self.init(from: value)
+        }
+    }
+}
+
+public extension KeyedNotation {
+    static func objects(from notated: Notated) -> [Self] {
+        return notated.map.map { (key: String, value: Notated) -> Self in
+            Self.init(key: key, from: value)
+        }
+    }
+
+    static func objects(map notated: [String: Notated]) -> [Self] {
+        return notated.map { (key: String, value: Notated) -> Self in
+            Self.init(key: key, from: value)
         }
     }
 }
@@ -118,13 +137,30 @@ public func <|?<T: RawRepresentable>(notated: Notated, key: String) -> T?
 }
 
 public func <|?<T: BaseNotation>(notated: Notated, key: String) -> [T]? {
-    let objects = T.objects(from: notated.item(key: key))
-    return objects.count > 0 ? objects : nil
+    let item = notated.item(key: key)
+    if item.exists {
+        let array = T.objects(from: item)
+        return array.isEmpty ? nil : array
+    }
+    return nil
 }
 
 public func <|<T: BaseNotation>(notated: Notated, key: String) -> [T] {
     return T.objects(from: notated.item(key: key))
 }
+
+//public func <|<T: KeyedNotation>(notated: Notated, key: String) -> [T] {
+//    return T.objects(map: notated.item(key: key).map)
+//}
+//
+//public func <|?<T: KeyedNotation>(notated: Notated, key: String) -> [T]? {
+//    let item = notated.item(key: key)
+//    if item.exists {
+//        let array = T.objects(map: item.map)
+//        return array.isEmpty ? nil : array
+//    }
+//    return nil
+//}
 
 // MARK: - Decodable array
 public func <|?(notated: Notated, key: String) -> [Notated]? {

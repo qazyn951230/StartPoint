@@ -284,7 +284,6 @@
 		BC25D0A5212BF86600697244 /* Double.c in Sources */ = {isa = PBXBuildFile; fileRef = AC96A000E4E77DEB157E178F /* Double.c */; };
 		BC4A4A712119479E002564C6 /* StartPoint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC4A4A682119479E002564C6 /* StartPoint.framework */; };
 		BC5824E1221CF9AF001D1388 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5824E0221CF9AF001D1388 /* RxAtomic.framework */; };
-		BC5824E2221CF9AF001D1388 /* RxAtomic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5824E0221CF9AF001D1388 /* RxAtomic.framework */; };
 		BC6127551F3EFBA300AC8224 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E7591F3EB2D600DDC894 /* Alamofire.framework */; };
 		BC6127581F3EFCD400AC8224 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */; };
 		BC6127591F3EFCD400AC8224 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
@@ -305,8 +304,68 @@
 		BCA2A4681F3DA5BC007A772A /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A45A1F3DA5BC007A772A /* View.swift */; };
 		BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4621F3DA5BC007A772A /* Device.swift */; };
 		BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
+		BCD6892F225DA1A100894AEC /* StartPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A342F409A0E293EB7804 /* StartPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCD68930225DA1D500894AEC /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6343AA9195CFA7C7A96 /* Errors.swift */; };
+		BCD68931225DA1D500894AEC /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
+		BCD68932225DA1D500894AEC /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A70069177338DE20CAF5 /* Global.swift */; };
+		BCD68933225DA1D500894AEC /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACDEDF59889A1286E0CB /* Validation.swift */; };
+		BCD68934225DA1DD00894AEC /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D560BBF1E4278D3A5A /* List.swift */; };
+		BCD68935225DA1DD00894AEC /* ListSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A11B3A8E302018B756A5 /* ListSlice.swift */; };
+		BCD68936225DA1DD00894AEC /* OrderedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D52EB86AA35673CF2D /* OrderedList.swift */; };
+		BCD68937225DA1E300894AEC /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB947FAB1DF91941DDF7 /* JSONParser.swift */; };
+		BCD68938225DA1E300894AEC /* JSONParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A31773EF5A2CB168B077 /* JSONParseError.swift */; };
+		BCD68939225DA1E300894AEC /* JSONValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A54E4C141CAC29D0D18A /* JSONValues.swift */; };
+		BCD6893A225DA1E300894AEC /* JSONWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A3945B6593059880EA8E /* JSONWriter.swift */; };
+		BCD6893B225DA1E300894AEC /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC8280B7520BCAC87885 /* JSON.swift */; };
+		BCD6893C225DA1E600894AEC /* PropertyList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A51010390421C2FFE3DC /* PropertyList.swift */; };
+		BCD6893D225DA1E600894AEC /* PropertyListReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1DFF724C2080A6CE117 /* PropertyListReader.swift */; };
+		BCD6893E225DA1E600894AEC /* BinaryPropertyListReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEF4024DCE01BB4365E6 /* BinaryPropertyListReader.swift */; };
+		BCD6893F225DA1E600894AEC /* PropertyListKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADA31D04391054089073 /* PropertyListKind.swift */; };
+		BCD68940225DA1E600894AEC /* TextPropertyListReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD02911AF1F3434D4E4E /* TextPropertyListReader.swift */; };
+		BCD68941225DA1F300894AEC /* Atomic.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A98AC5B757CFEC6EC9E3 /* Atomic.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCD68942225DA1F300894AEC /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A69C27E15608DF50FF12 /* Atomic.swift */; };
+		BCD68943225DA1F300894AEC /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEC6503E25A2408613CD /* Lock.swift */; };
+		BCD68944225DA1F300894AEC /* RunLoopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A46B8B71C16C26CBE55F /* RunLoopQueue.swift */; };
+		BCD68945225DA1F300894AEC /* Runner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADB1EB1ECC7E7C293FE4 /* Runner.swift */; };
+		BCD68947225DA20100894AEC /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF6BFC92CCBFACCADA7C /* Stream.swift */; };
+		BCD68948225DA20100894AEC /* ByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A660ACE5815583364D09 /* ByteStream.swift */; };
+		BCD68949225DA20100894AEC /* UnicodeStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A93466C792C36E118E28 /* UnicodeStream.swift */; };
+		BCD6894A225DA20100894AEC /* MemoryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */; };
+		BCD6894B225DA20100894AEC /* FileByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6C9A33B9941F565F7A5 /* FileByteStream.swift */; };
+		BCD6894C225DA20100894AEC /* FileStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4930F3A00F285EC36A9 /* FileStream.swift */; };
+		BCD6894D225DA20100894AEC /* DataStreamWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0BD0D195097B137A1F7 /* DataStreamWriter.swift */; };
+		BCD6894F225DA20C00894AEC /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A03D7883AFC28651386E /* Weak.swift */; };
+		BCD68950225DA21100894AEC /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A881F78BCDEBBF333943 /* Assert.swift */; };
+		BCD68951225DA21B00894AEC /* AnyNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AAAFA13A484BE1AEF41A /* AnyNotation.swift */; };
+		BCD68952225DA21B00894AEC /* Config.h in Headers */ = {isa = PBXBuildFile; fileRef = BC87EFA92193D15200896E21 /* Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCD68953225DA21B00894AEC /* Double.c in Sources */ = {isa = PBXBuildFile; fileRef = AC96A000E4E77DEB157E178F /* Double.c */; };
+		BCD68954225DA21B00894AEC /* Double.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A5D0A4D8F4101620EE48 /* Double.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCD68955225DA21B00894AEC /* Notated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEA321B74FAE31017D55 /* Notated.swift */; };
+		BCD68956225DA21B00894AEC /* Notation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB0722680DBC90E94458 /* Notation.swift */; };
+		BCD68957225DA21B00894AEC /* NotationCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8E24D0656180E2EBBDA /* NotationCoder.swift */; };
+		BCD68958225DA21B00894AEC /* XMLNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6011867A1978720E4CC /* XMLNotation.swift */; };
+		BCD68959225DA23500894AEC /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96AF4CCDEEAB7B80A449DC /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCD6895A225DA23F00894AEC /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FF4EE7351C2C3980F3 /* Date.swift */; };
+		BCD6895B225DA24C00894AEC /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9DE41EA263C74E68932 /* Path.swift */; };
+		BCD6895C225DA24C00894AEC /* FileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A981C5C1F35F672D6245 /* FileSystem.swift */; };
+		BCD68966225DA25800894AEC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2BEB5B8FDC95696FC69 /* Log.swift */; };
+		BCD68967225DA25800894AEC /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA31A616833F79C3128B /* LogDestination.swift */; };
+		BCD68968225DA25800894AEC /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A95BC07C5AFE77700234 /* LogLevel.swift */; };
+		BCD68969225DA2AF00894AEC /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9AF443FC015B0799EF5 /* Array.swift */; };
+		BCD6896D225DA2AF00894AEC /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
+		BCD6896F225DA2AF00894AEC /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB7E6AC4173A6D7C1DEB /* Dictionary.swift */; };
+		BCD68970225DA2AF00894AEC /* DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A692552FC3A7CCD77301 /* DispatchQueue.swift */; };
+		BCD68971225DA2AF00894AEC /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FC10F6CE9C8040980B /* Double.swift */; };
+		BCD68973225DA2AF00894AEC /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA36EE92A0C924EC81CC /* NSObject.swift */; };
+		BCD68974225DA2AF00894AEC /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = AC96A26B6278FF9FEB3803D5 /* Object.m */; };
+		BCD68975225DA2AF00894AEC /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC22BCA0084DE95CFE78 /* Observable.swift */; };
+		BCD68976225DA2AF00894AEC /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3CE4AD79F58DDB5E59 /* Optional.swift */; };
+		BCD68977225DA2AF00894AEC /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AB69915863C3EA1B000C /* Sequence.swift */; };
+		BCD68978225DA2AF00894AEC /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4581F3DA5BC007A772A /* String.swift */; };
+		BCD68979225DA2E600894AEC /* PackageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6E346C2C0DFF901CEF2 /* PackageInfo.swift */; };
+		BCD6897B225DA33400894AEC /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E7591F3EB2D600DDC894 /* Alamofire.framework */; };
+		BCD6897C225DA33400894AEC /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
 		BCF6529821C74EA100D64A48 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E7591F3EB2D600DDC894 /* Alamofire.framework */; };
-		BCF6529921C74EA100D64A48 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */; };
 		BCF6529A21C74EA100D64A48 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
 /* End PBXBuildFile section */
 
@@ -477,7 +536,7 @@
 		AC96AC577B061C6A70716C1B /* InfiniteHeightTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteHeightTests.swift; sourceTree = "<group>"; };
 		AC96AC5D3212FC05F7BB00A7 /* ContactPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactPermission.swift; sourceTree = "<group>"; };
 		AC96AC5E105A8574AD1E3295 /* FlexButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexButton.swift; sourceTree = "<group>"; };
-		AC96AC5EBC21F4B236B8210B /* iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = iOS.plist; sourceTree = "<group>"; };
+		AC96AC5EBC21F4B236B8210B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AC96AC81FAF819B3E8886240 /* AttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributedString.swift; sourceTree = "<group>"; };
 		AC96AC8280B7520BCAC87885 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
 		AC96ACA4EDB3AEDEECC4CD2D /* PropertyText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyText.swift; sourceTree = "<group>"; };
@@ -541,7 +600,6 @@
 		BC33768F211D771C006DF19C /* macOS-Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC4A4A682119479E002564C6 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC4A4A702119479E002564C6 /* macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC4A4A7F21194B2F002564C6 /* macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = macOS.plist; sourceTree = "<group>"; };
 		BC5824E0221CF9AF001D1388 /* RxAtomic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxAtomic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -566,6 +624,7 @@
 		BCA9E07B1F2E1C5D00D78FE9 /* iOS-App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-App.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		BCD68927225D9DD800894AEC /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,8 +632,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCF6529921C74EA100D64A48 /* RxCocoa.framework in Frameworks */,
-				BC5824E2221CF9AF001D1388 /* RxAtomic.framework in Frameworks */,
 				BCF6529821C74EA100D64A48 /* Alamofire.framework in Frameworks */,
 				BCF6529A21C74EA100D64A48 /* RxSwift.framework in Frameworks */,
 			);
@@ -604,6 +661,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC6BA1B31F2DC08700772AA8 /* StartPoint.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCD68924225D9DD800894AEC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCD6897C225DA33400894AEC /* RxSwift.framework in Frameworks */,
+				BCD6897B225DA33400894AEC /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -753,8 +819,7 @@
 			isa = PBXGroup;
 			children = (
 				AC96A342F409A0E293EB7804 /* StartPoint.h */,
-				AC96AC5EBC21F4B236B8210B /* iOS.plist */,
-				BC4A4A7F21194B2F002564C6 /* macOS.plist */,
+				AC96AC5EBC21F4B236B8210B /* Info.plist */,
 				AC96AD4CAEBFA3C2C43365E1 /* Creatable.swift */,
 				BCA2A4621F3DA5BC007A772A /* Device.swift */,
 				AC96A6343AA9195CFA7C7A96 /* Errors.swift */,
@@ -1078,6 +1143,7 @@
 				BC6BA1B21F2DC08700772AA8 /* iOSTests.xctest */,
 				BC4A4A682119479E002564C6 /* StartPoint.framework */,
 				BC4A4A702119479E002564C6 /* macOSTests.xctest */,
+				BCD68927225D9DD800894AEC /* StartPoint.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1209,6 +1275,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BCD68922225D9DD800894AEC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCD68952225DA21B00894AEC /* Config.h in Headers */,
+				BCD68954225DA21B00894AEC /* Double.h in Headers */,
+				BCD6892F225DA1A100894AEC /* StartPoint.h in Headers */,
+				BCD68959225DA23500894AEC /* Object.h in Headers */,
+				BCD68941225DA1F300894AEC /* Atomic.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -1217,9 +1295,9 @@
 			buildConfigurationList = BC4A4A792119479F002564C6 /* Build configuration list for PBXNativeTarget "StartPoint_macOS" */;
 			buildPhases = (
 				BCF6529B21C7500D00D64A48 /* [XPM] Copy Linked Libraries */,
+				BC4A4A652119479E002564C6 /* Headers */,
 				BC4A4A632119479E002564C6 /* Sources */,
 				BC4A4A642119479E002564C6 /* Frameworks */,
-				BC4A4A652119479E002564C6 /* Headers */,
 				BC4A4A662119479E002564C6 /* Resources */,
 			);
 			buildRules = (
@@ -1254,9 +1332,9 @@
 			buildConfigurationList = BC6BA1BD1F2DC08700772AA8 /* Build configuration list for PBXNativeTarget "StartPoint_iOS" */;
 			buildPhases = (
 				BCF6529721C7484A00D64A48 /* [XPM] Copy Linked Libraries */,
+				BC6BA1A61F2DC08600772AA8 /* Headers */,
 				BC6BA1A41F2DC08600772AA8 /* Sources */,
 				BC6BA1A51F2DC08600772AA8 /* Frameworks */,
-				BC6BA1A61F2DC08600772AA8 /* Headers */,
 				BC6BA1A71F2DC08600772AA8 /* Resources */,
 			);
 			buildRules = (
@@ -1286,6 +1364,25 @@
 			productReference = BC6BA1B21F2DC08700772AA8 /* iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		BCD68926225D9DD800894AEC /* StartPoint_CLI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCD6892E225D9DD800894AEC /* Build configuration list for PBXNativeTarget "StartPoint_CLI" */;
+			buildPhases = (
+				BCD6897A225DA2FF00894AEC /* [XPM] Copy Linked Libraries */,
+				BCD68922225D9DD800894AEC /* Headers */,
+				BCD68923225D9DD800894AEC /* Sources */,
+				BCD68924225D9DD800894AEC /* Frameworks */,
+				BCD68925225D9DD800894AEC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StartPoint_CLI;
+			productName = StartPoint_CLI;
+			productReference = BCD68927225D9DD800894AEC /* StartPoint.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1313,6 +1410,9 @@
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
+					BCD68926225D9DD800894AEC = {
+						CreatedOnToolsVersion = 10.2;
+					};
 				};
 			};
 			buildConfigurationList = BC6BA1A31F2DC08600772AA8 /* Build configuration list for PBXProject "StartPoint" */;
@@ -1330,6 +1430,7 @@
 			targets = (
 				BC6BA1A81F2DC08600772AA8 /* StartPoint_iOS */,
 				BC4A4A672119479E002564C6 /* StartPoint_macOS */,
+				BCD68926225D9DD800894AEC /* StartPoint_CLI */,
 				BC6BA1B11F2DC08700772AA8 /* iOSTests */,
 				BC4A4A6F2119479E002564C6 /* macOSTests */,
 			);
@@ -1366,9 +1467,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BCD68925225D9DD800894AEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		BCD6897A225DA2FF00894AEC /* [XPM] Copy Linked Libraries */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[XPM] Copy Linked Libraries";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xpm copy\n";
+			showEnvVarsInLog = 0;
+		};
 		BCF6529721C7484A00D64A48 /* [XPM] Copy Linked Libraries */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1718,6 +1845,67 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BCD68923225D9DD800894AEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCD68951225DA21B00894AEC /* AnyNotation.swift in Sources */,
+				BCD68930225DA1D500894AEC /* Errors.swift in Sources */,
+				BCD68944225DA1F300894AEC /* RunLoopQueue.swift in Sources */,
+				BCD68973225DA2AF00894AEC /* NSObject.swift in Sources */,
+				BCD68955225DA21B00894AEC /* Notated.swift in Sources */,
+				BCD68979225DA2E600894AEC /* PackageInfo.swift in Sources */,
+				BCD68939225DA1E300894AEC /* JSONValues.swift in Sources */,
+				BCD68943225DA1F300894AEC /* Lock.swift in Sources */,
+				BCD68969225DA2AF00894AEC /* Array.swift in Sources */,
+				BCD68940225DA1E600894AEC /* TextPropertyListReader.swift in Sources */,
+				BCD68931225DA1D500894AEC /* Function.swift in Sources */,
+				BCD68945225DA1F300894AEC /* Runner.swift in Sources */,
+				BCD68978225DA2AF00894AEC /* String.swift in Sources */,
+				BCD6895B225DA24C00894AEC /* Path.swift in Sources */,
+				BCD6893B225DA1E300894AEC /* JSON.swift in Sources */,
+				BCD68937225DA1E300894AEC /* JSONParser.swift in Sources */,
+				BCD68977225DA2AF00894AEC /* Sequence.swift in Sources */,
+				BCD68933225DA1D500894AEC /* Validation.swift in Sources */,
+				BCD68950225DA21100894AEC /* Assert.swift in Sources */,
+				BCD68976225DA2AF00894AEC /* Optional.swift in Sources */,
+				BCD68968225DA25800894AEC /* LogLevel.swift in Sources */,
+				BCD68970225DA2AF00894AEC /* DispatchQueue.swift in Sources */,
+				BCD68975225DA2AF00894AEC /* Observable.swift in Sources */,
+				BCD6893E225DA1E600894AEC /* BinaryPropertyListReader.swift in Sources */,
+				BCD6895C225DA24C00894AEC /* FileSystem.swift in Sources */,
+				BCD68947225DA20100894AEC /* Stream.swift in Sources */,
+				BCD68956225DA21B00894AEC /* Notation.swift in Sources */,
+				BCD6896F225DA2AF00894AEC /* Dictionary.swift in Sources */,
+				BCD68936225DA1DD00894AEC /* OrderedList.swift in Sources */,
+				BCD6893F225DA1E600894AEC /* PropertyListKind.swift in Sources */,
+				BCD68948225DA20100894AEC /* ByteStream.swift in Sources */,
+				BCD68942225DA1F300894AEC /* Atomic.swift in Sources */,
+				BCD6894F225DA20C00894AEC /* Weak.swift in Sources */,
+				BCD6894D225DA20100894AEC /* DataStreamWriter.swift in Sources */,
+				BCD68934225DA1DD00894AEC /* List.swift in Sources */,
+				BCD6894A225DA20100894AEC /* MemoryBuffer.swift in Sources */,
+				BCD68966225DA25800894AEC /* Log.swift in Sources */,
+				BCD68949225DA20100894AEC /* UnicodeStream.swift in Sources */,
+				BCD68935225DA1DD00894AEC /* ListSlice.swift in Sources */,
+				BCD68953225DA21B00894AEC /* Double.c in Sources */,
+				BCD68967225DA25800894AEC /* LogDestination.swift in Sources */,
+				BCD6893A225DA1E300894AEC /* JSONWriter.swift in Sources */,
+				BCD68932225DA1D500894AEC /* Global.swift in Sources */,
+				BCD68971225DA2AF00894AEC /* Double.swift in Sources */,
+				BCD6896D225DA2AF00894AEC /* Collection.swift in Sources */,
+				BCD6893D225DA1E600894AEC /* PropertyListReader.swift in Sources */,
+				BCD68957225DA21B00894AEC /* NotationCoder.swift in Sources */,
+				BCD6894B225DA20100894AEC /* FileByteStream.swift in Sources */,
+				BCD68958225DA21B00894AEC /* XMLNotation.swift in Sources */,
+				BCD68938225DA1E300894AEC /* JSONParseError.swift in Sources */,
+				BCD68974225DA2AF00894AEC /* Object.m in Sources */,
+				BCD6895A225DA23F00894AEC /* Date.swift in Sources */,
+				BCD6894C225DA20100894AEC /* FileStream.swift in Sources */,
+				BCD6893C225DA1E600894AEC /* PropertyList.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1738,8 +1926,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC86B87D211AE1DA00C02605 /* macOS-Framework.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Sources/macOS.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.undev.macOS.StartPoint;
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
 			};
 			name = Debug;
 		};
@@ -1747,8 +1935,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BC86B87D211AE1DA00C02605 /* macOS-Framework.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Sources/macOS.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.undev.macOS.StartPoint;
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
 			};
 			name = Release;
 		};
@@ -1788,8 +1976,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Sources/iOS.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
 			};
 			name = Debug;
 		};
@@ -1797,8 +1985,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Sources/iOS.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.undev.iOS.StartPoint;
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
 			};
 			name = Release;
 		};
@@ -1817,6 +2005,24 @@
 			buildSettings = {
 				INFOPLIST_FILE = Tests/iOS.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
+			};
+			name = Release;
+		};
+		BCD6892C225D9DD800894AEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC86B87D211AE1DA00C02605 /* macOS-Framework.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
+			};
+			name = Debug;
+		};
+		BCD6892D225D9DD800894AEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC86B87D211AE1DA00C02605 /* macOS-Framework.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = Sources/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPoint;
 			};
 			name = Release;
 		};
@@ -1864,6 +2070,15 @@
 			buildConfigurations = (
 				BC6BA1C11F2DC08700772AA8 /* Debug */,
 				BC6BA1C21F2DC08700772AA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCD6892E225D9DD800894AEC /* Build configuration list for PBXNativeTarget "StartPoint_CLI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCD6892C225D9DD800894AEC /* Debug */,
+				BCD6892D225D9DD800894AEC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

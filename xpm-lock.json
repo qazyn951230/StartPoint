@@ -3,10 +3,10 @@
   "lockVersion": 1,
   "dependencies": {
     "Alamofire": {
-      "resolved": "carthage"
+      "resolver": "carthage"
     },
     "RxSwift": {
-      "resolved": "carthage"
+      "resolver": "carthage"
     }
   },
   "StartPoint_iOS": {
@@ -20,9 +20,13 @@
   "StartPoint_macOS": {
     "requires": [
       "Alamofire.framework",
-      "RxSwift.framework",
-      "RxCocoa.framework",
-      "RxAtomic.framework"
+      "RxSwift.framework"
+    ]
+  },
+  "StartPoint_CLI": {
+    "requires": [
+      "Alamofire.framework",
+      "RxSwift.framework"
     ]
   }
 }

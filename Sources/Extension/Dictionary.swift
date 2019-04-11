@@ -30,4 +30,13 @@ public extension Dictionary {
         }
         return map
     }
+    
+    func firstValue(where predicate: (Key, Value) throws -> Bool) rethrows -> Value? {
+        for (key, value) in self {
+            if try predicate(key, value) {
+                return value
+            }
+        }
+        return nil
+    }
 }
