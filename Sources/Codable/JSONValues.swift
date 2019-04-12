@@ -795,7 +795,7 @@ public final class JSONObject: JSON {
         return super.greater(other: other)
     }
 
-    public override subscript(key: String) -> JSON {
+    public override subscript(typed key: String) -> JSON {
         return value[key] ?? JSON.null
     }
 }
@@ -925,7 +925,7 @@ public final class JSONArray: JSON {
         return super.greater(other: other)
     }
 
-    public override subscript(index: Int) -> JSON {
+    public override subscript(typed index: Int) -> JSON {
         guard index > -1 && index < value.count else {
             return JSON.null
         }

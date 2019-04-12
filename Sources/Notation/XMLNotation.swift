@@ -212,11 +212,11 @@ public final class XMLNotation: TypeNotated {
         return UInt64(string) ?? 0
     }
 
-    public subscript(index: Int) -> XMLNotation {
+    public subscript(typed index: Int) -> XMLNotation {
         return _array?.elementOrNil(at: index) ?? XMLNotation.null
     }
 
-    public subscript(key: String) -> XMLNotation {
+    public subscript(typed key: String) -> XMLNotation {
         resolve()
         return _map?[key] ?? XMLNotation.null
     }

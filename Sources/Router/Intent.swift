@@ -163,6 +163,7 @@ public class Intent {
     }
 
     public func end(for result: IntentResult? = nil, interactive: Bool) {
+        assertMainThread()
         guard let push = self.push, let controller = targetController else {
             return
         }

@@ -25,21 +25,16 @@ public extension Collection {
         return !isEmpty
     }
 
-    func element(at index: Index) -> Element {
-        // IndexOutOfBoundsException
+    func element(at index: Index) -> Element? {
+        guard index >= startIndex && index < endIndex else {
+            return nil
+        }
         return self[index]
     }
 
     func element(at index: Index, or value: (Index) throws -> Element) rethrows -> Element {
         guard index >= startIndex && index < endIndex else {
             return try value(index)
-        }
-        return self[index]
-    }
-
-    func elementOrNil(at index: Index) -> Element? {
-        guard index >= startIndex && index < endIndex else {
-            return nil
         }
         return self[index]
     }

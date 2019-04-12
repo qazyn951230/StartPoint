@@ -237,11 +237,11 @@ public class JSON: TypeNotated, Comparable, CustomStringConvertible {
         return lhs.greaterOrEqual(other: rhs)
     }
 
-    public subscript(index: Int) -> JSON {
+    public subscript(typed index: Int) -> JSON {
         return JSON.null
     }
 
-    public subscript(key: String) -> JSON {
+    public subscript(typed key: String) -> JSON {
         return JSON.null
     }
 

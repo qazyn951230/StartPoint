@@ -74,9 +74,9 @@ class Route<T> {
     }
 
     func match(components: [String]) -> T? {
-        guard children.count > 0, let first = components.first,
-              first == "/", components.count > 1 else {
-            return nil
+        guard children.count > 0, components.count > 1,
+              let first = components.first, first == "/" else {
+            return value
         }
         var last: Route<T> = self
         for component in components.dropFirst() {

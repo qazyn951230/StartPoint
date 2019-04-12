@@ -324,11 +324,11 @@ public final class AnyNotation: TypeNotated {
         }
     }
 
-    public subscript(index: Int) -> AnyNotation {
+    public subscript(typed index: Int) -> AnyNotation {
         return arrayValue?[index] ?? AnyNotation.null
     }
 
-    public subscript(key: String) -> AnyNotation {
+    public subscript(typed key: String) -> AnyNotation {
         return dictionaryValue?[key] ?? AnyNotation.null
     }
 

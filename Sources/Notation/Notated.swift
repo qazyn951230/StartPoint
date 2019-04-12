@@ -51,6 +51,9 @@ public protocol Notated {
 
     func item(at index: Int) -> Notated
     func item(key: String) -> Notated
+
+    subscript(index: Int) -> Notated { get }
+    subscript(key: String) -> Notated { get }
 }
 
 public extension Notated {
@@ -137,6 +140,14 @@ public extension Notated {
     var uint64: UInt64 {
         return 0
     }
+
+    subscript(index: Int) -> Notated {
+        return item(at: index)
+    }
+
+    subscript(key: String) -> Notated {
+        return item(key: key)
+    }
 }
 
 public protocol TypeNotated: Notated {
@@ -147,8 +158,8 @@ public protocol TypeNotated: Notated {
     var dictionaryValue: [String: Typed]? { get }
     var dictionary: [String: Typed] { get }
 
-    subscript(index: Int) -> Typed { get }
-    subscript(key: String) -> Typed { get }
+    subscript(typed index: Int) -> Typed { get }
+    subscript(typed key: String) -> Typed { get }
 }
 
 public extension TypeNotated {
@@ -166,10 +177,18 @@ public extension TypeNotated {
     }
 
     func item(at index: Int) -> Notated {
-        return self[index]
+        return self[typed: index]
     }
 
     func item(key: String) -> Notated {
-        return self[key]
+        return self[typed: key]
+    }
+
+    subscript(index: Int) -> Notated {
+        return self[typed: index]
+    }
+
+    subscript(key: String) -> Notated {
+        return self[typed: key]
     }
 }

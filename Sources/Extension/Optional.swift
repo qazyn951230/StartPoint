@@ -26,6 +26,14 @@ public extension Optional {
             try method(value)
         }
     }
+
+    func or(_ method: () throws -> Wrapped) rethrows -> Wrapped {
+        if let value = self {
+            return value
+        } else {
+            return try method()
+        }
+    }
 }
 
 extension Optional where Wrapped: Comparable {

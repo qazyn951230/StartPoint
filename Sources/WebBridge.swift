@@ -60,7 +60,7 @@ public final class WebBridge {
             return
         }
         let json = AnyNotation(message.body)
-        let body: AnyNotation = json["body"]
+        let body: AnyNotation = json[typed: "body"]
         let messageId: String = json <| "id"
         guard let id: String = json["event"].stringValue, id.isNotEmpty else {
             Log.error("WebBridge message has no id", message.body)
