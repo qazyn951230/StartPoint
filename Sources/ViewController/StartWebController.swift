@@ -60,8 +60,7 @@ open class StartWebController: StartViewController<WKWebView> {
     }
 
     open override func prepare(for intent: Intent, method: ResolvedMethod) -> UIViewController {
-        if let text = intent.extra(key: StartWebController.intentUrlKey, of: String.self),
-           let url = URL(string: text) {
+        if let url = intent.extra(key: StartWebController.intentUrlKey, of: URL.self) {
             initUrl = url
         }
         hidesBottomBarWhenPushed = true
@@ -123,15 +122,15 @@ open class StartWebController: StartViewController<WKWebView> {
         navigationItem.rightBarButtonItem = refreshBarItem
     }
 
-    open class func intent(url: String) -> Intent {
+    open class func intent(url: URL) -> Intent {
         let intent = Intent(target: self)
         intent.add(extra: url, key: intentUrlKey)
         return intent
     }
 
-    open class func createAsRoot(url: String?) -> Self {
+    open class func createAsRoot(url: URL?) -> Self {
         let controller = create()
-        controller.initUrl = url.flatMap(URL.init(string:))
+        controller.initUrl = url
         let close = R.image.ic_arrow_back()
         controller.closeBarItem = UIBarButtonItem(image: close, style: .plain, target: controller,
             action: #selector(backBarItemAction(sender:)))
