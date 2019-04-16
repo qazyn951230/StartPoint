@@ -190,6 +190,9 @@ open class BasicElement: Hashable, CustomStringConvertible {
         assertThreadAffinity(for: self)
         owner?.removeElement(self)
         owner = nil
+//        children.forEach { child in
+//            child.removeFromOwner()
+//        }
     }
 
     func removeElement(_ element: BasicElement) {

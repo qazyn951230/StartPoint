@@ -33,6 +33,20 @@ public protocol PagingViewDelegate: class {
     func pagingView(_ pagingView: PagingView, didManualScrollAt index: Int)
 }
 
+public extension PagingViewDelegate {
+    func pagingView(_ pagingView: PagingView, manualScrollTo percent: CGFloat) {
+        // Do nothing.
+    }
+
+    func pagingView(_ pagingView: PagingView, willManualScrollAt index: Int) {
+        // Do nothing.
+    }
+
+    func pagingView(_ pagingView: PagingView, didManualScrollAt index: Int) {
+        // Do nothing.
+    }
+}
+
 public class PagingView: UIView, UIScrollViewDelegate {
     public weak var dataSource: PagingViewDataSource? = nil
     public weak var delegate: PagingViewDelegate? = nil
@@ -78,8 +92,11 @@ public class PagingView: UIView, UIScrollViewDelegate {
             .right(float: insets.right).bottom(float: insets.bottom)
             .apply()
         for (index, view) in pagingViews {
-            view.frame = CGRect(origin: CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0), size: scrollView.bounds.size)
+            view.frame = CGRect(origin: CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0),
+                                size: scrollView.bounds.size)
         }
+        scrollView.contentSize = CGSize(width: scrollView.bounds.width * CGFloat(pagingViews.count),
+                                        height: scrollView.bounds.height)
     }
 
     private func recalculateIndex() {

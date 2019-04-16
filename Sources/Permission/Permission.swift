@@ -89,6 +89,7 @@ public enum PermissionType {
 }
 
 // Inspired by https://github.com/delba/Permission
+// and https://github.com/nickoneill/PermissionScope
 public enum Permission {
     case notDetermined
     case authorized
