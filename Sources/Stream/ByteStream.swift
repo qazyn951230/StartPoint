@@ -25,6 +25,12 @@ import Darwin.C
 public class ByteStream: ReadableStream {
     public typealias Value = UInt8
 
+#if DEBUG
+    public var consumedText: String {
+        return ""
+    }
+#endif
+
     public var effective: Bool {
         return false
     }
@@ -67,6 +73,14 @@ public final class Int8Stream: ByteStream {
     var index: Int = 0
     var current: UnsafePointer<Int8>
     var terminated: Bool = false
+
+#if DEBUG
+    public override var consumedText: String {
+        let count = source.distance(to: current)
+        let data = Data(bytes: UnsafeRawPointer(source), count: count)
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+#endif
 
     public init(source: UnsafePointer<Int8>, size: Int = 0) {
         self.source = source
@@ -151,6 +165,14 @@ public final class UInt8Stream: ByteStream {
     var index: Int = 0
     var current: UnsafePointer<UInt8>
     var terminated: Bool = false
+
+#if DEBUG
+    public override var consumedText: String {
+        let count = source.distance(to: current)
+        let data = Data(bytes: UnsafeRawPointer(source), count: count)
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+#endif
 
     public init(source: UnsafePointer<UInt8>, size: Int = 0) {
         self.source = source

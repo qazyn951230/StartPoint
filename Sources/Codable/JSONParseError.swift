@@ -33,4 +33,6 @@ public enum JSONParseError: Error {
     case objectMissCommaOrCurlyBracket
     case arrayMissCommaOrSquareBracket
     case numberMissFraction
+    case numberTooBig
+    case numberMissExponent
 }

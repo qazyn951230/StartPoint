@@ -213,7 +213,7 @@ public final class XMLNotation: TypeNotated {
     }
 
     public subscript(typed index: Int) -> XMLNotation {
-        return _array?.elementOrNil(at: index) ?? XMLNotation.null
+        return _array?.element(at: index) ?? XMLNotation.null
     }
 
     public subscript(typed key: String) -> XMLNotation {

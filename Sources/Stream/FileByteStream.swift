@@ -26,6 +26,14 @@ public final class FileByteStream: ByteStream, RandomAccessStream {
     var current: UnsafeMutablePointer<UInt8>
     var index: Int = 0
 
+#if DEBUG
+    public override var consumedText: String {
+        let count = bytes.distance(to: current)
+        let data = Data(bytes: UnsafeRawPointer(bytes), count: count)
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+#endif
+
     public init(path: String) {
         let (content, size) = FileByteStream.open(path: path)
         bytes = content ?? UnsafeMutablePointer<UInt8>.allocate(capacity: 1)

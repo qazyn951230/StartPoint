@@ -119,4 +119,10 @@ class JSONValuesTests: XCTestCase {
         XCTAssertEqual(intMax.uint32Value, nil)
         XCTAssertEqual(intMax.uint64, 0xffff_ffff_ffff_ffff as UInt64)
     }
+
+    func testJSONDouble() {
+        let json = try? JSON.parse("-1.50139930144708198E18")
+        XCTAssertNotNil(json)
+        XCTAssertEqual(String(format: "%.2f", json?.double ?? 0.0), "-1501399301447081984.00")
+    }
 }

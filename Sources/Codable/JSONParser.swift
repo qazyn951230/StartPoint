@@ -182,7 +182,7 @@ public final class JSONParser {
         }
         var frac: Int32 = 0
 //        let decimalPosition: String.Index
-        if consume(char: 0x2e) {
+        if consume(char: 0x2e) { // .
 //            decimalPosition = stream.current
             next = UInt32(stream.peek())
             if next < 0x30 || next > 0x39 {
@@ -196,7 +196,7 @@ public final class JSONParser {
                     if i64 > 0x1F_FFFF_FFFF_FFFF { // 2^53 - 1
                         break
                     }
-                    i64 = i64 * 10 + (UInt64(next) - 0x30)
+                    i64 = i64 * 10 + UInt64(next - 0x30)
                     frac -= 1
                     if i64 != 0 {
                         significandDigit += 1
@@ -206,9 +206,10 @@ public final class JSONParser {
                 double = Double(i64)
                 useDouble = true
             }
-            while next >= 0x30 && next <= 0x39 {
+            while next >= 0x30 && next <= 0x39 { // 0...9
                 if significandDigit < 17 {
                     double = double * 10 + Double(next - 0x30)
+                    frac -= 1
                     if double > 0 {
                         significandDigit += 1
                     }
@@ -219,8 +220,55 @@ public final class JSONParser {
 //        else {
 //            decimalPosition = stream.current
 //        }
+        // Parse exp = e [ minus / plus ] 1*DIGIT
+        var exp: Int32 = 0
+        if consume(char: 0x65) || consume(char: 0x45) { // e, E
+            if !useDouble {
+                double = use64bit ? Double(i64) : Double(i)
+                useDouble = true
+            }
+            var expMinus = false
+            if consume(char: 0x2b) { // +
+                // Do nothing.
+            } else if consume(char: 0x2d) { // -
+                expMinus = true
+            }
+            var next = stream.peek()
+            if next >= 0x30 && next <= 0x39 { // 0...9
+                exp = Int32(next - 0x30)
+                next = stream.next()
+                if expMinus {
+                    assert(frac <= 0)
+                    let maxExp: Int32 = (frac + 2147483639) / 10
+                    while next >= 0x30 && next <= 0x39 { // 0...9
+                        exp = exp * 10 + Int32(next - 0x30)
+                        if exp > maxExp {
+                            while next >= 0x30 && next <= 0x39 { // 0...9
+                                // Consume the rest of exponent
+                                next = stream.next()
+                            }
+                        }
+                        next = stream.next()
+                    }
+                } else {
+                    let maxExp: Int32 = 308 - frac
+                    while next >= 0x30 && next <= 0x39 { // 0...9
+                        exp = exp * 10 + Int32(next - 0x30)
+                        if exp > maxExp {
+                            throw JSONParseError.numberTooBig
+                        }
+                        next = stream.next()
+                    }
+                }
+            } else {
+                throw JSONParseError.numberMissExponent
+            }
+            if expMinus {
+                exp = -exp
+            }
+        }
         if useDouble {
-            double = parse_double(double, frac)
+            double = parse_double(double, exp + frac)
             if minus {
                 return JSONDouble(0 - double)
             } else {
@@ -404,13 +452,14 @@ public final class JSONParser {
         for _ in 0..<4 {
             point <<= 4
             let next = UInt32(stream.peek())
+            point += next
             switch next { // TODO: Replace range
             case 0x30...0x39: // 0-9
-                point -= next - 0x30
+                point -= 0x30
             case 0x41...0x46: // A-F
-                point -= next - 0x41
+                point -= 0x41 - 10
             case 0x61...0x66: // a-f
-                point -= next - 0x61
+                point -= 0x61 - 10
             default:
                 throw JSONParseError.StringUnicodeEscapeInvalidHex
             }
