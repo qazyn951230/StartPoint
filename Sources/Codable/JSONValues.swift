@@ -56,10 +56,26 @@ public final class JSONNull: JSON {
 }
 
 public final class JSONString: JSON {
-    let value: String
+    private var _value: String?
+    private let data: Data
+
+    var value: String {
+        if let temp = _value {
+            return temp
+        } else {
+            _value = String(data: data, encoding: .utf8)
+            return _value ?? ""
+        }
+    }
 
     public init(_ value: String) {
-        self.value = value
+        _value = value
+        data = Data()
+        super.init()
+    }
+
+    public init(data: Data) {
+        self.data = data
         super.init()
     }
 

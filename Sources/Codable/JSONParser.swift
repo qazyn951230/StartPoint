@@ -29,12 +29,15 @@ public final class JSONParser {
         }
 
         public static let fullPrecision = Options(rawValue: 1 << 0)
+        public static let nullTerminated = Options(rawValue: 1 << 1)
     }
 
+    public static let defaultOptions: Options = [Options.nullTerminated]
     let stream: ByteStream
     let options: Options
+    private var buffer = ByteBuffer(capacity: 256)
 
-    public init(stream: ByteStream, options: Options = []) {
+    public init(stream: ByteStream, options: Options = JSONParser.defaultOptions) {
         self.stream = stream
         self.options = options
     }
@@ -95,7 +98,7 @@ public final class JSONParser {
 
     func parseString() throws -> JSON {
         let value = try quotedString()
-        return JSONString(value)
+        return JSONString(data: value)
     }
 
     //  -,  0,  1,  9,  .
@@ -312,7 +315,8 @@ public final class JSONParser {
             skip()
             let value = try parse()
             skip()
-            object.append(key: key, value)
+            let _key = String(data: key, encoding: .utf8) ?? ""
+            object.append(key: _key, value)
             switch stream.peek() {
             case 0x2c:
                 stream.move()
@@ -350,7 +354,7 @@ public final class JSONParser {
         }
     }
 
-    func quotedString() throws -> String {
+    func quotedString() throws -> Data {
         if !consume(char: 0x22) {
             throw JSONParseError.valueInvalid
         }
@@ -363,28 +367,38 @@ public final class JSONParser {
 
     //  \,  ",  b,  f,  n,  r,  t,  /,  u
     // [5c, 22, 62, 66, 6e, 72, 74, 2f, 75]
-    func rawString() throws -> String {
-        var result: [UInt8] = []
+    func rawString() throws -> Data {
         var next = stream.peek()
         while true {
             switch next {
             case 0x5c:
                 next = stream.next()
                 if next == 0x75 {
-                    let codes = try parseUnicode()
-                    result.append(contentsOf: codes)
+                    try parseUnicode()
                 } else {
                     let char = try parseChar()
-                    result.append(char)
+                    buffer.append(char)
                 }
             case 0x22:
-                return String(bytes: result, encoding: .utf8) ?? ""
+                if buffer.isEmpty {
+                    return Data()
+                } else {
+                    let count = buffer.count
+                    let bytes: UnsafeMutablePointer<UInt8> = buffer.pop(count: count)
+                    return Data(bytes: UnsafeRawPointer(bytes), count: count)
+                }
             case 0x00:
+//                if stream.effective {
+//                    buffer.append(next)
+//                    stream.move()
+//                } else {
+//                    throw JSONParseError.missQuotationMark
+//                }
                 throw JSONParseError.missQuotationMark
             case 0x01..<0x20:
                 throw JSONParseError.invalidEncoding
             default:
-                result.append(next)
+                buffer.append(next)
                 stream.move()
             }
             next = stream.peek()
@@ -422,25 +436,29 @@ public final class JSONParser {
         }
     }
 
-    func parseUnicode() throws -> [UInt8] {
+    func parseUnicode() throws {
         let code = try parseUnicodeValue()
         if code <= 0x7f {
-            return [UInt8(truncatingIfNeeded: (code & 0xFF))]
+            buffer.append(UInt8(truncatingIfNeeded: (code & 0xFF)))
+            return
         }
         if code <= 0x7ff {
-            return [UInt8(truncatingIfNeeded: (0xc0 | ((code >> 6) & 0xff))),
-                    UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F)))]
+            buffer.append(UInt8(truncatingIfNeeded: (0xc0 | ((code >> 6) & 0xff))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            return
         }
         if code <= 0xffff {
-            return [UInt8(truncatingIfNeeded: (0xE0 | ((code >> 12) & 0xFF))),
-                    UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))),
-                    UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F)))]
+            buffer.append(UInt8(truncatingIfNeeded: (0xE0 | ((code >> 12) & 0xFF))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            return
         }
         if code <= 0x10ffff {
-            return [UInt8(truncatingIfNeeded: (0xF0 | ((code >> 18) & 0xFF))),
-                    UInt8(truncatingIfNeeded: (0x80 | ((code >> 12) & 0x3F))),
-                    UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))),
-                    UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F)))]
+            buffer.append(UInt8(truncatingIfNeeded: (0xF0 | ((code >> 18) & 0xFF))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 12) & 0x3F))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
+            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            return
         }
         throw JSONParseError.valueInvalid
     }

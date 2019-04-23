@@ -125,4 +125,33 @@ class JSONValuesTests: XCTestCase {
         XCTAssertNotNil(json)
         XCTAssertEqual(String(format: "%.2f", json?.double ?? 0.0), "-1501399301447081984.00")
     }
+
+    func testJSONString() {
+        let string1 = try! JSON.parse("\"\"")
+        XCTAssertEqual(string1.string, "")
+
+        let string2 = try! JSON.parse("\"Hello\"")
+        XCTAssertEqual(string2.string, "Hello")
+
+        let string3 = try! JSON.parse("\"Hello\\nWorld\"")
+        XCTAssertEqual(string3.string, "Hello\nWorld")
+
+        let string4 = try! JSON.parse("\"\\\"\\\\/\\b\\f\\n\\r\\t\"")
+        XCTAssertEqual(string4.string, "\"\\/\u{0008}\u{000C}\n\r\t")
+
+        let string5 = try! JSON.parse("\"\\u0024\"")
+        XCTAssertEqual(string5.string, "\u{0024}")
+
+        let string6 = try! JSON.parse("\"\\u00A2\"")
+        XCTAssertEqual(string6.string, "\u{00A2}")
+
+        let string7 = try! JSON.parse("\"\\u20AC\"")
+        XCTAssertEqual(string7.string, "\u{20AC}")
+
+        let string8 = try! JSON.parse("\"𝄞\"")
+        XCTAssertEqual(string8.string, "\u{1D11E}")
+
+//        let string9 = try! JSON.parse("\"Hello\u{0000}World\"")
+//        XCTAssertEqual(string9.string, "Hello\u{0000}World")
+    }
 }
