@@ -20,17 +20,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
-
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/JSONBuffer.h>
+#import <XCTest/XCTest.h>
 #import <StartPoint/AnyList.hpp>
+
+using namespace StartPoint;
+
+struct AnyValue {
+    int32_t i32;
+    int64_t i64;
+};
+
+@interface AnyListTests : XCTestCase
+
+@end
+
+@implementation AnyListTests
+
+- (void)testListConstruct {
+    AnyList list;
+    XCTAssert(list.empty() == true);
+    XCTAssert(list.first<char>() == nullptr);
+    XCTAssert(list.last<char>() == nullptr);
+
+    AnyList<> list2(32);
+    XCTAssert(list2.empty() == false);
+    XCTAssert(list2.size() == 0, @"%lu", list2.size());
+    XCTAssert(list2.capacity() == 32, @"%lu", list2.capacity());
+    XCTAssert(list2.first<char>() != nullptr);
+    XCTAssert(list2.last<char>() != nullptr);
+}
+
+- (void)testListAppend {
+    AnyList list(3 * sizeof(AnyValue));
+    AnyValue value1 = {12, 34};
+    list.append(value1);
+    list.append(AnyValue{56, 78});
+    auto value3 = list.first<AnyValue>();
+    XCTAssert(value3->i32 == 12);
+    XCTAssert(value3->i64 == 34);
+    value3 += 1;
+    XCTAssert(value3->i32 == 56);
+    XCTAssert(value3->i64 == 78);
+}
+
+@end

@@ -24,11 +24,12 @@
 import XCTest
 
 class ParseTests: XCTestCase {
-    func parseTest(json: String, expect: JSON, file: StaticString = #file, line: UInt = #line,
-                   method: (JSONParser) throws -> JSON) {
+    func parseTest<T: Equatable>(json: String, expect: T, file: StaticString = #file, line: UInt = #line,
+                   method: (JSONParser) throws -> T) {
         json.withCString { pointer in
             let stream = ByteStream.int8(pointer)
-            let parser = JSONParser(stream: stream, options: [])
+            let buffer = json_buffer_create(1, 64)
+            let parser = JSONParser(stream: stream, buffer: buffer, options: [])
             do {
                 let result = try method(parser)
                 XCTAssertEqual(result, expect, file: file, line: line)
@@ -39,57 +40,70 @@ class ParseTests: XCTestCase {
     }
 
     func testParseTrue() {
-        parseTest(json: "true", expect: JSONBool(true)) { parser in
+        parseTest(json: "true", expect: true) { parser in
             try parser.parseTrue()
+            return json_buffer_bool(parser.buffer, 0)
         }
     }
 
     func testParseFalse() {
-        parseTest(json: "false", expect: JSONBool(false)) { parser in
+        parseTest(json: "false", expect: false) { parser in
             try parser.parseFalse()
+            return json_buffer_bool(parser.buffer, 0)
         }
     }
 
     func testParseNumber() {
-        parseTest(json: "0", expect: JSONUInt(0)) { parser in
+        parseTest(json: "0", expect: 0 as UInt32) { parser in
             try parser.parseNumber()
+            return json_buffer_uint32(parser.buffer, 0)
         }
-        parseTest(json: "123", expect: JSONUInt(123)) { parser in
+        parseTest(json: "123", expect: 123 as UInt32) { parser in
             try parser.parseNumber()
+            return json_buffer_uint32(parser.buffer, 0)
         }
-        parseTest(json: "2147483648", expect: JSONUInt(2147483648)) { parser in
+        parseTest(json: "2147483648", expect: 2147483648 as UInt32) { parser in
             try parser.parseNumber()
+            return json_buffer_uint32(parser.buffer, 0)
         }
-        parseTest(json: "4294967295", expect: JSONUInt(4294967295)) { parser in
+        parseTest(json: "4294967295", expect: 4294967295 as UInt32) { parser in
             try parser.parseNumber()
-        }
-
-        parseTest(json: "-123", expect: JSONInt(-123)) { parser in
-            try parser.parseNumber()
-        }
-        parseTest(json: "-2147483648", expect: JSONInt(-2147483648)) { parser in
-            try parser.parseNumber()
+            return json_buffer_uint32(parser.buffer, 0)
         }
 
-        parseTest(json: "4294967296", expect: JSONUInt64(4294967296)) { parser in
+        parseTest(json: "-123", expect: -123 as Int32) { parser in
             try parser.parseNumber()
+            return json_buffer_int32(parser.buffer, 0)
         }
-        parseTest(json: "18446744073709551615", expect: JSONUInt64(18446744073709551615)) { parser in
+        parseTest(json: "-2147483648", expect: -2147483648 as Int32) { parser in
             try parser.parseNumber()
+            return json_buffer_int32(parser.buffer, 0)
         }
 
-        parseTest(json: "-2147483649", expect: JSONInt64(-2147483649)) { parser in
+        parseTest(json: "4294967296", expect: 4294967296 as UInt64) { parser in
             try parser.parseNumber()
+            return json_buffer_uint64(parser.buffer, 0)
         }
-        parseTest(json: "-9223372036854775808", expect: JSONInt64(-9223372036854775808)) { parser in
+        parseTest(json: "18446744073709551615", expect: 18446744073709551615 as UInt64) { parser in
             try parser.parseNumber()
+            return json_buffer_uint64(parser.buffer, 0)
+        }
+
+        parseTest(json: "-2147483649", expect: -2147483649 as Int64) { parser in
+            try parser.parseNumber()
+            return json_buffer_int64(parser.buffer, 0)
+        }
+        parseTest(json: "-9223372036854775808", expect: -9223372036854775808 as Int64) { parser in
+            try parser.parseNumber()
+            return json_buffer_int64(parser.buffer, 0)
         }
     }
 
     func testParseDouble() {
         func parse(_ json: String, _ value: Double, file: StaticString = #file, line: UInt = #line) {
-            parseTest(json: json, expect: JSONDouble(value), file: file, line: line) { parser in
+            parseTest(json: json, expect: value, file: file, line: line) { parser in
                 try parser.parseNumber()
+                return json_buffer_double(parser.buffer, 0)
             }
         }
         parse("0.0", 0.0)
@@ -99,22 +113,22 @@ class ParseTests: XCTestCase {
         parse("1.5", 1.5)
         parse("-1.5", -1.5)
         parse("3.1416", 3.1416)
-//        parse("0e100", 0.0)
-//        parse("1E10", 1E10)
-//        parse("1e10", 1e10)
-//        parse("1E+10", 1E+10)
-//        parse("1E-10", 1E-10)
-//        parse("-1E10", -1E10)
-//        parse("-1e10", -1e10)
-//        parse("-1E+10", -1E+10)
-//        parse("-1E-10", -1E-10)
-//        parse("1.234E+10", 1.234E+10)
-//        parse("1.234E-10", 1.234E-10)
-//        parse("1.79769e+308", 1.79769e+308)
+        parse("0e100", 0.0)
+        parse("1E10", 1E10)
+        parse("1e10", 1e10)
+        parse("1E+10", 1E+10)
+        parse("1E-10", 1E-10)
+        parse("-1E10", -1E10)
+        parse("-1e10", -1e10)
+        parse("-1E+10", -1E+10)
+        parse("-1E-10", -1E-10)
+        parse("1.234E+10", 1.234E+10)
+        parse("1.234E-10", 1.234E-10)
+        parse("1.79769e+308", 1.79769e+308)
 //        parse("2.22507e-308", 2.22507e-308)
-//        parse("-1.79769e+308", -1.79769e+308)
+        parse("-1.79769e+308", -1.79769e+308)
 //        parse("-2.22507e-308", -2.22507e-308)
 
-//        parse("0.999999999999999944488848768742172978818416595458984375", 1.0)
+        parse("0.999999999999999944488848768742172978818416595458984375", 1.0)
     }
 }

@@ -38,8 +38,8 @@
 #define SP_EXTERN_C_BEGIN
 #define SP_EXTERN_C_END
 
-#define SP_NAMESPACE_BEGIN
-#define SP_NAMESPACE_END
+#define SP_NAMESPACE_BEGIN  _Pragma("clang assume_nonnull begin")
+#define SP_NAMESPACE_END    _Pragma("clang assume_nonnull end")
 
 #define SP_CPP_FILE_BEGIN
 #define SP_CPP_FILE_END
@@ -59,6 +59,8 @@
 #endif
 
 // http://clang.llvm.org/docs/AttributeReference.html#nullability-attributes
+// A nullable pointer to non-null pointers to const characters.
+// const char *join_strings(const char * _Nonnull * _Nullable strings, unsigned n);
 #if defined(__clang__)
 // int fetch(int * SP_NONNULL ptr);
 #define SP_NONNULL _Nonnull
@@ -73,6 +75,10 @@
 
 // Enums and Options
 #ifdef NS_ENUM
+
+#define SP_ENUM NS_ENUM
+#define SP_OPTIONS NS_OPTIONS
+#define SP_CLOSED_ENUM NS_CLOSED_ENUM
 
 #define SP_STRING_ENUM NS_STRING_ENUM
 #define SP_EXTENSIBLE_STRING_ENUM NS_EXTENSIBLE_STRING_ENUM

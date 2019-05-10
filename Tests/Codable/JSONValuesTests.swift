@@ -25,11 +25,11 @@ import XCTest
 
 class JSONValuesTests: XCTestCase {
     func testJSONBool() {
-        let t = JSONBool(true)
+        let t = try! JSON.parse("true")
         XCTAssertEqual(t.bool, true)
         XCTAssertEqual(t.boolValue, true as Bool?)
 
-        let f = JSONBool(false)
+        let f = try! JSON.parse("false")
         XCTAssertEqual(f.bool, false)
         XCTAssertEqual(f.boolValue, false as Bool?)
     }

@@ -35,40 +35,41 @@ public final class JSONParser {
     public static let defaultOptions: Options = [Options.nullTerminated]
     let stream: ByteStream
     let options: Options
-    private var buffer = ByteBuffer(capacity: 256)
+    let buffer: JSONBufferRef
 
-    public init(stream: ByteStream, options: Options = JSONParser.defaultOptions) {
+    public init(stream: ByteStream, buffer: JSONBufferRef, options: Options = JSONParser.defaultOptions) {
         self.stream = stream
         self.options = options
+        self.buffer = buffer
     }
 
     //  n,  t,  f,  ",  [,  {
     // [6e, 74, 66, 22, 5b, 7b]
-    public func parse() throws -> JSON {
+    public func parse() throws {
         switch stream.peek() {
         case 0x6e:
-            return try parseNull()
+            try parseNull()
         case 0x74:
-            return try parseTrue()
+            try parseTrue()
         case 0x66:
-            return try parseFalse()
+            try parseFalse()
         case 0x22:
-            return try parseString()
+            try parseString()
         case 0x7b:
-            return try parseObject()
+            try parseObject()
         case 0x5b:
-            return try parseArray()
+            try parseArray()
         default:
-            return try parseNumber()
+            try parseNumber()
         }
     }
 
     //  n,  u,  l,  l
     // [6e, 75, 6c, 6c]
-    func parseNull() throws -> JSON {
+    func parseNull() throws {
         if consume(char: 0x6e) && consume(char: 0x75) &&
                consume(char: 0x6c) && consume(char: 0x6c) {
-            return JSON.null
+            json_buffer_append_null(buffer)
         } else {
             throw JSONParseError.valueInvalid
         }
@@ -76,10 +77,10 @@ public final class JSONParser {
 
     //  t,  r,  u,  e
     // [74, 72, 75, 65]
-    func parseTrue() throws -> JSON {
+    func parseTrue() throws {
         if consume(char: 0x74) && consume(char: 0x72) &&
                consume(char: 0x075) && consume(char: 0x65) {
-            return JSONBool(true)
+            json_buffer_append_bool(buffer, true)
         } else {
             throw JSONParseError.valueInvalid
         }
@@ -87,23 +88,30 @@ public final class JSONParser {
 
     //  f,  a,  l,  s,  e
     // [66, 61, 6c, 73, 65]
-    func parseFalse() throws -> JSON {
+    func parseFalse() throws {
         if consume(char: 0x66) && consume(char: 0x61) && consume(char: 0x6C) &&
                consume(char: 0x73) && consume(char: 0x65) {
-            return JSONBool(false)
+            json_buffer_append_bool(buffer, false)
         } else {
             throw JSONParseError.valueInvalid
         }
     }
 
-    func parseString() throws -> JSON {
-        let value = try quotedString()
-        return JSONString(data: value)
+    func parseString() throws {
+        if !consume(char: 0x22) {
+            throw JSONParseError.valueInvalid
+        }
+        let start = json_buffer_start_string(buffer)
+        try rawString()
+        json_buffer_end_string(buffer, start)
+        if !consume(char: 0x22) {
+            throw JSONParseError.valueInvalid
+        }
     }
 
     //  -,  0,  1,  9,  .
     // [2d, 30, 31, 39, 2e]
-    func parseNumber() throws -> JSON {
+    func parseNumber() throws {
         let minus = consume(char: 0x2d)
         var i: UInt32 = 0
         var i64: UInt64 = 0
@@ -273,57 +281,59 @@ public final class JSONParser {
         if useDouble {
             double = parse_double(double, exp + frac)
             if minus {
-                return JSONDouble(0 - double)
+                json_buffer_append_double(buffer, 0 - double)
             } else {
-                return JSONDouble(double)
+                json_buffer_append_double(buffer, double)
             }
         } else if use64bit {
             if minus {
-                return JSONInt64(Int64(bitPattern: ~i64 + 1))
+                json_buffer_append_int64(buffer, Int64(bitPattern: ~i64 + 1))
             } else {
-                return JSONUInt64(i64)
+                json_buffer_append_uint64(buffer, i64)
             }
         } else {
             if minus {
-                return JSONInt(Int32(bitPattern: ~i + 1))
+                json_buffer_append_int32(buffer, Int32(bitPattern: ~i + 1))
             } else {
-                return JSONUInt(i)
+                json_buffer_append_uint32(buffer, i)
             }
         }
     }
 
     //  {,  },  ",  :,  ,
     // [7b, 7d, 22, 3a, 2c]
-    func parseObject() throws -> JSON {
+    func parseObject() throws {
         let c = consume(char: 0x7b)
         assert(c)
         skip()
-        let object = JSONObject([:])
+        let start = json_buffer_start_object(buffer)
         if consume(char: 0x7d) {
-            return object
+            json_buffer_end_object(buffer, start, 0)
+            return
         }
+        var count = 0
         while true {
             if stream.peek() != 0x22 {
                 throw JSONParseError.objectMissName
             }
             skip()
-            let key = try quotedString()
+            try parseString()
             skip()
             if !consume(char: 0x3a) {
                 throw JSONParseError.objectMissColon
             }
             skip()
-            let value = try parse()
+            try parse()
+            count += 1
             skip()
-            let _key = String(data: key, encoding: .utf8) ?? ""
-            object.append(key: _key, value)
             switch stream.peek() {
             case 0x2c:
                 stream.move()
                 skip()
             case 0x7d:
                 stream.move()
-                return object
+                json_buffer_end_object(buffer, start, count)
+                return
             default:
                 throw JSONParseError.objectMissCommaOrCurlyBracket
             }
@@ -332,42 +342,34 @@ public final class JSONParser {
 
     //  [,  ],  ,
     // [5b, 5d, 2c]
-    func parseArray() throws -> JSON {
+    func parseArray() throws {
         let c = consume(char: 0x5b)
         assert(c)
         skip()
-        let array = JSONArray([])
+        let start = json_buffer_start_array(buffer)
         if consume(char: 0x5d) {
-            return array
+            json_buffer_end_array(buffer, start, 0)
+            return
         }
+        var count = 0
         while true {
-            let value = try parse()
-            array.append(value)
+            try parse()
+            count += 1
             skip()
             if consume(char: 0x2c) {
                 skip()
             } else if consume(char: 0x5d) {
-                return array
+                json_buffer_end_array(buffer, start, count)
+                return
             } else {
                 throw JSONParseError.arrayMissCommaOrSquareBracket
             }
         }
     }
 
-    func quotedString() throws -> Data {
-        if !consume(char: 0x22) {
-            throw JSONParseError.valueInvalid
-        }
-        let value = try rawString()
-        if !consume(char: 0x22) {
-            throw JSONParseError.valueInvalid
-        }
-        return value
-    }
-
     //  \,  ",  b,  f,  n,  r,  t,  /,  u
     // [5c, 22, 62, 66, 6e, 72, 74, 2f, 75]
-    func rawString() throws -> Data {
+    func rawString() throws {
         var next = stream.peek()
         while true {
             switch next {
@@ -377,16 +379,10 @@ public final class JSONParser {
                     try parseUnicode()
                 } else {
                     let char = try parseChar()
-                    buffer.append(char)
+                    json_buffer_append_char(buffer, char)
                 }
             case 0x22:
-                if buffer.isEmpty {
-                    return Data()
-                } else {
-                    let count = buffer.count
-                    let bytes: UnsafeMutablePointer<UInt8> = buffer.pop(count: count)
-                    return Data(bytes: UnsafeRawPointer(bytes), count: count)
-                }
+                return
             case 0x00:
 //                if stream.effective {
 //                    buffer.append(next)
@@ -398,7 +394,7 @@ public final class JSONParser {
             case 0x01..<0x20:
                 throw JSONParseError.invalidEncoding
             default:
-                buffer.append(next)
+                json_buffer_append_char(buffer, next)
                 stream.move()
             }
             next = stream.peek()
@@ -439,25 +435,25 @@ public final class JSONParser {
     func parseUnicode() throws {
         let code = try parseUnicodeValue()
         if code <= 0x7f {
-            buffer.append(UInt8(truncatingIfNeeded: (code & 0xFF)))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (code & 0xFF)))
             return
         }
         if code <= 0x7ff {
-            buffer.append(UInt8(truncatingIfNeeded: (0xc0 | ((code >> 6) & 0xff))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0xc0 | ((code >> 6) & 0xff))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
             return
         }
         if code <= 0xffff {
-            buffer.append(UInt8(truncatingIfNeeded: (0xE0 | ((code >> 12) & 0xFF))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0xE0 | ((code >> 12) & 0xFF))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
             return
         }
         if code <= 0x10ffff {
-            buffer.append(UInt8(truncatingIfNeeded: (0xF0 | ((code >> 18) & 0xFF))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 12) & 0x3F))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
-            buffer.append(UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0xF0 | ((code >> 18) & 0xFF))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | ((code >> 12) & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | ((code >> 6) & 0x3F))))
+            json_buffer_append_char(buffer, UInt8(truncatingIfNeeded: (0x80 | (code & 0x3F))))
             return
         }
         throw JSONParseError.valueInvalid

@@ -20,17 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+public final class StartJSONDecoder {
+    public private(set) var codingPath: [CodingKey]
+    public var userInfo: [CodingUserInfoKey: Any]
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+    public init() {
+        codingPath = []
+        userInfo = [:]
+    }
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/JSONBuffer.h>
-#import <StartPoint/AnyList.hpp>
+    public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+        let buffer = try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) -> JSONBufferRef in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                throw JSONParseError.invalidEncoding
+            }
+            let stream = ByteStream.uint8(pointer)
+            let buffer = json_buffer_create(24, 4096)
+            let parser = JSONParser(stream: stream, buffer: buffer, options: [])
+            try parser.parse()
+            return buffer
+        }
+        let decoder = JSONBufferDecoder(buffer: buffer)
+        defer {
+            json_buffer_free(buffer)
+        }
+        return try T.init(from: decoder)
+    }
+}

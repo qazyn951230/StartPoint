@@ -100,7 +100,7 @@ public final class JSONWriter: JSONWriterType {
     }
 
     public func visit(array value: JSONArray) {
-        if value.value.isEmpty {
+        if value.isEmpty {
             write("[]")
             return
         }
@@ -108,7 +108,7 @@ public final class JSONWriter: JSONWriterType {
         state.append(.array)
         level += 1
         var line = false
-        for item in value.value {
+        for item in value.array {
             if line {
                 comma()
                 newline()
@@ -126,7 +126,7 @@ public final class JSONWriter: JSONWriterType {
     }
 
     public func visit(dictionary value: JSONObject) {
-        if value.value.isEmpty {
+        if value.isEmpty {
             write("{}")
             return
         }
@@ -134,7 +134,7 @@ public final class JSONWriter: JSONWriterType {
         state.append(.object)
         level += 1
         var line = false
-        for (key, item) in value.value {
+        for (key, item) in value.dictionary {
             if line {
                 comma()
                 newline()
@@ -158,34 +158,34 @@ public final class JSONWriter: JSONWriterType {
         write("null")
     }
 
-    public func visit(string value: JSONString) {
+    public func visit(string value: String) {
         write("\"")
-        write(value.value)
+        write(value)
         write("\"")
     }
 
-    public func visit(bool value: JSONBool) {
-        write(String(value.value))
+    public func visit(bool value: Bool) {
+        write(String(value))
     }
 
-    public func visit(double value: JSONDouble) {
-        write(String(value.value))
+    public func visit(double value: Double) {
+        write(String(value))
     }
 
-    public func visit(int value: JSONInt) {
-        write(String(value.value))
+    public func visit(int value: Int32) {
+        write(String(value))
     }
 
-    public func visit(int64 value: JSONInt64) {
-        write(String(value.value))
+    public func visit(int64 value: Int64) {
+        write(String(value))
     }
 
-    public func visit(uint value: JSONUInt) {
-        write(String(value.value))
+    public func visit(uint value: UInt32) {
+        write(String(value))
     }
 
-    public func visit(uint64 value: JSONUInt64) {
-        write(String(value.value))
+    public func visit(uint64 value: UInt64) {
+        write(String(value))
     }
 
     public struct Options: OptionSet {
@@ -251,7 +251,7 @@ public final class JSONPlistWriter: JSONWriterType {
     }
 
     public func visit(array value: JSONArray) {
-        let array = value.value
+        let array = value.array
         if array.isEmpty {
             write("<array/>")
             return
@@ -272,7 +272,7 @@ public final class JSONPlistWriter: JSONWriterType {
     }
 
     public func visit(dictionary value: JSONObject) {
-        let map = value.value
+        let map = value.dictionary
         if map.isEmpty {
             write("<dict/>")
             return
@@ -303,47 +303,47 @@ public final class JSONPlistWriter: JSONWriterType {
         // Do nothing.
     }
 
-    public func visit(string value: JSONString) {
+    public func visit(string value: String) {
         write("<string>")
-        write(JSONPlistWriter.encodingString(value.value))
+        write(JSONPlistWriter.encodingString(value))
         write("</string>")
     }
 
-    public func visit(bool value: JSONBool) {
-        if value.value {
+    public func visit(bool value: Bool) {
+        if value {
             write("<true/>")
         } else {
             write("<false/>")
         }
     }
 
-    public func visit(double value: JSONDouble) {
+    public func visit(double value: Double) {
         write("<real>")
-        write(String(value.value))
+        write(String(value))
         write("</real>")
     }
 
-    public func visit(int value: JSONInt) {
+    public func visit(int value: Int32) {
         write("<integer>")
-        write(String(value.value))
+        write(String(value))
         write("</integer>")
     }
 
-    public func visit(int64 value: JSONInt64) {
+    public func visit(int64 value: Int64) {
         write("<integer>")
-        write(String(value.value))
+        write(String(value))
         write("</integer>")
     }
 
-    public func visit(uint value: JSONUInt) {
+    public func visit(uint value: UInt32) {
         write("<integer>")
-        write(String(value.value))
+        write(String(value))
         write("</integer>")
     }
 
-    public func visit(uint64 value: JSONUInt64) {
+    public func visit(uint64 value: UInt64) {
         write("<integer>")
-        write(String(value.value))
+        write(String(value))
         write("</integer>")
     }
 
