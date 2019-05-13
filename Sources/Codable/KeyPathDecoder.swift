@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import StartPoint
-import XCTest
-
-//class JSONBufferTests: XCTestCase {
-//}
+public protocol KeyPathDecoder: Decoder {
+    func container<Key>(keyedBy type: Key.Type, keyPath: [CodingKey]) throws
+        -> KeyedDecodingContainer<Key> where Key : CodingKey
+    func unkeyedContainer(keyPath: [CodingKey]) throws -> UnkeyedDecodingContainer
+    func singleValueContainer(keyPath: [CodingKey]) throws -> SingleValueDecodingContainer
+}

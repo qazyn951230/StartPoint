@@ -293,23 +293,24 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     static func create(from buffer: JSONBufferRef, index: Int) -> JSON {
-        switch json_buffer_value_type(buffer, index) {
-        case JSONType.null:
-            return JSONNull.null
-        case JSONType.array:
-            let temp = json_buffer_array(buffer, index)
-            let other = json_buffer_copy_array(buffer, temp)
-            json_array_free(temp)
-            return JSONArray(buffer: other)
-        case JSONType.object:
-            let temp = json_buffer_object(buffer, index)
-            let other = json_buffer_copy_object(buffer, temp)
-            json_object_free(temp)
-            return JSONObject(buffer: other)
-        default:
-            let other = json_buffer_copy(buffer, index, 1)
-            return JSONValue(buffer: other)
-        }
+        return JSON.null
+//        switch json_buffer_value_type(buffer, index) {
+//        case JSONType.null:
+//            return JSONNull.null
+//        case JSONType.array:
+//            let temp = json_buffer_array_(buffer, index)
+//            let other = json_buffer_copy_array(buffer, temp)
+//            json_array_free(temp)
+//            return JSONArray(buffer: other)
+//        case JSONType.object:
+//            let temp = json_buffer_object(buffer, index)
+//            let other = json_buffer_copy_object(buffer, temp)
+//            json_object_free(temp)
+//            return JSONObject(buffer: other)
+//        default:
+//            let other = json_buffer_copy(buffer, index, 1)
+//            return JSONValue(buffer: other)
+//        }
     }
 
 //    static func create(from value: Any, nullable: Bool) -> JSON? {

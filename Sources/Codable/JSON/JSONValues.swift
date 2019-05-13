@@ -25,7 +25,7 @@ internal func decodeArray(in buffer: JSONBufferRef, at index: Int) -> [JSON] {
     if json_buffer_value_type(buffer, 0) != JSONType.array {
         return []
     }
-    let temp = json_buffer_array(buffer, 0)
+    let temp = json_buffer_array_create(buffer, 0, false)
     defer {
         json_array_free(temp)
     }
@@ -46,7 +46,7 @@ internal func decodeAnyArray(in buffer: JSONBufferRef, at index: Int) -> [JSON]?
     if json_buffer_value_type(buffer, 0) != JSONType.array {
         return nil
     }
-    let temp = json_buffer_array(buffer, 0)
+    let temp = json_buffer_array_create(buffer, 0, false)
     defer {
         json_array_free(temp)
     }
@@ -67,7 +67,7 @@ internal func decodeObject(in buffer: JSONBufferRef, at index: Int) -> [String: 
     if json_buffer_value_type(buffer, 0) != JSONType.object {
         return [:]
     }
-    let temp = json_buffer_object(buffer, 0)
+    let temp = json_buffer_object_create(buffer, 0, false)
     defer {
         json_object_free(temp)
     }
@@ -94,7 +94,7 @@ internal func decodeAnyObject(in buffer: JSONBufferRef, at index: Int) -> [Strin
     if json_buffer_value_type(buffer, 0) != JSONType.object {
         return nil
     }
-    let temp = json_buffer_object(buffer, 0)
+    let temp = json_buffer_object_create(buffer, 0, false)
     defer {
         json_object_free(temp)
     }
@@ -731,13 +731,13 @@ public final class JSONObject: JSON {
 //        return super.greater(other: other)
 //    }
 
-    public override subscript(typed key: String) -> JSON {
-        var index = 0
-        if json_buffer_key_index(buffer, 0, key, &index) {
-            return JSON.null
-        }
-        return JSON.create(from: buffer, index: index + 1)
-    }
+//    public override subscript(typed key: String) -> JSON {
+//        var index = 0
+//        if json_buffer_key_index_check(buffer, 0, key, &index) {
+//            return JSON.null
+//        }
+//        return JSON.create(from: buffer, index: index + 1)
+//    }
 }
 
 public final class JSONArray: JSON {
@@ -890,7 +890,7 @@ public final class JSONArray: JSON {
 //        return super.greater(other: other)
 //    }
 
-    public override subscript(typed index: Int) -> JSON {
-        return JSON.create(from: buffer, index: index)
-    }
+//    public override subscript(typed index: Int) -> JSON {
+//        return JSON.create(from: buffer, index: index)
+//    }
 }

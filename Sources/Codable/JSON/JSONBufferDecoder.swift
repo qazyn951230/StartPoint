@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+@inline(__always)
 internal func decodeString(in buffer: JSONBufferRef, at index: Int) -> String {
-    if json_buffer_value_type(buffer, 0) != JSONType.string {
+    if json_buffer_value_type(buffer, index) != JSONType.string {
         return ""
     }
     var count = 0
@@ -33,8 +34,9 @@ internal func decodeString(in buffer: JSONBufferRef, at index: Int) -> String {
     return ""
 }
 
+@inline(__always)
 internal func decodeAnyString(in buffer: JSONBufferRef, at index: Int) -> String? {
-    if json_buffer_value_type(buffer, 0) != JSONType.string {
+    if json_buffer_value_type(buffer, index) != JSONType.string {
         return nil
     }
     var count = 0
@@ -54,7 +56,48 @@ private func typeMismatch(_ expectation: Any.Type, not reality: Any.Type,
             debugDescription: "Expected to decode \(expectation) but found \(reality) instead."))
 }
 
-final class JSONBufferDecoder: Decoder {
+@inline(__always)
+private func findKey(_ key: String, in buffer: JSONBufferRef, object: JSONObjectRef) -> Int? {
+    return key.withCString { (pointer: UnsafePointer<Int8>) -> Int? in
+        var result = 0
+        if json_buffer_key_index_check(buffer, object, pointer, &result) {
+            return result
+        }
+        return nil
+    }
+}
+
+@inline(__always)
+private func findIndex(keyPath: [CodingKey], in buffer: JSONBufferRef, index base: Int) throws -> Int {
+    return 0
+//    var index = base
+//    var i = 0
+//    let n = keyPath.count - 1
+//    for key in keyPath {
+//        switch json_buffer_value_type(buffer, index) {
+//        case JSONType.array:
+//            if let t = key.intValue {
+//                index += t + 1
+//            } else {
+//                throw JSONParseError.valueInvalid
+//            }
+//        case JSONType.object:
+//            if let t = findKey(key.stringValue, in: buffer, index: index) {
+//                index = t + 1
+//            } else {
+//                throw JSONParseError.valueInvalid
+//            }
+//        default:
+//            if i != n {
+//                throw JSONParseError.valueInvalid
+//            }
+//        }
+//        i += 1
+//    }
+//    return index
+}
+
+final class JSONBufferDecoder: KeyPathDecoder {
     var codingPath: [CodingKey]
     var userInfo: [CodingUserInfoKey: Any]
     let buffer: JSONBufferRef
@@ -68,15 +111,41 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
-        return try container(keyedBy: type, index: index)
+        return container(keyedBy: type, index: index)
+    }
+    
+    func container<Key>(keyedBy type: Key.Type, keyPath: [CodingKey]) throws
+        -> KeyedDecodingContainer<Key> where Key : CodingKey {
+        let temp = try findIndex(keyPath: keyPath, in: buffer, index: index)
+        if json_buffer_value_type(buffer, temp) != JSONType.object {
+            throw JSONParseError.valueInvalid
+        }
+        return container(keyedBy: type, index: temp)
     }
 
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-        return try unkeyedContainer(index: index)
+        return unkeyedContainer(index: index)
+    }
+    
+    func unkeyedContainer(keyPath: [CodingKey]) throws -> UnkeyedDecodingContainer {
+        let temp = try findIndex(keyPath: keyPath, in: buffer, index: index)
+        if json_buffer_value_type(buffer, temp) != JSONType.array {
+            throw JSONParseError.valueInvalid
+        }
+        return unkeyedContainer(index: temp)
     }
 
     func singleValueContainer() throws -> SingleValueDecodingContainer {
-        return try singleValueContainer(index: index)
+        return singleValueContainer(index: index)
+    }
+    
+    func singleValueContainer(keyPath: [CodingKey]) throws -> SingleValueDecodingContainer {
+        let temp = try findIndex(keyPath: keyPath, in: buffer, index: index)
+        let type = json_buffer_value_type(buffer, temp)
+        if type == JSONType.object || type == JSONType.array {
+            throw JSONParseError.valueInvalid
+        }
+        return singleValueContainer(index: temp)
     }
 
     func decodeNil(index: Int) -> Bool {
@@ -92,9 +161,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Double.Type, index: Int) throws -> Double {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Double(value)
@@ -116,9 +185,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Float.Type, index: Int) throws -> Float {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Float(value)
@@ -140,9 +209,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Int.Type, index: Int) throws -> Int {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Int(value)
@@ -164,9 +233,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Int8.Type, index: Int) throws -> Int8 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Int8(value)
@@ -186,9 +255,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Int16.Type, index: Int) throws -> Int16 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Int16(value)
@@ -210,9 +279,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Int32.Type, index: Int) throws -> Int32 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return value
@@ -232,9 +301,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: Int64.Type, index: Int) throws -> Int64 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return Int64(value)
@@ -256,9 +325,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: UInt.Type, index: Int) throws -> UInt {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return UInt(value)
@@ -280,9 +349,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: UInt8.Type, index: Int) throws -> UInt8 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return UInt8(value)
@@ -304,9 +373,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: UInt16.Type, index: Int) throws -> UInt16 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return UInt16(value)
@@ -328,9 +397,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: UInt32.Type, index: Int) throws -> UInt32 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return UInt32(value)
@@ -352,9 +421,9 @@ final class JSONBufferDecoder: Decoder {
     }
 
     func decode(_ type: UInt64.Type, index: Int) throws -> UInt64 {
-        let number = json_buffer_number(buffer, index)
-        let raw = json_buffer_value_type(buffer, index)
-        switch raw {
+        let raw = json_buffer_index(buffer, index)
+        let number = raw.value
+        switch raw.type {
         case JSONType.int:
             let value: Int32 = number.i.int32
             return UInt64(value)
@@ -380,22 +449,17 @@ final class JSONBufferDecoder: Decoder {
         return try T.init(from: decoder)
     }
 
-    func container<Key>(keyedBy type: Key.Type, index: Int) throws
+    func container<Key>(keyedBy type: Key.Type, index: Int)
             -> KeyedDecodingContainer<Key> where Key: CodingKey {
-        let raw = json_buffer_object(buffer, index)
-        let object = JSONObjectContainer<Key>(decoder: self, object: raw)
-        json_object_free(raw)
+        let object = JSONObjectContainer<Key>(decoder: self, index: index)
         return KeyedDecodingContainer<Key>(object)
     }
 
-    func unkeyedContainer(index: Int) throws -> UnkeyedDecodingContainer {
-        let raw = json_buffer_array(buffer, index)
-        let array = JSONArrayContainer(decoder: self, array: raw)
-        json_array_free(raw)
-        return array
+    func unkeyedContainer(index: Int) -> UnkeyedDecodingContainer {
+        return JSONArrayContainer(decoder: self, index: index)
     }
 
-    func singleValueContainer(index: Int) throws -> SingleValueDecodingContainer {
+    func singleValueContainer(index: Int) -> SingleValueDecodingContainer {
         return JSONContainer(decoder: self, index: index)
     }
 }
@@ -483,12 +547,18 @@ final class JSONArrayContainer: UnkeyedDecodingContainer {
     private var firstIndex: Int
     private let _count: Int
     private var _index: Int
+    private let array: JSONArrayRef
 
-    init(decoder: JSONBufferDecoder, array: JSONArrayRef) {
+    init(decoder: JSONBufferDecoder, index: Int) {
         self.decoder = decoder
-        firstIndex = json_array_index(array) + 1
+        array = json_buffer_array_create(decoder.buffer, index, true)
+        firstIndex = index + 1
         _index = firstIndex
         _count = json_array_count(array)
+    }
+
+    deinit {
+        json_array_free(array)
     }
 
     var codingPath: [CodingKey] {
@@ -599,12 +669,12 @@ final class JSONArrayContainer: UnkeyedDecodingContainer {
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws
             -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
         let index = try move()
-        return try decoder.container(keyedBy: type, index: index)
+        return decoder.container(keyedBy: type, index: index)
     }
 
     func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
         let index = try move()
-        return try decoder.unkeyedContainer(index: index)
+        return decoder.unkeyedContainer(index: index)
     }
 
     func superDecoder() throws -> Decoder {
@@ -618,30 +688,27 @@ final class JSONObjectContainer<Key: CodingKey>: KeyedDecodingContainerProtocol 
 
     let decoder: JSONBufferDecoder
     private var index: Int
+    private let object: JSONObjectRef
 
-    init(decoder: JSONBufferDecoder, object: JSONObjectRef) {
+    init(decoder: JSONBufferDecoder, index: Int) {
         self.decoder = decoder
-        index = json_object_index(object)
+        self.index = index
+        object = json_buffer_object_create(decoder.buffer, index, true)
     }
 
+    deinit {
+        json_object_free(object)
+    }
+
+    @inline(__always)
     private func findIndex(key: Key) throws -> Int {
+//        print("findIndex", key.intValue ?? -1, key.stringValue)
         if let int = key.intValue {
-            let result = index + int
-            let raw = json_buffer_value_type(decoder.buffer, result)
-            if raw != JSONType.object {
-                throw JSONParseError.valueInvalid
-            }
-            return result
+            return index + int + 1
         } else {
-            let result = key.stringValue.withCString { (pointer: UnsafePointer<Int8>) -> Int? in
-                var result = 0
-                if json_buffer_key_index(decoder.buffer, index, pointer, &result) {
-                    return result
-                }
-                return nil
-            }
-            if let number = result {
-                return number
+            let result = findKey(key.stringValue, in: decoder.buffer, object: object)
+            if let temp = result {
+                return temp + 1
             } else {
                 throw JSONParseError.valueInvalid
             }
@@ -736,12 +803,12 @@ final class JSONObjectContainer<Key: CodingKey>: KeyedDecodingContainerProtocol 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
             -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
         let index = try findIndex(key: key)
-        return try decoder.container(keyedBy: type, index: index)
+        return decoder.container(keyedBy: type, index: index)
     }
 
     func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
         let index = try findIndex(key: key)
-        return try decoder.unkeyedContainer(index: index)
+        return decoder.unkeyedContainer(index: index)
     }
 
     func superDecoder() throws -> Decoder {

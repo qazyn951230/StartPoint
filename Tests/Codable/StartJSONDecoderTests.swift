@@ -28,12 +28,18 @@ class StartJSONDecoderTests: XCTestCase {
                    line: UInt = #line) where T: Decodable & Equatable {
         do {
             let data = json.data(using: .utf8) ?? Data()
-            let decoder = StartPoint.StartJSONDecoder()
+            let decoder = StartJSONDecoder()
             let value = try decoder.decode(T.self, from: data)
             XCTAssertEqual(value, decoded, file: file, line: line)
         } catch {
             XCTFail("decode failed", file: file, line: line)
         }
+    }
+
+    func decode<T>(_ json: String, as type: T.Type) -> T where T: Decodable {
+        let data = json.data(using: .utf8) ?? Data()
+        let decoder = StartJSONDecoder()
+        return try! decoder.decode(type, from: data)
     }
     
     func testDecodeNull() {
@@ -115,6 +121,79 @@ class StartJSONDecoderTests: XCTestCase {
     func testDecodeString() {
         decode("\"true\"", decoded: "true")
         decode("\"false\"", decoded: "false")
+    }
+
+    func testDecodeArray() {
+        XCTAssertEqual(decode("[\"11\", \"null\", \"false\"]", as: [String].self), ["11", "null", "false"])
+        XCTAssertEqual(decode("[[[\"11\", \"null\", \"false\"]]]", as: [[[String]]].self), [[["11", "null", "false"]]])
+    }
+
+    func testDecodeGlossary() {
+        let json = """
+{
+    "glossary": {
+        "title": "example glossary",
+        "glossDiv": {
+            "title": "S",
+            "glossList": {
+                "glossEntry": {
+                    "id": "SGML",
+                    "sortAs": "SGML",
+                    "glossTerm": "Standard Generalized Markup Language",
+                    "acronym": "SGML",
+                    "abbrev": "ISO 8879:1986",
+                    "glossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                        "glossSeeAlso": ["GML", "XML"]
+                    },
+                    "glossSee": "markup"
+                }
+            }
+        }
+    }
+}
+"""
+        struct GlossDef: Decodable {
+            let para: String
+            let glossSeeAlso: [String]
+        }
+        struct GlossEntry: Decodable {
+            let id: String
+            let sortAs: String
+            let glossTerm: String
+            let acronym: String
+            let abbrev: String
+            let glossDef: GlossDef
+            let glossSee: String
+        }
+        struct GlossList: Decodable {
+            let glossEntry: GlossEntry
+        }
+        struct GlossDiv: Decodable {
+            let title: String
+            let glossList: GlossList
+        }
+        struct Glossary: Decodable {
+            let title: String
+            let glossDiv: GlossDiv
+        }
+        struct Root: Decodable {
+            let glossary: Glossary
+        }
+        let root = decode(json, as: Root.self)
+        let glossary = root.glossary
+        XCTAssertEqual(glossary.title, "example glossary")
+        let glossDiv = glossary.glossDiv
+        XCTAssertEqual(glossDiv.title, "S")
+        let glossEntry = glossDiv.glossList.glossEntry
+        XCTAssertEqual(glossEntry.id, "SGML")
+        XCTAssertEqual(glossEntry.sortAs, "SGML")
+        XCTAssertEqual(glossEntry.glossTerm, "Standard Generalized Markup Language")
+        XCTAssertEqual(glossEntry.acronym, "SGML")
+        XCTAssertEqual(glossEntry.abbrev, "ISO 8879:1986")
+        XCTAssertEqual(glossEntry.glossDef.para, "A meta-markup language, used to create markup languages such as DocBook.")
+        XCTAssertEqual(glossEntry.glossDef.glossSeeAlso, ["GML", "XML"])
+        XCTAssertEqual(glossEntry.glossSee, "markup")
     }
 
 #if TEST_PERFORMANCE

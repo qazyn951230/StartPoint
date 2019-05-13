@@ -101,9 +101,9 @@ public final class JSONParser {
         if !consume(char: 0x22) {
             throw JSONParseError.valueInvalid
         }
-        let start = json_buffer_start_string(buffer)
+        let index = json_buffer_start_string(buffer)
         try rawString()
-        json_buffer_end_string(buffer, start)
+        json_buffer_end_string(buffer, index)
         if !consume(char: 0x22) {
             throw JSONParseError.valueInvalid
         }
@@ -306,9 +306,9 @@ public final class JSONParser {
         let c = consume(char: 0x7b)
         assert(c)
         skip()
-        let start = json_buffer_start_object(buffer)
+        let index = json_buffer_start_object(buffer)
         if consume(char: 0x7d) {
-            json_buffer_end_object(buffer, start, 0)
+            json_buffer_end_object(buffer, index, 0)
             return
         }
         var count = 0
@@ -332,7 +332,7 @@ public final class JSONParser {
                 skip()
             case 0x7d:
                 stream.move()
-                json_buffer_end_object(buffer, start, count)
+                json_buffer_end_object(buffer, index, count)
                 return
             default:
                 throw JSONParseError.objectMissCommaOrCurlyBracket
@@ -346,9 +346,9 @@ public final class JSONParser {
         let c = consume(char: 0x5b)
         assert(c)
         skip()
-        let start = json_buffer_start_array(buffer)
+        let index = json_buffer_start_array(buffer)
         if consume(char: 0x5d) {
-            json_buffer_end_array(buffer, start, 0)
+            json_buffer_end_array(buffer, index, 0)
             return
         }
         var count = 0
@@ -359,7 +359,7 @@ public final class JSONParser {
             if consume(char: 0x2c) {
                 skip()
             } else if consume(char: 0x5d) {
-                json_buffer_end_array(buffer, start, count)
+                json_buffer_end_array(buffer, index, count)
                 return
             } else {
                 throw JSONParseError.arrayMissCommaOrSquareBracket

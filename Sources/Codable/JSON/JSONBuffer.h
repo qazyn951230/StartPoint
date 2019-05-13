@@ -29,20 +29,6 @@
 
 SP_C_FILE_BEGIN
 
-union Number {
-    struct I {
-        int32_t int32;
-        char padding[4];
-    } i;
-    struct U {
-        uint32_t uint32;
-        char padding[4];
-    } u;
-    int64_t int64;
-    uint64_t uint64;
-    double floating;
-};
-
 typedef SP_ENUM(uint8_t, JSONType) {
     JSONTypeNull,
     JSONTypeTrue,
@@ -57,12 +43,32 @@ typedef SP_ENUM(uint8_t, JSONType) {
     JSONTypeObject,
 };
 
-typedef struct OpaqueJSONBuffer *JSONBufferRef;
-typedef struct OpaqueJSONArray *JSONArrayRef;
-typedef struct OpaqueJSONObject *JSONObjectRef;
+union Number {
+    struct I {
+        int32_t int32;
+        char padding[4];
+    } i;
+    struct U {
+        uint32_t uint32;
+        char padding[4];
+    } u;
+    int64_t int64;
+    uint64_t uint64;
+    double floating;
+};
+
+struct JSONIndex {
+    JSONType type;
+    size_t start;
+    size_t end;
+    union Number value;
+};
+
+typedef struct OpaqueJSONBuffer* JSONBufferRef;
+typedef struct OpaqueJSONArray* JSONArrayRef;
+typedef struct OpaqueJSONObject* JSONObjectRef;
 
 JSONBufferRef json_buffer_create(size_t count, size_t size);
-JSONBufferRef json_buffer_create_null();
 void json_buffer_free(JSONBufferRef buffer);
 bool json_buffer_is_empty(JSONBufferRef buffer);
 size_t json_buffer_count(JSONBufferRef buffer);
@@ -80,7 +86,7 @@ void json_buffer_append_uint64(JSONBufferRef buffer, uint64_t value);
 void json_buffer_append_double(JSONBufferRef buffer, double value);
 void json_buffer_append_bool(JSONBufferRef buffer, bool value);
 void json_buffer_append_char(JSONBufferRef buffer, unsigned char value);
-void json_buffer_append_string(JSONBufferRef buffer, const char *value, size_t count);
+void json_buffer_append_string(JSONBufferRef buffer, const char* value, size_t count);
 void json_buffer_append_null(JSONBufferRef buffer);
 
 size_t json_buffer_start_string(JSONBufferRef buffer);
@@ -90,8 +96,8 @@ void json_buffer_end_array(JSONBufferRef buffer, size_t index, size_t count);
 size_t json_buffer_start_object(JSONBufferRef buffer);
 void json_buffer_end_object(JSONBufferRef buffer, size_t index, size_t count);
 
+struct JSONIndex json_buffer_index(JSONBufferRef buffer, size_t atIndex);
 bool json_buffer_is_null(JSONBufferRef buffer, size_t index);
-union Number json_buffer_number(JSONBufferRef buffer, size_t index);
 int32_t json_buffer_int32(JSONBufferRef buffer, size_t index);
 int64_t json_buffer_int64(JSONBufferRef buffer, size_t index);
 uint32_t json_buffer_uint32(JSONBufferRef buffer, size_t index);
@@ -99,11 +105,11 @@ uint64_t json_buffer_uint64(JSONBufferRef buffer, size_t index);
 double json_buffer_double(JSONBufferRef buffer, size_t index);
 bool json_buffer_bool(JSONBufferRef buffer, size_t index);
 void* json_buffer_string(JSONBufferRef buffer, size_t index, size_t* SP_NULLABLE count);
-JSONArrayRef json_buffer_array(JSONBufferRef buffer, size_t index);
-void json_buffer_arrayp(JSONBufferRef buffer, size_t index, JSONArrayRef array);
-JSONObjectRef json_buffer_object(JSONBufferRef buffer, size_t index);
-void json_buffer_objectp(JSONBufferRef buffer, size_t index, JSONObjectRef object);
-bool json_buffer_key_index(JSONBufferRef buffer, size_t index, const char *key, size_t* result);
+JSONArrayRef json_buffer_array_create(JSONBufferRef buffer, size_t index, bool resolve);
+JSONObjectRef json_buffer_object_create(JSONBufferRef buffer, size_t index, bool resolve);
+bool json_buffer_key_index(JSONBufferRef buffer, JSONObjectRef object, size_t key_index,
+                           char* SP_NULLABLE key, size_t* result);
+bool json_buffer_key_index_check(JSONBufferRef buffer, JSONObjectRef object, const char* key, size_t* result);
 
 JSONArrayRef json_array_create();
 void json_array_free(JSONArrayRef array);

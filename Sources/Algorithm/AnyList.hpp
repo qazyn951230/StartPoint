@@ -170,17 +170,29 @@ public:
     }
 
     template<typename T>
-    inline T& at(size_type offset) {
+    inline T& at(size_type offset) noexcept {
         assert(static_cast<size_type>(_end - _start) >= offset);
         auto result = reinterpret_cast<T*>(_start + offset);
         return *result;
     }
 
     template<typename T>
-    inline const T& at(size_type offset) const {
+    inline const T& at(size_type offset) const noexcept {
         assert(static_cast<size_type>(_end - _start) >= offset);
         auto result = reinterpret_cast<T*>(_start + offset);
         return *result;
+    }
+    
+    template<typename T>
+    inline T *SP_NULLABLE item(size_type offset) noexcept {
+        assert(static_cast<size_type>(_end - _start) >= offset);
+        return reinterpret_cast<T*>(_start + offset);
+    }
+    
+    template<typename T>
+    inline const T *SP_NULLABLE item(size_type offset) const noexcept {
+        assert(static_cast<size_type>(_end - _start) >= offset);
+        return reinterpret_cast<T*>(_start + offset);
     }
 
     inline char *SP_NULLABLE data() noexcept {

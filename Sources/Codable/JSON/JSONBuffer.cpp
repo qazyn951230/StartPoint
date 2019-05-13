@@ -34,11 +34,6 @@ JSONBufferRef json_buffer_create(size_t count, size_t size) {
     return wrap(buffer);
 }
 
-JSONBufferRef json_buffer_create_null() {
-    auto buffer = new JSONBuffer();
-    return wrap(buffer);
-}
-
 void json_buffer_free(JSONBufferRef buffer) {
     delete unwrap(buffer);
 }
@@ -64,15 +59,15 @@ JSONBufferRef json_buffer_copy_object(JSONBufferRef buffer, JSONObjectRef object
 }
 
 bool json_buffer_is_empty(JSONBufferRef buffer) {
-    if (unwrap(buffer)->empty()) {
+    auto raw = unwrap(buffer);
+    if (raw->empty()) {
         return true;
     }
-    auto& i = unwrap(buffer)->index(0);
+    auto& i = raw->index(0);
     switch (i.type) {
         case JSONTypeArray:
         case JSONTypeObject:
-            return unwrap(buffer)->array(0).count != 0;
-            break;
+            return i.value.int64 != 0;
         default:
             return false;
     }
@@ -121,7 +116,7 @@ void json_buffer_append_char(JSONBufferRef buffer, unsigned char value) {
     unwrap(buffer)->appendString(value);
 }
 
-void json_buffer_append_string(JSONBufferRef buffer, const char *value, size_t count) {
+void json_buffer_append_string(JSONBufferRef buffer, const char* value, size_t count) {
     unwrap(buffer)->appendString(value, count);
 }
 
@@ -153,37 +148,47 @@ void json_buffer_end_object(JSONBufferRef buffer, size_t index, size_t count) {
     unwrap(buffer)->endObject(index, count);
 }
 
+JSONIndex json_buffer_index(JSONBufferRef buffer, size_t atIndex) {
+    return unwrap(buffer)->index(atIndex);
+}
+
 bool json_buffer_is_null(JSONBufferRef buffer, size_t index) {
     auto temp = unwrap(buffer)->index(index);
     return temp.type == JSONTypeNull;
 }
 
-union Number json_buffer_number(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number(index);
-}
-
 int32_t json_buffer_int32(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number<int32_t>(index);
+    Number result;
+    unwrap(buffer)->number(index, result);
+    return result.i.int32;
 }
 
 int64_t json_buffer_int64(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number<int64_t>(index);
+    Number result;
+    unwrap(buffer)->number(index, result);
+    return result.int64;
 }
 
 uint32_t json_buffer_uint32(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number<uint32_t>(index);
+    Number result;
+    unwrap(buffer)->number(index, result);
+    return result.u.uint32;
 }
 
 uint64_t json_buffer_uint64(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number<uint64_t>(index);
+    Number result;
+    unwrap(buffer)->number(index, result);
+    return result.uint64;
 }
 
 double json_buffer_double(JSONBufferRef buffer, size_t index) {
-    return unwrap(buffer)->number<double>(index);
+    Number result;
+    unwrap(buffer)->number(index, result);
+    return result.floating;
 }
 
 bool json_buffer_bool(JSONBufferRef buffer, size_t index) {
-    auto temp = unwrap(buffer)->index(index);
+    auto& temp = unwrap(buffer)->index(index);
     switch (temp.type) {
         case JSONTypeTrue:
             return true;
@@ -199,38 +204,50 @@ void* json_buffer_string(JSONBufferRef buffer, size_t index, size_t* SP_NULLABLE
     return reinterpret_cast<void*>(result);
 }
 
-JSONArrayRef json_buffer_array(JSONBufferRef buffer, size_t index) {
+JSONArrayRef json_buffer_array_create(JSONBufferRef buffer, size_t index, bool resolve) {
     auto value = new JSONArray();
-    unwrap(buffer)->array(index, value);
+    unwrap(buffer)->array(index, *value, resolve);
     return wrap(value);
 }
 
-void json_buffer_arrayp(JSONBufferRef buffer, size_t index, JSONArrayRef array) {
-    unwrap(buffer)->array(index, unwrap(array));
-}
-
-JSONObjectRef json_buffer_object(JSONBufferRef buffer, size_t index) {
+JSONObjectRef json_buffer_object_create(JSONBufferRef buffer, size_t index, bool resolve) {
     auto value = new JSONObject();
-    unwrap(buffer)->object(index, value);
+    unwrap(buffer)->object(index, *value, resolve);
     return wrap(value);
 }
 
-void json_buffer_objectp(JSONBufferRef buffer, size_t index, JSONObjectRef object) {
-    unwrap(buffer)->object(index, unwrap(object));
+bool json_buffer_key_index(JSONBufferRef buffer, JSONObjectRef object, size_t key_index,
+                           char* SP_NULLABLE key, size_t* result) {
+    size_t* item = unwrap(object)->item;
+    if (item != nullptr || unwrap(object)->count <= key_index) {
+        return false;
+    }
+    size_t count = 0;
+    key = unwrap(buffer)->string(*(item + key_index), &count);
+    if (key != nullptr) {
+        *result = count;
+        return true;
+    }
+    return false;
 }
 
-bool json_buffer_key_index(JSONBufferRef buffer, size_t index, const char *key, size_t* result) {
+bool json_buffer_key_index_check(JSONBufferRef buffer, JSONObjectRef object, const char* key, size_t* result) {
+    auto temp = unwrap(object);
     auto raw = unwrap(buffer);
-    JSONObject object;
-    raw->object(index, &object);
-    auto n = index + object.count;
-    auto count = strnlen(key, SIZE_MAX);
-    for (size_t i = index + 1; i < n; ++i) {
-        auto value = raw->string(i, nullptr);
+    if (temp->item == nullptr) {
+        raw->resolveObject(*temp);
+    }
+    size_t* item = temp->item;
+    assert(item != nullptr);
+    auto end = item + temp->count;
+    size_t count = 0;
+    while (item < end) {
+        auto value = raw->string(*item, &count);
         if (value != nullptr && memcmp(key, value, count) == 0) {
-            *result = i;
+            *result = *item;
             return true;
         }
+        item += 1;
     }
     return false;
 }
@@ -241,7 +258,9 @@ JSONArrayRef json_array_create() {
 }
 
 void json_array_free(JSONArrayRef array) {
-    delete unwrap(array);
+    auto raw = unwrap(array);
+    delete[] raw->item;
+    delete raw;
 }
 
 size_t json_array_count(JSONArrayRef array) {
@@ -258,7 +277,9 @@ JSONObjectRef json_object_create() {
 }
 
 void json_object_free(JSONObjectRef object) {
-    delete unwrap(object);
+    auto raw = unwrap(object);
+    delete[] raw->item;
+    delete raw;
 }
 
 size_t json_object_count(JSONObjectRef object) {
