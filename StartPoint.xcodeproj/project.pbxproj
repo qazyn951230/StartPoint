@@ -964,6 +964,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				"zh-CN",
+				Base,
 			);
 			mainGroup = BC6BA19F1F2DC08600772AA8;
 			productRefGroup = BC6BA1AA1F2DC08700772AA8 /* Products */;
