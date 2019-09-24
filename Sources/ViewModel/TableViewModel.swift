@@ -26,7 +26,7 @@ public protocol TableViewModel: ScrollViewModel {
     func dequeueCell(for view: UITableView, at indexPath: IndexPath) -> UITableViewCell
 }
 
-public extension TableViewModel where Model == HeightViewModel {
+extension TableViewModel where Model == HeightViewModel {
     public func dequeueCell(for view: UITableView, at indexPath: IndexPath) -> UITableViewCell {
         let id = cellModel(at: indexPath).identifier
         return view.dequeueReusableCell(withIdentifier: id, for: indexPath)

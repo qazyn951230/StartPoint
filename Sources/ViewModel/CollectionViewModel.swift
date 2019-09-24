@@ -26,7 +26,7 @@ public protocol CollectionViewModel: ScrollViewModel {
     func dequeueCell(for view: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell
 }
 
-public extension CollectionViewModel where Model == SizeViewModel {
+extension CollectionViewModel where Model == SizeViewModel {
     public func dequeueCell(for view: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
         let id = cellModel(at: indexPath).identifier
         return view.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)

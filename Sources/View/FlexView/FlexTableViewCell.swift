@@ -25,7 +25,7 @@ import UIKit
 open class FlexTableViewCell: UITableViewCell, Flexed {
     public let root = FlexLayout()
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         initialization()
     }

@@ -22,7 +22,7 @@
 
 import UIKit
 
-public extension UIEdgeInsets {
+extension UIEdgeInsets {
     public var horizontal: CGFloat {
         return left + right
     }

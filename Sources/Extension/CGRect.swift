@@ -22,7 +22,7 @@
 
 import CoreGraphics
 
-public extension CGRect {
+extension CGRect {
     public init(x: LayoutValue, y: LayoutValue, size: CGSize) {
         let point = CGPoint(x: x.value, y: y.value)
         self.init(origin: point, size: size)

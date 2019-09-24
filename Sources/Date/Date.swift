@@ -31,7 +31,7 @@ public enum DateComponent {
     case second(Int)
 }
 
-public extension Date {
+extension Date {
     func _add(_ date: [DateComponent]) -> Date {
         let calendar = Calendar.current
         var components = DateComponents()

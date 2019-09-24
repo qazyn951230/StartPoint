@@ -25,7 +25,7 @@ import UIKit
 public class DefaultTableViewCell: UITableViewCell {
     public static let identifier: String = "DefaultTableViewCell"
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: DefaultTableViewCell.identifier)
     }
 
@@ -51,15 +51,15 @@ public struct DefaultTableViewCellModel: HeightViewModel {
     public var title: NSAttributedString? = nil
     public var imageName: String? = nil
     public var image: UIImage? = nil
-    public var accessory: UITableViewCellAccessoryType
+    public var accessory: UITableViewCell.AccessoryType
 
-    public var selectionStyle: UITableViewCellSelectionStyle
+    public var selectionStyle: UITableViewCell.SelectionStyle
 
     public init() {
         self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+    public init(accessory: UITableViewCell.AccessoryType, selection: Bool) {
         self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
@@ -68,7 +68,7 @@ public struct DefaultTableViewCellModel: HeightViewModel {
 public class SubtitleTableViewCell: UITableViewCell {
     public static let identifier: String = "SubtitleTableViewCell"
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: SubtitleTableViewCell.identifier)
     }
 
@@ -97,16 +97,16 @@ public struct SubtitleTableViewCellModel: HeightViewModel {
     public var subtitle: NSAttributedString? = nil
     public var imageName: String? = nil
     public var image: UIImage? = nil
-    public var accessory: UITableViewCellAccessoryType
+    public var accessory: UITableViewCell.AccessoryType
 
     public var subtitleLines: Int = 0
-    public var selectionStyle: UITableViewCellSelectionStyle
+    public var selectionStyle: UITableViewCell.SelectionStyle
 
     public init() {
         self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+    public init(accessory: UITableViewCell.AccessoryType, selection: Bool) {
         self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
@@ -115,7 +115,7 @@ public struct SubtitleTableViewCellModel: HeightViewModel {
 public class Value1TableViewCell: UITableViewCell {
     public static let identifier: String = "Value1TableViewCell"
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: Value1TableViewCell.identifier)
     }
 
@@ -144,16 +144,16 @@ public struct Value1TableViewCellModel: HeightViewModel {
     public var subtitle: NSAttributedString? = nil
     public var imageName: String? = nil
     public var image: UIImage? = nil
-    public var accessory: UITableViewCellAccessoryType
+    public var accessory: UITableViewCell.AccessoryType
 
     public var subtitleLines: Int = 0
-    public var selectionStyle: UITableViewCellSelectionStyle
+    public var selectionStyle: UITableViewCell.SelectionStyle
 
     public init() {
         self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+    public init(accessory: UITableViewCell.AccessoryType, selection: Bool) {
         self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }
@@ -162,7 +162,7 @@ public struct Value1TableViewCellModel: HeightViewModel {
 public class Value2TableViewCell: UITableViewCell {
     public static let identifier: String = "Value2TableViewCell"
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value2, reuseIdentifier: Value2TableViewCell.identifier)
     }
 
@@ -191,16 +191,16 @@ public struct Value2TableViewCellModel: HeightViewModel {
     public var subtitle: NSAttributedString? = nil
     public var imageName: String? = nil
     public var image: UIImage? = nil
-    public var accessory: UITableViewCellAccessoryType
+    public var accessory: UITableViewCell.AccessoryType
 
     public var subtitleLines: Int = 0
-    public var selectionStyle: UITableViewCellSelectionStyle
+    public var selectionStyle: UITableViewCell.SelectionStyle
 
     public init() {
         self.init(accessory: .disclosureIndicator, selection: true)
     }
 
-    public init(accessory: UITableViewCellAccessoryType, selection: Bool) {
+    public init(accessory: UITableViewCell.AccessoryType, selection: Bool) {
         self.accessory = accessory
         selectionStyle = selection ? .default : .none
     }

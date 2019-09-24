@@ -26,7 +26,7 @@ public protocol RecyclerElementDelegate: class {
     func recyclerElement(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 }
 
-public extension RecyclerElementDelegate {
+extension RecyclerElementDelegate {
     public func recyclerElement(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Do nothing.
     }

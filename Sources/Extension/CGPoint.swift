@@ -22,7 +22,7 @@
 
 import CoreGraphics
 
-public extension CGPoint {
+extension CGPoint {
     public init(_ x: LayoutValue, _ y: LayoutValue) {
         self.init(x: x.value, y: y.value)
     }

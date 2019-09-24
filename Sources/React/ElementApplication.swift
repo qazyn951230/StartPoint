@@ -22,10 +22,10 @@
 
 import UIKit
 
-public final class ElementApplication: UIApplication {
-    public static func main(delegate: String) {
-        let argv = UnsafeMutableRawPointer(CommandLine.unsafeArgv)
-            .bindMemory(to: UnsafeMutablePointer<Int8>.self, capacity: Int(CommandLine.argc))
-        _ = UIApplicationMain(CommandLine.argc, argv, NSStringFromClass(ElementApplication.self), delegate)
-    }
-}
+//public final class ElementApplication: UIApplication {
+//    public static func main(delegate: String) {
+//        let argv = UnsafeMutableRawPointer(CommandLine.unsafeArgv)
+//            .bindMemory(to: UnsafeMutablePointer<Int8>.self, capacity: Int(CommandLine.argc))
+//        _ = UIApplicationMain(CommandLine.argc, argv, NSStringFromClass(ElementApplication.self), delegate)
+//    }
+//}

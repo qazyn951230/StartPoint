@@ -29,7 +29,7 @@ public protocol AsyncLayerDelegate: class {
     func asyncLayer(_ layer: AsyncLayer, didDisplay finished: Bool)
 }
 
-public extension AsyncLayerDelegate {
+extension AsyncLayerDelegate {
     public func asyncLayerWillDisplay(_ layer: AsyncLayer) {
         // Do nothing.
     }

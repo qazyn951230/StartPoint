@@ -26,7 +26,7 @@ public protocol Creatable {
     static func create() -> Self
 }
 
-public extension Creatable where Self: UIViewController {
+extension Creatable where Self: UIViewController {
     public static func create() -> Self {
         return self.init(nibName: nil, bundle: nil)
     }

@@ -35,7 +35,7 @@ public final class RxImagePickerDelegateProxy: RxNavigationControllerDelegatePro
     }
 }
 
-public extension Reactive where Base: UIImagePickerController {
+extension Reactive where Base: UIImagePickerController {
     public var pickerDelegate: DelegateProxy<UINavigationController, UINavigationControllerDelegate> {
         return RxImagePickerDelegateProxy.proxy(for: base)
     }
@@ -59,7 +59,7 @@ public extension Reactive where Base: UIImagePickerController {
     }
 }
 
-public extension UIImagePickerController {
+extension UIImagePickerController {
     public static func rxController(_ picker: UIImagePickerController, in viewController: UIViewController,
                                     animated: Bool = true) -> Observable<UIImagePickerController> {
         return Observable<UIImagePickerController>.create { observer in

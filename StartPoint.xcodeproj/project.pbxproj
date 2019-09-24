@@ -351,13 +351,22 @@
 		AC96AFCB44A6188AB237A221 /* FlexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexTests.swift; sourceTree = "<group>"; };
 		AC96AFEC484673FEBC3FDF5B /* StartLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartLabel.swift; sourceTree = "<group>"; };
 		AC96AFF5FC0D5B0CA9CF53D1 /* ElementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementTests.swift; sourceTree = "<group>"; };
+		BC02231E2339C03400AA2439 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
+		BC02231F2339C03400AA2439 /* Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Framework.xcconfig; sourceTree = "<group>"; };
+		BC0223202339C03400AA2439 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
+		BC0223222339C03400AA2439 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
+		BC0223232339C03400AA2439 /* iOS-App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-App.xcconfig"; sourceTree = "<group>"; };
+		BC0223242339C03400AA2439 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		BC0223252339C03400AA2439 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
+		BC0223292339C03400AA2439 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
+		BC02232A2339C03400AA2439 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
+		BC02232B2339C03400AA2439 /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
 		BC16E7541F3EAB9800DDC894 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		BC16E7591F3EB2D600DDC894 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		BC16E75C1F3EB2D600DDC894 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6BA1B21F2DC08700772AA8 /* StartPointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StartPointTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC78226820BB9428006C2214 /* FlexCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -380,11 +389,6 @@
 		BCA2A4601F3DA5BC007A772A /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		BCA2A4621F3DA5BC007A772A /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		BCA2A4631F3DA5BC007A772A /* Function.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Function.swift; sourceTree = "<group>"; };
-		BCA71D251F4D0CC100D8CF57 /* iOS-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Debug.xcconfig"; sourceTree = "<group>"; };
-		BCA71D261F4D0CC100D8CF57 /* iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Release.xcconfig"; sourceTree = "<group>"; };
-		BCA9E07B1F2E1C5D00D78FE9 /* iOS-App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-App.xcconfig"; sourceTree = "<group>"; };
-		BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
-		BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -753,6 +757,47 @@
 			path = Reactive;
 			sourceTree = "<group>";
 		};
+		BC0223172339C03300AA2439 /* Configs */ = {
+			isa = PBXGroup;
+			children = (
+				BC02231D2339C03400AA2439 /* Target */,
+				BC0223212339C03400AA2439 /* iOS */,
+				BC0223282339C03400AA2439 /* Project */,
+			);
+			path = Configs;
+			sourceTree = "<group>";
+		};
+		BC02231D2339C03400AA2439 /* Target */ = {
+			isa = PBXGroup;
+			children = (
+				BC02231E2339C03400AA2439 /* App.xcconfig */,
+				BC02231F2339C03400AA2439 /* Framework.xcconfig */,
+				BC0223202339C03400AA2439 /* Test.xcconfig */,
+			);
+			path = Target;
+			sourceTree = "<group>";
+		};
+		BC0223212339C03400AA2439 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				BC0223222339C03400AA2439 /* iOS-Framework.xcconfig */,
+				BC0223232339C03400AA2439 /* iOS-App.xcconfig */,
+				BC0223242339C03400AA2439 /* iOS.xcconfig */,
+				BC0223252339C03400AA2439 /* iOS-Test.xcconfig */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		BC0223282339C03400AA2439 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				BC0223292339C03400AA2439 /* Project-Release.xcconfig */,
+				BC02232A2339C03400AA2439 /* Project.xcconfig */,
+				BC02232B2339C03400AA2439 /* Project-Debug.xcconfig */,
+			);
+			path = Project;
+			sourceTree = "<group>";
+		};
 		BC16E7531F3EAB9800DDC894 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -779,7 +824,7 @@
 			isa = PBXGroup;
 			children = (
 				BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */,
-				BCA9E0791F2E1C5D00D78FE9 /* Configs */,
+				BC0223172339C03300AA2439 /* Configs */,
 				AC96A36E2E045004201B9825 /* Sources */,
 				AC96A2B2BF91A41A3864FD36 /* Tests */,
 				BC6BA1AA1F2DC08700772AA8 /* Products */,
@@ -863,27 +908,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		BCA9E0791F2E1C5D00D78FE9 /* Configs */ = {
-			isa = PBXGroup;
-			children = (
-				BCA9E07A1F2E1C5D00D78FE9 /* iOS */,
-			);
-			path = Configs;
-			sourceTree = "<group>";
-		};
-		BCA9E07A1F2E1C5D00D78FE9 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				BCA71D251F4D0CC100D8CF57 /* iOS-Debug.xcconfig */,
-				BCA71D261F4D0CC100D8CF57 /* iOS-Release.xcconfig */,
-				BCA9E07B1F2E1C5D00D78FE9 /* iOS-App.xcconfig */,
-				BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */,
-				BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */,
-				BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */,
-			);
-			path = iOS;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -954,7 +978,7 @@
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = F3XBV7X28L;
 						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1192,21 +1216,23 @@
 /* Begin XCBuildConfiguration section */
 		BC6BA1BB1F2DC08700772AA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCA71D251F4D0CC100D8CF57 /* iOS-Debug.xcconfig */;
+			baseConfigurationReference = BC02232B2339C03400AA2439 /* Project-Debug.xcconfig */;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
 		BC6BA1BC1F2DC08700772AA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCA71D261F4D0CC100D8CF57 /* iOS-Release.xcconfig */;
+			baseConfigurationReference = BC0223292339C03400AA2439 /* Project-Release.xcconfig */;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
 		BC6BA1BE1F2DC08700772AA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
+			baseConfigurationReference = BC0223222339C03400AA2439 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1221,7 +1247,7 @@
 		};
 		BC6BA1BF1F2DC08700772AA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */;
+			baseConfigurationReference = BC0223222339C03400AA2439 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1236,7 +1262,7 @@
 		};
 		BC6BA1C11F2DC08700772AA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */;
+			baseConfigurationReference = BC0223252339C03400AA2439 /* iOS-Test.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1249,7 +1275,7 @@
 		};
 		BC6BA1C21F2DC08700772AA8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */;
+			baseConfigurationReference = BC0223252339C03400AA2439 /* iOS-Test.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

@@ -49,6 +49,8 @@ public struct PhotoPermission: PermissionItem {
             return .denied
         case .notDetermined:
             return .notDetermined
+        @unknown default:
+            return .denied
         }
     }
 }

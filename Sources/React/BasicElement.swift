@@ -283,7 +283,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
             return
         }
 #if DEBUG
-        if let index = children.index(of: element) {
+        if let index = children.firstIndex(of: element) {
             children.remove(at: index)
         } else {
             assertFail("\(self) own \(element), but doesn't contain in children array")
@@ -468,8 +468,8 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
     }
 
     // MARK: - Hashable
-    open var hashValue: Int {
-        return address(of: self).hashValue
+    open func hash(into hasher: inout Hasher) {
+        hasher.combine(address(of: self))
     }
 
     public static func ==(lhs: BasicElement, rhs: BasicElement) -> Bool {

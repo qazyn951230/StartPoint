@@ -29,7 +29,7 @@ public protocol ScrollViewModel {
     func cellModel(at indexPath: IndexPath) -> Model
 }
 
-public extension ScrollViewModel {
+extension ScrollViewModel {
     public func toIndex(_ indexPath: IndexPath) -> Int {
         if indexPath.section > numberOfSections() {
             return 0
@@ -47,7 +47,7 @@ public protocol ArrayScrollViewModel: ScrollViewModel {
     func cellModel(at index: Int) -> Model
 }
 
-public extension ArrayScrollViewModel {
+extension ArrayScrollViewModel {
     public func cellModel(at indexPath: IndexPath) -> Model {
         return cellModel(at: toIndex(indexPath))
     }

@@ -43,7 +43,7 @@ public protocol LogType {
     static func format(level: LogLevel, dictionary: [AnyHashable: Any], separator: String) -> String
 }
 
-public extension LogType {
+extension LogType {
     public static func close() {
         destinations.forEach {
             $0.close()

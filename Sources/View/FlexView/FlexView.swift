@@ -27,7 +27,7 @@ public protocol Flexed {
     func flexLayout()
 }
 
-public extension Flexed where Self: UIView {
+extension Flexed where Self: UIView {
     public func flexLayout() {
         root.layout(width: bounds.width, height: bounds.height)
         root.apply()

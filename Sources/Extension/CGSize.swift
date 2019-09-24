@@ -22,7 +22,7 @@
 
 import CoreGraphics
 
-public extension CGSize {
+extension CGSize {
     public init(_ width: LayoutValue, _ height: LayoutValue) {
         self.init(width: width.value, height: height.value)
     }

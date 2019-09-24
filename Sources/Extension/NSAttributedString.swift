@@ -23,7 +23,7 @@
 import Foundation
 import UIKit
 
-public extension NSAttributedString {
+extension NSAttributedString {
     public func boundingSize(width: CGFloat, options: NSStringDrawingOptions = [.usesLineFragmentOrigin]) -> CGSize {
         return boundingSize(size: CGSize(width: width, height: .greatestFiniteMagnitude), options: options)
     }

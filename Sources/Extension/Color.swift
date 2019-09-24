@@ -53,7 +53,7 @@ fileprivate func hexColor<T>(_ value: UInt32, alpha: CGFloat, creator: (CGFloat,
 }
 
 #if os(iOS)
-public extension UIColor {
+extension UIColor {
     public static func hex(_ value: UInt32) -> UIColor {
         return hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
     }
@@ -69,7 +69,7 @@ public extension UIColor {
 #endif
 }
 #else
-public extension NSColor {
+extension NSColor {
     public static func hex(value: UInt32) -> NSColor {
         return hexColor(hex, creator: NSColor.init(red:green:blue:alpha:))
     }
@@ -79,7 +79,7 @@ public extension NSColor {
     }
 }
 
-public extension CGColor {
+extension CGColor {
     public static func hex(value: UInt32) -> CGColor {
         return hexColor(hex, creator: CGColor.init(red:green:blue:alpha:))
     }

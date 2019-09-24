@@ -120,7 +120,7 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         }
         let t = Timer(timeInterval: autoPlayTimeInterval, target: self,
             selector: #selector(autoplay(timer:)), userInfo: nil, repeats: true)
-        RunLoop.main.add(t, forMode: .commonModes)
+        RunLoop.main.add(t, forMode: RunLoop.Mode.common)
         timer = t
     }
 

@@ -121,7 +121,7 @@ open class AppViewController<View: UIView>: UIViewController, UIGestureRecognize
     }
 }
 
-public extension AppViewController where View: UIScrollView {
+extension AppViewController where View: UIScrollView {
     public func adjustsViewInsets(_ adjusts: Bool) {
         if #available(iOS 11.0, *) {
             rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never

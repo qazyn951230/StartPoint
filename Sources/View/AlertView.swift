@@ -35,8 +35,8 @@ open class BasicAlertView: Hashable {
         }
     }
 
-    public var hashValue: Int {
-        return address(of: self).hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(address(of: self))
     }
 
     open func buildView() {
@@ -114,7 +114,7 @@ open class BasicAlertView: Hashable {
                 maskView?.removeFromSuperview()
             }
         }
-        if let index = BasicAlertView.alerts.index(of: self) {
+        if let index = BasicAlertView.alerts.firstIndex(of: self) {
             BasicAlertView.alerts.remove(at: index)
         }
     }
@@ -136,7 +136,7 @@ open class BasicAlertView: Hashable {
             return old
         }
         let new = UIWindow(frame: UIScreen.main.bounds)
-        new.windowLevel = UIWindowLevelAlert - 10
+        new.windowLevel = UIWindow.Level.alert - 10
         new.backgroundColor = UIColor.hex(0x04040F, alpha: 0.4)
         window = new
         return new

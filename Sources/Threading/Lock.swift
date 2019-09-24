@@ -28,7 +28,7 @@ public protocol Locking {
     func `try`() -> Bool
 }
 
-public extension Locking {
+extension Locking {
     @discardableResult
     @inline(__always)
     public func locking<T>(_ method: () throws -> T) rethrows -> T {

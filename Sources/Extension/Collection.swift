@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Collection {
+extension Collection {
     public var isNotEmpty: Bool {
         return !isEmpty
     }
@@ -76,7 +76,7 @@ public extension Collection {
     }
 }
 
-public extension String {
+extension String {
     public func split(upTo count: Int) -> [Substring] {
         guard isNotEmpty && count > 0 else {
             return []
@@ -112,7 +112,7 @@ public extension String {
     }
 }
 
-public extension Sequence where Element: Hashable {
+extension Sequence where Element: Hashable {
     public var hashValue: Int {
         return reduce(0) { (result: Int, next: Element) in
             result & next.hashValue

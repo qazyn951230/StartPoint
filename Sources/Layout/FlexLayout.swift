@@ -250,7 +250,7 @@ open class FlexLayout: Equatable {
         if let first = children.first, first.parent == self {
             // If the first child has this node as its parent, we assume that it is already unique.
             // We can now try to delete a child in this list.
-            if let index = children.index(of: child) {
+            if let index = children.firstIndex(of: child) {
                 children.remove(at: index)
                 child.invalidate()
                 child.parent = nil

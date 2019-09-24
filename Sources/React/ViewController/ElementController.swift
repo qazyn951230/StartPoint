@@ -91,7 +91,7 @@ open class ElementController<View: UIView, E: Element<View>>: UIViewController, 
 }
 
 // FIXME: AdjustsScrollViewInsets in Element
-//public extension ElementController where View: UIScrollView {
+//extension ElementController where View: UIScrollView {
 //    public func adjustsViewInsets(_ adjusts: Bool) {
 //        if #available(iOS 11.0, *) {
 //            rootView?.contentInsetAdjustmentBehavior = adjusts ? .automatic : .never

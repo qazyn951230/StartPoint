@@ -22,7 +22,7 @@
 
 import UIKit
 
-// UITableViewCellAccessoryType Table width => n
+// UITableViewCell.AccessoryType Table width => n
 // Cell                     2x          3x
 // none                     n           n
 // disclosureIndicator      n - 33      n - 38
@@ -32,8 +32,8 @@ import UIKit
 
 open class TableCellElement: Element<UIView>, Identified {
     internal static let offset: Double = Device.scale < 2.5 ? 0 : 5
-    public private(set) var accessory: UITableViewCellAccessoryType = .none
-    public private(set) var selectionStyle: UITableViewCellSelectionStyle = .default
+    public private(set) var accessory: UITableViewCell.AccessoryType = .none
+    public private(set) var selectionStyle: UITableViewCell.SelectionStyle = .default
 
     public override init(children: [BasicElement] = []) {
         super.init(children: children)
@@ -65,7 +65,7 @@ open class TableCellElement: Element<UIView>, Identified {
     }
 
     @discardableResult
-    public func accessory(_ value: UITableViewCellAccessoryType) -> Self {
+    public func accessory(_ value: UITableViewCell.AccessoryType) -> Self {
         accessory = value
         switch value {
         case .none:
@@ -78,12 +78,14 @@ open class TableCellElement: Element<UIView>, Identified {
             layout.margin(right: .length(39 + TableCellElement.offset))
         case .detailButton:
             layout.margin(right: .length(47 + TableCellElement.offset))
+        @unknown default:
+            layout.margin(right: 0)
         }
         return self
     }
 
     @discardableResult
-    public func selectionStyle(_ value: UITableViewCellSelectionStyle) -> Self {
+    public func selectionStyle(_ value: UITableViewCell.SelectionStyle) -> Self {
         selectionStyle = value
         return self
     }

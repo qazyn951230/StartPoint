@@ -26,7 +26,7 @@ class Route<T> {
     let component: String
     let placeholder: Bool
     var value: T?
-    internal(set) var children: [String: Route<T>] = [:]
+    var children: [String: Route<T>] = [:]
 
     internal init(component: String, value: T?) {
         placeholder = component.hasPrefix(":")

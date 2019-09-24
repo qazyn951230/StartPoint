@@ -53,7 +53,7 @@ public protocol IntentTarget: IntentSource, Creatable {
 
 private var tr0gSJaB = "tr0gSJaB"
 
-public extension IntentTarget where Self: UIViewController {
+extension IntentTarget where Self: UIViewController {
     public var intentController: UIViewController {
         return self
     }

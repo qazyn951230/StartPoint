@@ -105,7 +105,7 @@ open class Element<View: UIView>: BasicElement {
         let index = children.count
         let layerIndex: Int?
         if let layer = self.layer, let slayer = element._layer,
-           let i = layer.sublayers?.index(of: slayer) {
+            let i = layer.sublayers?.firstIndex(of: slayer) {
             layerIndex = i + 1
         } else {
             layerIndex = nil
@@ -457,7 +457,7 @@ open class Element<View: UIView>: BasicElement {
     }
 
     @discardableResult
-    public func contentMode(_ value: UIViewContentMode) -> Self {
+    public func contentMode(_ value: UIView.ContentMode) -> Self {
         if Runner.isMain(), let view = view {
             view.contentMode = value
         } else {

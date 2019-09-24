@@ -34,8 +34,8 @@ open class RecyclerCellElement: Element<UIView>, Identified {
         return ElementCollectionViewCell.identifier
     }
 
-    open override var hashValue: Int {
-        return key.hashValue
+    open override func hash(into hasher: inout Hasher) {
+        hasher.combine(key.hashValue)
     }
 
     open func build(in cell: UICollectionViewCell) {
@@ -74,8 +74,8 @@ open class RecyclerViewElement: Element<UIView>, Identified {
         return ElementCollectionReusableView.identifier
     }
 
-    open override var hashValue: Int {
-        return key.hashValue
+    open override func hash(into hasher: inout Hasher) {
+        hasher.combine(key.hashValue)
     }
 }
 
@@ -99,15 +99,10 @@ public final class RecyclerSectionElement: BasicElement {
         return items.count
     }
 
-    public override var hashValue: Int {
-        var value = items.hashValue
-        if let header = self.header {
-            value ^= header.hashValue
-        }
-        if let footer = self.header {
-            value ^= footer.hashValue
-        }
-        return value
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(items)
+        hasher.combine(header)
+        hasher.combine(footer)
     }
 }
 
@@ -131,8 +126,8 @@ public final class RecyclerFlexElement: BasicElement {
         return sections.count
     }
 
-    public override var hashValue: Int {
-        return sections.hashValue
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(sections)
     }
 
     func section(at index: Int) -> RecyclerSectionElement? {
@@ -156,9 +151,9 @@ public final class RecyclerFlexElement: BasicElement {
 
     func view(kind: String, at indexPath: IndexPath) -> RecyclerViewElement? {
         switch kind {
-        case UICollectionElementKindSectionHeader:
+        case UICollectionView.elementKindSectionHeader:
             return header(at: indexPath)
-        case UICollectionElementKindSectionFooter:
+        case UICollectionView.elementKindSectionFooter:
             return footer(at: indexPath)
         default:
             return nil

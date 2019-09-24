@@ -26,7 +26,7 @@ public protocol LayoutValue {
     var value: CGFloat { get }
 }
 
-public extension LayoutValue {
+extension LayoutValue {
     public var ceiled: CGFloat {
         return ceil(value)
     }

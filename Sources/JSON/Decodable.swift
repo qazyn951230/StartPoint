@@ -39,7 +39,7 @@ public protocol Notation: BaseNotation {
     init(from json: JSON)
 }
 
-public extension Notation {
+extension Notation {
     public static func objects(from json: JSON) -> [Self] {
         guard let array = json.array else {
             return []
@@ -52,7 +52,7 @@ public protocol FailableNotation: BaseNotation {
     init?(from json: JSON)
 }
 
-public extension FailableNotation {
+extension FailableNotation {
     public static func objects(from json: JSON) -> [Self] {
         guard let array = json.array else {
             return []
@@ -65,7 +65,7 @@ public protocol StaticNotation {
     static func create(from json: JSON) -> Self
 }
 
-public extension StaticNotation {
+extension StaticNotation {
     public static func objects(from json: JSON) -> [Self] {
         guard let array = json.array else {
             return []
@@ -78,7 +78,7 @@ public protocol RawNotation: StaticNotation, RawRepresentable {
     static var `default`: Self { get }
 }
 
-public extension RawNotation where RawValue == String {
+extension RawNotation where RawValue == String {
     public static func create(from json: JSON) -> Self {
         let foo: Self? = self.init(rawValue: json.stringValue)
         return foo ?? Self.default

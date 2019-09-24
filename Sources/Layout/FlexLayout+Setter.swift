@@ -22,7 +22,7 @@
 
 import CoreGraphics
 
-public extension FlexLayout {
+extension FlexLayout {
     @discardableResult
     public func direction(_ value: Direction) -> Self {
         if (style.direction != value) {

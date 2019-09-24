@@ -26,23 +26,23 @@ public protocol Nibbed {
     static var nib: UINib { get }
 }
 
-public extension Nibbed where Self: UITableViewCell {
+extension Nibbed where Self: UITableViewCell {
     public static func registerNib(to tableView: UITableView) {
         tableView.register(nib, forCellReuseIdentifier: identifier)
     }
 }
 
-public extension Nibbed where Self: UICollectionViewCell {
+extension Nibbed where Self: UICollectionViewCell {
     public static func registerNib(to collectionView: UICollectionView) {
         collectionView.register(nib, forCellWithReuseIdentifier: identifier)
     }
 }
 
-public extension Nibbed where Self: UICollectionReusableView {
+extension Nibbed where Self: UICollectionReusableView {
     public static func registerNib(to collectionView: UICollectionView) {
-        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                 withReuseIdentifier: identifier)
-        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter,
+        collectionView.register(nib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                 withReuseIdentifier: identifier)
     }
 }

@@ -40,7 +40,7 @@ public class RxLocationManagerDelegateProxy: DelegateProxy<CLLocationManager, CL
     }
 }
 
-public extension Reactive where Base: CLLocationManager {
+extension Reactive where Base: CLLocationManager {
     public var delegate: DelegateProxy<CLLocationManager, CLLocationManagerDelegate> {
         return RxLocationManagerDelegateProxy.proxy(for: base)
     }
@@ -92,6 +92,8 @@ public struct LocationPermission: PermissionItem {
             return .denied
         case .notDetermined:
             return .notDetermined
+        @unknown default:
+            return .denied
         }
     }
 }

@@ -60,7 +60,7 @@ final public class Atomic<Value> {
     }
 }
 
-public extension Atomic where Value: OptionSet {
+extension Atomic where Value: OptionSet {
     public func contains(_ member: Value.Element) -> Bool {
         return value.contains(member)
     }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Optional {
+extension Optional {
     public func maybe(_ method: (Wrapped) throws -> Void) rethrows {
         if let value = self {
             try method(value)
@@ -58,7 +58,7 @@ extension Optional where Wrapped: Comparable {
     }
 }
 
-public extension Optional where Wrapped: BinaryInteger {
+extension Optional where Wrapped: BinaryInteger {
     public func add(_ other: Wrapped?, origin: Wrapped? = nil) -> Wrapped? {
         if let left = self ?? origin, let right = other {
             return left + right
@@ -82,7 +82,7 @@ public extension Optional where Wrapped: BinaryInteger {
     }
 }
 
-public extension Optional where Wrapped == String {
+extension Optional where Wrapped == String {
     public var orEmpty: String {
         if let value = self {
             return value

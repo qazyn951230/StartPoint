@@ -30,29 +30,29 @@ public protocol ClassIdentified {
     static var identifier: String { get }
 }
 
-public extension ClassIdentified {
+extension ClassIdentified {
     public static var identifier: String {
         return String(describing: self)
     }
 }
 
-public extension ClassIdentified where Self: UITableViewCell {
+extension ClassIdentified where Self: UITableViewCell {
     public static func register(to tableView: UITableView) {
         tableView.register(self, forCellReuseIdentifier: identifier)
     }
 }
 
-public extension ClassIdentified where Self: UICollectionViewCell {
+extension ClassIdentified where Self: UICollectionViewCell {
     public static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forCellWithReuseIdentifier: identifier)
     }
 }
 
-public extension ClassIdentified where Self: UICollectionReusableView {
+extension ClassIdentified where Self: UICollectionReusableView {
     public static func register(to collectionView: UICollectionView) {
-        collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+        collectionView.register(self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                 withReuseIdentifier: identifier)
-        collectionView.register(self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter,
+        collectionView.register(self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                 withReuseIdentifier: identifier)
     }
 }

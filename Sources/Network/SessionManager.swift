@@ -37,7 +37,7 @@ extension DataRequest: ReactiveRequest {
     // Do nothing.
 }
 
-public extension Reactive where Base: SessionManager {
+extension Reactive where Base: SessionManager {
     public func request<Request>(request: Request) -> Observable<Request>
         where Request: ReactiveRequest {
         let manager: SessionManager = self.base

@@ -118,12 +118,12 @@ open class BasicScrollElement<ScrollView: UIScrollView>: Element<ScrollView> {
         super.init(children: [content])
     }
 
-    public convenience init(children: [BasicElement] = [], direction: UICollectionViewScrollDirection? = nil) {
+    public convenience init(children: [BasicElement] = [], direction: UICollectionView.ScrollDirection? = nil) {
         let content = StackElement(children: children)
-        if direction == UICollectionViewScrollDirection.horizontal {
+        if direction == UICollectionView.ScrollDirection.horizontal {
             content.layout.positionType(.absolute)
                 .flexDirection(.row).height(.match)
-        } else if direction == UICollectionViewScrollDirection.vertical {
+        } else if direction == UICollectionView.ScrollDirection.vertical {
             content.layout.positionType(.absolute)
                 .flexDirection(.column).width(.match)
         }

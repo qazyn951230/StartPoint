@@ -402,12 +402,12 @@ open class ShapeElement: BasicLayerElement<CAShapeLayer> {
         case nonZero
         case evenOdd
 
-        var value: String {
+        var value: CAShapeLayerFillRule {
             switch self {
             case .nonZero:
-                return kCAFillRuleNonZero
+                return CAShapeLayerFillRule.nonZero
             case .evenOdd:
-                return kCAFillRuleEvenOdd
+                return CAShapeLayerFillRule.evenOdd
             }
         }
     }
@@ -417,14 +417,14 @@ open class ShapeElement: BasicLayerElement<CAShapeLayer> {
         case round
         case square
 
-        var value: String {
+        var value: CAShapeLayerLineCap {
             switch self {
             case .butt:
-                return kCALineCapButt
+                return CAShapeLayerLineCap.butt
             case .round:
-                return kCALineCapRound
+                return CAShapeLayerLineCap.round
             case .square:
-                return kCALineCapSquare
+                return CAShapeLayerLineCap.square
             }
         }
     }
@@ -434,14 +434,14 @@ open class ShapeElement: BasicLayerElement<CAShapeLayer> {
         case round
         case bevel
 
-        var value: String {
+        var value: CAShapeLayerLineJoin {
             switch self {
             case .miter:
-                return kCALineJoinMiter
+                return CAShapeLayerLineJoin.miter
             case .round:
-                return kCALineJoinRound
+                return CAShapeLayerLineJoin.round
             case .bevel:
-                return kCALineJoinBevel
+                return CAShapeLayerLineJoin.bevel
             }
         }
     }

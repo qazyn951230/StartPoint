@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Array {
+extension Array {
     // TODO: Move to RandomAccessCollection or MutableCollection
     public func object(at index: Int) -> Element? {
         guard index >= self.startIndex && index < self.endIndex else {

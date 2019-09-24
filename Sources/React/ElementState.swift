@@ -33,7 +33,7 @@ public protocol ElementProperty {
     var tintColor: UIColor { get }
     var interactive: Bool { get }
     var alpha: Double { get }
-    var contentMode: UIViewContentMode { get }
+    var contentMode: UIView.ContentMode { get }
     // CALayer
     var cornerRadius: CGFloat { get }
     var borderColor: CGColor? { get }
@@ -116,15 +116,15 @@ open class ElementState: ElementProperty {
     }
     var _alpha: Double?
 
-    public var contentMode: UIViewContentMode {
+    public var contentMode: UIView.ContentMode {
         get {
-            return _contentMode ?? UIViewContentMode.scaleToFill
+            return _contentMode ?? UIView.ContentMode.scaleToFill
         }
         set {
             _contentMode = newValue
         }
     }
-    var _contentMode: UIViewContentMode?
+    var _contentMode: UIView.ContentMode?
 
     // MARK: Layer properties
     public var cornerRadius: CGFloat {
@@ -331,12 +331,12 @@ open class ElementState: ElementProperty {
     }
 }
 
-extension UIControlState: Hashable {
+extension UIControl.State: Hashable {
     public var hashValue: Int {
         return rawValue.hashValue
     }
 
-    public static func ==(lhs: UIControlState, rhs: UIControlState) -> Bool {
+    public static func ==(lhs: UIControl.State, rhs: UIControl.State) -> Bool {
         return lhs.rawValue == rhs.rawValue
     }
 }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Double {
+extension Double {
     public func normalize() -> Double {
         return isNaN ? 0 : self
     }
