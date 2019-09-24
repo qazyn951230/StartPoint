@@ -70,7 +70,7 @@ extension UIImagePickerController {
             let disposable2 = Disposables.create {
                 picker.dismiss(animated: animated)
             }
-
+            picker.modalPresentationStyle = UIModalPresentationStyle.fullScreen
             viewController.present(picker, animated: animated)
             observer.on(.next(picker))
             return Disposables.create(disposable, disposable2)
