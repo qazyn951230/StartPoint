@@ -289,7 +289,7 @@ open class BasicElement: Hashable, CustomStringConvertible, CustomDebugStringCon
             assertFail("\(self) own \(element), but doesn't contain in children array")
         }
 #else
-        if let index = children.index(of: element) {
+        if let index = children.firstIndex(of: element) {
             children.remove(at: index)
         }
 #endif
