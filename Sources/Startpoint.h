@@ -32,5 +32,4 @@ FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
 #import <StartPoint/Atomic.h>
 #import <StartPoint/Double.h>
 #import <StartPoint/Object.h>
-#import <StartPoint/JSONBuffer.h>
-#import <StartPoint/AnyList.hpp>
+#import <StartPoint/JSON.h>

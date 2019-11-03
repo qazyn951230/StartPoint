@@ -1,0 +1,103 @@
+// MIT License
+//
+// Copyright (c) 2017-present qazyn951230 qazyn951230@gmail.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#ifndef START_POINT_JSON_H
+#define START_POINT_JSON_H
+
+#if (__cplusplus)
+
+#include <cstdint>
+
+#else
+#include <stdint.h>
+#include <stdbool.h>
+#endif
+
+#include "Config.h"
+
+SP_C_FILE_BEGIN
+
+typedef SP_ENUM(uint16_t, JSONType) {
+    JSONTypeNull,
+    JSONTypeTrue,
+    JSONTypeFalse,
+    JSONTypeInt,
+    JSONTypeInt64,
+    JSONTypeUint,
+    JSONTypeUint64,
+    JSONTypeDouble,
+    JSONTypeString,
+    JSONTypeArray,
+    JSONTypeObject,
+};
+
+typedef struct SPOpaqueJSON* JSONRef;
+typedef struct SPOpaqueObjectIterator* ObjectIteratorRef;
+
+JSONRef json_create();
+JSONRef json_create_type(JSONType type);
+void json_free(JSONRef SP_NULLABLE ref);
+
+JSONType json_type(JSONRef json);
+bool json_is_int32(JSONRef json);
+bool json_is_int64(JSONRef json);
+bool json_is_uint32(JSONRef json);
+bool json_is_uint64(JSONRef json);
+bool json_is_double(JSONRef json);
+bool json_is_bool(JSONRef json);
+bool json_is_null(JSONRef json);
+bool json_is_string(JSONRef json);
+bool json_is_array(JSONRef json);
+bool json_is_object(JSONRef json);
+
+uint32_t json_array_size(JSONRef json);
+JSONRef SP_NULLABLE json_array_get_index(JSONRef json, uint32_t index);
+
+uint32_t json_object_size(JSONRef json);
+ObjectIteratorRef SP_NULLABLE json_object_iterator_begin(JSONRef json);
+ObjectIteratorRef SP_NULLABLE json_object_iterator_end(JSONRef json);
+void json_object_iterator_free(ObjectIteratorRef SP_NULLABLE iterator);
+void json_object_iterator_advance(ObjectIteratorRef SP_NONNULL* SP_NONNULL iterator);
+bool json_object_iterator_is_equal(ObjectIteratorRef lhs, ObjectIteratorRef rhs);
+void* json_object_iterator_key(ObjectIteratorRef iterator, uint32_t* size);
+JSONRef json_object_iterator_value(ObjectIteratorRef iterator);
+
+bool json_get_int32(JSONRef json, int32_t* result);
+bool json_get_int64(JSONRef json, int64_t* result);
+bool json_get_uint32(JSONRef json, uint32_t* result);
+bool json_get_uint64(JSONRef json, uint64_t* result);
+bool json_get_float(JSONRef json, float* result);
+bool json_get_double(JSONRef json, double* result);
+bool json_get_bool(JSONRef json, bool* result);
+void* json_get_string(JSONRef json, uint32_t* size);
+
+//void json_array_append_int32(JSONRef json, int32_t value);
+//void json_array_append_int64(JSONRef json, int64_t value);
+//void json_array_append_uint32(JSONRef json, uint32_t value);
+//void json_array_append_uint64(JSONRef json, uint64_t value);
+//void json_array_append_double(JSONRef json, double value);
+//void json_array_append_bool(JSONRef json, bool value);
+//void json_array_append_null(JSONRef json);
+
+SP_C_FILE_END
+
+#endif // START_POINT_JSON_H

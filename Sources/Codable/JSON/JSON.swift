@@ -20,180 +20,363 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol JSONVisitor {
-    func visit(_ value: JSON)
-    func visit(array value: JSONArray)
-    func visit(dictionary value: JSONObject)
-    func visit(null value: JSONNull)
-    func visit(string value: String)
-    func visit(bool value: Bool)
-    func visit(double value: Double)
-    func visit(int value: Int32)
-    func visit(int64 value: Int64)
-    func visit(uint value: UInt32)
-    func visit(uint64 value: UInt64)
-}
+//public protocol JSONVisitor {
+//    func visit(_ value: JSON)
+//    func visit(array value: JSONArray)
+//    func visit(dictionary value: JSONObject)
+//    func visit(null value: JSONNull)
+//    func visit(string value: String)
+//    func visit(bool value: Bool)
+//    func visit(double value: Double)
+//    func visit(int value: Int32)
+//    func visit(int64 value: Int64)
+//    func visit(uint value: UInt32)
+//    func visit(uint64 value: UInt64)
+//}
+//
+//public extension JSONVisitor {
+//    func visit(array value: JSONArray) {
+//        visit(value)
+//    }
+//
+//    func visit(dictionary value: JSONObject) {
+//        visit(value)
+//    }
+//
+//    func visit(null value: JSONNull) {
+//        visit(value)
+//    }
+//
+//    func visit(string value: String) {
+//        // Do nothing
+//    }
+//
+//    func visit(bool value: Bool) {
+//        // Do nothing
+//    }
+//
+//    func visit(double value: Double) {
+//        // Do nothing
+//    }
+//
+//    func visit(int value: Int32) {
+//        // Do nothing
+//    }
+//
+//    func visit(int64 value: Int64) {
+//        // Do nothing
+//    }
+//
+//    func visit(uint value: UInt32) {
+//        // Do nothing
+//    }
+//
+//    func visit(uint64 value: UInt64) {
+//        // Do nothing
+//    }
+//}
 
-public extension JSONVisitor {
-    func visit(array value: JSONArray) {
-        visit(value)
+class JSONBuffer {
+    let ref: JSONRef
+
+    init(ref: JSONRef) {
+        self.ref = ref
     }
 
-    func visit(dictionary value: JSONObject) {
-        visit(value)
-    }
-
-    func visit(null value: JSONNull) {
-        visit(value)
-    }
-
-    func visit(string value: String) {
-        // Do nothing
-    }
-
-    func visit(bool value: Bool) {
-        // Do nothing
-    }
-
-    func visit(double value: Double) {
-        // Do nothing
-    }
-
-    func visit(int value: Int32) {
-        // Do nothing
-    }
-
-    func visit(int64 value: Int64) {
-        // Do nothing
-    }
-
-    func visit(uint value: UInt32) {
-        // Do nothing
-    }
-
-    func visit(uint64 value: UInt64) {
-        // Do nothing
+    deinit {
+        json_free(ref)
     }
 }
 
 public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
-    public static let null = JSONNull()
+    public static let null = JSON(type: JSONType.null)
     public typealias Value = JSON
     public var order: Int = 0
 
-    init() {
-        // Do nothing
+    let buffer: JSONBuffer
+    let ref: JSONRef
+
+    init(type: JSONType) {
+        ref = json_create_type(type)
+        buffer = JSONBuffer(ref: ref)
+    }
+
+    init(buffer: JSONBuffer, ref: JSONRef) {
+        self.buffer = buffer
+        self.ref = ref
     }
 
     public required init(from decoder: Decoder) throws {
-        // Do nothing
+        fatalError()
     }
 
     public func encode(to encoder: Encoder) throws {
-        // Do nothing
+        fatalError()
     }
 
     public var raw: Any {
         return ""
     }
 
+    func makeRef(ref: JSONRef?) -> JSON {
+        if let ref = ref {
+            return JSON(buffer: buffer, ref: ref)
+        }
+        return JSON.null
+    }
+
     public var exists: Bool {
-        return true
+        !json_is_null(ref)
+    }
+
+    var _cachedArray: [JSON]??
+    var cachedArray: [JSON]? {
+        if let cached = _cachedArray {
+            return cached
+        }
+        if json_array_size(ref) > 0 {
+            var array: [JSON] = []
+            for i in 0..<json_array_size(ref) {
+                let value = json_array_get_index(ref, i)
+                array.append(makeRef(ref: value))
+            }
+            _cachedArray = array
+        }
+        return _cachedArray ?? []
     }
 
     public var arrayValue: [JSON]? {
-        return nil
+        cachedArray
     }
 
     public var array: [JSON] {
-        return []
+        cachedArray ?? []
+    }
+
+    var _cachedDictionary: [String: JSON]??
+    var cachedDictionary: [String: JSON]? {
+        if let cachedDictionary = _cachedDictionary {
+            return cachedDictionary
+        }
+        if json_object_size(ref) > 0 {
+            let start = json_object_iterator_begin(ref)
+            let end = json_object_iterator_end(ref)
+            defer {
+                json_object_iterator_free(start)
+                json_object_iterator_free(end)
+            }
+            if let start = start, let end = end {
+                var map: [String: JSON] = [:]
+                map.reserveCapacity(Int(json_object_size(ref)))
+                var i = start
+                while !json_object_iterator_is_equal(i, end) {
+                    var size: UInt32 = 0
+                    let data = json_object_iterator_key(i, &size)
+                    if let key = String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false) {
+                        let value = json_object_iterator_value(i)
+                        map[key] = JSON(buffer: buffer, ref: value)
+                    }
+                    json_object_iterator_advance(&i)
+                }
+                _cachedDictionary = map
+            }
+        }
+        return _cachedDictionary ?? [:]
     }
 
     public var dictionaryValue: [String: JSON]? {
-        return nil
+        cachedDictionary
     }
 
     public var dictionary: [String: JSON] {
-        return [:]
+        cachedDictionary ?? [:]
     }
 
     public var boolValue: Bool? {
+        var result = false
+        if json_get_bool(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var bool: Bool {
+        var result = false
+        if json_get_bool(ref, &result) {
+            return result
+        }
         return false
     }
 
     public var stringValue: String? {
-        return nil
+        var size: UInt32 = 0
+        let data = json_get_string(ref, &size)
+        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
     }
 
     public var string: String {
-        return ""
+        var size: UInt32 = 0
+        let data = json_get_string(ref, &size)
+        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false) ?? ""
     }
 
     public var doubleValue: Double? {
+        var result = 0.0
+        if json_get_double(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var double: Double {
+        var result = 0.0
+        if json_get_double(ref, &result) {
+            return result
+        }
         return 0
     }
 
     public var floatValue: Float? {
+        var result: Float = 0.0
+        if json_get_float(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var float: Float {
+        var result: Float = 0.0
+        if json_get_float(ref, &result) {
+            return result
+        }
         return 0
     }
 
     public var intValue: Int? {
+#if arch(arm64) || arch(x86_64)
+        var result: Int64 = 0
+        if json_get_int64(ref, &result) {
+            return Int(result)
+        }
+
+#else
+        var result: Int32 = 0
+        if json_get_int32(ref, &result) {
+            return Int(result)
+        }
+#endif
         return nil
     }
 
     public var int: Int {
+#if arch(arm64) || arch(x86_64)
+        var result: Int64 = 0
+        if json_get_int64(ref, &result) {
+            return Int(result)
+        }
+
+#else
+        var result: Int32 = 0
+        if json_get_int32(ref, &result) {
+            return Int(result)
+        }
+#endif
         return 0
     }
 
     public var int32Value: Int32? {
+        var result: Int32 = 0
+        if json_get_int32(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var int32: Int32 {
+        var result: Int32 = 0
+        if json_get_int32(ref, &result) {
+            return result
+        }
         return 0
     }
 
     public var int64Value: Int64? {
+        var result: Int64 = 0
+        if json_get_int64(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var int64: Int64 {
+        var result: Int64 = 0
+        if json_get_int64(ref, &result) {
+            return result
+        }
         return 0
     }
 
     public var uintValue: UInt? {
+#if arch(arm64) || arch(x86_64)
+        var result: UInt64 = 0
+        if json_get_uint64(ref, &result) {
+            return UInt(result)
+        }
+
+#else
+        var result: UInt32 = 0
+        if json_get_uint32(ref, &result) {
+            return UInt(result)
+        }
+#endif
         return nil
     }
 
     public var uint: UInt {
+#if arch(arm64) || arch(x86_64)
+        var result: UInt64 = 0
+        if json_get_uint64(ref, &result) {
+            return UInt(result)
+        }
+
+#else
+        var result: UInt32 = 0
+        if json_get_uint32(ref, &result) {
+            return UInt(result)
+        }
+#endif
         return 0
     }
 
     public var uint32Value: UInt32? {
+        var result: UInt32 = 0
+        if json_get_uint32(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var uint32: UInt32 {
+        var result: UInt32 = 0
+        if json_get_uint32(ref, &result) {
+            return result
+        }
         return 0
     }
 
     public var uint64Value: UInt64? {
+        var result: UInt64 = 0
+        if json_get_uint64(ref, &result) {
+            return result
+        }
         return nil
     }
 
     public var uint64: UInt64 {
+        var result: UInt64 = 0
+        if json_get_uint64(ref, &result) {
+            return result
+        }
         return 0
     }
 
@@ -201,48 +384,28 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         return ""
     }
 
-    public func accept(visitor: JSONVisitor) {
-        visitor.visit(self)
-    }
+//    public func accept(visitor: JSONVisitor) {
+//        visitor.visit(self)
+//    }
 
-    func equals(other: JSON) -> Bool {
-        return self === other
-    }
-
-    func less(other: JSON) -> Bool {
+    public static func ==(lhs: JSON, rhs: JSON) -> Bool {
         return false
     }
 
-    func greater(other: JSON) -> Bool {
-        return !lessOrEqual(other: other)
-    }
-
-    func lessOrEqual(other: JSON) -> Bool {
-        return equals(other: other) || less(other: other)
-    }
-
-    func greaterOrEqual(other: JSON) -> Bool {
-        return equals(other: other) || greater(other: other)
-    }
-
-    public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.equals(other: rhs)
-    }
-
     public static func <(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.less(other: rhs)
+        return false
     }
 
     public static func <=(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.lessOrEqual(other: rhs)
+        return false
     }
 
     public static func >(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.greater(other: rhs)
+        return false
     }
 
     public static func >=(lhs: JSON, rhs: JSON) -> Bool {
-        return lhs.greaterOrEqual(other: rhs)
+        return false
     }
 
     public subscript(typed index: Int) -> JSON {
@@ -261,38 +424,38 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         return self[key]
     }
 
-    public static func parse(_ value: String, option: JSONParser.Options = []) throws -> JSON {
-        return try value.withCString { pointer in
-            let stream = ByteStream.int8(pointer)
-            let buffer = json_buffer_create(24, 4096)
-            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
-            try parser.parse()
-            return JSON.create(from: buffer, index: 0)
-        }
-    }
+//    public static func parse(_ value: String, option: JSONParser.Options = []) throws -> JSON {
+//        return try value.withCString { pointer in
+//            let stream = ByteStream.int8(pointer)
+//            let buffer = json_create()
+//            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
+//            try parser.parse()
+//            return JSON.create(from: buffer, index: 0)
+//        }
+//    }
 
-    public static func parse(_ data: Data, option: JSONParser.Options = []) throws -> JSON {
-        return try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
-            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                return JSON.null
-            }
-            let stream = ByteStream.uint8(pointer)
-            let buffer = json_buffer_create(24, 4096)
-            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
-            try parser.parse()
-            return JSON.create(from: buffer, index: 0)
-        }
-    }
+//    public static func parse(_ data: Data, option: JSONParser.Options = []) throws -> JSON {
+//        return try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+//            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+//                return JSON.null
+//            }
+//            let stream = ByteStream.uint8(pointer)
+//            let buffer = json_create()
+//            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
+//            try parser.parse()
+//            return JSON.create(from: buffer, index: 0)
+//        }
+//    }
 
-    public static func array() -> JSONArray {
-        return JSONArray()
-    }
+//    public static func array() -> JSONArray {
+//        return JSONArray()
+//    }
+//
+//    public static func object() -> JSONObject {
+//        return JSONObject()
+//    }
 
-    public static func object() -> JSONObject {
-        return JSONObject()
-    }
-
-    static func create(from buffer: JSONBufferRef, index: Int) -> JSON {
+    static func create(from buffer: JSONRef, index: Int) -> JSON {
         return JSON.null
 //        switch json_buffer_value_type(buffer, index) {
 //        case JSONType.null:

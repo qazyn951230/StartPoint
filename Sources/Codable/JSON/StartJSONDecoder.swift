@@ -20,30 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class StartJSONDecoder {
-    public private(set) var codingPath: [CodingKey]
-    public var userInfo: [CodingUserInfoKey: Any]
-
-    public init() {
-        codingPath = []
-        userInfo = [:]
-    }
-
-    public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
-        let buffer = try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) -> JSONBufferRef in
-            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                throw JSONParseError.invalidEncoding
-            }
-            let stream = ByteStream.uint8(pointer)
-            let buffer = json_buffer_create(24, 4096)
-            let parser = JSONParser(stream: stream, buffer: buffer, options: [])
-            try parser.parse()
-            return buffer
-        }
-        let decoder = JSONBufferDecoder(buffer: buffer)
-        defer {
-            json_buffer_free(buffer)
-        }
-        return try T.init(from: decoder)
-    }
-}
+//public final class StartJSONDecoder {
+//    public private(set) var codingPath: [CodingKey]
+//    public var userInfo: [CodingUserInfoKey: Any]
+//
+//    public init() {
+//        codingPath = []
+//        userInfo = [:]
+//    }
+//
+//    public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+//        let buffer = try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) -> JSONBufferRef in
+//            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+//                throw JSONParseError.invalidEncoding
+//            }
+//            let stream = ByteStream.uint8(pointer)
+//            let buffer = json_buffer_create(24, 4096)
+//            let parser = JSONParser(stream: stream, buffer: buffer, options: [])
+//            try parser.parse()
+//            return buffer
+//        }
+//        let decoder = JSONBufferDecoder(buffer: buffer)
+//        defer {
+//            json_buffer_free(buffer)
+//        }
+//        return try T.init(from: decoder)
+//    }
+//}

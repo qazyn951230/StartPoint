@@ -24,12 +24,12 @@ import RxSwift
 
 public extension ObservableType {
     @inlinable
-    static func first(_ method: () throws -> E) -> Observable<E> {
+    static func first(_ method: () throws -> Element) -> Observable<Element> {
         do {
             let e = try method()
-            return Observable<E>.just(e)
+            return Observable<Element>.just(e)
         } catch let error {
-            return Observable<E>.error(error)
+            return Observable<Element>.error(error)
         }
     }
 
