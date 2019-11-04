@@ -27,6 +27,10 @@
 #include "Stream.hpp"
 #include "Double.h"
 
+#ifndef SP_JSON_PARSER_USE_STD_STOD
+#define SP_JSON_PARSER_USE_STD_STOD 1
+#endif
+
 SP_CPP_FILE_BEGIN
 
 class Parser final {
@@ -34,7 +38,7 @@ public:
     using value_t = JSON<std::allocator>;
     using byte_t = ByteStream::byte_t;
     using size_t = ByteStream::size_t;
-    using stream_t = ByteStreamAdapter;
+    using stream_t = ByteStreams;
 
     explicit Parser(value_t& root, stream_t&& stream)
         : _root(root), _stack(), _current(nullptr), _stream(std::move(stream)) {}
@@ -97,7 +101,7 @@ private:
     //  f,  a,  l,  s,  e
     // [66, 61, 6c, 73, 65]
     void parseFalse() {
-        if (consume(0x66) && consume(0x61) && consume(0x63) && consume(0x73) && consume(0x65)) {
+        if (consume(0x66) && consume(0x61) && consume(0x6c) && consume(0x73) && consume(0x65)) {
             append(value_t{false});
         } else {
             throw std::runtime_error("JSONParseError.valueInvalid");
@@ -114,6 +118,7 @@ private:
             auto value = _stack.back();
             assert(value->isString());
             _stack.pop_back();
+            _current = _stack.back();
         }};
         rawString();
         if (!consume(0x22)) {
@@ -127,7 +132,11 @@ private:
         auto minus = consume(0x2d);
         uint32_t i = 0;
         uint64_t i64 = 0;
+#if (SP_JSON_PARSER_USE_STD_STOD)
+        auto start = _stream.current();
+#else
         int32_t significandDigit = 0;
+#endif
         auto use64bit = false;
         auto next = static_cast<uint32_t>(_stream.peek());
         switch (next) {
@@ -155,7 +164,9 @@ private:
                             }
                         }
                         i = i * 10 + (next - 0x30);
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                         significandDigit += 1;
+#endif
                         next = static_cast<uint32_t>(_stream.next());
                     }
                 } else {
@@ -168,7 +179,9 @@ private:
                             }
                         }
                         i = i * 10 + (next - 0x30);
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                         significandDigit += 1;
+#endif
                         next = static_cast<uint32_t>(_stream.next());
                     }
                 }
@@ -178,43 +191,57 @@ private:
                 throw std::runtime_error("JSONParseError.valueInvalid");
         }
         auto useDouble = false;
+#if !(SP_JSON_PARSER_USE_STD_STOD)
         double floating = 0.0;
+#endif
         if (use64bit) {
             if (minus) {
                 while (0x30 <= next && next <= 0x39) {
                     if (i64 >= 922337203685477580) { // 2^63 = 9223372036854775808
                         if (i64 != 922337203685477580 || next > 0x38) {
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                             floating = i64;
+#endif
                             useDouble = true;
                             break;
                         }
                     }
                     i64 = i64 * 10 + (next - 0x30);
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                     significandDigit += 1;
+#endif
                     next = static_cast<uint32_t>(_stream.next());
                 }
             } else {
                 while (0x30 <= next && next <= 0x39) {
                     if (i64 >= 1844674407370955161) { // 2^64 - 1 = 18446744073709551615
                         if (i64 != 1844674407370955161 || next > 0x35) {
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                             floating = i64;
+#endif
                             useDouble = true;
                             break;
                         }
                     }
                     i64 = i64 * 10 + (next - 0x30);
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                     significandDigit += 1;
+#endif
                     next = static_cast<uint32_t>(_stream.next());
                 }
             }
         }
         if (useDouble) {
             while (0x30 <= next && next <= 0x39) {
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                 floating = floating * 10 + (next - 0x30);
+#endif
                 next = static_cast<uint32_t>(_stream.next());
             }
         }
+#if !(SP_JSON_PARSER_USE_STD_STOD)
         int32_t frac = 0;
+#endif
         if (consume(0x2e)) {
             next = static_cast<uint32_t>(_stream.peek());
             if (next < 0x30 || next > 0x39) {
@@ -229,16 +256,21 @@ private:
                         break;
                     }
                     i64 = i64 * 10 + (next - 0x30);
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                     frac -= 1;
                     if (i64 != 0) {
                         significandDigit += 1;
                     }
+#endif
                     next = static_cast<uint32_t>(_stream.next());
                 }
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                 floating = i64;
+#endif
                 useDouble = true;
             }
             while (0x30 <= next && next <= 0x39) {
+#if !(SP_JSON_PARSER_USE_STD_STOD)
                 if (significandDigit < 17) {
                     floating = floating * 10 + (next - 0x30);
                     frac -= 1;
@@ -246,12 +278,20 @@ private:
                         significandDigit += 1;
                     }
                 }
+#endif
                 next = static_cast<uint32_t>(_stream.next());
             }
         }
+#if !(SP_JSON_PARSER_USE_STD_STOD)
         // Parse exp = e [ minus / plus ] 1*DIGIT
         int32_t exp = 0;
+#endif
         if (consume(0x65) || consume(0x45)) { // e, E
+#if (SP_JSON_PARSER_USE_STD_STOD)
+            useDouble = true;
+            consume(0x2b); // +
+            consume(0x2d); // -
+#else
             if (!useDouble) {
                 floating = static_cast<double>(use64bit ? i64 : i);
                 useDouble = true;
@@ -262,8 +302,15 @@ private:
             } else if (consume(0x2d)) { // -
                 expMinus = true;
             }
+#endif
             auto item = _stream.peek();
             if (0x30 <= item && item <= 0x39) {
+#if (SP_JSON_PARSER_USE_STD_STOD)
+                while (0x30 <= item && item <= 0x39) {
+                    // Consume the rest of exponent
+                    item = _stream.next();
+                }
+#else
                 exp = item - 0x30;
                 item = _stream.next();
                 if (expMinus) {
@@ -289,15 +336,28 @@ private:
                         item = _stream.next();
                     }
                 }
+#endif
             } else {
                 throw std::runtime_error("JSONParseError.numberMissExponent");
             }
+#if !(SP_JSON_PARSER_USE_STD_STOD)
             if (expMinus) {
                 exp = -exp;
             }
+#endif
         }
         if (useDouble) {
+#if (SP_JSON_PARSER_USE_STD_STOD)
+            auto last = _stream.current();
+            char* end;
+            auto floating = std::strtod(reinterpret_cast<const char*>(start), &end);
+            assert(last == reinterpret_cast<uint8_t*>(end));
+            if (last != reinterpret_cast<uint8_t*>(end)) {
+                throw std::runtime_error("JSONParseError.valueInvalid");
+            }
+#else
             floating = parse_double(floating, exp + frac);
+#endif
             if (minus) {
                 append(value_t{-floating});
             } else {
@@ -325,6 +385,13 @@ private:
         assert(start);
         skip();
         append(value_t{JSONTypeObject});
+        Scope scope{[&]() {
+            assert(!_stack.empty());
+            auto value = _stack.back();
+            assert(value->isObject());
+            _stack.pop_back();
+            _current = _stack.back();
+        }};
         size_t count = 0;
         if (consume(0x7d)) {
             return;
@@ -364,6 +431,13 @@ private:
         assert(start);
         skip();
         append(value_t{JSONTypeArray});
+        Scope scope{[&]() {
+            assert(!_stack.empty());
+            auto value = _stack.back();
+            assert(value->isArray());
+            _stack.pop_back();
+            _current = _stack.back();
+        }};
         if (consume(0x5d)) {
             return;
         }
@@ -387,7 +461,7 @@ private:
         while (true) {
             switch (next) {
                 case 0x5c:
-                    next = _stream.peek();
+                    next = _stream.next();
                     if (next == 0x75) {
                         parseUnicode();
                     } else {
@@ -428,6 +502,11 @@ private:
         }
     }
 
+    // Single escape Character
+    //  ",  \,  /,  b,  f,  n,  r,  t
+    // [22, 5c, 2f, 62, 66, 6e, 72, 74]
+    //  \b, \f, \n, \r, \t
+    // [08, 0c, 0a, 0d, 09]
     uint8_t parseChar() {
         switch (_stream.peek()) {
             case 0x22:
@@ -460,7 +539,18 @@ private:
     }
 
     void parseUnicode() {
-        const auto code = parseUnicodeValue();
+        auto code = parseUnicodeValue();
+        if (SP_UNLIKELY(code >= 0xd800u && code <= 0xdbffu)) {
+            // Handle UTF-16 surrogate pair
+            if (!consume(0x5c) || _stream.peek() != 0x75) { // "\"
+                throw std::runtime_error("JSONParseError.stringUnicodeSurrogateInvalid");
+            }
+            const auto next = parseUnicodeValue();
+            if (SP_UNLIKELY(code >= 0xdc00u && code <= 0xdfffu)) {
+                throw std::runtime_error("JSONParseError.stringUnicodeSurrogateInvalid");
+            }
+            code = (((code - 0xd800u) << 10u) | (next - 0xdc00u)) + 0x10000u;
+        }
         if (code <= 0x7f) {
             append(static_cast<uint8_t>(code & 0xffu));
         } else if (code <= 0x7ff) {
@@ -493,9 +583,9 @@ private:
             if (0x30 <= next && next <= 0x39) { // 0-9
                 point -= 0x30;
             } else if (0x41 <= next && next <= 0x46) { // A-F
-                point -= 0x41;
+                point -= 0x41 - 10;
             } else if (0x61 <= next && next <= 0x66) { // a-f
-                point -= 0x61;
+                point -= 0x61 - 10;
             } else {
                 throw std::runtime_error("JSONParseError.stringUnicodeEscapeInvalidHex");
             }
@@ -542,8 +632,9 @@ private:
             return;
         }
         switch (_current->type()) {
-            case JSONTypeArray: {
-                auto next = _current->append(std::move(value));
+            case JSONTypeArray:
+            case JSONTypeObject: {
+                auto& next = _current->append(std::move(value));
                 if (next.isComplex()) {
                     _current = &next;
                     _stack.push_back(_current);

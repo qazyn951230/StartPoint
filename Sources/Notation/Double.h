@@ -27,7 +27,7 @@
 
 SP_C_FILE_BEGIN
 
-extern inline double parse_double(double value, int exp);
+double parse_double(double value, int exp);
 
 SP_C_FILE_END
 

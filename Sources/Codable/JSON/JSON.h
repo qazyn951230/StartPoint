@@ -51,7 +51,6 @@ typedef SP_ENUM(uint16_t, JSONType) {
 };
 
 typedef struct SPOpaqueJSON* JSONRef;
-typedef struct SPOpaqueObjectIterator* ObjectIteratorRef;
 
 JSONRef json_create();
 JSONRef json_create_type(JSONType type);
@@ -73,13 +72,8 @@ uint32_t json_array_size(JSONRef json);
 JSONRef SP_NULLABLE json_array_get_index(JSONRef json, uint32_t index);
 
 uint32_t json_object_size(JSONRef json);
-ObjectIteratorRef SP_NULLABLE json_object_iterator_begin(JSONRef json);
-ObjectIteratorRef SP_NULLABLE json_object_iterator_end(JSONRef json);
-void json_object_iterator_free(ObjectIteratorRef SP_NULLABLE iterator);
-void json_object_iterator_advance(ObjectIteratorRef SP_NONNULL* SP_NONNULL iterator);
-bool json_object_iterator_is_equal(ObjectIteratorRef lhs, ObjectIteratorRef rhs);
-void* json_object_iterator_key(ObjectIteratorRef iterator, uint32_t* size);
-JSONRef json_object_iterator_value(ObjectIteratorRef iterator);
+uint32_t json_object_length(JSONRef json);
+JSONRef SP_NULLABLE json_object_get_index(JSONRef json, uint32_t index);
 
 bool json_get_int32(JSONRef json, int32_t* result);
 bool json_get_int64(JSONRef json, int64_t* result);
@@ -97,6 +91,9 @@ void* json_get_string(JSONRef json, uint32_t* size);
 //void json_array_append_double(JSONRef json, double value);
 //void json_array_append_bool(JSONRef json, bool value);
 //void json_array_append_null(JSONRef json);
+
+JSONRef SP_NULLABLE json_parse_int8_data(const int8_t* data);
+JSONRef SP_NULLABLE json_parse_uint8_data(const uint8_t* data);
 
 SP_C_FILE_END
 

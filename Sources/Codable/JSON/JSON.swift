@@ -158,28 +158,22 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         if let cachedDictionary = _cachedDictionary {
             return cachedDictionary
         }
-        if json_object_size(ref) > 0 {
-            let start = json_object_iterator_begin(ref)
-            let end = json_object_iterator_end(ref)
-            defer {
-                json_object_iterator_free(start)
-                json_object_iterator_free(end)
-            }
-            if let start = start, let end = end {
-                var map: [String: JSON] = [:]
-                map.reserveCapacity(Int(json_object_size(ref)))
-                var i = start
-                while !json_object_iterator_is_equal(i, end) {
-                    var size: UInt32 = 0
-                    let data = json_object_iterator_key(i, &size)
-                    if let key = String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false) {
-                        let value = json_object_iterator_value(i)
-                        map[key] = JSON(buffer: buffer, ref: value)
-                    }
-                    json_object_iterator_advance(&i)
+        if json_object_length(ref) > 0 {
+            var map: [String: JSON] = [:]
+            var i: UInt32 = 0
+            let n = json_object_length(ref)
+            while i < n {
+                let key = json_object_get_index(ref, i)
+                if let key2 = JSON.decodeString(ref: key) {
+                    i += 1
+                    let value = json_object_get_index(ref, i)
+                    map[key2] = makeRef(ref: value)
+                    i += 1
+                } else {
+                    i += 2
                 }
-                _cachedDictionary = map
             }
+            _cachedDictionary = map
         }
         return _cachedDictionary ?? [:]
     }
@@ -209,15 +203,11 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     public var stringValue: String? {
-        var size: UInt32 = 0
-        let data = json_get_string(ref, &size)
-        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
+        JSON.decodeString(ref: ref)
     }
 
     public var string: String {
-        var size: UInt32 = 0
-        let data = json_get_string(ref, &size)
-        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false) ?? ""
+        JSON.decodeString(ref: ref) ?? ""
     }
 
     public var doubleValue: Double? {
@@ -409,71 +399,56 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     public subscript(typed index: Int) -> JSON {
+        if json_is_array(ref) {
+            let value = json_array_get_index(ref, UInt32(index))
+            return makeRef(ref: value)
+        }
         return JSON.null
     }
 
     public subscript(typed key: String) -> JSON {
+        if let map = cachedDictionary {
+            return map[key] ?? JSON.null
+        }
         return JSON.null
     }
 
     public func item(at index: Int) -> Notated {
-        return self[index]
+        self[index]
     }
 
     public func item(key: String) -> Notated {
-        return self[key]
+        self[key]
     }
 
-//    public static func parse(_ value: String, option: JSONParser.Options = []) throws -> JSON {
-//        return try value.withCString { pointer in
-//            let stream = ByteStream.int8(pointer)
-//            let buffer = json_create()
-//            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
-//            try parser.parse()
-//            return JSON.create(from: buffer, index: 0)
-//        }
-//    }
+    static func decodeString(ref: JSONRef?) -> String? {
+        guard let ref = ref else {
+            return nil
+        }
+        var size: UInt32 = 0
+        let data = json_get_string(ref, &size)
+        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
+    }
 
-//    public static func parse(_ data: Data, option: JSONParser.Options = []) throws -> JSON {
-//        return try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
-//            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-//                return JSON.null
-//            }
-//            let stream = ByteStream.uint8(pointer)
-//            let buffer = json_create()
-//            let parser = JSONParser(stream: stream, buffer: buffer, options: option)
-//            try parser.parse()
-//            return JSON.create(from: buffer, index: 0)
-//        }
-//    }
+    public static func parse(_ value: String) -> JSON {
+        value.withCString { pointer in
+            if let ref = json_parse_int8_data(pointer) {
+                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
+            }
+            return JSON.null
+        }
+    }
 
-//    public static func array() -> JSONArray {
-//        return JSONArray()
-//    }
-//
-//    public static func object() -> JSONObject {
-//        return JSONObject()
-//    }
-
-    static func create(from buffer: JSONRef, index: Int) -> JSON {
-        return JSON.null
-//        switch json_buffer_value_type(buffer, index) {
-//        case JSONType.null:
-//            return JSONNull.null
-//        case JSONType.array:
-//            let temp = json_buffer_array_(buffer, index)
-//            let other = json_buffer_copy_array(buffer, temp)
-//            json_array_free(temp)
-//            return JSONArray(buffer: other)
-//        case JSONType.object:
-//            let temp = json_buffer_object(buffer, index)
-//            let other = json_buffer_copy_object(buffer, temp)
-//            json_object_free(temp)
-//            return JSONObject(buffer: other)
-//        default:
-//            let other = json_buffer_copy(buffer, index, 1)
-//            return JSONValue(buffer: other)
-//        }
+    public static func parse(data: Data) -> JSON {
+        data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return JSON.null
+            }
+            if let ref = json_parse_uint8_data(pointer) {
+                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
+            }
+            return JSON.null
+        }
     }
 
 //    static func create(from value: Any, nullable: Bool) -> JSON? {

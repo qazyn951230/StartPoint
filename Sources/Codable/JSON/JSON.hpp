@@ -24,10 +24,9 @@
 #define START_POINT_JSON_HPP
 
 #include <vector>
-#include <map>
 #include <string>
 #include <optional>
-#include <cmath>
+#include <cmath> // for std::round
 #include "Config.h"
 #include "JSON.h"
 
@@ -45,7 +44,7 @@ public:
     using float_t = double;
     using string_t = std::string;
     using array_t = std::vector<value_t>;
-    using object_t = std::map<string_t, value_t>;
+    using object_t = std::vector<value_t>;
 
     union Data {
         object_t* SP_NULLABLE object;
@@ -235,8 +234,8 @@ public:
                        std::nullopt : std::optional{static_cast<int32_t>(_data.u.uint32)};
             case JSONTypeDouble: {
                 auto value = _data.floating;
-                if (value > static_cast<double_t>(min<int32_t>()) &&
-                    value < static_cast<double_t>(max<int32_t>()) &&
+                if (value > static_cast<float_t>(min<int32_t>()) &&
+                    value < static_cast<float_t>(max<int32_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int32_t>(value);
                 }
@@ -272,8 +271,8 @@ public:
                        std::nullopt : std::optional{static_cast<int64_t>(_data.uint64)};
             case JSONTypeDouble: {
                 auto value = _data.floating;
-                if (value > static_cast<double_t>(min<int64_t>()) &&
-                    value < static_cast<double_t>(max<int64_t>()) &&
+                if (value > static_cast<float_t>(min<int64_t>()) &&
+                    value < static_cast<float_t>(max<int64_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int64_t>(value);
                 }
@@ -303,7 +302,7 @@ public:
             case JSONTypeDouble: {
                 auto value = _data.floating;
                 if (isGreaterOrEqual(value, 0.0) &&
-                    value < static_cast<double_t>(max<uint32_t>()) &&
+                    value < static_cast<float_t>(max<uint32_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<uint32_t>(value);
                 }
@@ -338,8 +337,8 @@ public:
                 return _data.uint64;
             case JSONTypeDouble: {
                 auto value = _data.floating;
-                if (value > static_cast<double_t>(min<int64_t>()) &&
-                    value < static_cast<double_t>(max<int64_t>()) &&
+                if (value > static_cast<float_t>(min<int64_t>()) &&
+                    value < static_cast<float_t>(max<int64_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int64_t>(value);
                 }
@@ -356,8 +355,8 @@ public:
     }
 
     [[nodiscard]] auto float64() const noexcept {
-        assert(isUint64());
-        return _data.uint64;
+        assert(isDouble());
+        return _data.floating;
     }
 
     [[nodiscard]] std::optional<float> asFloat32() const noexcept {
@@ -382,16 +381,16 @@ public:
         }
     }
 
-    [[nodiscard]] std::optional<double_t> asFloat64() const noexcept {
+    [[nodiscard]] std::optional<float_t> asFloat64() const noexcept {
         switch (_type) {
             case JSONTypeInt:
-                return static_cast<double_t>(_data.i.int32);
+                return static_cast<float_t>(_data.i.int32);
             case JSONTypeUint:
-                return static_cast<double_t>(_data.u.uint32);
+                return static_cast<float_t>(_data.u.uint32);
             case JSONTypeInt64:
-                return static_cast<double_t>(_data.int64);
+                return static_cast<float_t>(_data.int64);
             case JSONTypeUint64:
-                return static_cast<double_t>(_data.uint64);
+                return static_cast<float_t>(_data.uint64);
             case JSONTypeDouble:
                 return _data.floating;
             case JSONTypeNull:
@@ -449,6 +448,10 @@ public:
         return nullptr;
     }
 
+    void appendChar(const uint8_t value) {
+        append(static_cast<char>(value));
+    }
+
     void append(const char value) {
         assert(_type == JSONTypeString);
         if (_data.string->empty()) {
@@ -466,27 +469,22 @@ public:
     }
 
     value_t& append(const value_t& value) {
-        assert(_type == JSONTypeArray);
+        assert(_type == JSONTypeArray || _type == JSONTypeObject);
         _data.array->push_back(value);
         return _data.array->back();
     }
 
     value_t& append(value_t&& value) {
-        assert(_type == JSONTypeArray);
+        assert(_type == JSONTypeArray || _type == JSONTypeObject);
         _data.array->push_back(std::move(value));
         return _data.array->back();
     }
 
     template<typename ...Args>
     value_t& appendValue(Args&& ...args) {
-        assert(_type == JSONTypeArray);
+        assert(_type == JSONTypeArray || _type == JSONTypeObject);
         _data.array->emplace_back(std::forward<Args>(args)...);
         return _data.array->back();
-    }
-
-    void appendChar(uint8_t value) {
-        assert(_type == JSONTypeString);
-        _data.string->push_back(value);
     }
 
     template<typename T, typename ...Args>

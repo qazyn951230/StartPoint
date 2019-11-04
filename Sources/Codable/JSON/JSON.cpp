@@ -22,6 +22,7 @@
 
 #include "JSON.h"
 #include "JSON.hpp"
+#include "Parser.hpp"
 
 using namespace StartPoint;
 using json = StartPoint::JSON<>;
@@ -29,7 +30,6 @@ using object_t = json::object_t;
 using object_iterator = object_t::iterator;
 
 SP_SIMPLE_CONVERSION(json, JSONRef);
-SP_SIMPLE_CONVERSION(object_iterator, ObjectIteratorRef);
 
 JSONRef json_create() {
     return wrap(new json);
@@ -106,54 +106,26 @@ JSONRef json_array_get_index(JSONRef json, uint32_t index) {
 uint32_t json_object_size(JSONRef json) {
     auto raw = unwrap(json)->asObject();
     if (raw != nullptr) {
+        assert(raw->size() % 2 == 0);
+        return static_cast<uint32_t>(raw->size() / 2);
+    }
+    return 0;
+}
+
+uint32_t json_object_length(JSONRef json) {
+    auto raw = unwrap(json)->asObject();
+    if (raw != nullptr) {
         return static_cast<uint32_t>(raw->size());
     }
     return 0;
 }
 
-ObjectIteratorRef SP_NULLABLE json_object_iterator_begin(JSONRef json) {
+JSONRef SP_NULLABLE json_object_get_index(JSONRef json, uint32_t index) {
     auto raw = unwrap(json)->asObject();
-    if (raw != nullptr) {
-        auto result = new object_iterator(raw->begin());
-        return wrap(result);
+    if (raw != nullptr && index < raw->size()) {
+        return wrap(raw->data() + index);
     }
     return nullptr;
-}
-
-ObjectIteratorRef SP_NULLABLE json_object_iterator_end(JSONRef json) {
-    auto raw = unwrap(json)->asObject();
-    if (raw != nullptr) {
-        auto result = new object_iterator(raw->end());
-        return wrap(result);
-    }
-    return nullptr;
-}
-
-void json_object_iterator_free(ObjectIteratorRef SP_NULLABLE iterator) {
-    delete unwrap(iterator);
-}
-
-void json_object_iterator_advance(ObjectIteratorRef* iterator) {
-    auto raw = unwrap(*iterator);
-    raw = raw + 1;
-    *iterator = wrap(raw);
-}
-
-bool json_object_iterator_is_equal(ObjectIteratorRef lhs, ObjectIteratorRef rhs) {
-    return (*unwrap(lhs)) == (*unwrap(rhs));
-}
-
-void* json_object_iterator_key(ObjectIteratorRef iterator, uint32_t* SP_NONNULL size) {
-    auto raw = unwrap(iterator);
-    auto& key = (*raw)->first;
-    *size = static_cast<uint32_t>(key.size());
-    return const_cast<char*>(key.data());
-}
-
-JSONRef json_object_iterator_value(ObjectIteratorRef iterator) {
-    auto raw = unwrap(iterator);
-    auto& value = (*raw)->second;
-    return wrap(&value);
 }
 
 bool json_get_int32(JSONRef json, int32_t* SP_NONNULL result) {
@@ -227,4 +199,20 @@ void* json_get_string(JSONRef json, uint32_t* SP_NONNULL size) {
     }
     *size = 0;
     return nullptr;
+}
+
+JSONRef json_parse_int8_data(const int8_t* data) {
+    return json_parse_uint8_data(reinterpret_cast<const uint8_t*>(data));
+}
+
+JSONRef json_parse_uint8_data(const uint8_t* data) {
+    ByteStreams stream{data, 0};
+    auto value = new json;
+    Parser parser{*value, std::move(stream)};
+    try {
+        parser.parse();
+        return wrap(value);
+    } catch (...) {
+        return nullptr;
+    }
 }

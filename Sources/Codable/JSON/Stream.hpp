@@ -24,6 +24,7 @@
 #define START_POINT_STREAM_HPP
 
 #include <cstddef>
+#include <memory>
 #include "Config.h"
 
 SP_CPP_FILE_BEGIN
@@ -36,6 +37,8 @@ public:
     virtual ~ByteStream() = default;
 
     [[nodiscard]] virtual bool effective() const = 0;
+
+    [[nodiscard]] virtual const byte_t* current() const = 0;
 
     virtual byte_t next() {
         move();
@@ -59,16 +62,20 @@ public:
     virtual bool move(size_t) = 0;
 };
 
-class CharStream final : public ByteStream {
+class Uint8Stream final : public ByteStream {
 public:
     using byte_t = ByteStream::byte_t;
 
-    CharStream(const byte_t* SP_NULLABLE data, size_t count, bool needsFree) :
+    Uint8Stream(const byte_t* SP_NULLABLE data, size_t count, bool needsFree) :
         _data(data), _count(data != nullptr ? count : 0), _needsFree(needsFree),
-        _index(0), _current(const_cast<byte_t*>(data)) {}
+        _index(0), _current(const_cast<byte_t*>(data)), _nullTerminated(count < 1) {}
 
     [[nodiscard]] bool effective() const override {
-        return _index < _count;
+        return _nullTerminated ? !_terminated : _index < _count;
+    }
+
+    [[nodiscard]] const byte_t* current() const override {
+        return _current;
     }
 
     bool take(size_t size, byte_t* SP_NONNULL* SP_NULLABLE result) override {
@@ -89,43 +96,88 @@ public:
     }
 
     byte_t peek(size_t offset) override {
-        if (_index + offset < _count) {
-            return *(_current + offset);
+        if (_nullTerminated) {
+            auto t = _current;
+            const auto n = _current + offset;
+            while (t != n) {
+                if (*t == 0) {
+                    break;
+                }
+                t += 1;
+            }
+            return *t;
+        } else {
+            if (_index + offset < _count) {
+                return *(_current + offset);
+            } else {
+                return 0;
+            }
         }
-        return 0;
     }
 
     bool move() override {
-        _current += 1;
-        _index += 1;
-        return effective();
+        if (_nullTerminated) {
+            if (_terminated) {
+                return false;
+            }
+            _current += 1;
+            _terminated = *_current == 0;
+            return true;
+        } else {
+            _current += 1;
+            _index += 1;
+            return effective();
+        }
     }
 
     bool move(size_t offset) override {
-        if (_index + offset < _count) {
-            _current += offset;
-            _index += offset;
+        if (_nullTerminated) {
+            if (_terminated) {
+                return false;
+            }
+            auto t = _current;
+            const auto n = _current + offset;
+            while (t != n) {
+                if (*t == 0) {
+                    return false;
+                }
+                t += 1;
+            }
+            _current = t;
+            _terminated = *_current == 0;
+            return true;
+        } else {
+            if (_index + offset < _count) {
+                _current += offset;
+                _index += offset;
+            }
+            return effective();
         }
-        return effective();
     }
 
 private:
     const byte_t* SP_NULLABLE _data;
     const size_t _count;
     const bool _needsFree;
+    const bool _nullTerminated;
     size_t _index;
     byte_t* _current;
+    bool _terminated = false;
 };
 
-class ByteStreamAdapter final {
+class ByteStreams final {
 public:
     using byte_t = ByteStream::byte_t;
     using size_t = ByteStream::size_t;
 
     using delegate_t = std::unique_ptr<ByteStream>;
 
-    ByteStreamAdapter(const byte_t* SP_NULLABLE data, size_t count, bool needsFree = false) {
-        _delegate = std::make_unique<CharStream>(data, count, needsFree);
+    ByteStreams(const byte_t* SP_NULLABLE data, size_t count, bool needsFree = false) {
+        _delegate = std::make_unique<Uint8Stream>(data, count, needsFree);
+    }
+
+    [[nodiscard]] const byte_t* current() const {
+        return _delegate->current();
     }
 
     byte_t next() {

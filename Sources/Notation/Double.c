@@ -75,7 +75,7 @@ static inline double fast_power(double value, int exp) {
     }
 }
 
-extern inline double parse_double(double value, int exp) {
+double parse_double(double value, int exp) {
     if (exp < -308) {
         value = fast_power(value, -308);
         value = fast_power(value, exp + 308);
