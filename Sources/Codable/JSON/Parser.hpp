@@ -192,7 +192,7 @@ private:
         }
         auto useDouble = false;
 #if !(SP_JSON_PARSER_USE_STD_STOD)
-        double floating = 0.0;
+        double float64 = 0.0;
 #endif
         if (use64bit) {
             if (minus) {
@@ -200,7 +200,7 @@ private:
                     if (i64 >= 922337203685477580) { // 2^63 = 9223372036854775808
                         if (i64 != 922337203685477580 || next > 0x38) {
 #if !(SP_JSON_PARSER_USE_STD_STOD)
-                            floating = i64;
+                            float64 = i64;
 #endif
                             useDouble = true;
                             break;
@@ -217,7 +217,7 @@ private:
                     if (i64 >= 1844674407370955161) { // 2^64 - 1 = 18446744073709551615
                         if (i64 != 1844674407370955161 || next > 0x35) {
 #if !(SP_JSON_PARSER_USE_STD_STOD)
-                            floating = i64;
+                            float64 = i64;
 #endif
                             useDouble = true;
                             break;
@@ -234,7 +234,7 @@ private:
         if (useDouble) {
             while (0x30 <= next && next <= 0x39) {
 #if !(SP_JSON_PARSER_USE_STD_STOD)
-                floating = floating * 10 + (next - 0x30);
+                float64 = float64 * 10 + (next - 0x30);
 #endif
                 next = static_cast<uint32_t>(_stream.next());
             }
@@ -265,16 +265,16 @@ private:
                     next = static_cast<uint32_t>(_stream.next());
                 }
 #if !(SP_JSON_PARSER_USE_STD_STOD)
-                floating = i64;
+                float64 = i64;
 #endif
                 useDouble = true;
             }
             while (0x30 <= next && next <= 0x39) {
 #if !(SP_JSON_PARSER_USE_STD_STOD)
                 if (significandDigit < 17) {
-                    floating = floating * 10 + (next - 0x30);
+                    float64 = float64 * 10 + (next - 0x30);
                     frac -= 1;
-                    if (floating > 0) {
+                    if (float64 > 0) {
                         significandDigit += 1;
                     }
                 }
@@ -293,7 +293,7 @@ private:
             consume(0x2d); // -
 #else
             if (!useDouble) {
-                floating = static_cast<double>(use64bit ? i64 : i);
+                float64 = static_cast<double>(use64bit ? i64 : i);
                 useDouble = true;
             }
             auto expMinus = false;
@@ -356,7 +356,7 @@ private:
                 throw std::runtime_error("JSONParseError.valueInvalid");
             }
 #else
-            floating = parse_double(floating, exp + frac);
+            float64 = parse_double(float64, exp + frac);
 #endif
             if (minus) {
                 append(value_t{-floating});

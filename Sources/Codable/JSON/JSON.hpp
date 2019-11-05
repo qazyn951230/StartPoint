@@ -47,7 +47,7 @@ public:
     using uint32_t = std::uint32_t;
     using int64_t = std::int64_t;
     using uint64_t = std::uint64_t;
-    using float_t = double;
+    using float64_t = double;
     using string_t = std::string;
     using array_t = std::vector<value_t>;
 
@@ -71,7 +71,7 @@ public:
             uint32_t uint32;
         } u;
         uint64_t uint64;
-        float_t floating;
+        float64_t float64;
 
         Data() : uint64() {}
 
@@ -167,8 +167,8 @@ public:
         assert_invariant();
     }
 
-    explicit JSON(const float_t value) : _type(JSONTypeDouble), _data() {
-        _data.floating = value;
+    explicit JSON(const float64_t value) : _type(JSONTypeDouble), _data() {
+        _data.float64 = value;
         assert_invariant();
     }
 
@@ -282,9 +282,9 @@ public:
                 return _data.u.uint32 > static_cast<uint32_t>(max<int32_t>()) ?
                        std::nullopt : std::optional{static_cast<int32_t>(_data.u.uint32)};
             case JSONTypeDouble: {
-                auto value = _data.floating;
-                if (value > static_cast<float_t>(min<int32_t>()) &&
-                    value < static_cast<float_t>(max<int32_t>()) &&
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int32_t>()) &&
+                    value < static_cast<float64_t>(max<int32_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int32_t>(value);
                 }
@@ -319,9 +319,9 @@ public:
                 return _data.uint64 > static_cast<uint64_t>(max<int64_t>()) ?
                        std::nullopt : std::optional{static_cast<int64_t>(_data.uint64)};
             case JSONTypeDouble: {
-                auto value = _data.floating;
-                if (value > static_cast<float_t>(min<int64_t>()) &&
-                    value < static_cast<float_t>(max<int64_t>()) &&
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int64_t>()) &&
+                    value < static_cast<float64_t>(max<int64_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int64_t>(value);
                 }
@@ -349,9 +349,9 @@ public:
             case JSONTypeUint:
                 return _data.u.uint32;
             case JSONTypeDouble: {
-                auto value = _data.floating;
+                auto value = _data.float64;
                 if (isGreaterOrEqual(value, 0.0) &&
-                    value < static_cast<float_t>(max<uint32_t>()) &&
+                    value < static_cast<float64_t>(max<uint32_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<uint32_t>(value);
                 }
@@ -385,9 +385,9 @@ public:
             case JSONTypeUint64:
                 return _data.uint64;
             case JSONTypeDouble: {
-                auto value = _data.floating;
-                if (value > static_cast<float_t>(min<int64_t>()) &&
-                    value < static_cast<float_t>(max<int64_t>()) &&
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int64_t>()) &&
+                    value < static_cast<float64_t>(max<int64_t>()) &&
                     isEqual(value, std::round(value))) {
                     return static_cast<int64_t>(value);
                 }
@@ -405,7 +405,7 @@ public:
 
     [[nodiscard]] auto float64() const noexcept {
         assert(isDouble());
-        return _data.floating;
+        return _data.float64;
     }
 
     [[nodiscard]] std::optional<float> asFloat32() const noexcept {
@@ -419,7 +419,7 @@ public:
             case JSONTypeUint64:
                 return static_cast<float>(_data.uint64);
             case JSONTypeDouble:
-                return static_cast<float>(_data.floating);
+                return static_cast<float>(_data.float64);
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -430,18 +430,18 @@ public:
         }
     }
 
-    [[nodiscard]] std::optional<float_t> asFloat64() const noexcept {
+    [[nodiscard]] std::optional<float64_t> asFloat64() const noexcept {
         switch (_type) {
             case JSONTypeInt:
-                return static_cast<float_t>(_data.i.int32);
+                return static_cast<float64_t>(_data.i.int32);
             case JSONTypeUint:
-                return static_cast<float_t>(_data.u.uint32);
+                return static_cast<float64_t>(_data.u.uint32);
             case JSONTypeInt64:
-                return static_cast<float_t>(_data.int64);
+                return static_cast<float64_t>(_data.int64);
             case JSONTypeUint64:
-                return static_cast<float_t>(_data.uint64);
+                return static_cast<float64_t>(_data.uint64);
             case JSONTypeDouble:
-                return _data.floating;
+                return _data.float64;
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -607,7 +607,7 @@ public:
             case JSONTypeUint64:
                 return _data.uint64 == other._data.uint64;
             case JSONTypeDouble:
-                return _data.floating == _data.floating;
+                return _data.float64 == _data.float64;
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -676,7 +676,7 @@ public:
             case JSONTypeUint64:
                 return _data.uint64 > other._data.uint64;
             case JSONTypeDouble:
-                return _data.floating > _data.floating;
+                return _data.float64 > _data.float64;
             case JSONTypeNull:
                 return false;
             case JSONTypeTrue:
@@ -747,7 +747,7 @@ public:
             case JSONTypeUint64:
                 return _data.uint64 < other._data.uint64;
             case JSONTypeDouble:
-                return _data.floating < _data.floating;
+                return _data.float64 < _data.float64;
             case JSONTypeNull:
                 return false;
             case JSONTypeTrue:

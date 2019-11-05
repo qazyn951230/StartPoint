@@ -21,11 +21,12 @@
 // SOFTWARE.
 
 #import <XCTest/XCTest.h>
+#import <limits>
 #import "JSON.hpp"
 
-using json = StartPoint::JSON<>;
-using array = json::array_t;
-using map = json::object_t;
+using json_t = StartPoint::JSON<>;
+using array_t = json_t::array_t;
+using object_t = json_t::object_t;
 using namespace StartPoint;
 
 @interface JSONTests : XCTestCase
@@ -36,45 +37,91 @@ using namespace StartPoint;
 
 - (void)testMove {
     auto foo = [&]() {
-        auto first = json{JSONTypeArray};
+        auto first = json_t{JSONTypeArray};
         auto second = std::move(first);
         XCTAssertTrue(second.isArray());
     };
-    XCTAssertNoThrow(foo());
-}
-
-- (void)testMove2 {
-    auto foo = [&]() {
-        auto first = json{JSONTypeArray};
+    auto foo2 = [&]() {
+        auto first = json_t{JSONTypeArray};
         first.appendValue(1);
         first.appendValue(JSONTypeArray);
         auto second = std::move(first);
         XCTAssertTrue(second.isArray());
     };
     XCTAssertNoThrow(foo());
+    XCTAssertNoThrow(foo2());
 }
 
 - (void)testDealloc {
-    XCTAssertNoThrow((std::vector<json>{json{JSONTypeArray}}));
-    auto first = json{JSONTypeArray};
-    XCTAssertNoThrow((std::vector<json>{std::move(first)}));
+    XCTAssertNoThrow((std::vector<json_t>{json_t{JSONTypeArray}}));
+    auto first = json_t{JSONTypeArray};
+    XCTAssertNoThrow((std::vector<json_t>{std::move(first)}));
     auto foo = [&]() {
-        auto list = std::vector<json>{};
+        auto list = std::vector<json_t>{};
         list.emplace_back(JSONTypeArray);
     };
     XCTAssertNoThrow(foo());
     auto foo2 = [&]() {
-        auto list = std::vector<json>{};
-        auto first = json{JSONTypeArray};
-        list.push_back(std::move(first));
+        auto list = std::vector<json_t>{};
+        auto second = json_t{JSONTypeArray};
+        list.push_back(std::move(second));
     };
     XCTAssertNoThrow(foo2());
     auto foo3 = [&]() {
-        auto list = std::vector<json>{};
-        auto first = json{JSONTypeArray};
-        list.push_back(first);
+        auto list = std::vector<json_t>{};
+        auto third = json_t{JSONTypeArray};
+        list.push_back(third);
     };
     XCTAssertNoThrow(foo3());
+}
+
+- (void)testInt32 {
+    auto min = std::numeric_limits<int32_t>::min();
+    XCTAssertEqual(json_t{min}.int32(), min);
+
+    auto max = std::numeric_limits<int32_t>::max();
+    XCTAssertEqual(json_t{max}.int32(), max);
+}
+
+- (void)testUint32 {
+    auto min = std::numeric_limits<uint32_t>::min();
+    XCTAssertEqual(json_t{min}.uint32(), min);
+
+    auto max = std::numeric_limits<uint32_t>::max();
+    XCTAssertEqual(json_t{max}.uint32(), max);
+}
+
+- (void)testInt64 {
+    auto min = std::numeric_limits<int64_t>::min();
+    XCTAssertEqual(json_t{min}.int64(), min);
+
+    auto max = std::numeric_limits<int64_t>::max();
+    XCTAssertEqual(json_t{max}.int64(), max);
+}
+
+- (void)testUint64 {
+    auto min = std::numeric_limits<uint64_t>::min();
+    XCTAssertEqual(json_t{min}.uint64(), min);
+
+    auto max = std::numeric_limits<uint64_t>::max();
+    XCTAssertEqual(json_t{max}.uint64(), max);
+}
+
+- (void)testFloat64 {
+    auto min = std::numeric_limits<double>::min();
+    XCTAssertEqual(json_t{min}.float64(), min);
+
+    auto max = std::numeric_limits<double>::max();
+    XCTAssertEqual(json_t{max}.float64(), max);
+}
+
+- (void)testBool {
+    XCTAssertTrue(json_t{true}.boolean());
+    XCTAssertFalse(json_t{false}.boolean());
+}
+
+- (void)testNull {
+    XCTAssertTrue(json_t{}.isNull());
 }
 
 @end

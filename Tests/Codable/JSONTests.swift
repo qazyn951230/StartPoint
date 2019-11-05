@@ -20,30 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
 @testable import StartPoint
 import XCTest
-import Dispatch
 
-final class TestElement: BasicElement {
-    init(children: [BasicElement] = []) {
-        super.init(framed: false, children: children)
+class JSONTests2: XCTestCase {
+    func testEmptyJSON() {
+        let ref = json_create()
+        let json = JSON(buffer: JSONBuffer(ref: ref), ref: ref)
+        XCTAssertEqual(json, JSON.null)
     }
 }
-
-class ElementTestCase: XCTestCase {
-    var queue = DispatchQueue(label: "com.undev.testQueue")
-
-    override func setUp() {
-        super.setUp()
-        queue = DispatchQueue(label: "com.undev.testQueue")
-    }
-
-    func runOffThread(_ method: @escaping () -> Void) {
-        let group = DispatchGroup()
-        queue.async(group: group, execute: method)
-        let result = group.wait(timeout: .distantFuture)
-        XCTAssertEqual(result, DispatchTimeoutResult.success)
-    }
-}
-#endif // #if os(iOS)
