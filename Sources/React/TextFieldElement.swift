@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 import RxSwift
 import RxCocoa
@@ -474,3 +475,4 @@ open class TextFieldElement: Element<UITextField>, PropertyText {
         return Size.zero
     }
 }
+#endif // #if os(iOS)

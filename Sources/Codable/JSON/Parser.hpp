@@ -397,10 +397,10 @@ private:
             return;
         }
         while (true) {
-            if (!consume(0x22)) {
+            skip();
+            if (_stream.peek() != 0x22) {
                 throw std::runtime_error("JSONParseError.objectMissName");
             }
-            skip();
             parseString();
             skip();
             if (!consume(0x3a)) {
@@ -631,6 +631,38 @@ private:
             }
             return;
         }
+#if (SP_JSON_MAP_TYPE == 3)
+        switch (_current->type()) {
+            case JSONTypeArray: {
+                auto& next = _current->append(std::move(value));
+                if (next.isComplex()) {
+                    _current = &next;
+                    _stack.push_back(_current);
+                }
+                break;
+            }
+            case JSONTypeObject: {
+                if (_keys.empty()) {
+                    assert(value.isString());
+                    _keys.push_back(std::move(value));
+                    auto& next = _keys.back();
+                    _current = &next;
+                    _stack.push_back(_current);
+                } else {
+                    auto last = _keys.back();
+                    _keys.pop_back();
+                    auto result = _current->append(std::move(last), std::move(value));
+                    if (result.first->second.isComplex()) {
+                        _current = &(result.first->second);
+                        _stack.push_back(_current);
+                    }
+                }
+            }
+                break;
+            default:
+                break;
+        }
+#else
         switch (_current->type()) {
             case JSONTypeArray:
             case JSONTypeObject: {
@@ -644,6 +676,7 @@ private:
             default:
                 break;
         }
+#endif
     }
 
     inline void append(uint8_t value) {
@@ -655,6 +688,9 @@ private:
     std::vector<value_t*> _stack;
     value_t* _current;
     stream_t _stream;
+#if (SP_JSON_MAP_TYPE == 3)
+    std::vector<value_t> _keys{};
+#endif
 };
 
 SP_CPP_FILE_END

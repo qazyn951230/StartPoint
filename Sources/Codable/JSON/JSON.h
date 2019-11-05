@@ -24,9 +24,7 @@
 #define START_POINT_JSON_H
 
 #if (__cplusplus)
-
 #include <cstdint>
-
 #else
 #include <stdint.h>
 #include <stdbool.h>
@@ -68,12 +66,19 @@ bool json_is_string(JSONRef json);
 bool json_is_array(JSONRef json);
 bool json_is_object(JSONRef json);
 
+bool json_is_equal(JSONRef json, JSONRef other);
+bool json_is_not_equal(JSONRef json, JSONRef other);
+bool json_is_less_than(JSONRef json, JSONRef other);
+bool json_is_greater_than(JSONRef json, JSONRef other);
+bool json_is_less_than_or_equal(JSONRef json, JSONRef other);
+bool json_is_greater_than_or_equal(JSONRef json, JSONRef other);
+
 uint32_t json_array_size(JSONRef json);
 JSONRef SP_NULLABLE json_array_get_index(JSONRef json, uint32_t index);
 
 uint32_t json_object_size(JSONRef json);
-uint32_t json_object_length(JSONRef json);
-JSONRef SP_NULLABLE json_object_get_index(JSONRef json, uint32_t index);
+typedef void (^json_object_for_each_t)(const void*, uint32_t size, JSONRef json);
+void json_object_for_each(JSONRef json, json_object_for_each_t method);
 
 bool json_get_int32(JSONRef json, int32_t* result);
 bool json_get_int64(JSONRef json, int64_t* result);

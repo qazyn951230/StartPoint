@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class StatusBarWindow: UIWindow {
@@ -84,3 +85,4 @@ public final class StatusBarWindow: UIWindow {
         }
     }
 }
+#endif // #if os(iOS)

@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
+#endif
 
 public protocol Identified {
     var identifier: String { get }
@@ -36,6 +38,7 @@ public extension ClassIdentified {
     }
 }
 
+#if canImport(UIKit)
 public extension ClassIdentified where Self: UITableViewCell {
     static func register(to tableView: UITableView) {
         tableView.register(self, forCellReuseIdentifier: identifier)
@@ -59,3 +62,4 @@ public extension ClassIdentified where Self: UICollectionReusableView {
 
 extension UIView: ClassIdentified { }
 extension UIViewController: ClassIdentified { }
+#endif // #if canImport(UIKit)

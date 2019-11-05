@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class VisualEffectElement: Element<UIVisualEffectView> {
@@ -50,3 +51,4 @@ open class VisualEffectElement: Element<UIVisualEffectView> {
         return self
     }
 }
+#endif // #if os(iOS)

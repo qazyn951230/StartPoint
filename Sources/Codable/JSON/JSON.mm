@@ -20,18 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if os(iOS)
-import UIKit
+#include "JSON.h"
+#include "JSON.hpp"
+#include "Parser.hpp"
 
-public final class ElementCollectionCell: UICollectionViewCell, ElementContainer {
-    public static let identifier: String = "ElementCollectionCell"
+using namespace StartPoint;
+using json = StartPoint::JSON<>;
 
-    public weak var element: BasicElement? = nil
+void json_object_for_each(JSONRef json, json_object_for_each_t method) {
+    auto raw = unwrap(json)->asObject();
+    if (raw == nullptr) {
+        return;
+    }
+    auto begin = raw->begin();
+    const auto end = raw->end();
+    while (begin != end) {
+        auto& key = begin->first;
+        auto& value = begin->second;
+        method(key.data(), static_cast<uint32_t>(key.size()), wrap(&value));
+        begin++;
+    }
 }
-
-public final class ElementReusableView: UICollectionReusableView, ElementContainer {
-    public static let identifier: String = "ElementReusableView"
-
-    public weak var element: BasicElement? = nil
-}
-#endif // #if os(iOS)

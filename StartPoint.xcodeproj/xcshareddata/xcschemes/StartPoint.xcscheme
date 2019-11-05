@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BC6BA1A81F2DC08600772AA8"
                BuildableName = "StartPoint.framework"
-               BlueprintName = "StartPoint_iOS"
+               BlueprintName = "StartPoint"
                ReferencedContainer = "container:StartPoint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,29 +27,27 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BC6BA1A81F2DC08600772AA8"
+            BuildableName = "StartPoint.framework"
+            BlueprintName = "StartPoint"
+            ReferencedContainer = "container:StartPoint.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BC6BA1B11F2DC08700772AA8"
-               BuildableName = "iOSTests.xctest"
-               BlueprintName = "iOSTests"
+               BuildableName = "StartPointTests.xctest"
+               BlueprintName = "StartPointTests"
                ReferencedContainer = "container:StartPoint.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BC6BA1A81F2DC08600772AA8"
-            BuildableName = "StartPoint.framework"
-            BlueprintName = "StartPoint_iOS"
-            ReferencedContainer = "container:StartPoint.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -66,12 +64,10 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BC6BA1A81F2DC08600772AA8"
             BuildableName = "StartPoint.framework"
-            BlueprintName = "StartPoint_iOS"
+            BlueprintName = "StartPoint"
             ReferencedContainer = "container:StartPoint.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -84,7 +80,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BC6BA1A81F2DC08600772AA8"
             BuildableName = "StartPoint.framework"
-            BlueprintName = "StartPoint_iOS"
+            BlueprintName = "StartPoint"
             ReferencedContainer = "container:StartPoint.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

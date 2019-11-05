@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 import QuartzCore
 
@@ -339,3 +340,4 @@ open class ShapeElement: BasicLayerElement<CAShapeLayer> {
         }
     }
 }
+#endif // #if os(iOS)

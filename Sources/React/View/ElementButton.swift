@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class ElementButton: UIControl, ElementContainer, ButtonType {
@@ -222,3 +223,4 @@ public final class ElementButton: UIControl, ElementContainer, ButtonType {
         applyBackgroundImage()
     }
 }
+#endif // #if os(iOS)

@@ -20,14 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
+#endif
 
 public protocol Creatable {
     static func create() -> Self
 }
 
+#if canImport(UIKit)
 public extension Creatable where Self: UIViewController {
     static func create() -> Self {
         return self.init(nibName: nil, bundle: nil)
     }
 }
+#endif

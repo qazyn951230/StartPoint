@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import Alamofire
 import RxSwift
 import Dispatch
@@ -151,3 +152,4 @@ public final class RequestBuilder {
             .subscribeOn(scheduler)
     }
 }
+#endif // #if os(iOS)

@@ -24,6 +24,7 @@
 #define START_POINT_JSON_HPP
 
 #include <vector>
+#include <unordered_map>
 #include <string>
 #include <optional>
 #include <cmath> // for std::round
@@ -31,6 +32,11 @@
 #include "JSON.h"
 
 SP_CPP_FILE_BEGIN
+
+#ifndef SP_JSON_MAP_TYPE
+// 1 vector 2 map 3 unordered_map
+#define SP_JSON_MAP_TYPE 3
+#endif
 
 template<template<typename> typename Allocator = std::allocator>
 class JSON final {
@@ -44,7 +50,12 @@ public:
     using float_t = double;
     using string_t = std::string;
     using array_t = std::vector<value_t>;
+
+#if (SP_JSON_MAP_TYPE == 3)
+    using object_t = std::unordered_map<std::string, value_t>;
+#else
     using object_t = std::vector<value_t>;
+#endif
 
     union Data {
         object_t* SP_NULLABLE object;
@@ -64,25 +75,55 @@ public:
 
         Data() : uint64() {}
 
+        Data(const Data&) = delete;
+
+        Data(Data&& other): uint64(other.uint64) {}
+
+        Data& operator=(const Data&) = delete;
+
+        Data& operator=(Data&& other) {
+            std::swap(uint64, other.uint64);
+            return *this;
+        }
+
+        Data(const Data& other, const JSONType type): uint64(other.uint64) {
+            switch (type) {
+                case JSONTypeObject:
+                    object = JSON::create<object_t>(*other.object);
+                    break;
+                case JSONTypeArray:
+                    array = JSON::create<array_t>(*other.array);
+                    break;
+                case JSONTypeString:
+                    string = JSON::create<string_t>(*other.string);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         explicit Data(const JSONType type) : uint64() {
             switch (type) {
                 case JSONTypeObject:
                     object = JSON::create<object_t>();
+                    break;
                 case JSONTypeArray:
                     array = JSON::create<array_t>();
+                    break;
                 case JSONTypeString:
                     string = JSON::create<string_t>();
+                    break;
                 default:
                     break;
             }
         }
 
         explicit Data(const string_t& value) : uint64() {
-            string = JSON::create(value);
+            string = JSON::create<string_t>(value);
         }
 
         explicit Data(string_t&& value) : uint64() {
-            string = JSON::create(value);
+            string = JSON::create<string_t>(std::move(value));
         }
 
         void destroy(JSONType type) noexcept {
@@ -135,11 +176,19 @@ public:
         assert_invariant();
     }
 
+    explicit JSON(const string_t& value) : _type(JSONTypeString), _data(value) {
+        assert_invariant();
+    }
+
+    explicit JSON(string_t&& value) : _type(JSONTypeString), _data(std::move(value)) {
+        assert_invariant();
+    }
+
     explicit JSON(std::nullptr_t value = nullptr) : _type(JSONTypeNull), _data() {
         assert_invariant();
     }
 
-    JSON(const JSON& other) : _type(other._type), _data(other._data) {
+    JSON(const JSON& other) : _type(other._type), _data(other._data, other._type) {
         other.assert_invariant();
         assert_invariant();
     }
@@ -148,7 +197,7 @@ public:
         other.assert_invariant();
         assert_invariant();
         other._type = JSONTypeNull;
-        other._data = {};
+        other._data.uint64 = 0;
     }
 
     ~JSON() noexcept {
@@ -469,22 +518,261 @@ public:
     }
 
     value_t& append(const value_t& value) {
+#if (SP_JSON_MAP_TYPE == 1)
         assert(_type == JSONTypeArray || _type == JSONTypeObject);
+#else
+        assert(_type == JSONTypeArray);
+#endif
         _data.array->push_back(value);
         return _data.array->back();
     }
 
     value_t& append(value_t&& value) {
+#if (SP_JSON_MAP_TYPE == 1)
         assert(_type == JSONTypeArray || _type == JSONTypeObject);
+#else
+        assert(_type == JSONTypeArray);
+#endif
         _data.array->push_back(std::move(value));
         return _data.array->back();
     }
 
     template<typename ...Args>
     value_t& appendValue(Args&& ...args) {
+#if (SP_JSON_MAP_TYPE == 1)
         assert(_type == JSONTypeArray || _type == JSONTypeObject);
+#else
+        assert(_type == JSONTypeArray);
+#endif
         _data.array->emplace_back(std::forward<Args>(args)...);
         return _data.array->back();
+    }
+
+#if (SP_JSON_MAP_TYPE != 1)
+    std::pair<typename object_t::iterator, bool> append(value_t&& key, value_t&& value) {
+        assert(_type == JSONTypeObject);
+        auto temp = std::move(key);
+        return _data.object->insert({std::move(*temp._data.string), std::move(value)});
+    }
+#endif
+
+    bool operator==(const JSON& other) const noexcept {
+        if (_type != other._type) {
+            if (isDouble() || other.isDouble()) {
+                auto lhs = asFloat64();
+                auto rhs = other.asFloat64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return isEqual(lhs.value(), rhs.value());
+            } else if (isUint64() || isUint64()) {
+                auto lhs = asUint64();
+                auto rhs = other.asUint64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() == rhs.value();
+            } else if (isInt64() || other.isInt64()) {
+                auto lhs = asInt64();
+                auto rhs = other.asInt64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() == rhs.value();
+            } else if (isUint() || other.isUint()) {
+                auto lhs = asUint32();
+                auto rhs = other.asUint32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() == rhs.value();
+            } else if (isInt32() || other.isInt32()) {
+                auto lhs = asInt32();
+                auto rhs = other.asInt32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() == rhs.value();
+            } else {
+                return false;
+            }
+        }
+        switch (_type) {
+            case JSONTypeInt:
+                return _data.i.int32 == other._data.i.int32;
+            case JSONTypeUint:
+                return _data.u.uint32 == other._data.u.uint32;
+            case JSONTypeInt64:
+                return _data.int64 == other._data.int64;
+            case JSONTypeUint64:
+                return _data.uint64 == other._data.uint64;
+            case JSONTypeDouble:
+                return _data.floating == _data.floating;
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+                return true;
+            case JSONTypeString:
+                return (*_data.string) == (*other._data.string);
+            case JSONTypeArray:
+                return (*_data.array) == (*other._data.array);
+            case JSONTypeObject:
+                return (*_data.object) == (*other._data.object);
+        }
+    }
+
+    bool operator!=(const JSON& other) const noexcept {
+        return !(operator==(other));
+    }
+
+    bool operator>(const JSON& other) const noexcept {
+        if (_type != other._type) {
+            if (isDouble() || other.isDouble()) {
+                auto lhs = asFloat64();
+                auto rhs = other.asFloat64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() > rhs.value();
+            } else if (isUint64() || isUint64()) {
+                auto lhs = asUint64();
+                auto rhs = other.asUint64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() > rhs.value();
+            } else if (isInt64() || other.isInt64()) {
+                auto lhs = asInt64();
+                auto rhs = other.asInt64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() > rhs.value();
+            } else if (isUint() || other.isUint()) {
+                auto lhs = asUint32();
+                auto rhs = other.asUint32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() > rhs.value();
+            } else if (isInt32() || other.isInt32()) {
+                auto lhs = asInt32();
+                auto rhs = other.asInt32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() > rhs.value();
+            } else {
+                return false;
+            }
+        }
+        switch (_type) {
+            case JSONTypeInt:
+                return _data.i.int32 > other._data.i.int32;
+            case JSONTypeUint:
+                return _data.u.uint32 > other._data.u.uint32;
+            case JSONTypeInt64:
+                return _data.int64 > other._data.int64;
+            case JSONTypeUint64:
+                return _data.uint64 > other._data.uint64;
+            case JSONTypeDouble:
+                return _data.floating > _data.floating;
+            case JSONTypeNull:
+                return false;
+            case JSONTypeTrue:
+            case JSONTypeFalse: {
+                return boolean() > other.boolean();
+            }
+            case JSONTypeString:
+                return (*_data.string) > (*other._data.string);
+            case JSONTypeArray:
+                return (*_data.array) > (*other._data.array);
+            case JSONTypeObject:
+#if (SP_JSON_MAP_TYPE == 3)
+                return false;
+#else
+                return (*_data.object) > (*other._data.object);
+#endif
+        }
+    }
+
+    bool operator<(const JSON& other) const noexcept {
+        if (_type != other._type) {
+            if (isDouble() || other.isDouble()) {
+                auto lhs = asFloat64();
+                auto rhs = other.asFloat64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() < rhs.value();
+            } else if (isUint64() || isUint64()) {
+                auto lhs = asUint64();
+                auto rhs = other.asUint64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() < rhs.value();
+            } else if (isInt64() || other.isInt64()) {
+                auto lhs = asInt64();
+                auto rhs = other.asInt64();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() < rhs.value();
+            } else if (isUint() || other.isUint()) {
+                auto lhs = asUint32();
+                auto rhs = other.asUint32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() < rhs.value();
+            } else if (isInt32() || other.isInt32()) {
+                auto lhs = asInt32();
+                auto rhs = other.asInt32();
+                if (!lhs || !rhs) {
+                    return false;
+                }
+                return lhs.value() < rhs.value();
+            } else {
+                return false;
+            }
+        }
+        switch (_type) {
+            case JSONTypeInt:
+                return _data.i.int32 < other._data.i.int32;
+            case JSONTypeUint:
+                return _data.u.uint32 < other._data.u.uint32;
+            case JSONTypeInt64:
+                return _data.int64 < other._data.int64;
+            case JSONTypeUint64:
+                return _data.uint64 < other._data.uint64;
+            case JSONTypeDouble:
+                return _data.floating < _data.floating;
+            case JSONTypeNull:
+                return false;
+            case JSONTypeTrue:
+            case JSONTypeFalse: {
+                return boolean() < other.boolean();
+            }
+            case JSONTypeString:
+                return (*_data.string) < (*other._data.string);
+            case JSONTypeArray:
+                return (*_data.array) < (*other._data.array);
+            case JSONTypeObject:
+#if (SP_JSON_MAP_TYPE == 3)
+                return false;
+#else
+                return (*_data.object) < (*other._data.object);
+#endif
+        }
+    }
+
+    bool operator>=(const JSON& other) const noexcept {
+        return !(other.operator<(*this));
+    }
+
+    bool operator<=(const JSON& other) const noexcept {
+        return !(other.operator>(*this));
     }
 
     template<typename T, typename ...Args>
@@ -552,6 +840,8 @@ private:
         assert(_type != JSONTypeString || _data.string != nullptr);
     }
 };
+
+SP_SIMPLE_CONVERSION(JSON<>, JSONRef);
 
 SP_CPP_FILE_END
 

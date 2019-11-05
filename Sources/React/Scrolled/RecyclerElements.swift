@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class RecyclerCellElement: Element<UIView>, Identified {
@@ -130,3 +131,4 @@ public final class RecyclerDataElement: BasicElement, ArrayScrollDataMap {
         }
     }
 }
+#endif // #if os(iOS)

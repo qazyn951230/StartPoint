@@ -158,23 +158,7 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         if let cachedDictionary = _cachedDictionary {
             return cachedDictionary
         }
-        if json_object_length(ref) > 0 {
-            var map: [String: JSON] = [:]
-            var i: UInt32 = 0
-            let n = json_object_length(ref)
-            while i < n {
-                let key = json_object_get_index(ref, i)
-                if let key2 = JSON.decodeString(ref: key) {
-                    i += 1
-                    let value = json_object_get_index(ref, i)
-                    map[key2] = makeRef(ref: value)
-                    i += 1
-                } else {
-                    i += 2
-                }
-            }
-            _cachedDictionary = map
-        }
+        _cachedDictionary = JSON.decodeObject(buffer: buffer, ref: ref)
         return _cachedDictionary ?? [:]
     }
 
@@ -379,23 +363,23 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
 //    }
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-        return false
+        json_is_equal(lhs.ref, rhs.ref)
     }
 
     public static func <(lhs: JSON, rhs: JSON) -> Bool {
-        return false
+        json_is_less_than(lhs.ref, rhs.ref)
     }
 
     public static func <=(lhs: JSON, rhs: JSON) -> Bool {
-        return false
+        json_is_less_than_or_equal(lhs.ref, rhs.ref)
     }
 
     public static func >(lhs: JSON, rhs: JSON) -> Bool {
-        return false
+        json_is_greater_than(lhs.ref, rhs.ref)
     }
 
     public static func >=(lhs: JSON, rhs: JSON) -> Bool {
-        return false
+        json_is_greater_than_or_equal(lhs.ref, rhs.ref)
     }
 
     public subscript(typed index: Int) -> JSON {
@@ -421,13 +405,24 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         self[key]
     }
 
-    static func decodeString(ref: JSONRef?) -> String? {
-        guard let ref = ref else {
-            return nil
-        }
+    static func decodeString(ref: JSONRef) -> String? {
         var size: UInt32 = 0
         let data = json_get_string(ref, &size)
         return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
+    }
+
+    static func decodeObject(buffer: JSONBuffer, ref: JSONRef) -> [String: JSON] {
+        guard json_object_size(ref) > 0 else {
+            return [:]
+        }
+        var result: [String: JSON] = [:]
+        json_object_for_each(ref) { (data, size, value) in
+            if let key = String(bytesNoCopy: UnsafeMutableRawPointer(mutating: data), length: Int(size),
+                                encoding: .utf8, freeWhenDone: false) {
+                result[key] = JSON(buffer: buffer, ref: value)
+            }
+        }
+        return result
     }
 
     public static func parse(_ value: String) -> JSON {

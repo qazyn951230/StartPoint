@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class NavigationBar: UINavigationBar {
@@ -52,3 +53,4 @@ public final class NavigationBar: UINavigationBar {
         super.setItems(items, animated: animated)
     }
 }
+#endif // #if os(iOS)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class ElementView: UIView, ElementContainer {
@@ -89,3 +90,4 @@ public final class ElementView: UIView, ElementContainer {
         super.touchesCancelled(touches, with: event)
     }
 }
+#endif // #if os(iOS)

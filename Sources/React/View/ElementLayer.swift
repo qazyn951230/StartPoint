@@ -20,8 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import QuartzCore
 
 public final class ElementLayer: CALayer, ElementContainer {
     public weak var element: BasicElement? = nil
 }
+#endif

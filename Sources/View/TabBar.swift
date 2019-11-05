@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public class TabBar: UITabBar {
@@ -92,3 +93,4 @@ public class TabBar: UITabBar {
         return button
     }
 }
+#endif // #if os(iOS)

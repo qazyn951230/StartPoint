@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import Alamofire
 import RxSwift
 import Foundation
@@ -27,8 +28,7 @@ import Foundation
 public extension DataRequest {
     private static let emptyDataStatusCodes: Set<Int> = [204, 205]
 
-    static func serializeResponseJSON2(options: JSONParser.Options, response: HTTPURLResponse?,
-                                              data: Data?, error: Error?) -> Result<JSON> {
+    static func serializeResponseJSON2(response: HTTPURLResponse?, data: Data?, error: Error?) -> Result<JSON> {
         if let e = error {
             return .failure(e)
         }
@@ -41,25 +41,27 @@ public extension DataRequest {
             return .failure(AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
         }
 
-        do {
-            let json = try JSON.parse(validData, option: options)
-            return .success(json)
-        } catch {
-            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
-        }
+        let json = JSON.parse(data: validData)
+        return .success(json)
+//        do {
+//            let json = try JSON.parse(data: validData)
+//            return .success(json)
+//        } catch {
+//            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+//        }
     }
 
-    static func jsonResponseSerializer2(options: JSONParser.Options = []) -> DataResponseSerializer<JSON> {
+    static func jsonResponseSerializer2() -> DataResponseSerializer<JSON> {
         return DataResponseSerializer { _, response, data, error in
-            return DataRequest.serializeResponseJSON2(options: options, response: response, data: data, error: error)
+            return DataRequest.serializeResponseJSON2(response: response, data: data, error: error)
         }
     }
 
     @discardableResult
-    func responseJSON2(queue: DispatchQueue? = nil, options: JSONParser.Options = [],
-                             completionHandler: @escaping (Alamofire.DataResponse<JSON>) -> Swift.Void) -> Self {
+    func responseJSON2(queue: DispatchQueue? = nil,
+                       completionHandler: @escaping (Alamofire.DataResponse<JSON>) -> Swift.Void) -> Self {
         return response(queue: queue,
-            responseSerializer: DataRequest.jsonResponseSerializer2(options: options),
+            responseSerializer: DataRequest.jsonResponseSerializer2(),
             completionHandler: completionHandler)
     }
 }
@@ -89,11 +91,11 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func jsonResponse(queue: DispatchQueue? = nil, options: JSONParser.Options = [])
+    public func jsonResponse(queue: DispatchQueue? = nil)
             -> Observable<(DataResponse<JSON>, JSON)> {
         return Observable<(DataResponse<JSON>, JSON)>.create { observer in
             var request: DataRequest = self.base
-            request = request.responseJSON2(queue: queue, options: options) { (response: DataResponse<JSON>) in
+            request = request.responseJSON2(queue: queue) { (response: DataResponse<JSON>) in
                 switch response.result {
                 case let .success(object):
                     observer.on(.next((response, object)))
@@ -108,9 +110,9 @@ extension Reactive where Base: DataRequest {
         }
     }
 
-    public func json(queue: DispatchQueue? = nil, options: JSONParser.Options = [])
+    public func json(queue: DispatchQueue? = nil)
             -> Observable<JSON> {
-        return jsonResponse(queue: queue, options: options)
+        return jsonResponse(queue: queue)
             .map(Function.second)
     }
 
@@ -161,3 +163,4 @@ extension Reactive where Base: DataRequest {
             .map(Function.second)
     }
 }
+#endif // #if os(iOS)

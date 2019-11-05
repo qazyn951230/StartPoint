@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public protocol BannerViewDataSource: class {
@@ -232,3 +233,4 @@ public final class BannerView: UIView, UIScrollViewDelegate {
         manualScroll = true
     }
 }
+#endif // #if os(iOS)

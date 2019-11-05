@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class ElementTableCell: UITableViewCell, ElementContainer {
@@ -27,3 +28,4 @@ public final class ElementTableCell: UITableViewCell, ElementContainer {
 
     public weak var element: BasicElement? = nil
 }
+#endif // #if os(iOS)

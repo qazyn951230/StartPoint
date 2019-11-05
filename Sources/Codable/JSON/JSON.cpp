@@ -27,9 +27,7 @@
 using namespace StartPoint;
 using json = StartPoint::JSON<>;
 using object_t = json::object_t;
-using object_iterator = object_t::iterator;
-
-SP_SIMPLE_CONVERSION(json, JSONRef);
+//using object_iterator = object_t::iterator;
 
 JSONRef json_create() {
     return wrap(new json);
@@ -87,6 +85,30 @@ bool json_is_object(JSONRef json) {
     return unwrap(json)->isObject();
 }
 
+bool json_is_equal(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) == (*unwrap(other));
+}
+
+bool json_is_not_equal(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) != (*unwrap(other));
+}
+
+bool json_is_less_than(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) < (*unwrap(other));
+}
+
+bool json_is_greater_than(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) > (*unwrap(other));
+}
+
+bool json_is_less_than_or_equal(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) <= (*unwrap(other));
+}
+
+bool json_is_greater_than_or_equal(JSONRef json, JSONRef other) {
+    return (*unwrap(json)) >= (*unwrap(other));
+}
+
 uint32_t json_array_size(JSONRef json) {
     auto raw = unwrap(json)->asArray();
     if (raw != nullptr) {
@@ -106,27 +128,25 @@ JSONRef json_array_get_index(JSONRef json, uint32_t index) {
 uint32_t json_object_size(JSONRef json) {
     auto raw = unwrap(json)->asObject();
     if (raw != nullptr) {
-        assert(raw->size() % 2 == 0);
-        return static_cast<uint32_t>(raw->size() / 2);
-    }
-    return 0;
-}
-
-uint32_t json_object_length(JSONRef json) {
-    auto raw = unwrap(json)->asObject();
-    if (raw != nullptr) {
         return static_cast<uint32_t>(raw->size());
     }
     return 0;
 }
 
-JSONRef SP_NULLABLE json_object_get_index(JSONRef json, uint32_t index) {
-    auto raw = unwrap(json)->asObject();
-    if (raw != nullptr && index < raw->size()) {
-        return wrap(raw->data() + index);
-    }
-    return nullptr;
-}
+//void json_object_for_each(JSONRef json, json_object_for_each_t method) {
+//    auto raw = unwrap(json)->asObject();
+//    if (raw == nullptr) {
+//        return;
+//    }
+//    auto begin = raw->begin();
+//    const auto end = raw->end();
+//    while (begin != end) {
+//        auto& key = begin->first;
+//        auto& value = begin->second;
+//        method(key.data(), static_cast<uint32_t>(key.size()), wrap(&value));
+//        begin++;
+//    }
+//}
 
 bool json_get_int32(JSONRef json, int32_t* SP_NONNULL result) {
     auto value = unwrap(json)->asInt32();

@@ -9,24 +9,12 @@
       "resolver": "carthage"
     }
   },
-  "StartPoint_iOS": {
+  "StartPoint": {
     "requires": [
       "Alamofire.framework",
       "RxSwift.framework",
       "RxCocoa.framework",
-      "RxAtomic.framework"
-    ]
-  },
-  "StartPoint_macOS": {
-    "requires": [
-      "Alamofire.framework",
-      "RxSwift.framework"
-    ]
-  },
-  "StartPoint_CLI": {
-    "requires": [
-      "Alamofire.framework",
-      "RxSwift.framework"
+      "RxRelay.framework"
     ]
   }
 }

@@ -21,10 +21,14 @@
 // SOFTWARE.
 
 #import <XCTest/XCTest.h>
-#import <limits>
+#import <limits> // for std::numeric_limits<int64_t>::min()
 #import "Parser.hpp"
 
 #define testParseString(data, result) (XCTAssertTrue(parseString(data) == std::string{result}))
+
+#define testParseArray(data, result) (XCTAssertTrue(parseArray(data) == (result)))
+
+#define testParseObject(data, result) (XCTAssertTrue(parseObject(data) == (result)))
 
 using json = StartPoint::JSON<>;
 using array = json::array_t;
@@ -78,6 +82,11 @@ std::string parseString(const char* data) {
 array parseArray(const char* data) {
     auto value = parse(data);
     return std::move(*value.asArray());
+}
+
+map parseObject(const char* data) {
+    auto value = parse(data);
+    return std::move(*value.asObject());
 }
 
 - (void)testParseTrue {
@@ -202,7 +211,15 @@ array parseArray(const char* data) {
 }
 
 - (void)testParseArray {
+    testParseArray(R"([])", array{});
+    testParseArray(R"([1])", array{json{1u}});
+    testParseArray(R"([-1, []])", (array{json{-1}, json{JSONTypeArray}}));
+}
 
+- (void)testParseObject {
+    testParseObject(R"({})", map{});
+    testParseObject(R"({"1": 1})", (map{{"1", json{1u}}}));
+    testParseObject(R"({"11": "234", "null": "false"})", (map{{"11", json{std::string{"234"}}}, {"null", json{std::string{"false"}}}}));
 }
 
 @end

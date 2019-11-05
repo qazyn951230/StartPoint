@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import Foundation
 
 public protocol ScrollSectionMap {
@@ -142,3 +143,4 @@ extension ArrayScrollDataMap where SectionType: ArrayScrollSectionMap {
         return Self.init(sections: array)
     }
 }
+#endif // #if os(iOS)

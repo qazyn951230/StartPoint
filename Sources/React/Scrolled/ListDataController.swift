@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 final class ListDataController: NSObject, DataController, UITableViewDelegate, UITableViewDataSource {
@@ -135,3 +136,4 @@ final class ListDataController: NSObject, DataController, UITableViewDelegate, U
         }
     }
 }
+#endif // #if os(iOS)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class FlexView: UIView {
@@ -66,3 +67,4 @@ open class FlexView: UIView {
         return root._frame.cgSize
     }
 }
+#endif // #if os(iOS)
