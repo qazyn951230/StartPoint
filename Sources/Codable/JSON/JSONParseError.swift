@@ -20,14 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
-
 public enum JSONParseError: Error {
     case valueInvalid
     case invalidEncoding
     case missQuotationMark
     case stringEscapeInvalid
-    case StringUnicodeEscapeInvalidHex
+    case stringUnicodeSurrogateInvalid
+    case stringUnicodeEscapeInvalidHex
     case objectMissName
     case objectMissColon
     case objectMissCommaOrCurlyBracket
@@ -35,4 +34,39 @@ public enum JSONParseError: Error {
     case numberMissFraction
     case numberTooBig
     case numberMissExponent
+
+    static func create(status: JSONParseStatus) -> JSONParseError {
+        switch status {
+        case JSONParseStatus.valueInvalid:
+            return JSONParseError.valueInvalid
+        case JSONParseStatus.invalidEncoding:
+            return JSONParseError.invalidEncoding
+        case JSONParseStatus.missQuotationMark:
+            return JSONParseError.missQuotationMark
+        case JSONParseStatus.stringEscapeInvalid:
+            return JSONParseError.stringEscapeInvalid
+        case JSONParseStatus.stringUnicodeSurrogateInvalid:
+            return JSONParseError.stringUnicodeSurrogateInvalid
+        case JSONParseStatus.stringUnicodeEscapeInvalidHex:
+            return JSONParseError.stringUnicodeEscapeInvalidHex
+        case JSONParseStatus.objectMissName:
+            return JSONParseError.objectMissName
+        case JSONParseStatus.objectMissColon:
+            return JSONParseError.objectMissColon
+        case JSONParseStatus.objectMissCommaOrCurlyBracket:
+            return JSONParseError.objectMissCommaOrCurlyBracket
+        case JSONParseStatus.arrayMissCommaOrSquareBracket:
+            return JSONParseError.arrayMissCommaOrSquareBracket
+        case JSONParseStatus.numberMissFraction:
+            return JSONParseError.numberMissFraction
+        case JSONParseStatus.numberTooBig:
+            return JSONParseError.numberTooBig
+        case JSONParseStatus.numberMissExponent:
+            return JSONParseError.numberMissExponent
+        case JSONParseStatus.success:
+            return JSONParseError.valueInvalid
+        @unknown default:
+            return JSONParseError.valueInvalid
+        }
+    }
 }

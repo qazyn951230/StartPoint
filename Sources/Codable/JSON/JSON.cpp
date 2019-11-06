@@ -37,6 +37,44 @@ JSONRef json_create_type(JSONType type) {
     return wrap(new json{type});
 }
 
+JSONRef json_create_int32(int32_t value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_int64(int64_t value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_uint32(uint32_t value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_uint64(uint64_t value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_float(float value) {
+    return wrap(new json{static_cast<double>(value)});
+}
+
+JSONRef json_create_double(double value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_bool(bool value) {
+    return wrap(new json{value});
+}
+
+JSONRef json_create_string(const int8_t* data, uint32_t size) {
+    if (size < 1) {
+        std::string value{reinterpret_cast<const char*>(data)};
+        return wrap(new json{std::move(value)});
+    } else {
+        std::string value{reinterpret_cast<const char*>(data), static_cast<size_t>(size)};
+        return wrap(new json{std::move(value)});
+    }
+}
+
 void json_free(JSONRef ref) {
     delete unwrap(ref);
 }
@@ -221,17 +259,56 @@ void* json_get_string(JSONRef json, uint32_t* SP_NONNULL size) {
     return nullptr;
 }
 
+bool json_object_contains_key(JSONRef json, const int8_t* data) {
+    auto value = unwrap(json)->asObject();
+    if (value != nullptr) {
+        std::string key{reinterpret_cast<const char*>(data)};
+        // https://en.cppreference.com/w/cpp/container/map/find
+        return value->find(key) != value->end();
+    }
+    return false;
+}
+
+JSONRef json_object_find_key(JSONRef json, const int8_t* data) {
+    auto value = unwrap(json)->asObject();
+    if (value != nullptr) {
+        std::string key{reinterpret_cast<const char*>(data)};
+        auto temp = value->find(key);
+        return wrap(&(temp->second));
+    }
+    return nullptr;
+}
+
 JSONRef json_parse_int8_data(const int8_t* data) {
-    return json_parse_uint8_data(reinterpret_cast<const uint8_t*>(data));
+    return json_parse_uint8_data_status(reinterpret_cast<const uint8_t*>(data), nullptr);
 }
 
 JSONRef json_parse_uint8_data(const uint8_t* data) {
+    return json_parse_uint8_data_status(data, nullptr);
+}
+
+JSONRef SP_NULLABLE json_parse_int8_data_status(const int8_t* data, JSONParseStatus* SP_NULLABLE status) {
+    return json_parse_uint8_data_status(reinterpret_cast<const uint8_t*>(data), status);
+}
+
+JSONRef SP_NULLABLE json_parse_uint8_data_status(const uint8_t* data, JSONParseStatus* SP_NULLABLE status) {
+    if (status != nullptr) {
+        *status = JSONParseStatusValueInvalid;
+    }
     ByteStreams stream{data, 0};
     auto value = new json;
     Parser parser{*value, std::move(stream)};
     try {
         parser.parse();
+        if (status != nullptr) {
+            *status = JSONParseStatusSuccess;
+        }
         return wrap(value);
+    } catch (Parser::Error& error) {
+        if (status != nullptr) {
+            *status = error.status();
+        }
+        return nullptr;
     } catch (...) {
         return nullptr;
     }

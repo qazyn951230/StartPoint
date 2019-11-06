@@ -79,6 +79,17 @@ public:
         }
     }
 
+    class Error: std::exception {
+    public:
+        Error(JSONParseStatus status) : _status(status) {}
+
+        JSONParseStatus status() const noexcept {
+            return _status;
+        }
+    private:
+        JSONParseStatus _status;
+    };
+
 private:
     //  n,  u,  l,  l
     // [6e, 75, 6c, 6c]
@@ -94,7 +105,7 @@ private:
         if (consume(0x74) && consume(0x72) && consume(0x75) && consume(0x65)) {
             append(value_t{true});
         } else {
-            throw std::runtime_error("JSONParseError.valueInvalid");
+            throw Error{JSONParseStatusValueInvalid};
         }
     }
 
@@ -104,13 +115,13 @@ private:
         if (consume(0x66) && consume(0x61) && consume(0x6c) && consume(0x73) && consume(0x65)) {
             append(value_t{false});
         } else {
-            throw std::runtime_error("JSONParseError.valueInvalid");
+            throw Error{JSONParseStatusValueInvalid};
         }
     }
 
     void parseString() {
         if (!consume(0x22)) {
-            throw std::runtime_error("JSONParseError.valueInvalid");
+            throw Error{JSONParseStatusValueInvalid};
         }
         append(value_t{JSONTypeString});
         Scope scope{[&]() {
@@ -122,7 +133,7 @@ private:
         }};
         rawString();
         if (!consume(0x22)) {
-            throw std::runtime_error("JSONParseError.valueInvalid");
+            throw Error{JSONParseStatusValueInvalid};
         }
     }
 
@@ -188,7 +199,7 @@ private:
             }
                 break;
             default:
-                throw std::runtime_error("JSONParseError.valueInvalid");
+                throw Error{JSONParseStatusValueInvalid};
         }
         auto useDouble = false;
 #if !(SP_JSON_PARSER_USE_STD_STOD)
@@ -245,7 +256,7 @@ private:
         if (consume(0x2e)) {
             next = static_cast<uint32_t>(_stream.peek());
             if (next < 0x30 || next > 0x39) {
-                throw std::runtime_error("JSONParseError.numberMissFraction");
+                throw Error{JSONParseStatusNumberMissFraction};
             }
             if (!useDouble) {
                 if (!use64bit) {
@@ -331,14 +342,14 @@ private:
                     while (0x30 <= item && item <= 0x39) {
                         exp = exp * 10 + (next - 0x30);
                         if (exp > maxExp) {
-                            throw std::runtime_error("JSONParseError.numberTooBig");
+                            throw Error{JSONParseStatusNumberTooBig};
                         }
                         item = _stream.next();
                     }
                 }
 #endif
             } else {
-                throw std::runtime_error("JSONParseError.numberMissExponent");
+                throw Error{JSONParseStatusNumberMissExponent};
             }
 #if !(SP_JSON_PARSER_USE_STD_STOD)
             if (expMinus) {
@@ -353,7 +364,7 @@ private:
             auto floating = std::strtod(reinterpret_cast<const char*>(start), &end);
             assert(last == reinterpret_cast<uint8_t*>(end));
             if (last != reinterpret_cast<uint8_t*>(end)) {
-                throw std::runtime_error("JSONParseError.valueInvalid");
+                throw Error{JSONParseStatusValueInvalid};
             }
 #else
             float64 = parse_double(float64, exp + frac);
@@ -399,12 +410,12 @@ private:
         while (true) {
             skip();
             if (_stream.peek() != 0x22) {
-                throw std::runtime_error("JSONParseError.objectMissName");
+                throw Error{JSONParseStatusObjectMissName};
             }
             parseString();
             skip();
             if (!consume(0x3a)) {
-                throw std::runtime_error("JSONParseError.objectMissColon");
+                throw Error{JSONParseStatusObjectMissColon};
             }
             skip();
             parse();
@@ -419,7 +430,7 @@ private:
                     _stream.move();
                     return;
                 default:
-                    throw std::runtime_error("JSONParseError.objectMissCommaOrCurlyBracket");
+                    throw Error{JSONParseStatusObjectMissCommaOrCurlyBracket};
             }
         }
     }
@@ -449,7 +460,7 @@ private:
             } else if (consume(0x5d)) {
                 return;
             } else {
-                throw std::runtime_error("JSONParseError.arrayMissCommaOrSquareBracket");
+                throw Error{JSONParseStatusArrayMissCommaOrSquareBracket};
             }
         }
     }
@@ -458,9 +469,14 @@ private:
     // [5c, 22, 62, 66, 6e, 72, 74, 2f, 75]
     void rawString() {
         auto next = _stream.peek();
+        auto start = _stream.current();
         while (true) {
             switch (next) {
-                case 0x5c:
+                case 0x5c: {
+                    auto end = _stream.current();
+                    if (start != end) {
+                        append(start, end);
+                    }
                     next = _stream.next();
                     if (next == 0x75) {
                         parseUnicode();
@@ -468,11 +484,23 @@ private:
                         auto value = parseChar();
                         append(value);
                     }
+                    start = _stream.current();
+                }
                     break;
-                case 0x22:
+                case 0x22: {
+                    auto end = _stream.current();
+                    if (start != end) {
+                        append(start, end);
+                    }
                     return;
-                case 0x00:
-                    throw std::runtime_error("JSONParseError.missQuotationMark");
+                }
+                case 0x00: {
+                    auto end = _stream.current();
+                    if (start != end) {
+                        append(start, end);
+                    }
+                    throw Error{JSONParseStatusMissQuotationMark};
+                }
                 case 0x01:
                 case 0x02:
                 case 0x03:
@@ -492,10 +520,14 @@ private:
                 case 0x17:
                 case 0x18:
                 case 0x19:
-                case 0x20:
-                    throw std::runtime_error("JSONParseError.missQuotationMark");
+                case 0x20: {
+                    auto end = _stream.current();
+                    if (start != end) {
+                        append(start, end);
+                    }
+                    throw Error{JSONParseStatusMissQuotationMark};
+                }
                 default:
-                    append(next);
                     _stream.move();
             }
             next = _stream.peek();
@@ -534,7 +566,7 @@ private:
                 _stream.move();
                 return 0x09;
             default:
-                throw std::runtime_error("JSONParseError.stringEscapeInvalid");
+                throw Error{JSONParseStatusStringEscapeInvalid};
         }
     }
 
@@ -543,11 +575,11 @@ private:
         if (SP_UNLIKELY(code >= 0xd800u && code <= 0xdbffu)) {
             // Handle UTF-16 surrogate pair
             if (!consume(0x5c) || _stream.peek() != 0x75) { // "\"
-                throw std::runtime_error("JSONParseError.stringUnicodeSurrogateInvalid");
+                throw Error{JSONParseStatusStringUnicodeSurrogateInvalid};
             }
             const auto next = parseUnicodeValue();
             if (SP_UNLIKELY(code >= 0xdc00u && code <= 0xdfffu)) {
-                throw std::runtime_error("JSONParseError.stringUnicodeSurrogateInvalid");
+                throw Error{JSONParseStatusStringUnicodeSurrogateInvalid};
             }
             code = (((code - 0xd800u) << 10u) | (next - 0xdc00u)) + 0x10000u;
         }
@@ -566,7 +598,7 @@ private:
             append(static_cast<uint8_t>(0x80u | ((code >> 6u) & 0x3fu)));
             append(static_cast<uint8_t>(0x80u | (code & 0x3fu)));
         } else {
-            throw std::runtime_error("JSONParseError.valueInvalid");
+            throw Error{JSONParseStatusValueInvalid};
         }
     }
 
@@ -587,7 +619,7 @@ private:
             } else if (0x61 <= next && next <= 0x66) { // a-f
                 point -= 0x61 - 10;
             } else {
-                throw std::runtime_error("JSONParseError.stringUnicodeEscapeInvalidHex");
+                throw Error{JSONParseStatusStringUnicodeEscapeInvalidHex};
             }
             _stream.move();
         }
@@ -679,9 +711,15 @@ private:
 #endif
     }
 
-    inline void append(uint8_t value) {
+    inline void append(byte_t value) {
         assert(_current != nullptr && _current->isString());
-        _current->appendChar(value);
+        _current->append(value);
+    }
+
+    // *end not included.
+    inline void append(const byte_t* start, const byte_t* end) {
+        assert(_current != nullptr && _current->isString());
+        _current->append(start, end);
     }
 
     value_t& _root;

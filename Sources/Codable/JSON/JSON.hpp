@@ -23,20 +23,33 @@
 #ifndef START_POINT_JSON_HPP
 #define START_POINT_JSON_HPP
 
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <optional>
-#include <cmath> // for std::round
-#include "Config.h"
-#include "JSON.h"
-
-SP_CPP_FILE_BEGIN
-
 #ifndef SP_JSON_MAP_TYPE
 // 1 vector 2 map 3 unordered_map
 #define SP_JSON_MAP_TYPE 3
 #endif
+
+#ifndef SP_JSON_SUPPORT_IOS_10
+// std::optional<T>.value() not available on iOS 10, iOS 11, macOS 10.13
+#define SP_JSON_SUPPORT_IOS_10 1
+#endif
+
+#include <vector>
+#include <string>
+#include <cmath> // for std::round
+#include "Config.h"
+#include "JSON.h"
+
+#if (SP_JSON_MAP_TYPE != 1)
+#include <unordered_map>
+#endif
+
+#if (SP_JSON_SUPPORT_IOS_10)
+#include "Optional.hpp"
+#else
+#include <optional>
+#endif
+
+SP_CPP_FILE_BEGIN
 
 template<template<typename> typename Allocator = std::allocator>
 class JSON final {
@@ -274,6 +287,35 @@ public:
         return _data.i.int32;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<int32_t> asInt32() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return _data.i.int32;
+            case JSONTypeUint:
+                return _data.u.uint32 > static_cast<uint32_t>(max<int32_t>()) ?
+                    Optional<int32_t>{} : Optional{static_cast<int32_t>(_data.u.uint32)};
+            case JSONTypeDouble: {
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int32_t>()) &&
+                    value < static_cast<float64_t>(max<int32_t>()) &&
+                    isEqual(value, std::round(value))) {
+                    return static_cast<int32_t>(value);
+                }
+                return Optional<int32_t>{};
+            }
+            case JSONTypeInt64: // A int64_t / uint64_t json value always > int32_t::max
+            case JSONTypeUint64:
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<int32_t>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<int32_t> asInt32() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -301,12 +343,44 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] auto int64() const noexcept {
         assert(isInt64());
         return _data.int64;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<int64_t> asInt64() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return static_cast<int64_t>(_data.i.int32);
+            case JSONTypeUint:
+                return static_cast<int64_t>(_data.u.uint32);
+            case JSONTypeInt64:
+                return _data.int64;
+            case JSONTypeUint64:
+                return _data.uint64 > static_cast<uint64_t>(max<int64_t>()) ?
+                    Optional<int64_t>{} : Optional{static_cast<int64_t>(_data.uint64)};
+            case JSONTypeDouble: {
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int64_t>()) &&
+                    value < static_cast<float64_t>(max<int64_t>()) &&
+                    isEqual(value, std::round(value))) {
+                    return static_cast<int64_t>(value);
+                }
+                return Optional<int64_t>{};
+            }
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<int64_t>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<int64_t> asInt64() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -336,12 +410,41 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] auto uint32() const noexcept {
         assert(isUint());
         return _data.u.uint32;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<uint32_t> asUint32() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return Optional<uint32_t>{}; // mast < 0
+            case JSONTypeUint:
+                return _data.u.uint32;
+            case JSONTypeDouble: {
+                auto value = _data.float64;
+                if (isGreaterOrEqual(value, 0.0) &&
+                    value < static_cast<float64_t>(max<uint32_t>()) &&
+                    isEqual(value, std::round(value))) {
+                    return static_cast<uint32_t>(value);
+                }
+                return Optional<uint32_t>{};
+            }
+            case JSONTypeInt64: // A int64_t / uint64_t json value always > uint32_t::max
+            case JSONTypeUint64:
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<uint32_t>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<uint32_t> asUint32() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -368,12 +471,43 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] auto uint64() const noexcept {
         assert(isUint64());
         return _data.uint64;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<uint64_t> asUint64() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return static_cast<uint64_t>(_data.i.int32);
+            case JSONTypeUint:
+                return static_cast<uint64_t>(_data.u.uint32);
+            case JSONTypeInt64:
+                return Optional<uint64_t>{}; // mast < 0
+            case JSONTypeUint64:
+                return _data.uint64;
+            case JSONTypeDouble: {
+                auto value = _data.float64;
+                if (value > static_cast<float64_t>(min<int64_t>()) &&
+                    value < static_cast<float64_t>(max<int64_t>()) &&
+                    isEqual(value, std::round(value))) {
+                    return static_cast<int64_t>(value);
+                }
+                return Optional<uint64_t>{};
+            }
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<uint64_t>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<uint64_t> asUint64() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -402,12 +536,36 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] auto float64() const noexcept {
         assert(isDouble());
         return _data.float64;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<float> asFloat32() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return static_cast<float>(_data.i.int32);
+            case JSONTypeUint:
+                return static_cast<float>(_data.u.uint32);
+            case JSONTypeInt64:
+                return static_cast<float>(_data.int64);
+            case JSONTypeUint64:
+                return static_cast<float>(_data.uint64);
+            case JSONTypeDouble:
+                return static_cast<float>(_data.float64);
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<float>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<float> asFloat32() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -429,7 +587,31 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<float64_t> asFloat64() const noexcept {
+        switch (_type) {
+            case JSONTypeInt:
+                return static_cast<float64_t>(_data.i.int32);
+            case JSONTypeUint:
+                return static_cast<float64_t>(_data.u.uint32);
+            case JSONTypeInt64:
+                return static_cast<float64_t>(_data.int64);
+            case JSONTypeUint64:
+                return static_cast<float64_t>(_data.uint64);
+            case JSONTypeDouble:
+                return _data.float64;
+            case JSONTypeNull:
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<float64_t>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<float64_t> asFloat64() const noexcept {
         switch (_type) {
             case JSONTypeInt:
@@ -451,12 +633,33 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] auto boolean() const noexcept {
         assert(isBool());
         return _type == JSONTypeTrue;
     }
 
+#if (SP_JSON_SUPPORT_IOS_10)
+    [[nodiscard]] Optional<bool> asBoolean() const noexcept {
+        switch (_type) {
+            case JSONTypeTrue:
+                return true;
+            case JSONTypeFalse:
+                return false;
+            case JSONTypeInt:
+            case JSONTypeUint:
+            case JSONTypeInt64:
+            case JSONTypeUint64:
+            case JSONTypeDouble:
+            case JSONTypeNull:
+            case JSONTypeString:
+            case JSONTypeArray:
+            case JSONTypeObject:
+                return Optional<bool>{};
+        }
+    }
+#else
     [[nodiscard]] std::optional<bool> asBoolean() const noexcept {
         switch (_type) {
             case JSONTypeTrue:
@@ -475,6 +678,7 @@ public:
                 return std::nullopt;
         }
     }
+#endif
 
     [[nodiscard]] string_t* SP_NULLABLE asString() const noexcept {
         if (isString()) {
@@ -497,16 +701,30 @@ public:
         return nullptr;
     }
 
-    void appendChar(const uint8_t value) {
-        append(static_cast<char>(value));
-    }
-
-    void append(const char value) {
+    void append(const uint8_t value) {
         assert(_type == JSONTypeString);
         if (_data.string->empty()) {
             _data.string->reserve(defaultStringCapacity);
         }
-        _data.string->push_back(value);
+        _data.string->push_back(static_cast<char>(value));
+    }
+
+    void append(const uint8_t* value, size_t count) {
+        assert(_type == JSONTypeString);
+        if (_data.string->empty()) {
+            _data.string->reserve(std::min(defaultStringCapacity, count));
+        }
+        _data.string->append(reinterpret_cast<const char*>(value), count);
+    }
+
+    // *end not included.
+    void append(const uint8_t* start, const uint8_t* end) {
+        assert(_type == JSONTypeString);
+        assert(end > start);
+        if (_data.string->empty()) {
+            _data.string->reserve(std::min(defaultStringCapacity, static_cast<size_t>(end - start)));
+        }
+        _data.string->append(reinterpret_cast<const char*>(start), reinterpret_cast<const char*>(end));
     }
 
     void append(const string_t& value) {
@@ -797,9 +1015,9 @@ public:
     }
 
 private:
-    static const size_t defaultStringCapacity = 16;
-    static const uint64_t doubleMaxUPL = 4ull;
-    static const uint64_t doubleBitMask = 0x8000'0000'0000'0000ull;
+    static constexpr size_t defaultStringCapacity = 16;
+    static constexpr uint64_t doubleMaxUPL = 4ull;
+    static constexpr uint64_t doubleBitMask = 0x8000'0000'0000'0000ull;
 
     template<typename Number>
     static constexpr Number max() {

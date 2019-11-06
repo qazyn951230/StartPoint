@@ -38,15 +38,21 @@ using namespace StartPoint;
 - (void)testMove {
     auto foo = [&]() {
         auto first = json_t{JSONTypeArray};
+        XCTAssertTrue(first.isArray());
         auto second = std::move(first);
+        XCTAssertTrue(first.isNull());
         XCTAssertTrue(second.isArray());
     };
     auto foo2 = [&]() {
         auto first = json_t{JSONTypeArray};
         first.appendValue(1);
         first.appendValue(JSONTypeArray);
+        XCTAssertTrue(first.isArray());
+        XCTAssertEqual(first.asArray()->size(), 2u);
         auto second = std::move(first);
+        XCTAssertTrue(first.isNull());
         XCTAssertTrue(second.isArray());
+        XCTAssertEqual(second.asArray()->size(), 2u);
     };
     XCTAssertNoThrow(foo());
     XCTAssertNoThrow(foo2());

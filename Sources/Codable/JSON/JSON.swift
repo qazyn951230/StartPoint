@@ -20,61 +20,71 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//public protocol JSONVisitor {
-//    func visit(_ value: JSON)
-//    func visit(array value: JSONArray)
-//    func visit(dictionary value: JSONObject)
-//    func visit(null value: JSONNull)
-//    func visit(string value: String)
-//    func visit(bool value: Bool)
-//    func visit(double value: Double)
-//    func visit(int value: Int32)
-//    func visit(int64 value: Int64)
-//    func visit(uint value: UInt32)
-//    func visit(uint64 value: UInt64)
-//}
-//
-//public extension JSONVisitor {
-//    func visit(array value: JSONArray) {
-//        visit(value)
-//    }
-//
-//    func visit(dictionary value: JSONObject) {
-//        visit(value)
-//    }
-//
-//    func visit(null value: JSONNull) {
-//        visit(value)
-//    }
-//
-//    func visit(string value: String) {
-//        // Do nothing
-//    }
-//
-//    func visit(bool value: Bool) {
-//        // Do nothing
-//    }
-//
-//    func visit(double value: Double) {
-//        // Do nothing
-//    }
-//
-//    func visit(int value: Int32) {
-//        // Do nothing
-//    }
-//
-//    func visit(int64 value: Int64) {
-//        // Do nothing
-//    }
-//
-//    func visit(uint value: UInt32) {
-//        // Do nothing
-//    }
-//
-//    func visit(uint64 value: UInt64) {
-//        // Do nothing
-//    }
-//}
+public protocol JSONVisitor {
+    func visit(_ value: JSON)
+    func visit(array value: [JSON])
+    func visit(dictionary value: [String: JSON])
+    func visit(null value: JSON)
+    func visit(key value: String)
+    func visit(string value: String)
+    func visit(bool value: Bool)
+    func visit(double value: Double)
+    func visit(int value: Int32)
+    func visit(int64 value: Int64)
+    func visit(uint value: UInt32)
+    func visit(uint64 value: UInt64)
+}
+
+public extension JSONVisitor {
+    func visit(array value: [JSON]) {
+        for item in value {
+            visit(item)
+        }
+    }
+
+    func visit(dictionary value: [String: JSON]) {
+        for (key, item) in value {
+            visit(key: key)
+            visit(item)
+        }
+    }
+
+    func visit(null value: JSON) {
+        visit(value)
+    }
+
+    func visit(key value: String) {
+        // Do nothing
+    }
+
+    func visit(string value: String) {
+        // Do nothing
+    }
+
+    func visit(bool value: Bool) {
+        // Do nothing
+    }
+
+    func visit(double value: Double) {
+        // Do nothing
+    }
+
+    func visit(int value: Int32) {
+        // Do nothing
+    }
+
+    func visit(int64 value: Int64) {
+        // Do nothing
+    }
+
+    func visit(uint value: UInt32) {
+        // Do nothing
+    }
+
+    func visit(uint64 value: UInt64) {
+        // Do nothing
+    }
+}
 
 class JSONBuffer {
     let ref: JSONRef
@@ -88,13 +98,15 @@ class JSONBuffer {
     }
 }
 
-public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
+public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     public static let null = JSON(type: JSONType.null)
     public typealias Value = JSON
-    public var order: Int = 0
 
     let buffer: JSONBuffer
     let ref: JSONRef
+    var _cachedString: String?
+    var _cachedArray: [JSON]?
+    var _cachedDictionary: [String: JSON]?
 
     init(type: JSONType) {
         ref = json_create_type(type)
@@ -104,6 +116,69 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     init(buffer: JSONBuffer, ref: JSONRef) {
         self.buffer = buffer
         self.ref = ref
+    }
+
+    private init(ref: JSONRef) {
+        self.ref = ref
+        buffer = JSONBuffer(ref: ref)
+    }
+
+    public convenience init(_ value: Int) {
+#if arch(arm64) || arch(x86_64)
+        self.init(ref: json_create_int32(Int32(value)))
+#else
+        self.init(ref: json_create_int64(Int64(value)))
+#endif
+    }
+
+    public convenience init(_ value: Int32) {
+        self.init(ref: json_create_int32(value))
+    }
+
+    public convenience init(_ value: Int64) {
+        self.init(ref: json_create_int64(value))
+    }
+
+    public convenience init(_ value: UInt) {
+#if arch(arm64) || arch(x86_64)
+        self.init(ref: json_create_uint32(UInt32(value)))
+#else
+        self.init(ref: json_create_uint64(UInt64(value)))
+#endif
+    }
+
+    public convenience init(_ value: UInt32) {
+        self.init(ref: json_create_uint32(value))
+    }
+
+    public convenience init(_ value: UInt64) {
+        self.init(ref: json_create_uint64(value))
+    }
+
+    public convenience init(_ value: Float) {
+        self.init(ref: json_create_float(value))
+    }
+
+    public convenience init(_ value: Double) {
+        self.init(ref: json_create_double(value))
+    }
+
+    public init(string value: String) {
+        self.buffer = JSON.null.buffer
+        self.ref = JSON.null.ref
+        _cachedString = value
+    }
+
+    public init(array value: [JSON]) {
+        self.buffer = JSON.null.buffer
+        self.ref = JSON.null.ref
+        _cachedArray = value
+    }
+
+    public init(dictionary value: [String: JSON]) {
+        self.buffer = JSON.null.buffer
+        self.ref = JSON.null.ref
+        _cachedDictionary = value
     }
 
     public required init(from decoder: Decoder) throws {
@@ -119,18 +194,17 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     func makeRef(ref: JSONRef?) -> JSON {
-        if let ref = ref {
-            return JSON(buffer: buffer, ref: ref)
+        guard let ref = ref, !json_is_null(ref) else {
+            return JSON.null
         }
-        return JSON.null
+        return JSON(buffer: buffer, ref: ref)
     }
 
     public var exists: Bool {
         !json_is_null(ref)
     }
 
-    var _cachedArray: [JSON]??
-    var cachedArray: [JSON]? {
+    public var arrayValue: [JSON]? {
         if let cached = _cachedArray {
             return cached
         }
@@ -142,32 +216,23 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
             }
             _cachedArray = array
         }
-        return _cachedArray ?? []
-    }
-
-    public var arrayValue: [JSON]? {
-        cachedArray
+        return _cachedArray
     }
 
     public var array: [JSON] {
-        cachedArray ?? []
+        arrayValue ?? []
     }
 
-    var _cachedDictionary: [String: JSON]??
-    var cachedDictionary: [String: JSON]? {
+    public var dictionaryValue: [String: JSON]? {
         if let cachedDictionary = _cachedDictionary {
             return cachedDictionary
         }
         _cachedDictionary = JSON.decodeObject(buffer: buffer, ref: ref)
-        return _cachedDictionary ?? [:]
-    }
-
-    public var dictionaryValue: [String: JSON]? {
-        cachedDictionary
+        return _cachedDictionary
     }
 
     public var dictionary: [String: JSON] {
-        cachedDictionary ?? [:]
+        dictionaryValue ?? [:]
     }
 
     public var boolValue: Bool? {
@@ -187,11 +252,15 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     public var stringValue: String? {
-        JSON.decodeString(ref: ref)
+        if let cached = _cachedString {
+            return cached
+        }
+        _cachedString = JSON.decodeString(ref: ref)
+        return _cachedString
     }
 
     public var string: String {
-        JSON.decodeString(ref: ref) ?? ""
+        stringValue ?? ""
     }
 
     public var doubleValue: Double? {
@@ -358,9 +427,34 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
         return ""
     }
 
-//    public func accept(visitor: JSONVisitor) {
-//        visitor.visit(self)
-//    }
+    public func accept(visitor: JSONVisitor) {
+        switch json_type(ref) {
+        case JSONType.array:
+            visitor.visit(array: array)
+        case JSONType.object:
+            visitor.visit(dictionary: dictionary)
+        case JSONType.int:
+            visitor.visit(int: int32)
+        case JSONType.uint:
+            visitor.visit(uint: uint32)
+        case JSONType.int64:
+            visitor.visit(int64: int64)
+        case JSONType.uint64:
+            visitor.visit(uint64: uint64)
+        case JSONType.double:
+            visitor.visit(double: double)
+        case JSONType.string:
+            visitor.visit(string: string)
+        case JSONType.null:
+            visitor.visit(null: self)
+        case JSONType.true:
+            visitor.visit(bool: true)
+        case JSONType.false:
+            visitor.visit(bool: false)
+        @unknown default:
+            visitor.visit(self)
+        }
+    }
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
         json_is_equal(lhs.ref, rhs.ref)
@@ -391,10 +485,7 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
     }
 
     public subscript(typed key: String) -> JSON {
-        if let map = cachedDictionary {
-            return map[key] ?? JSON.null
-        }
-        return JSON.null
+        dictionaryValue?[key] ?? JSON.null
     }
 
     public func item(at index: Int) -> Notated {
@@ -443,6 +534,29 @@ public class JSON: Codable, TypeNotated, Comparable, CustomStringConvertible {
                 return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
             }
             return JSON.null
+        }
+    }
+
+    public static func tryParse(_ value: String) throws -> JSON {
+        try value.withCString { pointer in
+            var status = JSONParseStatus.success
+            if let ref = json_parse_int8_data_status(pointer, &status) {
+                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
+            }
+            throw JSONParseError.create(status: status)
+        }
+    }
+
+    public static func tryParse(data: Data) throws -> JSON {
+        try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return JSON.null
+            }
+            var status = JSONParseStatus.success
+            if let ref = json_parse_uint8_data_status(pointer, &status) {
+                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
+            }
+            throw JSONParseError.create(status: status)
         }
     }
 
