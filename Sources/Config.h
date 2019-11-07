@@ -145,6 +145,20 @@
 
 #endif
 
+#ifdef NS_NOESCAPE
+
+#define SP_NOESCAPE NS_NOESCAPE
+
+#else
+
+#if __has_attribute(noescape)
+#define SP_NOESCAPE __attribute__((noescape))
+#else
+#define SP_NOESCAPE
+#endif
+
+#endif
+
 #if (__cplusplus)
 
 #define SP_SIMPLE_CONVERSION(CxxType, CRef)                     \

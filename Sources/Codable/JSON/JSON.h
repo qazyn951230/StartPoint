@@ -30,6 +30,10 @@
 #include <stdbool.h>
 #endif
 
+#if defined(__OBJC2__)
+#import <Foundation/Foundation.h>
+#endif
+
 #include "Config.h"
 
 SP_C_FILE_BEGIN
@@ -102,8 +106,15 @@ uint32_t json_array_size(JSONRef json);
 JSONRef SP_NULLABLE json_array_get_index(JSONRef json, uint32_t index);
 
 uint32_t json_object_size(JSONRef json);
+
+#if defined(__OBJC2__)
 typedef void (^json_object_for_each_t)(const void*, uint32_t size, JSONRef json);
-void json_object_for_each(JSONRef json, json_object_for_each_t method);
+void json_object_for_each(JSONRef json, SP_NOESCAPE json_object_for_each_t method);
+#endif
+
+#if defined(__OBJC2__)
+NSArray<NSString *>* json_object_all_key(JSONRef json);
+#endif
 
 bool json_get_int32(JSONRef json, int32_t* result);
 bool json_get_int64(JSONRef json, int64_t* result);
@@ -130,6 +141,24 @@ JSONRef SP_NULLABLE json_parse_uint8_data(const uint8_t* data);
 
 JSONRef SP_NULLABLE json_parse_int8_data_status(const int8_t* data, JSONParseStatus* SP_NULLABLE status);
 JSONRef SP_NULLABLE json_parse_uint8_data_status(const uint8_t* data, JSONParseStatus* SP_NULLABLE status);
+
+#if defined(__OBJC2__)
+typedef void (^json_to_string_t)(const uint8_t*, NSInteger size);
+void json_int_to_string(NSInteger value, SP_NOESCAPE json_to_string_t method);
+void json_int8_to_string(int8_t value, SP_NOESCAPE json_to_string_t method);
+void json_int16_to_string(int16_t value, SP_NOESCAPE json_to_string_t method);
+void json_int32_to_string(int32_t value, SP_NOESCAPE json_to_string_t method);
+void json_int64_to_string(int64_t value, SP_NOESCAPE json_to_string_t method);
+
+void json_uint_to_string(NSUInteger value, SP_NOESCAPE json_to_string_t method);
+void json_uint8_to_string(uint8_t value, SP_NOESCAPE json_to_string_t method);
+void json_uint16_to_string(uint16_t value, SP_NOESCAPE json_to_string_t method);
+void json_uint32_to_string(uint32_t value, SP_NOESCAPE json_to_string_t method);
+void json_uint64_to_string(uint64_t value, SP_NOESCAPE json_to_string_t method);
+
+void json_float_to_string(float value, SP_NOESCAPE json_to_string_t method);
+void json_double_to_string(double value, SP_NOESCAPE json_to_string_t method);
+#endif
 
 SP_C_FILE_END
 

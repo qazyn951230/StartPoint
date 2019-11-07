@@ -295,15 +295,7 @@ public:
             case JSONTypeUint:
                 return _data.u.uint32 > static_cast<uint32_t>(max<int32_t>()) ?
                     Optional<int32_t>{} : Optional{static_cast<int32_t>(_data.u.uint32)};
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int32_t>()) &&
-                    value < static_cast<float64_t>(max<int32_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int32_t>(value);
-                }
-                return Optional<int32_t>{};
-            }
+            case JSONTypeDouble: // A double json value always > int32_t::max or has fractional part
             case JSONTypeInt64: // A int64_t / uint64_t json value always > int32_t::max
             case JSONTypeUint64:
             case JSONTypeNull:
@@ -323,15 +315,7 @@ public:
             case JSONTypeUint:
                 return _data.u.uint32 > static_cast<uint32_t>(max<int32_t>()) ?
                        std::nullopt : std::optional{static_cast<int32_t>(_data.u.uint32)};
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int32_t>()) &&
-                    value < static_cast<float64_t>(max<int32_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int32_t>(value);
-                }
-                return std::nullopt;
-            }
+            case JSONTypeDouble: // A double json value always > int32_t::max or has fractional part
             case JSONTypeInt64: // A int64_t / uint64_t json value always > int32_t::max
             case JSONTypeUint64:
             case JSONTypeNull:
@@ -362,15 +346,7 @@ public:
             case JSONTypeUint64:
                 return _data.uint64 > static_cast<uint64_t>(max<int64_t>()) ?
                     Optional<int64_t>{} : Optional{static_cast<int64_t>(_data.uint64)};
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int64_t>()) &&
-                    value < static_cast<float64_t>(max<int64_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int64_t>(value);
-                }
-                return Optional<int64_t>{};
-            }
+            case JSONTypeDouble: // A double json value always > int64_t::max or has fractional part
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -392,15 +368,7 @@ public:
             case JSONTypeUint64:
                 return _data.uint64 > static_cast<uint64_t>(max<int64_t>()) ?
                        std::nullopt : std::optional{static_cast<int64_t>(_data.uint64)};
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int64_t>()) &&
-                    value < static_cast<float64_t>(max<int64_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int64_t>(value);
-                }
-                return std::nullopt;
-            }
+            case JSONTypeDouble: // A double json value always > int64_t::max or has fractional part
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -424,15 +392,7 @@ public:
                 return Optional<uint32_t>{}; // mast < 0
             case JSONTypeUint:
                 return _data.u.uint32;
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (isGreaterOrEqual(value, 0.0) &&
-                    value < static_cast<float64_t>(max<uint32_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<uint32_t>(value);
-                }
-                return Optional<uint32_t>{};
-            }
+            case JSONTypeDouble: // A double json value always > uint32_t::max or has fractional part
             case JSONTypeInt64: // A int64_t / uint64_t json value always > uint32_t::max
             case JSONTypeUint64:
             case JSONTypeNull:
@@ -451,15 +411,7 @@ public:
                 return std::nullopt; // mast < 0
             case JSONTypeUint:
                 return _data.u.uint32;
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (isGreaterOrEqual(value, 0.0) &&
-                    value < static_cast<float64_t>(max<uint32_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<uint32_t>(value);
-                }
-                return std::nullopt;
-            }
+            case JSONTypeDouble: // A double json value always > uint32_t::max or has fractional part
             case JSONTypeInt64: // A int64_t / uint64_t json value always > uint32_t::max
             case JSONTypeUint64:
             case JSONTypeNull:
@@ -489,15 +441,7 @@ public:
                 return Optional<uint64_t>{}; // mast < 0
             case JSONTypeUint64:
                 return _data.uint64;
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int64_t>()) &&
-                    value < static_cast<float64_t>(max<int64_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int64_t>(value);
-                }
-                return Optional<uint64_t>{};
-            }
+            case JSONTypeDouble: // A double json value always > uint64_t::max or has fractional part
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:
@@ -518,15 +462,7 @@ public:
                 return std::nullopt; // mast < 0
             case JSONTypeUint64:
                 return _data.uint64;
-            case JSONTypeDouble: {
-                auto value = _data.float64;
-                if (value > static_cast<float64_t>(min<int64_t>()) &&
-                    value < static_cast<float64_t>(max<int64_t>()) &&
-                    isEqual(value, std::round(value))) {
-                    return static_cast<int64_t>(value);
-                }
-                return std::nullopt;
-            }
+            case JSONTypeDouble: // A double json value always > uint64_t::max or has fractional part
             case JSONTypeNull:
             case JSONTypeTrue:
             case JSONTypeFalse:

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Same API with JSONDecoder
 public final class StartJSONDecoder {
     public var userInfo: [CodingUserInfoKey : Any] = [:]
     public var keyDecodingStrategy = JSONDecoder.KeyDecodingStrategy.useDefaultKeys
@@ -34,27 +35,18 @@ public final class StartJSONDecoder {
     public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
         do {
             let json = try JSON.tryParse(data: data)
-            let decoder = SJDecoder(buffer: json.buffer, value: json.ref, codingPath: [], userInfo: userInfo)
+            let options = SJDecoderOptions(buffer: json.buffer, userInfo: userInfo,
+                keyDecodingStrategy: keyDecodingStrategy,
+                dateDecodingStrategy: dateDecodingStrategy,
+                dataDecodingStrategy: dataDecodingStrategy,
+                nonConformingFloatDecodingStrategy: nonConformingFloatDecodingStrategy)
+            let decoder = SJDecoder(value: json.ref, options: options, codingPath: [])
             return try T.init(from: decoder)
         } catch let error {
             let context = DecodingError.Context(codingPath: [],
                 debugDescription: SJDecoder.jsonParseError(error), underlyingError: error)
             throw DecodingError.dataCorrupted(context)
         }
-    }
-}
-
-struct SJCodingKey: CodingKey {
-    let stringValue: String
-    let intValue: Int?
-
-    init?(stringValue: String) {
-        self.stringValue = stringValue
-        intValue = nil
-    }
-
-    init?(intValue: Int) {
-        nil
     }
 }
 
@@ -66,11 +58,12 @@ class SJDecoderOptions {
     let dataDecodingStrategy: JSONDecoder.DataDecodingStrategy
     let nonConformingFloatDecodingStrategy: JSONDecoder.NonConformingFloatDecodingStrategy
 
-    init(userInfo: [CodingUserInfoKey: Any],
+    init(buffer: JSONBuffer, userInfo: [CodingUserInfoKey: Any],
          keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy,
          dateDecodingStrategy: JSONDecoder.DateDecodingStrategy,
          dataDecodingStrategy: JSONDecoder.DataDecodingStrategy,
          nonConformingFloatDecodingStrategy: JSONDecoder.NonConformingFloatDecodingStrategy) {
+        self.buffer = buffer
         self.userInfo = userInfo
         self.keyDecodingStrategy = keyDecodingStrategy
         self.dateDecodingStrategy = dateDecodingStrategy
@@ -96,67 +89,263 @@ class SJDecoderOptions {
 
 struct SJDecoder: Decoder {
     let codingPath: [CodingKey]
-    let userInfo: [CodingUserInfoKey : Any]
-    let buffer: JSONBuffer
     let value: JSONRef
+    let options: SJDecoderOptions
 
-    init(buffer: JSONBuffer, value: JSONRef, codingPath: [CodingKey] = [], userInfo: [CodingUserInfoKey : Any] = [:]) {
-        self.buffer = buffer
+    var userInfo: [CodingUserInfoKey : Any] {
+        options.userInfo
+    }
+
+    init(value: JSONRef, options: SJDecoderOptions, codingPath: [CodingKey]) {
         self.value = value
+        self.options = options
         self.codingPath = codingPath
-        self.userInfo = userInfo
     }
 
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
-        let next = try SJKeyedContainer<Key>(decoder: self)
+        let next = try SJDKeyedContainer<Key>(decoder: self)
         return KeyedDecodingContainer(next)
     }
 
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-        try SJUnkeyedContainer(decoder: self)
+        try SJDUnkeyedContainer(decoder: self)
     }
 
     func singleValueContainer() throws -> SingleValueDecodingContainer {
-        try SJSingleContainer(decoder: self)
+        try SJDSingleContainer(decoder: self)
     }
 
     @inline(__always)
     static func jsonParseError(_ error: Error) -> String {
-        ""
+        "jsonParseError"
     }
 
     @inline(__always)
     static func typeMismatchDescription(_ value: JSONRef) -> String {
-        ""
+        "typeMismatchDescription"
     }
 
     @inline(__always)
     static func valueIsNotSingleContainer(_ value: JSONRef) -> String {
-        ""
+        "valueIsNotSingleContainer"
     }
 
     @inline(__always)
     static func valueOutOfIndex() -> String {
-        ""
+        "valueOutOfIndex"
     }
 
     @inline(__always)
     static func valueIsNotUnkeyedContainer(_ value: JSONRef) -> String {
-        ""
+        "valueIsNotUnkeyedContainer"
     }
 
     @inline(__always)
     static func keyNotFound() -> String {
-        ""
+        "keyNotFound"
     }
 
     @inline(__always)
     static func valueIsNotKeyedContainer(_ value: JSONRef) -> String {
-        ""
+        "valueIsNotKeyedContainer"
+    }
+
+    @inline(__always)
+    static func decodeNil(_ value: JSONRef) -> Bool {
+        json_is_null(value)
+    }
+
+    @inline(__always)
+    static func decodeBool(_ value: JSONRef, codingPath: [CodingKey]) throws -> Bool {
+        var result = false
+        if json_get_bool(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Bool.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeString(_ value: JSONRef, codingPath: [CodingKey]) throws -> String {
+        if let result = JSON.decodeString(ref: value) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(String.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeDouble(_ value: JSONRef, codingPath: [CodingKey]) throws -> Double {
+        var result: Double = 0
+        if json_get_double(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Double.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeFloat(_ value: JSONRef, codingPath: [CodingKey]) throws -> Float {
+        var result: Float = 0
+        if json_get_float(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Float.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeInt(_ value: JSONRef, codingPath: [CodingKey]) throws -> Int {
+#if arch(arm64) || arch(x86_64)
+        var result: Int64 = 0
+        if json_get_int64(value, &result) {
+            return Int(result)
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int.self, context)
+        }
+#else
+        var result: Int32 = 0
+        if json_get_int32(value, &result) {
+            return Int(result)
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int.self, context)
+        }
+#endif
+    }
+
+    @inline(__always)
+    static func decodeInt8(_ value: JSONRef, codingPath: [CodingKey]) throws -> Int8 {
+        var result: Int32 = 0
+        if json_get_int32(value, &result), let next = Int8(exactly: result) {
+            return next
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int8.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeInt16(_ value: JSONRef, codingPath: [CodingKey]) throws -> Int16 {
+        var result: Int32 = 0
+        if json_get_int32(value, &result), let next = Int16(exactly: result) {
+            return next
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int16.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeInt32(_ value: JSONRef, codingPath: [CodingKey]) throws -> Int32 {
+        var result: Int32 = 0
+        if json_get_int32(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int32.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeInt64(_ value: JSONRef, codingPath: [CodingKey]) throws -> Int64 {
+        var result: Int64 = 0
+        if json_get_int64(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(Int64.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeUInt(_ value: JSONRef, codingPath: [CodingKey]) throws -> UInt {
+#if arch(arm64) || arch(x86_64)
+        var result: UInt64 = 0
+        if json_get_uint64(value, &result) {
+            return UInt(result)
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt.self, context)
+        }
+#else
+        var result: UInt32 = 0
+        if json_get_uint32(value, &result) {
+            return UInt(result)
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt.self, context)
+        }
+#endif
+    }
+
+    @inline(__always)
+    static func decodeUInt8(_ value: JSONRef, codingPath: [CodingKey]) throws -> UInt8 {
+        var result: UInt32 = 0
+        if json_get_uint32(value, &result), let next = UInt8(exactly: result) {
+            return next
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt8.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeUInt16(_ value: JSONRef, codingPath: [CodingKey]) throws -> UInt16 {
+        var result: UInt32 = 0
+        if json_get_uint32(value, &result), let next = UInt16(exactly: result) {
+            return next
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt16.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeUInt32(_ value: JSONRef, codingPath: [CodingKey]) throws -> UInt32 {
+        var result: UInt32 = 0
+        if json_get_uint32(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt32.self, context)
+        }
+    }
+
+    @inline(__always)
+    static func decodeUInt64(_ value: JSONRef, codingPath: [CodingKey]) throws -> UInt64 {
+        var result: UInt64 = 0
+        if json_get_uint64(value, &result) {
+            return result
+        } else {
+            let context = DecodingError.Context(codingPath: codingPath,
+                debugDescription: SJDecoder.typeMismatchDescription(value))
+            throw DecodingError.typeMismatch(UInt64.self, context)
+        }
     }
 }
 
-struct SJSingleContainer: SingleValueDecodingContainer {
+struct SJDSingleContainer: SingleValueDecodingContainer {
     let value: JSONRef
     let decoder: SJDecoder
 
@@ -175,182 +364,63 @@ struct SJSingleContainer: SingleValueDecodingContainer {
     }
 
     func decodeNil() -> Bool {
-        json_is_null(value)
+        SJDecoder.decodeNil(value)
     }
 
     func decode(_ type: Bool.Type) throws -> Bool {
-        var result = false
-        if json_get_bool(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeBool(value, codingPath: codingPath)
     }
 
     func decode(_ type: String.Type) throws -> String {
-        if let result = JSON.decodeString(ref: value) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeString(value, codingPath: codingPath)
     }
 
     func decode(_ type: Double.Type) throws -> Double {
-        var result: Double = 0
-        if json_get_double(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeDouble(value, codingPath: codingPath)
     }
 
     func decode(_ type: Float.Type) throws -> Float {
-        var result: Float = 0
-        if json_get_float(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeFloat(value, codingPath: codingPath)
     }
 
     func decode(_ type: Int.Type) throws -> Int {
-#if arch(arm64) || arch(x86_64)
-        var result: Int64 = 0
-        if json_get_int64(value, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: Int32 = 0
-        if json_get_int32(value, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        try SJDecoder.decodeInt(value, codingPath: codingPath)
     }
 
     func decode(_ type: Int8.Type) throws -> Int8 {
-        var result: Int32 = 0
-        if json_get_int32(value, &result), let next = Int8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeInt8(value, codingPath: codingPath)
     }
 
     func decode(_ type: Int16.Type) throws -> Int16 {
-        var result: Int32 = 0
-        if json_get_int32(value, &result), let next = Int16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeInt16(value, codingPath: codingPath)
     }
 
     func decode(_ type: Int32.Type) throws -> Int32 {
-        var result: Int32 = 0
-        if json_get_int32(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeInt32(value, codingPath: codingPath)
     }
 
     func decode(_ type: Int64.Type) throws -> Int64 {
-        var result: Int64 = 0
-        if json_get_int64(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeInt64(value, codingPath: codingPath)
     }
 
     func decode(_ type: UInt.Type) throws -> UInt {
-#if arch(arm64) || arch(x86_64)
-        var result: UInt64 = 0
-        if json_get_uint64(value, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: UInt32 = 0
-        if json_get_uint32(value, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        try SJDecoder.decodeUInt(value, codingPath: codingPath)
     }
 
     func decode(_ type: UInt8.Type) throws -> UInt8 {
-        var result: UInt32 = 0
-        if json_get_uint32(value, &result), let next = UInt8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeUInt8(value, codingPath: codingPath)
     }
 
     func decode(_ type: UInt16.Type) throws -> UInt16 {
-        var result: UInt32 = 0
-        if json_get_uint32(value, &result), let next = UInt16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeUInt16(value, codingPath: codingPath)
     }
 
     func decode(_ type: UInt32.Type) throws -> UInt32 {
-        var result: UInt32 = 0
-        if json_get_uint32(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeUInt32(value, codingPath: codingPath)
     }
 
     func decode(_ type: UInt64.Type) throws -> UInt64 {
-        var result: UInt64 = 0
-        if json_get_uint64(value, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(value))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        try SJDecoder.decodeUInt64(value, codingPath: codingPath)
     }
 
     func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
@@ -358,7 +428,7 @@ struct SJSingleContainer: SingleValueDecodingContainer {
     }
 }
 
-struct SJUnkeyedContainer: UnkeyedDecodingContainer {
+struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
     let value: JSONRef
     let decoder: SJDecoder
     private let _count: UInt32
@@ -397,7 +467,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        return json_is_null(item)
+        return SJDecoder.decodeNil(item)
     }
 
     mutating func decode(_ type: Bool.Type) throws -> Bool {
@@ -405,14 +475,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result = false
-        if json_get_bool(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeBool(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: String.Type) throws -> String {
@@ -420,13 +483,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        if let result = JSON.decodeString(ref: item) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeString(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Double.Type) throws -> Double {
@@ -434,14 +491,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Double = 0
-        if json_get_double(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeDouble(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Float.Type) throws -> Float {
@@ -449,14 +499,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Float = 0
-        if json_get_float(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeFloat(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Int.Type) throws -> Int {
@@ -464,25 +507,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-#if arch(arm64) || arch(x86_64)
-        var result: Int64 = 0
-        if json_get_int64(item, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: Int32 = 0
-        if json_get_int32(item, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        return try SJDecoder.decodeInt(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Int8.Type) throws -> Int8 {
@@ -490,14 +515,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Int32 = 0
-        if json_get_int32(item, &result), let next = Int8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt8(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Int16.Type) throws -> Int16 {
@@ -505,14 +523,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Int32 = 0
-        if json_get_int32(item, &result), let next = Int16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt16(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Int32.Type) throws -> Int32 {
@@ -520,14 +531,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Int32 = 0
-        if json_get_int32(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt32(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: Int64.Type) throws -> Int64 {
@@ -535,14 +539,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: Int64 = 0
-        if json_get_int64(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt64(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: UInt.Type) throws -> UInt {
@@ -550,25 +547,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-#if arch(arm64) || arch(x86_64)
-        var result: UInt64 = 0
-        if json_get_uint64(item, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        return try SJDecoder.decodeUInt(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: UInt8.Type) throws -> UInt8 {
@@ -576,14 +555,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result), let next = UInt8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt8(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: UInt16.Type) throws -> UInt16 {
@@ -591,14 +563,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result), let next = UInt16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt16(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: UInt32.Type) throws -> UInt32 {
@@ -606,14 +571,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt32(item, codingPath: codingPath)
     }
 
     mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
@@ -621,14 +579,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        var result: UInt64 = 0
-        if json_get_uint64(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt64(item, codingPath: codingPath)
     }
 
     mutating func decode<T>(_ type: T.Type) throws -> T where T : Decodable {
@@ -636,8 +587,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        let nested = SJDecoder(buffer: decoder.buffer, value: item,
-            codingPath: decoder.codingPath, userInfo: decoder.userInfo)
+        let nested = SJDecoder(value: item, options: decoder.options, codingPath: decoder.codingPath)
         return try T.init(from: nested)
     }
 
@@ -647,7 +597,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        let nested = try SJKeyedContainer<NestedKey>(decoder: decoder, value: item)
+        let nested = try SJDKeyedContainer<NestedKey>(decoder: decoder, value: item)
         return KeyedDecodingContainer(nested)
     }
 
@@ -656,7 +606,7 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
             throw DecodingError.dataCorruptedError(in: self, debugDescription: SJDecoder.valueOutOfIndex())
         }
         _current += 1
-        return try SJUnkeyedContainer(decoder: decoder, value: item)
+        return try SJDUnkeyedContainer(decoder: decoder, value: item)
     }
 
     mutating func superDecoder() throws -> Decoder {
@@ -664,16 +614,13 @@ struct SJUnkeyedContainer: UnkeyedDecodingContainer {
     }
 }
 
-struct SJKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : CodingKey {
-
+struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : CodingKey {
     let value: JSONRef
     let decoder: SJDecoder
+    let allKeys: [Key]
 
     var codingPath: [CodingKey] {
         decoder.codingPath
-    }
-    var allKeys: [Key] {
-        []
     }
 
     init(decoder: SJDecoder) throws {
@@ -681,13 +628,15 @@ struct SJKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : CodingK
     }
 
     init(decoder: SJDecoder, value: JSONRef) throws {
-        if json_is_object(value) || json_is_object(value) {
+        if json_is_object(value) || json_is_null(value) {
             let context = DecodingError.Context(codingPath: decoder.codingPath,
                 debugDescription: SJDecoder.valueIsNotKeyedContainer(value))
             throw DecodingError.dataCorrupted(context)
         }
         self.value = value
         self.decoder = decoder
+        let keys = json_object_all_key(value)
+        allKeys = keys.compactMap(Key.init(stringValue:))
     }
 
     func contains(_ key: Key) -> Bool {
@@ -711,215 +660,97 @@ struct SJKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : CodingK
 
     func decodeNil(forKey key: Key) throws -> Bool {
         let item = try find(key: key)
-        return json_is_null(item)
+        return SJDecoder.decodeNil(item)
     }
 
     func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
         let item = try find(key: key)
-        var result = false
-        if json_get_bool(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeBool(item, codingPath: codingPath)
     }
 
     func decode(_ type: String.Type, forKey key: Key) throws -> String {
         let item = try find(key: key)
-        if let result = JSON.decodeString(ref: item) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeString(item, codingPath: codingPath)
     }
 
     func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
         let item = try find(key: key)
-        var result: Double = 0
-        if json_get_double(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeDouble(item, codingPath: codingPath)
     }
 
     func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
         let item = try find(key: key)
-        var result: Float = 0
-        if json_get_float(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeFloat(item, codingPath: codingPath)
     }
 
     func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
         let item = try find(key: key)
-#if arch(arm64) || arch(x86_64)
-        var result: Int64 = 0
-        if json_get_int64(item, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: Int32 = 0
-        if json_get_int32(item, &result) {
-            return Int(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        return try SJDecoder.decodeInt(item, codingPath: codingPath)
     }
 
     func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
         let item = try find(key: key)
-        var result: Int32 = 0
-        if json_get_int32(item, &result), let next = Int8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt8(item, codingPath: codingPath)
     }
 
     func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
         let item = try find(key: key)
-        var result: Int32 = 0
-        if json_get_int32(item, &result), let next = Int16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt16(item, codingPath: codingPath)
     }
 
     func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
         let item = try find(key: key)
-        var result: Int32 = 0
-        if json_get_int32(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt32(item, codingPath: codingPath)
     }
 
     func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
         let item = try find(key: key)
-        var result: Int64 = 0
-        if json_get_int64(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeInt64(item, codingPath: codingPath)
     }
 
     func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
         let item = try find(key: key)
-#if arch(arm64) || arch(x86_64)
-        var result: UInt64 = 0
-        if json_get_uint64(item, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#else
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result) {
-            return UInt(result)
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(v))
-            throw DecodingError.typeMismatch(type, context)
-        }
-#endif
+        return try SJDecoder.decodeUInt(item, codingPath: codingPath)
     }
 
     func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
         let item = try find(key: key)
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result), let next = UInt8(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt8(item, codingPath: codingPath)
     }
 
     func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
         let item = try find(key: key)
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result), let next = UInt16(exactly: result) {
-            return next
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt16(item, codingPath: codingPath)
     }
 
     func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
         let item = try find(key: key)
-        var result: UInt32 = 0
-        if json_get_uint32(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt32(item, codingPath: codingPath)
     }
 
     func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
         let item = try find(key: key)
-        var result: UInt64 = 0
-        if json_get_uint64(item, &result) {
-            return result
-        } else {
-            let context = DecodingError.Context(codingPath: codingPath,
-                debugDescription: SJDecoder.typeMismatchDescription(item))
-            throw DecodingError.typeMismatch(type, context)
-        }
+        return try SJDecoder.decodeUInt64(item, codingPath: codingPath)
     }
 
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T : Decodable {
         let item = try find(key: key)
-        let next = SJDecoder(buffer: decoder.buffer, value: item,
-            codingPath: decoder.codingPath, userInfo: decoder.userInfo)
+        var path = decoder.codingPath
+        path.append(key)
+        let next = SJDecoder(value: item, options: decoder.options, codingPath: path)
         return try T.init(from: next)
     }
 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws ->
         KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
         let item = try find(key: key)
-        let next = try SJKeyedContainer<NestedKey>(decoder: decoder, value: item)
+        let next = try SJDKeyedContainer<NestedKey>(decoder: decoder, value: item)
         return KeyedDecodingContainer(next)
     }
 
     func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
         let item = try find(key: key)
-        return try SJUnkeyedContainer(decoder: decoder, value: item)
+        return try SJDUnkeyedContainer(decoder: decoder, value: item)
     }
 
     func superDecoder() throws -> Decoder {
@@ -928,8 +759,9 @@ struct SJKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : CodingK
 
     func superDecoder(forKey key: Key) throws -> Decoder {
         let item = try find(key: key)
-        let next = SJDecoder(buffer: decoder.buffer, value: item,
-            codingPath: decoder.codingPath, userInfo: decoder.userInfo)
+        var path = decoder.codingPath
+        path.append(key)
+        let next = SJDecoder(value: item, options: decoder.options, codingPath: path)
         return next
     }
 }
