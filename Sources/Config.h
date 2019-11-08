@@ -43,7 +43,7 @@
 
 #define SP_CPP_FILE_BEGIN
 #define SP_CPP_FILE_END
-#endif
+#endif // #if (__cplusplus)
 
 #define SP_C_FILE_BEGIN SP_EXTERN_C_BEGIN \
                         _Pragma("clang assume_nonnull begin")
@@ -71,7 +71,20 @@
 #define SP_NONNULL
 #define SP_NULL_UNSPECIFIED
 #define SP_NULLABLE
+#endif // #if defined(__clang__)
+
+// .../usr/include/objc/NSObjCRuntime.h
+#if !defined(__OBJC2__)
+
+#if __LP64__ || 0 || NS_BUILD_32_LIKE_64
+typedef long NSInteger;
+typedef unsigned long NSUInteger;
+#else
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
 #endif
+
+#endif // #if !defined(__OBJC2__)
 
 // Enums and Options
 #ifdef NS_ENUM

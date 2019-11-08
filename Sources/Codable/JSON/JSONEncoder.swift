@@ -44,14 +44,8 @@ public final class StartJSONEncoder {
             nonConformingFloatEncodingStrategy: nonConformingFloatEncodingStrategy)
         let encoder = SJEncoder(options: context, codingPath: [])
         try encoder.encode(value)
-        return context.data
+        return encoder.resolve()
     }
-}
-
-enum JSONEncoderState {
-    case empty
-    case value
-    case root
 }
 
 struct StartCodingKey: CodingKey {
@@ -79,6 +73,120 @@ struct StartCodingKey: CodingKey {
     }
 }
 
+enum SJNodeType {
+    case single
+    case array
+    case object
+}
+
+class SJNode: CustomDebugStringConvertible {
+    let kind: SJNodeType
+    let data: ByteArrayRef
+    var children: [SJNode] = []
+    weak var parent: SJNode?
+
+    init(kind: SJNodeType) {
+        self.kind = kind
+        data = byte_array_create_size(0)
+    }
+
+    var debugDescription: String {
+        String(bytesNoCopy: UnsafeMutableRawPointer(mutating: byte_array_data(data)),
+            length: byte_array_size(data), encoding: .utf8, freeWhenDone: false) ?? "[SJNode NULL]"
+    }
+
+    deinit {
+        byte_array_free(data)
+    }
+
+    @inline(__always)
+    func writeNull() {
+        byte_array_write_null(data)
+    }
+
+    @inline(__always)
+    func write(_ value: Bool) {
+        byte_array_write_bool(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: String) {
+        value.withCString { pointer in
+            byte_array_write_int8_data(data, pointer, 0)
+        }
+    }
+
+    @inline(__always)
+    func write(_ value: Data) {
+        value.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
+            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return
+            }
+            byte_array_write_uint8_data(data, pointer, raw.count)
+        }
+    }
+
+    @inline(__always)
+    func write(_ value: Float) {
+        byte_array_write_float(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Double) {
+        byte_array_write_double(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Int) {
+        byte_array_write_int(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Int8) {
+        byte_array_write_int8(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Int16) {
+        byte_array_write_int16(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Int32) {
+        byte_array_write_int32(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: Int64) {
+        byte_array_write_int64(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: UInt) {
+        byte_array_write_uint(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: UInt8) {
+        byte_array_write_uint8(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: UInt16) {
+        byte_array_write_uint16(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: UInt32) {
+        byte_array_write_uint32(data, value)
+    }
+
+    @inline(__always)
+    func write(_ value: UInt64) {
+        byte_array_write_uint64(data, value)
+    }
+}
+
 class SJEncoderContext {
     let userInfo: [CodingUserInfoKey: Any]
     let outputFormatting: JSONEncoder.OutputFormatting
@@ -87,8 +195,9 @@ class SJEncoderContext {
     let dataEncodingStrategy: JSONEncoder.DataEncodingStrategy
     let nonConformingFloatEncodingStrategy: JSONEncoder.NonConformingFloatEncodingStrategy
 
-    fileprivate(set) var data: Data = Data()
-    fileprivate(set) var state = JSONEncoderState.empty
+    private(set) var root: SJNode?
+//    private(set) var current: SJNode?
+    var current: SJNode?
 
     fileprivate lazy var iso8601Formatter: ISO8601DateFormatter = {
         ISO8601DateFormatter()
@@ -107,16 +216,32 @@ class SJEncoderContext {
         self.dataEncodingStrategy = dataEncodingStrategy
         self.nonConformingFloatEncodingStrategy = nonConformingFloatEncodingStrategy
     }
-}
 
-enum JSONModel {
-    case data(Data)
+    @discardableResult
+    func createNode(kind: SJNodeType, in node: SJNode? = nil) -> SJNode {
+        if let parent = node {
+            let child = SJNode(kind: kind)
+            parent.children.append(child)
+            child.parent = parent
+            current = child
+            return child
+        } else {
+            let result = SJNode(kind: kind)
+            root = result
+            current = result
+            return result
+        }
+    }
 }
 
 class SJEncoder: Encoder {
     var codingPath: [CodingKey]
     let context: SJEncoderContext
     private(set) var key: CodingKey?
+
+    var current: SJNode {
+        context.current ?? SJNode(kind: .single)
+    }
 
     var userInfo: [CodingUserInfoKey: Any] {
         context.userInfo
@@ -129,164 +254,43 @@ class SJEncoder: Encoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
+        context.createNode(kind: .object, in: context.current)
         let next = SJEKeyedContainer<Key>(encoder: self)
         return KeyedEncodingContainer(next)
     }
 
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-        SJEUnkeyedContainer(encoder: self)
+        context.createNode(kind: .array, in: context.current)
+        return SJEUnkeyedContainer(encoder: self)
     }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
-        SJESingleContainer(encoder: self)
+        context.createNode(kind: .single, in: context.current?.parent)
+        return SJESingleContainer(encoder: self)
     }
 
-    func nextValue(_ value: Any) throws {
-        if context.state == JSONEncoderState.value {
-            let context = EncodingError.Context.init(codingPath: codingPath,
-                debugDescription: SJEncoder.mutilRootJSON())
-            throw EncodingError.invalidValue(value, context)
-        }
-        if context.state == JSONEncoderState.empty {
-            context.state = JSONEncoderState.value
+    func popNode(_ node: SJNode? = nil) {
+        if let node = node {
+            context.current = node.parent ?? context.current
+        } else {
+            context.current = context.current?.parent
         }
     }
 
-    func startArray() {
-        context.data.append(0x5b)
-    }
-
-    func endArray() {
-        context.data.append(0x5d)
-    }
-
-    func startObject() {
-        context.data.append(0x7b)
-    }
-
-    func endObject() {
-        context.data.append(0x7d)
-    }
-
-    @inline(__always)
-    func encodeNil() { // null
-        SJEncoder.write4(0x6e, 0x75, 0x6c, 0x6c, to: &context.data)
-    }
-
-    @inline(__always)
-    func encode(_ value: Bool) {
-        if value { // true
-            SJEncoder.write4(0x74, 0x72, 0x75, 0x64, to: &context.data)
-        } else { // false
-            SJEncoder.write5(0x66, 0x61, 0x6c, 0x73, 0x65, to: &context.data)
+    func resolve() -> Data {
+        guard let root = context.root else {
+            return Data()
         }
+        var data = Data()
+        resolve(node: root, to: &data)
+        return data
     }
 
-    @inline(__always)
-    func encode(key value: String) throws {
-        guard let input = value.data(using: .utf8) else {
-            let context = EncodingError.Context.init(codingPath: codingPath,
-                debugDescription: SJEncoder.stringCannotEncoding())
-            throw EncodingError.invalidValue(value, context)
-        }
-        context.data.append(0x22) // "
-        context.data.append(input)
-        context.data.append(0x22) // "
-    }
-
-    @inline(__always)
-    func encode(_ value: String) throws {
-        guard let input = value.data(using: .utf8) else {
-            let context = EncodingError.Context.init(codingPath: codingPath,
-                debugDescription: SJEncoder.stringCannotEncoding())
-            throw EncodingError.invalidValue(value, context)
-        }
-        context.data.append(0x22) // "
-        context.data.append(input)
-        context.data.append(0x22) // "
-    }
-
-    @inline(__always)
-    func encode(_ value: Double) throws {
-        json_double_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Float) throws {
-        json_float_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Int) {
-        json_int_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Int8) {
-        json_int8_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Int16) {
-        json_int16_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Int32) {
-        json_int32_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: Int64) {
-        json_int64_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: UInt) {
-        json_uint_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: UInt8) {
-        json_uint8_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: UInt16) {
-        json_uint16_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: UInt32) {
-        json_uint32_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
-        }
-    }
-
-    @inline(__always)
-    func encode(_ value: UInt64) {
-        json_uint64_to_string(value) { pointer, size in
-            context.data.append(pointer, count: size)
+    private func resolve(node: SJNode, to data: inout Data) {
+        debugPrint(node)
+        data.append(byte_array_uint8_data(node.data), count: byte_array_size(node.data))
+        for child in node.children {
+            resolve(node: child, to: &data)
         }
     }
 
@@ -296,9 +300,9 @@ class SJEncoder: Encoder {
         case .deferredToDate:
             try value.encode(to: self)
         case .secondsSince1970:
-            encode(UInt64(value.timeIntervalSince1970))
+            current.write(UInt64(value.timeIntervalSince1970))
         case .millisecondsSince1970:
-            encode(UInt64(value.timeIntervalSince1970 * 1000))
+            current.write(UInt64(value.timeIntervalSince1970 * 1000))
         case .iso8601:
             try encode(context.iso8601Formatter.string(from: value))
         case let .formatted(formatter):
@@ -316,9 +320,7 @@ class SJEncoder: Encoder {
         case .deferredToData:
             try value.encode(to: self)
         case .base64:
-            context.data.append(0x22) // "
-            context.data.append(value.base64EncodedData())
-            context.data.append(0x22) // "
+            current.write(value.base64EncodedData())
         case let .custom(method):
             try method(value, self)
         @unknown default:
@@ -337,40 +339,12 @@ class SJEncoder: Encoder {
             try value.encode(to: self)
         }
     }
-
-    @inline(__always)
-    static func write4(_ value1: UInt8, _ value2: UInt8, _ value3: UInt8, _ value4: UInt8,
-                       to data: inout Data) {
-        data.append(value1)
-        data.append(value2)
-        data.append(value3)
-        data.append(value4)
-    }
-
-    @inline(__always)
-    static func write5(_ value1: UInt8, _ value2: UInt8, _ value3: UInt8, _ value4: UInt8, _ value5: UInt8,
-                       to data: inout Data) {
-        data.append(value1)
-        data.append(value2)
-        data.append(value3)
-        data.append(value4)
-        data.append(value5)
-    }
-
-    @inline(__always)
-    static func stringCannotEncoding() -> String {
-        "stringCannotEncoding"
-    }
-
-    @inline(__always)
-    static func mutilRootJSON() -> String {
-        "mutilRootJSON"
-    }
 }
 
 struct SJESingleContainer: SingleValueEncodingContainer {
     let encoder: SJEncoder
     private(set) var key: CodingKey?
+    private(set) var written = false
 
     var codingPath: [CodingKey] {
         encoder.codingPath
@@ -381,68 +355,109 @@ struct SJESingleContainer: SingleValueEncodingContainer {
         self.key = key
     }
 
+    private mutating func check(_ value: Any = "null") throws {
+        if written {
+            let context = EncodingError.Context(codingPath: encoder.codingPath,
+                debugDescription: "")
+            throw EncodingError.invalidValue(value, context)
+        }
+        written = true
+    }
+
     mutating func encodeNil() throws {
-        encoder.encodeNil()
+        try check()
+        encoder.current.writeNull()
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Bool) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: String) throws {
-        try encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Double) throws {
-        try encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Float) throws {
-        try encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Int) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Int8) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Int16) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Int32) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: Int64) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt8) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt16) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt32) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt64) throws {
-        encoder.encode(value)
+        try check()
+        encoder.current.write(value)
+        encoder.popNode()
     }
 
     mutating func encode<T>(_ value: T) throws where T: Encodable {
-        try value.encode(to: encoder)
+        try check()
+        try encoder.encode(value)
+        encoder.popNode()
     }
 }
 
@@ -460,91 +475,123 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
         self.key = key
     }
 
+    func prefix() {
+
+    }
+
+    func postfix() {
+        encoder.current.write(",")
+    }
+
     mutating func encodeNil() throws {
         count += 1
-        encoder.encodeNil()
+        prefix()
+        encoder.current.writeNull()
+        postfix()
     }
 
     mutating func encode(_ value: Bool) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: String) throws {
-        encoder.codingPath.append(StartCodingKey(count))
-        defer {
-            encoder.codingPath.removeLast()
-        }
-        count += 1
-        try encoder.encode(value)
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Double) throws {
-        encoder.codingPath.append(StartCodingKey(count))
-        defer {
-            encoder.codingPath.removeLast()
-        }
+//        encoder.codingPath.append(StartCodingKey(count))
+//        defer {
+//            encoder.codingPath.removeLast()
+//        }
         count += 1
-        try encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Float) throws {
-        encoder.codingPath.append(StartCodingKey(count))
-        defer {
-            encoder.codingPath.removeLast()
-        }
+//        encoder.codingPath.append(StartCodingKey(count))
+//        defer {
+//            encoder.codingPath.removeLast()
+//        }
         count += 1
-        try encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int8) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int16) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int32) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int64) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt8) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt16) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt32) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt64) throws {
         count += 1
-        encoder.encode(value)
+        prefix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode<T>(_ value: T) throws where T: Encodable {
@@ -553,21 +600,22 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
             encoder.codingPath.removeLast()
         }
         count += 1
+        prefix()
         try encoder.encode(value)
+        postfix()
     }
 
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type)
             -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-        fatalError("nestedContainer() has not been implemented")
+        count += 1
+        prefix()
+        return encoder.container(keyedBy: keyType)
     }
 
     mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        encoder.codingPath.append(StartCodingKey(count))
-        defer {
-            encoder.codingPath.removeLast()
-        }
         count += 1
-        return SJEUnkeyedContainer(encoder: encoder)
+        prefix()
+        return encoder.unkeyedContainer()
     }
 
     mutating func superEncoder() -> Encoder {
@@ -590,92 +638,153 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
         self.key = key
     }
 
-    private func encodeKey(_ key: Key) throws {
+    private func prefix() {
+
+    }
+
+    private func infix() {
+
+    }
+
+    private func postfix() {
+
+    }
+
+    private func writeKey(_ key: Key) throws {
         let value = key.stringValue
-        try encoder.encode(key: value)
+        encoder.current.write(value)
     }
 
     mutating func encodeNil(forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encodeNil()
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.writeNull()
+        postfix()
     }
 
     mutating func encode(_ value: Bool, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: String, forKey key: Key) throws {
-        try encodeKey(key)
-        try encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Double, forKey key: Key) throws {
-        try encodeKey(key)
-        try encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Float, forKey key: Key) throws {
-        try encodeKey(key)
-        try encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int, forKey key: Key) throws {
-        try encodeKey(key)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int8, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int16, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int32, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: Int64, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt8, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt16, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt32, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
     mutating func encode(_ value: UInt64, forKey key: Key) throws {
-        try encodeKey(key)
-        encoder.encode(value)
+        prefix()
+        try writeKey(key)
+        infix()
+        encoder.current.write(value)
+        postfix()
     }
 
-    mutating func encode<T>(_ value: T, forKey key: Key) throws where T : Encodable {
-        try encodeKey(key)
+    mutating func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
+        prefix()
+        try writeKey(key)
+        infix()
         try encoder.encode(value)
+        postfix()
     }
 
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) ->
-        KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
+        KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
         let next = SJEKeyedContainer<NestedKey>(encoder: encoder, key: key)
         return KeyedEncodingContainer<NestedKey>(next)
     }
