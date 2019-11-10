@@ -67,6 +67,8 @@ void byte_array_add9(ByteArrayRef array, uint8_t value1, uint8_t value2, uint8_t
     uint8_t value4, uint8_t value5, uint8_t value6, uint8_t value7, uint8_t value8, uint8_t value9);
 void byte_array_add_n(ByteArrayRef array, uint8_t value, NSInteger count);
 
+void byte_array_copy(ByteArrayRef array, ByteArrayRef other);
+
 void byte_array_write_int(ByteArrayRef array, NSInteger value);
 void byte_array_write_int8(ByteArrayRef array, int8_t value);
 void byte_array_write_int16(ByteArrayRef array, int16_t value);

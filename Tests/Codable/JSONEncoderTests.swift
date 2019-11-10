@@ -30,11 +30,22 @@ class JSONEncoderTests: XCTestCase {
         return String(data: data, encoding: .utf8)!
     }
 
-//    func testEncodeInt() {
-//        XCTAssertEqual(encode(1), "1")
-//    }
+    func testEncodeInt() {
+        XCTAssertEqual(encode(Int32.min), "\(Int32.min)")
+        XCTAssertEqual(encode(Int32.max), "\(Int32.max)")
+        XCTAssertEqual(encode(Int64.min), "\(Int64.min)")
+        XCTAssertEqual(encode(Int64.max), "\(Int64.max)")
+        XCTAssertEqual(encode(UInt32.min), "\(UInt32.min)")
+        XCTAssertEqual(encode(UInt32.max), "\(UInt32.max)")
+        XCTAssertEqual(encode(UInt64.min), "\(UInt64.min)")
+        XCTAssertEqual(encode(UInt64.max), "\(UInt64.max)")
+    }
 
     func testEncodeArray() {
-        XCTAssertEqual(encode([1, 2]), "[1, 2]")
+        XCTAssertEqual(encode([] as [String]), "[]")
+        XCTAssertEqual(encode([1]), "[1]")
+        XCTAssertEqual(encode([1, 2]), "[1,2]")
+        XCTAssertEqual(encode([[1, 3], [2, 4]] as [[Int]]), "[[1,3],[2,4]]")
+        XCTAssertEqual(encode(["[1, 3], [2, 4]] as [[Int]"]), "[\"[1, 3], [2, 4]] as [[Int]\"]")
     }
 }

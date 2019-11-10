@@ -82,8 +82,6 @@ enum SJNodeType {
 class SJNode: CustomDebugStringConvertible {
     let kind: SJNodeType
     let data: ByteArrayRef
-    var children: [SJNode] = []
-    weak var parent: SJNode?
 
     init(kind: SJNodeType) {
         self.kind = kind
@@ -111,9 +109,11 @@ class SJNode: CustomDebugStringConvertible {
 
     @inline(__always)
     func write(_ value: String) {
+        byte_array_add(data, 0x22) // "
         value.withCString { pointer in
             byte_array_write_int8_data(data, pointer, 0)
         }
+        byte_array_add(data, 0x22) // "
     }
 
     @inline(__always)
@@ -185,6 +185,11 @@ class SJNode: CustomDebugStringConvertible {
     func write(_ value: UInt64) {
         byte_array_write_uint64(data, value)
     }
+
+    @inline(__always)
+    func write(_ value: SJNode) {
+        byte_array_copy(data, value.data)
+    }
 }
 
 class SJEncoderContext {
@@ -195,9 +200,7 @@ class SJEncoderContext {
     let dataEncodingStrategy: JSONEncoder.DataEncodingStrategy
     let nonConformingFloatEncodingStrategy: JSONEncoder.NonConformingFloatEncodingStrategy
 
-    private(set) var root: SJNode?
-//    private(set) var current: SJNode?
-    var current: SJNode?
+    var stack: [SJNode] = []
 
     fileprivate lazy var iso8601Formatter: ISO8601DateFormatter = {
         ISO8601DateFormatter()
@@ -216,22 +219,6 @@ class SJEncoderContext {
         self.dataEncodingStrategy = dataEncodingStrategy
         self.nonConformingFloatEncodingStrategy = nonConformingFloatEncodingStrategy
     }
-
-    @discardableResult
-    func createNode(kind: SJNodeType, in node: SJNode? = nil) -> SJNode {
-        if let parent = node {
-            let child = SJNode(kind: kind)
-            parent.children.append(child)
-            child.parent = parent
-            current = child
-            return child
-        } else {
-            let result = SJNode(kind: kind)
-            root = result
-            current = result
-            return result
-        }
-    }
 }
 
 class SJEncoder: Encoder {
@@ -240,7 +227,7 @@ class SJEncoder: Encoder {
     private(set) var key: CodingKey?
 
     var current: SJNode {
-        context.current ?? SJNode(kind: .single)
+        context.stack.last ?? SJNode(kind: .single)
     }
 
     var userInfo: [CodingUserInfoKey: Any] {
@@ -254,45 +241,64 @@ class SJEncoder: Encoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-        context.createNode(kind: .object, in: context.current)
+        pushNode(kind: .object)
         let next = SJEKeyedContainer<Key>(encoder: self)
         return KeyedEncodingContainer(next)
     }
 
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-        context.createNode(kind: .array, in: context.current)
+        pushNode(kind: .array)
         return SJEUnkeyedContainer(encoder: self)
     }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
-        context.createNode(kind: .single, in: context.current?.parent)
+        pushNode(kind: .single)
         return SJESingleContainer(encoder: self)
     }
 
-    func popNode(_ node: SJNode? = nil) {
-        if let node = node {
-            context.current = node.parent ?? context.current
-        } else {
-            context.current = context.current?.parent
+    func pushNode(kind: SJNodeType) {
+        context.stack.append(SJNode(kind: kind))
+    }
+
+    func popNode() -> SJNode? {
+        context.stack.popLast()
+    }
+
+    func removeLastNode() {
+        if context.stack.isNotEmpty {
+            _ = context.stack.removeLast()
         }
     }
 
     func resolve() -> Data {
-        guard let root = context.root else {
+        guard let root = context.stack.first else {
             return Data()
         }
         var data = Data()
-        resolve(node: root, to: &data)
+        switch root.kind {
+        case .single:
+            break;
+        case .object:
+            data.append(0x7b) // {
+            byte_array_add(root.data, 0x7d) // }
+        case .array:
+            data.append(0x5b) // [
+            byte_array_add(root.data, 0x5d) // ]
+        }
+        data.append(byte_array_uint8_data(root.data), count: byte_array_size(root.data))
         return data
+//        var data = Data()
+//        resolve(node: root, to: &data)
+//        return data
     }
 
-    private func resolve(node: SJNode, to data: inout Data) {
-        debugPrint(node)
-        data.append(byte_array_uint8_data(node.data), count: byte_array_size(node.data))
-        for child in node.children {
-            resolve(node: child, to: &data)
-        }
-    }
+//    private func resolve(node: SJNode, to data: inout Data) {
+//        debugPrint(node)
+//        data.append(byte_array_uint8_data(node.data), count: byte_array_size(node.data))
+//        for child in node.children {
+//            resolve(node: child, to: &data)
+//        }
+//    }
 
     @inline(__always)
     func encode(_ value: Date) throws {
@@ -367,97 +373,81 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     mutating func encodeNil() throws {
         try check()
         encoder.current.writeNull()
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Bool) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: String) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Double) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Float) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Int) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Int8) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Int16) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Int32) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: Int64) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt8) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt16) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt32) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode(_ value: UInt64) throws {
         try check()
         encoder.current.write(value)
-        encoder.popNode()
     }
 
     mutating func encode<T>(_ value: T) throws where T: Encodable {
         try check()
         try encoder.encode(value)
-        encoder.popNode()
     }
 }
 
@@ -476,11 +466,12 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
     }
 
     func prefix() {
-
+        if count > 1 {
+            byte_array_add(encoder.current.data, 0x2c)
+        }
     }
 
     func postfix() {
-        encoder.current.write(",")
     }
 
     mutating func encodeNil() throws {
@@ -498,6 +489,8 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
     }
 
     mutating func encode(_ value: String) throws {
+        count += 1
+        prefix()
         encoder.current.write(value)
         postfix()
     }
@@ -600,8 +593,28 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
             encoder.codingPath.removeLast()
         }
         count += 1
+        do {
+            try encoder.encode(value)
+        } catch let error {
+            encoder.removeLastNode()
+            throw error
+        }
+        guard let data = encoder.popNode() else {
+            return
+        }
         prefix()
-        try encoder.encode(value)
+        switch data.kind {
+        case .single:
+            encoder.current.write(data)
+        case .array:
+            byte_array_add(encoder.current.data, 0x5b)
+            encoder.current.write(data)
+            byte_array_add(encoder.current.data, 0x5d)
+        case .object:
+            byte_array_add(encoder.current.data, 0x7b)
+            encoder.current.write(data)
+            byte_array_add(encoder.current.data, 0x7d)
+        }
         postfix()
     }
 

@@ -152,6 +152,16 @@ void byte_array_add_n(ByteArrayRef array, uint8_t value, NSInteger count) {
     unwrap(array)->append(static_cast<char_t>(value), static_cast<size_t>(count));
 }
 
+void byte_array_copy(ByteArrayRef array, ByteArrayRef other) {
+    auto raw = unwrap(other);
+    if (raw->size() > 0) {
+//        unwrap(array)->mutate(raw->size(), [raw](char* buffer) {
+//            return static_cast<char*>(std::memcpy(buffer, raw->data(), raw->size()));
+//        });
+        unwrap(array)->append(raw->data(), raw->size());
+    }
+}
+
 void byte_array_free(ByteArrayRef ref) {
     delete unwrap(ref);
 }

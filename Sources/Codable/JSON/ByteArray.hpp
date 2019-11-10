@@ -104,12 +104,14 @@ public:
 
     void append(const char_t value, size_t count) {
         reserve(count);
-        _current = static_cast<char_t*>(std::memset(_current, static_cast<int>(value), count));
+        std::memset(_current, static_cast<int>(value), count * sizeof(char_t));
+        _current += count;
     }
 
     void append(const char_t* value, size_t count) {
         reserve(count);
-        _current = static_cast<char_t*>(std::memcpy(_current, value, count));
+        std::memcpy(_current, value, count * sizeof(char_t));
+        _current += count;
     }
 
 private:
