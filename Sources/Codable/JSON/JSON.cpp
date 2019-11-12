@@ -25,8 +25,6 @@
 
 using namespace StartPoint;
 using json = StartPoint::JSON<>;
-using object_t = json::object_t;
-//using object_iterator = object_t::iterator;
 
 JSONRef json_create() {
     return wrap(new json);
@@ -74,8 +72,48 @@ JSONRef json_create_string(const int8_t* data, uint32_t size) {
     }
 }
 
+void json_reset_type(JSONRef json, JSONType type) {
+    unwrap(json)->reset(type);
+}
+
 void json_free(JSONRef ref) {
     delete unwrap(ref);
+}
+
+void json_set_int32(JSONRef json, int32_t value) {
+    unwrap(json)->set(value);
+}
+
+void json_set_int64(JSONRef json, int64_t value) {
+    unwrap(json)->set(value);
+}
+
+void json_set_uint32(JSONRef json, uint32_t value) {
+    unwrap(json)->set(value);
+}
+
+void json_set_uint64(JSONRef json, uint64_t value) {
+    unwrap(json)->set(value);
+}
+
+void json_set_float(JSONRef json, float value) {
+    unwrap(json)->set(static_cast<json::float64_t>(value));
+}
+
+void json_set_double(JSONRef json, double value) {
+    unwrap(json)->set(value);
+}
+
+void json_set_bool(JSONRef json, bool value) {
+    unwrap(json)->set(value);
+}
+
+void json_replace(JSONRef json, JSONRef source) {
+    *unwrap(json) = std::move(*unwrap(source));
+}
+
+void json_replace_copy(JSONRef json, JSONRef source) {
+    *unwrap(json) = *unwrap(source);
 }
 
 JSONType json_type(JSONRef json) {

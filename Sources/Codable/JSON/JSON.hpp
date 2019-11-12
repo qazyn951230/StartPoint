@@ -88,13 +88,13 @@ public:
 
         Data() : uint64() {}
 
-        Data(const Data&) = delete;
+        Data(const Data& other) = delete;
 
-        Data(Data&& other): uint64(other.uint64) {}
+        Data(Data&& other) noexcept: uint64(other.uint64) {}
 
         Data& operator=(const Data&) = delete;
 
-        Data& operator=(Data&& other) {
+        Data& operator=(Data&& other) noexcept {
             std::swap(uint64, other.uint64);
             return *this;
         }
@@ -137,6 +137,23 @@ public:
 
         explicit Data(string_t&& value) : uint64() {
             string = JSON::create<string_t>(std::move(value));
+        }
+        
+        void copy(const Data& other, const JSONType type) {
+            uint64 = other.uint64;
+            switch (type) {
+                case JSONTypeObject:
+                    object = JSON::create<object_t>(*other.object);
+                    break;
+                case JSONTypeArray:
+                    array = JSON::create<array_t>(*other.array);
+                    break;
+                case JSONTypeString:
+                    string = JSON::create<string_t>(*other.string);
+                    break;
+                default:
+                    break;
+            }
         }
 
         void destroy(JSONType type) noexcept {
@@ -220,8 +237,8 @@ public:
 
     JSON& operator=(const JSON& other) {
         other.assert_invariant();
-        std::swap(_type, other._type);
-        std::swap(_data, other._data);
+        _type = other._type;
+        _data.copy(other._data, other._type);
         assert_invariant();
         return *this;
     }
@@ -635,6 +652,48 @@ public:
             return _data.object;
         }
         return nullptr;
+    }
+
+    void reset(JSONType type) {
+        assert_invariant();
+        _data.destroy(_type);
+        _data = std::move(Data(_type));
+    }
+
+    void set(const int32_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = JSONTypeInt;
+        _data.i.int32 = value;
+    }
+
+    void set(const uint32_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = JSONTypeUint;
+        _data.u.uint32 = value;
+    }
+
+    void set(const int64_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = JSONTypeInt64;
+        _data.int64 = value;
+    }
+
+    void set(const uint64_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = JSONTypeUint64;
+        _data.uint64 = value;
+    }
+
+    void set(const double_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = JSONTypeDouble;
+        _data.float64 = value;
+    }
+
+    void set(const bool_t value) {
+        assert(!(isString() || isArray() || isObject()));
+        _type = value ? JSONTypeTrue : JSONTypeFalse;
+        _data.uint64 = 0llu;
     }
 
     void append(const uint8_t value) {

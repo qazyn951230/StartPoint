@@ -23,7 +23,7 @@
 import Darwin.C
 import Foundation
 
-public class DataStream: WritableStream {
+public class DataStream: OutStream {
     public typealias Value = Data
 
     init() {

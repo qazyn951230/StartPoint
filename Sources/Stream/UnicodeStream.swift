@@ -102,7 +102,7 @@ public final class StringProvider: UnicodeProvider {
     }
 }
 
-public final class UnicodeStream: ReadableStream {
+public final class UnicodeStream: InStream {
     // Codepoint
     public typealias Value = UInt32
     

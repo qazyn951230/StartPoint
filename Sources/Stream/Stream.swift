@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol ReadableStream {
+public protocol InStream {
     associatedtype Value
 
     func next() -> Value
@@ -34,7 +34,7 @@ public protocol ReadableStream {
     func move(offset: Int) -> Bool
 }
 
-public extension ReadableStream {
+public extension InStream {
     func next() -> Value {
         _ = move()
         return peek()
@@ -56,11 +56,11 @@ public extension ReadableStream {
     }
 }
 
-public protocol WritableStream {
+public protocol OutStream {
     associatedtype Value
 
-    func write(_ value: Value) throws
-    func flush() throws
+    mutating func write(_ value: Value) throws
+    mutating func flush() throws
 }
 
 public enum SeekOffset {
@@ -69,7 +69,7 @@ public enum SeekOffset {
     case end
 }
 
-public protocol RandomAccessStream: ReadableStream {
+public protocol RandomAccessStream: InStream {
     func move(offset: Int, seek: SeekOffset) -> Bool
     func peek(offset: Int, seek: SeekOffset) -> Value
 
@@ -78,14 +78,14 @@ public protocol RandomAccessStream: ReadableStream {
 
 public extension RandomAccessStream {
     func peek(offset: Int) -> Value {
-        return self.peek(offset: offset, seek: .current)
+        self.peek(offset: offset, seek: .current)
     }
 
     func move(offset: Int) -> Bool {
-        return self.move(offset: offset, seek: .current)
+        self.move(offset: offset, seek: .current)
     }
 
     subscript(position: Int) -> Value {
-        return self.peek(offset: position, seek: .start)
+        self.peek(offset: position, seek: .start)
     }
 }

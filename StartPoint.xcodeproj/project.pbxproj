@@ -135,6 +135,7 @@
 		AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A85AE0879C1B59BA2247 /* Collection.swift */; };
 		AC96AA8241BC807A2B9AA28D /* ContactPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC5D3212FC05F7BB00A7 /* ContactPermission.swift */; };
 		AC96AAC0807398D2AAB0A09E /* IntToChar.hpp in Headers */ = {isa = PBXBuildFile; fileRef = AC96A80ADDE6A62C828E867A /* IntToChar.hpp */; };
+		AC96AB03CB59F4D5832FD44A /* JSONDataWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */; };
 		AC96AB1166AEEE839B575C37 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEC6503E25A2408613CD /* Lock.swift */; };
 		AC96AB15FB41E415590019DF /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0FC10F6CE9C8040980B /* Double.swift */; };
 		AC96AB39E21C735ED53D6439 /* PropertyText.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ACA4EDB3AEDEECC4CD2D /* PropertyText.swift */; };
@@ -197,6 +198,7 @@
 		AC96AF2CB14F130041777456 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A4D560BBF1E4278D3A5A /* List.swift */; };
 		AC96AF3494D44C99DC77D8C3 /* ByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A660ACE5815583364D09 /* ByteStream.swift */; };
 		AC96AF3F38A64CAE3CE01F7B /* ListElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A694DEC7A6D0CCD1D4C2 /* ListElements.swift */; };
+		AC96AF4737F501EB7B5863E4 /* DataStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A5AA71EB63D2ED2BACBE /* DataStream.swift */; };
 		AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADD6A32F1944E34B2888 /* RouteTests.swift */; };
 		AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */; };
 		AC96AF86441EB34F17E99A4A /* FlexButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC5E105A8574AD1E3295 /* FlexButton.swift */; };
@@ -267,6 +269,7 @@
 		AC96A192237851A0D790CB7C /* BasicElement+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicElement+UIKit.swift"; sourceTree = "<group>"; };
 		AC96A1AE69D5878CBB94E011 /* AlignContentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignContentTests.swift; sourceTree = "<group>"; };
 		AC96A1D0B6699F9A5D4C1657 /* CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRect.swift; sourceTree = "<group>"; };
+		AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDataWriterTests.swift; sourceTree = "<group>"; };
 		AC96A1DFF724C2080A6CE117 /* PropertyListReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListReader.swift; sourceTree = "<group>"; };
 		AC96A1E1A4C40E7EE071DAB2 /* Flex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flex.swift; sourceTree = "<group>"; };
 		AC96A20AA9DC21B1459471BD /* Identified.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identified.swift; sourceTree = "<group>"; };
@@ -313,6 +316,7 @@
 		AC96A580B09D709C0E417B11 /* StatusBarWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarWindow.swift; sourceTree = "<group>"; };
 		AC96A58853AF6DC9705678B1 /* BasicElement+Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BasicElement+Debug.swift"; sourceTree = "<group>"; };
 		AC96A59C0147622CBBF74E0C /* TableElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableElements.swift; sourceTree = "<group>"; };
+		AC96A5AA71EB63D2ED2BACBE /* DataStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStream.swift; sourceTree = "<group>"; };
 		AC96A5AD5DA1285AA4028383 /* ElementLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementLayer.swift; sourceTree = "<group>"; };
 		AC96A5B9CF7DA87FE9005EA3 /* NotificationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationPermission.swift; sourceTree = "<group>"; };
 		AC96A5C24B6B105C043B2099 /* LayerElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerElement.swift; sourceTree = "<group>"; };
@@ -781,6 +785,7 @@
 				AC96ABA401F1A1C80607730B /* JSONTests.swift */,
 				BC57E7E1236FD14400E1903C /* ParserTests.mm */,
 				AC96A0889091CDAC49E57928 /* JSONEncoderTests.swift */,
+				AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -812,6 +817,7 @@
 				AC96A6C9A33B9941F565F7A5 /* FileByteStream.swift */,
 				AC96A4930F3A00F285EC36A9 /* FileStream.swift */,
 				AC96A0BD0D195097B137A1F7 /* DataStreamWriter.swift */,
+				AC96A5AA71EB63D2ED2BACBE /* DataStream.swift */,
 			);
 			path = Stream;
 			sourceTree = "<group>";
@@ -1438,6 +1444,7 @@
 				AC96AFF6CF3DD235A0C09F17 /* Validation.swift in Sources */,
 				AC96A6DC6AA2EF27070A30FB /* JSONEncoder.swift in Sources */,
 				AC96A9DC91CFAE6B2557B688 /* ByteArray.cpp in Sources */,
+				AC96AF4737F501EB7B5863E4 /* DataStream.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1500,6 +1507,7 @@
 				AC96A7A1D1DD0C2636B65F95 /* AtomicTests.swift in Sources */,
 				AC96ABE166FBEF42960F868D /* JSONTests.swift in Sources */,
 				AC96A363CF4720B9AEAD3039 /* JSONEncoderTests.swift in Sources */,
+				AC96AB03CB59F4D5832FD44A /* JSONDataWriterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,7 +22,7 @@
 
 import Darwin.C
 
-public class ByteStream: ReadableStream {
+public class ByteStream: InStream {
     public typealias Value = UInt8
 
 #if DEBUG

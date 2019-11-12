@@ -81,7 +81,18 @@ JSONRef json_create_float(float value);
 JSONRef json_create_double(double value);
 JSONRef json_create_bool(bool value);
 JSONRef json_create_string(const int8_t* data, uint32_t size);
+void json_reset_type(JSONRef json, JSONType type);
 void json_free(JSONRef SP_NULLABLE ref);
+
+void json_set_int32(JSONRef json, int32_t value);
+void json_set_int64(JSONRef json, int64_t value);
+void json_set_uint32(JSONRef json, uint32_t value);
+void json_set_uint64(JSONRef json, uint64_t value);
+void json_set_float(JSONRef json, float value);
+void json_set_double(JSONRef json, double value);
+void json_set_bool(JSONRef json, bool value);
+void json_replace(JSONRef json, JSONRef source);
+void json_replace_copy(JSONRef json, JSONRef source);
 
 JSONType json_type(JSONRef json);
 bool json_is_int32(JSONRef json);
@@ -124,14 +135,6 @@ bool json_get_float(JSONRef json, float* result);
 bool json_get_double(JSONRef json, double* result);
 bool json_get_bool(JSONRef json, bool* result);
 void* json_get_string(JSONRef json, uint32_t* size);
-
-//void json_array_append_int32(JSONRef json, int32_t value);
-//void json_array_append_int64(JSONRef json, int64_t value);
-//void json_array_append_uint32(JSONRef json, uint32_t value);
-//void json_array_append_uint64(JSONRef json, uint64_t value);
-//void json_array_append_double(JSONRef json, double value);
-//void json_array_append_bool(JSONRef json, bool value);
-//void json_array_append_null(JSONRef json);
 
 bool json_object_contains_key(JSONRef json, const int8_t* data);
 JSONRef SP_NULLABLE json_object_find_key(JSONRef json, const int8_t* data);

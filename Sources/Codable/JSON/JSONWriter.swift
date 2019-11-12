@@ -20,6 +20,460 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+public protocol JSONWriter: class {
+    associatedtype Output
+
+    var output: Output { get }
+
+    func writeNull()
+
+    func startArray()
+    func endArray()
+
+    func startObject()
+    func endObject()
+
+    func writePrefix()
+    func writeInfix()
+    func writeSuffix()
+
+    func write(any value: String?)
+    func write(any value: Bool?)
+    func write(any value: Float?)
+    func write(any value: Double?)
+    func write(any value: Int?)
+    func write(any value: Int8?)
+    func write(any value: Int16?)
+    func write(any value: Int32?)
+    func write(any value: Int64?)
+    func write(any value: UInt?)
+    func write(any value: UInt8?)
+    func write(any value: UInt16?)
+    func write(any value: UInt32?)
+    func write(any value: UInt64?)
+
+    func write(_ value: String)
+    func write(_ value: Bool)
+    func write(_ value: Float)
+    func write(_ value: Double)
+    func write(_ value: Int)
+    func write(_ value: Int8)
+    func write(_ value: Int16)
+    func write(_ value: Int32)
+    func write(_ value: Int64)
+    func write(_ value: UInt)
+    func write(_ value: UInt8)
+    func write(_ value: UInt16)
+    func write(_ value: UInt32)
+    func write(_ value: UInt64)
+
+    func write(any value: JSONWritable?)
+    func write(_ value: JSONWritable)
+}
+
+public extension JSONWriter {
+    func write(_ value: Int) {
+#if arch(arm64) || arch(x86_64)
+        self.write(Int64(value))
+#else
+        self.write(Int32(value))
+#endif
+    }
+
+    func write(_ value: Int8) {
+        self.write(Int32(value))
+    }
+
+    func write(_ value: Int16) {
+        self.write(Int32(value))
+    }
+
+    func write(_ value: UInt) {
+#if arch(arm64) || arch(x86_64)
+        self.write(UInt64(value))
+#else
+        self.write(UInt32(value))
+#endif
+    }
+
+    func write(_ value: UInt8) {
+        self.write(UInt32(value))
+    }
+
+    func write(_ value: UInt16) {
+        self.write(UInt32(value))
+    }
+
+    func write(_ value: JSONWritable) {
+        value.write(to: self)
+    }
+
+    func write(any value: String?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Bool?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Float?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Double?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Int?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Int8?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Int16?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Int32?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: Int64?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: UInt?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: UInt8?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: UInt16?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: UInt32?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: UInt64?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+
+    func write(any value: JSONWritable?) {
+        if let value = value {
+            write(value)
+        } else {
+            writeNull()
+        }
+    }
+}
+
+public extension JSONWriter where Output == Never {
+    var output: Output {
+        fatalError()
+    }
+}
+
+public extension JSONWriter where Self: JSONVisitor {
+    func visit(array value: [JSON]) {
+        self.startArray()
+        for item in value {
+            self.writePrefix()
+            item.accept(visitor: self)
+            self.writeSuffix()
+        }
+        self.endArray()
+    }
+
+    func visit(dictionary value: [String: JSON]) {
+        self.startObject()
+        for (key, item) in value {
+            self.writePrefix()
+            write(key)
+            self.writeInfix()
+            item.accept(visitor: self)
+            self.writeSuffix()
+        }
+        self.endObject()
+    }
+
+    func visit(dictionary value: [String: JSON], order: [String]) {
+        self.startObject()
+        for key in order {
+            self.writePrefix()
+            write(key)
+            self.writeInfix()
+            if let item = value[key] {
+                item.accept(visitor: self)
+            } else {
+                writeNull()
+            }
+            self.writeSuffix()
+        }
+        self.endObject()
+    }
+
+    func visitNull() {
+        writeNull()
+    }
+
+    func visit(string value: String) {
+        write(value)
+    }
+
+    func visit(bool value: Bool) {
+        write(value)
+    }
+
+    func visit(double value: Double) {
+        write(value)
+    }
+
+    func visit(int value: Int32) {
+        write(value)
+    }
+
+    func visit(int64 value: Int64) {
+        write(value)
+    }
+
+    func visit(uint value: UInt32) {
+        write(value)
+    }
+
+    func visit(uint64 value: UInt64) {
+        write(value)
+    }
+}
+
+public protocol JSONWritable {
+    func write<Writer>(to writer: Writer) where Writer: JSONWriter
+}
+
+public class JSONDataWriter: JSONWriter, JSONVisitor {
+    public typealias Output = ByteArrayRef
+
+    public private(set) var data: ByteArrayRef
+    private(set) var state: [State] = []
+
+    public var output: ByteArrayRef {
+        data
+    }
+
+    public init() {
+        data = byte_array_create()
+    }
+
+    deinit {
+        byte_array_free(data)
+    }
+
+    var current: State {
+        state.last ?? State.value
+    }
+
+    /// ```swift
+    /// self.startArray()
+    /// for item in value {
+    ///     self.writePrefix()
+    ///     item.accept(visitor: self)
+    ///     self.writeSuffix()
+    /// }
+    /// self.endArray()
+    /// ```
+    public func startArray() {
+        state.append(State.array)
+        byte_array_add(data, 0x5b) // [
+    }
+
+    public func endArray() {
+        precondition(current == State.array || current == State.filledArray)
+        byte_array_add(data, 0x5d) // ]
+        state.removeLast()
+    }
+
+    /// ```swift
+    /// self.startObject()
+    /// for (key, item) in value {
+    ///     self.writePrefix()
+    ///     self.write(key)
+    ///     self.writeInfix()
+    ///     item.accept(visitor: self)
+    ///     self.writeSuffix()
+    /// }
+    /// self.endObject()
+    /// ```
+    public func startObject() {
+        state.append(State.object)
+        byte_array_add(data, 0x7b) // {
+    }
+
+    public func endObject() {
+        precondition(current == State.object || current == State.filledObject)
+        byte_array_add(data, 0x7d) // }
+        state.removeLast()
+    }
+
+    public func writePrefix() {
+        precondition(current != State.key && current != State.value)
+        switch current {
+        case .array: // A empty ARRAY just started.
+            break
+        case .filledArray, .filledObject:
+            byte_array_add(data, 0x2c) // ,
+        case .object: // A empty OBJECT just started.
+            break
+        case .key, .value:
+            break
+        }
+    }
+
+    public func writeInfix() {
+        precondition(current == State.key)
+        byte_array_add(data, 0x3a) // :
+    }
+
+    public func writeSuffix() {
+        switch current {
+        case .array:
+            state.removeLast()
+            state.append(State.filledArray)
+        case .object, .key:
+            state.removeLast()
+            state.append(State.filledObject)
+        default:
+            break
+        }
+    }
+
+    public func writeNull() {
+        byte_array_write_null(data)
+    }
+
+    private func write(key: String) {
+        write(string: key)
+    }
+
+    private func write(string value: String) {
+        byte_array_add(data, 0x22) // "
+        value.withCString { pointer in
+            byte_array_write_int8_data(data, pointer, 0)
+        }
+        byte_array_add(data, 0x22) // "
+    }
+
+    public func write(_ value: String) {
+        switch current {
+        case .object, .filledObject:
+            state.append(State.key)
+            write(key: value)
+        case .key:
+            state.removeLast()
+            write(string: value)
+        case .array, .filledArray, .value:
+            write(string: value)
+        }
+    }
+
+    public func write(_ value: Bool) {
+        byte_array_write_bool(data, value)
+    }
+
+    public func write(_ value: Float) {
+        byte_array_write_float(data, value)
+    }
+
+    public func write(_ value: Double) {
+        byte_array_write_double(data, value)
+    }
+
+    public func write(_ value: Int32) {
+        byte_array_write_int32(data, value)
+    }
+
+    public func write(_ value: Int64) {
+        byte_array_write_int64(data, value)
+    }
+
+    public func write(_ value: UInt32) {
+        byte_array_write_uint32(data, value)
+    }
+
+    public func write(_ value: UInt64) {
+        byte_array_write_uint64(data, value)
+    }
+
+    enum State {
+        case array
+        case filledArray
+        case object
+        case filledObject
+        case key
+        case value
+    }
+}
+
 //public enum SortMethod {
 //    case none
 //    case alphabet
@@ -72,7 +526,6 @@
 //        write(0x2c)
 //    }
 //}
-
 //public final class JSONWriter: JSONWriterType {
 //    public let stream: DataStream
 //    public let hasIntent: Bool

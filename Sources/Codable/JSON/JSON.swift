@@ -21,11 +21,10 @@
 // SOFTWARE.
 
 public protocol JSONVisitor {
-    func visit(_ value: JSON)
     func visit(array value: [JSON])
     func visit(dictionary value: [String: JSON])
-    func visit(null value: JSON)
-    func visit(key value: String)
+    func visit(dictionary value: [String: JSON], order: [String])
+    func visitNull()
     func visit(string value: String)
     func visit(bool value: Bool)
     func visit(double value: Double)
@@ -36,53 +35,8 @@ public protocol JSONVisitor {
 }
 
 public extension JSONVisitor {
-    func visit(array value: [JSON]) {
-        for item in value {
-            visit(item)
-        }
-    }
-
-    func visit(dictionary value: [String: JSON]) {
-        for (key, item) in value {
-            visit(key: key)
-            visit(item)
-        }
-    }
-
-    func visit(null value: JSON) {
-        visit(value)
-    }
-
-    func visit(key value: String) {
-        // Do nothing
-    }
-
-    func visit(string value: String) {
-        // Do nothing
-    }
-
-    func visit(bool value: Bool) {
-        // Do nothing
-    }
-
-    func visit(double value: Double) {
-        // Do nothing
-    }
-
-    func visit(int value: Int32) {
-        // Do nothing
-    }
-
-    func visit(int64 value: Int64) {
-        // Do nothing
-    }
-
-    func visit(uint value: UInt32) {
-        // Do nothing
-    }
-
-    func visit(uint64 value: UInt64) {
-        // Do nothing
+    func visit(dictionary value: [String: JSON], order: [String]) {
+        visit(dictionary: value)
     }
 }
 
@@ -108,6 +62,17 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     var _cachedArray: [JSON]?
     var _cachedDictionary: [String: JSON]?
 
+    public var kind: JSONType {
+        get {
+            json_type(ref)
+        }
+        set {
+            if json_type(ref) != newValue {
+                json_reset_type(ref, newValue)
+            }
+        }
+    }
+
     init(type: JSONType) {
         ref = json_create_type(type)
         buffer = JSONBuffer(ref: ref)
@@ -123,12 +88,32 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         buffer = JSONBuffer(ref: ref)
     }
 
+    public convenience init(_ value: Bool) {
+        self.init(ref: json_create_bool(value))
+    }
+
+    public convenience init(_ value: Double) {
+        self.init(ref: json_create_double(value))
+    }
+
+    public convenience init(_ value: Float) {
+        self.init(ref: json_create_float(value))
+    }
+
     public convenience init(_ value: Int) {
 #if arch(arm64) || arch(x86_64)
         self.init(ref: json_create_int32(Int32(value)))
 #else
         self.init(ref: json_create_int64(Int64(value)))
 #endif
+    }
+
+    public convenience init(_ value: Int8) {
+        self.init(Int(value))
+    }
+
+    public convenience init(_ value: Int16) {
+        self.init(Int(value))
     }
 
     public convenience init(_ value: Int32) {
@@ -147,20 +132,20 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
 #endif
     }
 
+    public convenience init(_ value: UInt8) {
+        self.init(UInt(value))
+    }
+
+    public convenience init(_ value: UInt16) {
+        self.init(UInt(value))
+    }
+
     public convenience init(_ value: UInt32) {
         self.init(ref: json_create_uint32(value))
     }
 
     public convenience init(_ value: UInt64) {
         self.init(ref: json_create_uint64(value))
-    }
-
-    public convenience init(_ value: Float) {
-        self.init(ref: json_create_float(value))
-    }
-
-    public convenience init(_ value: Double) {
-        self.init(ref: json_create_double(value))
     }
 
     public init(string value: String) {
@@ -446,13 +431,13 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         case JSONType.string:
             visitor.visit(string: string)
         case JSONType.null:
-            visitor.visit(null: self)
+            visitor.visitNull()
         case JSONType.true:
             visitor.visit(bool: true)
         case JSONType.false:
             visitor.visit(bool: false)
         @unknown default:
-            visitor.visit(self)
+            break
         }
     }
 
@@ -496,6 +481,851 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         self[key]
     }
 
+    public func fill(any value: String?) {
+        precondition(kind != JSONType.array && kind != JSONType.object)
+        if let value = value {
+            _cachedString = value
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Bool?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_bool(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Float?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_float(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Double?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_double(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Int?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+#if arch(arm64) || arch(x86_64)
+            json_set_int64(ref, Int64(value))
+#else
+            json_set_int32(ref, Int32(value))
+#endif
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Int8?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_int32(ref, Int32(value))
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Int16?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_int32(ref, Int32(value))
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Int32?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_int32(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: Int64?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_int64(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: UInt?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+#if arch(arm64) || arch(x86_64)
+            json_set_uint64(ref, UInt64(value))
+#else
+            json_set_uint32(ref, UInt32(value))
+#endif
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: UInt8?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_uint32(ref, UInt32(value))
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: UInt16?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_uint32(ref, UInt32(value))
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: UInt32?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_uint32(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: UInt64?) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if let value = value {
+            json_set_uint64(ref, value)
+        } else {
+            json_reset_type(ref, JSONType.null)
+        }
+    }
+
+    public func fill(any value: JSON?) {
+        if let value = value {
+            json_replace(ref, value.ref)
+            _cachedArray = value._cachedArray
+            _cachedDictionary = value._cachedDictionary
+            _cachedString = value._cachedString
+            value._cachedArray = nil
+            value._cachedDictionary = nil
+            value._cachedString = nil
+        } else {
+            json_reset_type(ref, JSONType.null)
+            _cachedArray = nil
+            _cachedDictionary = nil
+            _cachedString = nil
+        }
+    }
+
+    public func fill(_ value: String) {
+        precondition(kind != JSONType.array && kind != JSONType.object)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(string: value))
+    }
+
+    public func fill(_ value: Bool) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_bool(ref, value)
+    }
+
+    public func fill(_ value: Float) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_float(ref, value)
+    }
+
+    public func fill(_ value: Double) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_double(ref, value)
+    }
+
+    public func fill(_ value: Int) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+#if arch(arm64) || arch(x86_64)
+        json_set_int64(ref, Int64(value))
+#else
+        json_set_int32(ref, Int32(value))
+#endif
+    }
+
+    public func fill(_ value: Int8) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_int32(ref, Int32(value))
+    }
+
+    public func fill(_ value: Int16) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_int32(ref, Int32(value))
+    }
+
+    public func fill(_ value: Int32) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_int32(ref, value)
+    }
+
+    public func fill(_ value: Int64) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func fill(_ value: UInt) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+#if arch(arm64) || arch(x86_64)
+        json_set_uint64(ref, UInt64(value))
+#else
+        json_set_uint32(ref, UInt32(value))
+#endif
+    }
+
+    public func fill(_ value: UInt8) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_uint32(ref, UInt32(value))
+    }
+
+    public func fill(_ value: UInt16) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_uint32(ref, UInt32(value))
+    }
+
+    public func fill(_ value: UInt32) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_uint32(ref, value)
+    }
+
+    public func fill(_ value: UInt64) {
+        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        json_set_uint64(ref, value)
+    }
+
+    public func fill(_ value: JSON) {
+        json_replace(ref, value.ref)
+        _cachedArray = value._cachedArray
+        _cachedDictionary = value._cachedDictionary
+        _cachedString = value._cachedString
+        value._cachedArray = nil
+        value._cachedDictionary = nil
+        value._cachedString = nil
+    }
+
+    public func append(any value: String?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(string: value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Bool?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Float?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Double?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Int?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Int8?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Int16?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Int32?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: Int64?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: UInt?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: UInt8?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: UInt16?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: UInt32?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: UInt64?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(JSON(value))
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(any value: JSON?) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        if let value = value {
+            _cachedArray?.append(value)
+        } else {
+            _cachedArray?.append(JSON.null)
+        }
+    }
+
+    public func append(_ value: String) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(string: value))
+    }
+
+    public func append(_ value: Bool) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Float) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Double) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Int) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Int8) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Int16) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Int32) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: Int64) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: UInt) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: UInt8) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: UInt16) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: UInt32) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: UInt64) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON(value))
+    }
+
+    public func append(_ value: JSON) {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(value)
+    }
+
+    public func set(key: String, any value: String?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(string: value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Bool?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Float?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Double?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Int?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Int8?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Int16?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Int32?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: Int64?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: UInt?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: UInt8?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: UInt16?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: UInt32?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: UInt64?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = JSON(value)
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, any value: JSON?) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        if let value = value {
+            _cachedDictionary?[key] = value
+        } else {
+            _cachedDictionary?[key] = JSON.null
+        }
+    }
+
+    public func set(key: String, _ value: String) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(string: value)
+    }
+
+    public func set(key: String, _ value: Bool) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Float) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Double) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Int) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Int8) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Int16) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Int32) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: Int64) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: UInt) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: UInt8) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: UInt16) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: UInt32) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: UInt64) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON(value)
+    }
+
+    public func set(key: String, _ value: JSON) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = value
+    }
+
     static func decodeString(ref: JSONRef) -> String? {
         var size: UInt32 = 0
         let data = json_get_string(ref, &size)
@@ -509,7 +1339,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         var result: [String: JSON] = [:]
         json_object_for_each(ref) { (data, size, value) in
             if let key = String(bytesNoCopy: UnsafeMutableRawPointer(mutating: data), length: Int(size),
-                                encoding: .utf8, freeWhenDone: false) {
+                encoding: .utf8, freeWhenDone: false) {
                 result[key] = JSON(buffer: buffer, ref: value)
             }
         }
