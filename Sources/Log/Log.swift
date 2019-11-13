@@ -45,16 +45,17 @@ public final class Log {
     private let queue: DispatchQueue
     private let tag: String
 
-    public convenience init(tag: String, level: LogLevel, destination: LogDestination...) {
+    public convenience init(tag: String, level: LogLevel, queue: DispatchQueue? = nil, destination: LogDestination...) {
         assert(!tag.isEmpty)
-        self.init(tag: tag, level: level, destinations: destination)
+        self.init(tag: tag, level: level, queue: queue, destinations: destination)
     }
 
-    private init(tag: String, level: LogLevel, destinations: [LogDestination]) {
+    public init(tag: String, level: LogLevel, queue: DispatchQueue? = nil, destinations: [LogDestination]) {
         self.level = level
         self.destinations = destinations
-        self.tag = tag.isEmpty ? "com.undev.log" : ("com.undev.log." + tag)
-        queue = DispatchQueue(label: self.tag, qos: .utility)
+        let _tag = tag.isEmpty ? "com.undev.log" : ("com.undev.log." + tag)
+        self.tag = _tag
+        self.queue = queue ?? DispatchQueue(label: _tag, qos: .utility)
     }
 
     public func verbose(_ value: Any..., file: String = #file, function: String = #function,

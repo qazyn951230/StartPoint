@@ -480,10 +480,15 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     public func item(key: String) -> Notated {
         self[key]
     }
+    
+    public func fillNull() {
+        json_reset_type(ref, JSONType.null)
+    }
 
     public func fill(any value: String?) {
         precondition(kind != JSONType.array && kind != JSONType.object)
         if let value = value {
+            json_reset_type(ref, JSONType.string)
             _cachedString = value
         } else {
             json_reset_type(ref, JSONType.null)
@@ -491,7 +496,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Bool?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_bool(ref, value)
         } else {
@@ -500,7 +505,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Float?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_float(ref, value)
         } else {
@@ -509,7 +514,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Double?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_double(ref, value)
         } else {
@@ -518,7 +523,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Int?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
 #if arch(arm64) || arch(x86_64)
             json_set_int64(ref, Int64(value))
@@ -531,7 +536,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Int8?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_int32(ref, Int32(value))
         } else {
@@ -540,7 +545,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Int16?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_int32(ref, Int32(value))
         } else {
@@ -549,7 +554,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Int32?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_int32(ref, value)
         } else {
@@ -558,7 +563,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: Int64?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_int64(ref, value)
         } else {
@@ -567,7 +572,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: UInt?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
 #if arch(arm64) || arch(x86_64)
             json_set_uint64(ref, UInt64(value))
@@ -580,7 +585,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: UInt8?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_uint32(ref, UInt32(value))
         } else {
@@ -589,7 +594,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: UInt16?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_uint32(ref, UInt32(value))
         } else {
@@ -598,7 +603,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: UInt32?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_uint32(ref, value)
         } else {
@@ -607,7 +612,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(any value: UInt64?) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         if let value = value {
             json_set_uint64(ref, value)
         } else {
@@ -634,29 +639,27 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
 
     public func fill(_ value: String) {
         precondition(kind != JSONType.array && kind != JSONType.object)
-        if _cachedArray == nil {
-            _cachedArray = []
-        }
-        _cachedArray?.append(JSON(string: value))
+        json_reset_type(ref, JSONType.string)
+        _cachedString = value
     }
 
     public func fill(_ value: Bool) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_bool(ref, value)
     }
 
     public func fill(_ value: Float) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_float(ref, value)
     }
 
     public func fill(_ value: Double) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_double(ref, value)
     }
 
     public func fill(_ value: Int) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
 #if arch(arm64) || arch(x86_64)
         json_set_int64(ref, Int64(value))
 #else
@@ -665,30 +668,27 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(_ value: Int8) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_int32(ref, Int32(value))
     }
 
     public func fill(_ value: Int16) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_int32(ref, Int32(value))
     }
 
     public func fill(_ value: Int32) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_int32(ref, value)
     }
 
     public func fill(_ value: Int64) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
-        if _cachedArray == nil {
-            _cachedArray = []
-        }
-        _cachedArray?.append(JSON(value))
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
+        json_set_int64(ref, value)
     }
 
     public func fill(_ value: UInt) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
 #if arch(arm64) || arch(x86_64)
         json_set_uint64(ref, UInt64(value))
 #else
@@ -697,22 +697,22 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public func fill(_ value: UInt8) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_uint32(ref, UInt32(value))
     }
 
     public func fill(_ value: UInt16) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_uint32(ref, UInt32(value))
     }
 
     public func fill(_ value: UInt32) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_uint32(ref, value)
     }
 
     public func fill(_ value: UInt64) {
-        precondition(kind != JSONType.array && kind != JSONType.object && kind == JSONType.string)
+        precondition(kind != JSONType.array && kind != JSONType.object && kind != JSONType.string)
         json_set_uint64(ref, value)
     }
 
@@ -724,6 +724,14 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         value._cachedArray = nil
         value._cachedDictionary = nil
         value._cachedString = nil
+    }
+    
+    public func appendNull() {
+        precondition(kind == JSONType.array)
+        if _cachedArray == nil {
+            _cachedArray = []
+        }
+        _cachedArray?.append(JSON.null)
     }
 
     public func append(any value: String?) {
@@ -1024,6 +1032,14 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
             _cachedArray = []
         }
         _cachedArray?.append(value)
+    }
+    
+    public func setNull(key: String) {
+        precondition(kind == JSONType.object)
+        if _cachedDictionary == nil {
+            _cachedDictionary = [:]
+        }
+        _cachedDictionary?[key] = JSON.null
     }
 
     public func set(key: String, any value: String?) {

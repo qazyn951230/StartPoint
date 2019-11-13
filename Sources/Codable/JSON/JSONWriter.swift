@@ -316,6 +316,7 @@ public class JSONDataWriter: JSONWriter, JSONVisitor {
 
     public private(set) var data: ByteArrayRef
     private(set) var state: [State] = []
+    public var sortKeys = false
 
     public var output: ByteArrayRef {
         data
@@ -462,6 +463,39 @@ public class JSONDataWriter: JSONWriter, JSONVisitor {
 
     public func write(_ value: UInt64) {
         byte_array_write_uint64(data, value)
+    }
+    
+    public func visit(dictionary value: [String: JSON]) {
+        if sortKeys {
+            let keys = value.keys.sorted()
+            visit(dictionary: value, order: keys)
+        } else {
+            self.startObject()
+            for (key, item) in value {
+                self.writePrefix()
+                write(key)
+                self.writeInfix()
+                item.accept(visitor: self)
+                self.writeSuffix()
+            }
+            self.endObject()
+        }
+    }
+
+    public func visit(dictionary value: [String: JSON], order: [String]) {
+        self.startObject()
+        for key in order {
+            self.writePrefix()
+            write(key)
+            self.writeInfix()
+            if let item = value[key] {
+                item.accept(visitor: self)
+            } else {
+                writeNull()
+            }
+            self.writeSuffix()
+        }
+        self.endObject()
     }
 
     enum State {

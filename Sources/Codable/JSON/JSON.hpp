@@ -657,6 +657,7 @@ public:
     void reset(JSONType type) {
         assert_invariant();
         _data.destroy(_type);
+        _type = type;
         _data = std::move(Data(_type));
     }
 

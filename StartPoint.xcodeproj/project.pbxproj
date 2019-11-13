@@ -780,12 +780,12 @@
 		AC96A566939DBC0E67587FEC /* Codable */ = {
 			isa = PBXGroup;
 			children = (
+				AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */,
 				BC902E182373B9F700233DBE /* JSONDecoderTests.swift */,
+				AC96A0889091CDAC49E57928 /* JSONEncoderTests.swift */,
 				BCF881CF23711C9F0062227E /* JSONTests.mm */,
 				AC96ABA401F1A1C80607730B /* JSONTests.swift */,
 				BC57E7E1236FD14400E1903C /* ParserTests.mm */,
-				AC96A0889091CDAC49E57928 /* JSONEncoderTests.swift */,
-				AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
