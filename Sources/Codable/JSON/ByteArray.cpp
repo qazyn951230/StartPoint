@@ -174,6 +174,14 @@ const uint8_t* byte_array_uint8_data(ByteArrayRef array) {
     return reinterpret_cast<const uint8_t*>(unwrap(array)->data());
 }
 
+void* byte_array_move_data(ByteArrayRef array) {
+    return unwrap(array)->move();
+}
+
+uint8_t* byte_array_move_uint8_data(ByteArrayRef array) {
+    return reinterpret_cast<uint8_t*>(unwrap(array)->move());
+}
+
 NSInteger byte_array_size(ByteArrayRef array) {
     return static_cast<NSInteger>(unwrap(array)->size());
 }

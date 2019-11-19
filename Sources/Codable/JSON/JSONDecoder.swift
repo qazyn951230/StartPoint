@@ -452,7 +452,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
     }
 
     init(decoder: SJDecoder, value: JSONRef) throws {
-        if json_is_array(decoder.value) || json_is_object(decoder.value) {
+        guard json_is_array(decoder.value) || json_is_null(decoder.value) else {
             let context = DecodingError.Context(codingPath: decoder.codingPath,
                 debugDescription: SJDecoder.valueIsNotUnkeyedContainer(value))
             throw DecodingError.dataCorrupted(context)
@@ -628,7 +628,7 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : Coding
     }
 
     init(decoder: SJDecoder, value: JSONRef) throws {
-        if json_is_object(value) || json_is_null(value) {
+        guard json_is_object(value) || json_is_null(value) else {
             let context = DecodingError.Context(codingPath: decoder.codingPath,
                 debugDescription: SJDecoder.valueIsNotKeyedContainer(value))
             throw DecodingError.dataCorrupted(context)

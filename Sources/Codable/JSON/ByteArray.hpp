@@ -78,6 +78,14 @@ public:
         return static_cast<size_t>(_end - _start);
     }
 
+    char* move() noexcept  {
+        auto result = _start;
+        _start = nullptr;
+        _end = nullptr;
+        _current = nullptr;
+        return result;
+    }
+
     // template<typename T, std::enable_if_t<std::is_function<T>::value, int> = 0>
     template<typename T>
     inline void mutate(const size_t requiredSize, T method) {

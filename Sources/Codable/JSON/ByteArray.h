@@ -48,6 +48,10 @@ void byte_array_free(ByteArrayRef SP_NULLABLE ref);
 
 const void* byte_array_data(ByteArrayRef array);
 const uint8_t* byte_array_uint8_data(ByteArrayRef array);
+
+void* byte_array_move_data(ByteArrayRef array);
+uint8_t* byte_array_move_uint8_data(ByteArrayRef array);
+
 NSInteger byte_array_size(ByteArrayRef array);
 
 void byte_array_add(ByteArrayRef array, uint8_t value);

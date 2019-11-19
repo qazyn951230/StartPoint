@@ -118,7 +118,7 @@ class SJEncoder: Encoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("container")
 #endif
         let next = SJEKeyedContainer<Key>(encoder: self)
@@ -126,14 +126,14 @@ class SJEncoder: Encoder {
     }
 
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("unkeyedContainer")
 #endif
         return SJEUnkeyedContainer(encoder: self)
     }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("singleValueContainer")
 #endif
         return SJESingleContainer(encoder: self)
@@ -206,7 +206,7 @@ class SJEncoder: Encoder {
 
     @inline(__always)
     func encode<T>(_ value: T) throws where T: Encodable {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("T", value)
 #endif
 //        switch value {
@@ -260,7 +260,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encodeNil() throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nil")
 #endif
         try check()
@@ -268,7 +268,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Bool) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Bool", value)
 #endif
         try check()
@@ -276,7 +276,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: String) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("String", value)
 #endif
         try check()
@@ -284,7 +284,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Double) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Double", value)
 #endif
         try check()
@@ -292,7 +292,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Float) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Float", value)
 #endif
         try check()
@@ -300,7 +300,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Int) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int", value)
 #endif
         try check()
@@ -308,7 +308,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Int8) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int8", value)
 #endif
         try check()
@@ -316,7 +316,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Int16) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int16", value)
 #endif
         try check()
@@ -324,7 +324,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Int32) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int32", value)
 #endif
         try check()
@@ -332,7 +332,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: Int64) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int64", value)
 #endif
         try check()
@@ -340,7 +340,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: UInt) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt", value)
 #endif
         try check()
@@ -348,7 +348,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: UInt8) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt8", value)
 #endif
         try check()
@@ -356,7 +356,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: UInt16) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt16", value)
 #endif
         try check()
@@ -364,7 +364,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: UInt32) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt32", value)
 #endif
         try check()
@@ -372,7 +372,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode(_ value: UInt64) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt64", value)
 #endif
         try check()
@@ -380,7 +380,7 @@ struct SJESingleContainer: SingleValueEncodingContainer {
     }
 
     mutating func encode<T>(_ value: T) throws where T: Encodable {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("T", value)
 #endif
         try check()
@@ -403,12 +403,11 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
         self.key = key
         self.node = encoder.popNode()
         self.node.kind = JSONType.array
-        print(self.node.kind.rawValue)
     }
 
     mutating func encodeNil() throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nil")
 #endif
         node.appendNull()
@@ -416,7 +415,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Bool) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Bool", value)
 #endif
         node.append(value)
@@ -424,7 +423,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: String) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("String", value)
 #endif
         node.append(value)
@@ -436,7 +435,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 //            encoder.codingPath.removeLast()
 //        }
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Double", value)
 #endif
         node.append(value)
@@ -448,7 +447,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 //            encoder.codingPath.removeLast()
 //        }
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Float", value)
 #endif
         node.append(value)
@@ -456,7 +455,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Int) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int", value)
 #endif
         node.append(value)
@@ -464,7 +463,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Int8) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int8", value)
 #endif
         node.append(value)
@@ -472,7 +471,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Int16) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int16", value)
 #endif
         node.append(value)
@@ -480,7 +479,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Int32) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int32", value)
 #endif
         node.append(value)
@@ -488,7 +487,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: Int64) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("Int64", value)
 #endif
         node.append(value)
@@ -496,7 +495,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: UInt) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt", value)
 #endif
         node.append(value)
@@ -504,7 +503,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: UInt8) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt8", value)
 #endif
         node.append(value)
@@ -512,7 +511,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: UInt16) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt16", value)
 #endif
         node.append(value)
@@ -520,7 +519,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: UInt32) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt32", value)
 #endif
         node.append(value)
@@ -528,7 +527,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func encode(_ value: UInt64) throws {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("UInt64", value)
 #endif
         node.append(value)
@@ -540,7 +539,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 //            encoder.codingPath.removeLast()
 //        }
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("T", value)
 #endif
         let next = encoder.pushNode()
@@ -551,7 +550,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type)
             -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nestedContainer")
 #endif
         let next = encoder.pushNode()
@@ -561,7 +560,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
 
     mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
         count += 1
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nestedUnkeyedContainer")
 #endif
         let next = encoder.pushNode()
@@ -570,7 +569,7 @@ struct SJEUnkeyedContainer: UnkeyedEncodingContainer {
     }
 
     mutating func superEncoder() -> Encoder {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("superEncoder")
 #endif
         return encoder
@@ -599,7 +598,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encodeNil(forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "nil")
 #endif
         let next = try check(key)
@@ -607,7 +606,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Bool, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Bool", value)
 #endif
         let next = try check(key)
@@ -615,7 +614,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: String, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "String", value)
 #endif
         let next = try check(key)
@@ -623,7 +622,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Double, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Double", value)
 #endif
         let next = try check(key)
@@ -631,7 +630,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Float, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Float", value)
 #endif
         let next = try check(key)
@@ -639,7 +638,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Int, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Int", value)
 #endif
         let next = try check(key)
@@ -647,7 +646,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Int8, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Int8", value)
 #endif
         let next = try check(key)
@@ -655,7 +654,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Int16, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Int16", value)
 #endif
         let next = try check(key)
@@ -663,7 +662,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Int32, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Int32", value)
 #endif
         let next = try check(key)
@@ -671,7 +670,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: Int64, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "Int64", value)
 #endif
         let next = try check(key)
@@ -679,7 +678,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: UInt, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "UInt", value)
 #endif
         let next = try check(key)
@@ -687,7 +686,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: UInt8, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "UInt8", value)
 #endif
         let next = try check(key)
@@ -695,7 +694,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: UInt16, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "UInt16", value)
 #endif
         let next = try check(key)
@@ -703,7 +702,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: UInt32, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "UInt32", value)
 #endif
         let next = try check(key)
@@ -711,7 +710,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode(_ value: UInt64, forKey key: Key) throws {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "UInt64", value)
 #endif
         let next = try check(key)
@@ -719,7 +718,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("key", key, "T", value)
 #endif
         let next = try check(key)
@@ -730,7 +729,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
 
     mutating func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) ->
         KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nestedContainer")
 #endif
 //        let next = try check(key)
@@ -741,7 +740,7 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("nestedUnkeyedContainer")
 #endif
 //        let next = try check(key)
@@ -751,14 +750,14 @@ struct SJEKeyedContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingK
     }
 
     mutating func superEncoder() -> Encoder {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("superEncoder")
 #endif
         return encoder
     }
 
     mutating func superEncoder(forKey key: Key) -> Encoder {
-#if JSON_ENCODER_TRACE 
+#if JSON_ENCODER_TRACE
         Log.debug("superEncoder")
 #endif
         return SJEncoder(options: encoder.context, key: key, codingPath: encoder.codingPath)

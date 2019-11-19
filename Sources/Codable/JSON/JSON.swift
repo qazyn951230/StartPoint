@@ -20,26 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol JSONVisitor {
-    func visit(array value: [JSON])
-    func visit(dictionary value: [String: JSON])
-    func visit(dictionary value: [String: JSON], order: [String])
-    func visitNull()
-    func visit(string value: String)
-    func visit(bool value: Bool)
-    func visit(double value: Double)
-    func visit(int value: Int32)
-    func visit(int64 value: Int64)
-    func visit(uint value: UInt32)
-    func visit(uint64 value: UInt64)
-}
-
-public extension JSONVisitor {
-    func visit(dictionary value: [String: JSON], order: [String]) {
-        visit(dictionary: value)
-    }
-}
-
 class JSONBuffer {
     let ref: JSONRef
 
@@ -73,6 +53,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         }
     }
 
+    @usableFromInline
     init(type: JSONType) {
         ref = json_create_type(type)
         buffer = JSONBuffer(ref: ref)
@@ -412,35 +393,6 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         return ""
     }
 
-    public func accept(visitor: JSONVisitor) {
-        switch json_type(ref) {
-        case JSONType.array:
-            visitor.visit(array: array)
-        case JSONType.object:
-            visitor.visit(dictionary: dictionary)
-        case JSONType.int:
-            visitor.visit(int: int32)
-        case JSONType.uint:
-            visitor.visit(uint: uint32)
-        case JSONType.int64:
-            visitor.visit(int64: int64)
-        case JSONType.uint64:
-            visitor.visit(uint64: uint64)
-        case JSONType.double:
-            visitor.visit(double: double)
-        case JSONType.string:
-            visitor.visit(string: string)
-        case JSONType.null:
-            visitor.visitNull()
-        case JSONType.true:
-            visitor.visit(bool: true)
-        case JSONType.false:
-            visitor.visit(bool: false)
-        @unknown default:
-            break
-        }
-    }
-
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
         json_is_equal(lhs.ref, rhs.ref)
     }
@@ -480,7 +432,42 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     public func item(key: String) -> Notated {
         self[key]
     }
-    
+
+    static func decodeString(ref: JSONRef) -> String? {
+        var size: UInt32 = 0
+        let data = json_get_string(ref, &size)
+        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
+    }
+
+    static func decodeObject(buffer: JSONBuffer, ref: JSONRef) -> [String: JSON] {
+        guard json_object_size(ref) > 0 else {
+            return [:]
+        }
+        var result: [String: JSON] = [:]
+        json_object_for_each(ref) { (data, size, value) in
+            if let key = String(bytesNoCopy: UnsafeMutableRawPointer(mutating: data), length: Int(size),
+                encoding: .utf8, freeWhenDone: false) {
+                result[key] = JSON(buffer: buffer, ref: value)
+            }
+        }
+        return result
+    }
+}
+
+extension JSON {
+    @inlinable
+    public static func object() -> JSON {
+        JSON(type: JSONType.object)
+    }
+
+    @inlinable
+    public static func array() -> JSON {
+        JSON(type: JSONType.array)
+    }
+}
+
+// MARK: - Single JSON Container
+extension JSON {
     public func fillNull() {
         json_reset_type(ref, JSONType.null)
     }
@@ -725,7 +712,10 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         value._cachedDictionary = nil
         value._cachedString = nil
     }
-    
+}
+
+// MARK: - Unkeyed JSON Container
+extension JSON {
     public func appendNull() {
         precondition(kind == JSONType.array)
         if _cachedArray == nil {
@@ -1033,7 +1023,10 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         }
         _cachedArray?.append(value)
     }
-    
+}
+
+// MARK: - Keyed JSON Container
+extension JSON {
     public func setNull(key: String) {
         precondition(kind == JSONType.object)
         if _cachedDictionary == nil {
@@ -1341,27 +1334,10 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         }
         _cachedDictionary?[key] = value
     }
+}
 
-    static func decodeString(ref: JSONRef) -> String? {
-        var size: UInt32 = 0
-        let data = json_get_string(ref, &size)
-        return String(bytesNoCopy: data, length: Int(size), encoding: .utf8, freeWhenDone: false)
-    }
-
-    static func decodeObject(buffer: JSONBuffer, ref: JSONRef) -> [String: JSON] {
-        guard json_object_size(ref) > 0 else {
-            return [:]
-        }
-        var result: [String: JSON] = [:]
-        json_object_for_each(ref) { (data, size, value) in
-            if let key = String(bytesNoCopy: UnsafeMutableRawPointer(mutating: data), length: Int(size),
-                encoding: .utf8, freeWhenDone: false) {
-                result[key] = JSON(buffer: buffer, ref: value)
-            }
-        }
-        return result
-    }
-
+// MARK: - JSON parse
+extension JSON {
     public static func parse(_ value: String) -> JSON {
         value.withCString { pointer in
             if let ref = json_parse_int8_data(pointer) {
@@ -1405,73 +1381,4 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
             throw JSONParseError.create(status: status)
         }
     }
-
-//    static func create(from value: Any, nullable: Bool) -> JSON? {
-//        switch value {
-//        case let string as String:
-//            return JSONString(string)
-//        case let bool as Bool:
-//            return JSONBool(bool)
-//        case let int32 as Int32:
-//            return JSONInt(int32)
-//        case let int64 as Int64:
-//            return JSONInt64(int64)
-//        case let int as Int:
-//            return JSONInt64(Int64(int))
-//        case let uint32 as UInt32:
-//            return JSONUInt(uint32)
-//        case let uint64 as UInt64:
-//            return JSONUInt64(uint64)
-//        case let uint as UInt:
-//            return JSONUInt64(UInt64(uint))
-//        case let double as Double:
-//            return JSONDouble(double)
-//        case let float as Float:
-//            return JSONDouble(Double(float))
-//        case let int8 as Int8:
-//            return JSONInt(Int32(int8))
-//        case let int16 as Int16:
-//            return JSONInt(Int32(int16))
-//        case let uint8 as UInt8:
-//            return JSONUInt(UInt32(uint8))
-//        case let uint16 as UInt16:
-//            return JSONUInt(UInt32(uint16))
-//        case is NSNull:
-//            return JSON.null
-//        case let array as [Any]:
-//            return create(from: array, nullable: nullable)
-//        case let map as [String: Any]:
-//            return create(from: map, nullable: nullable)
-//        default:
-//            return nil
-//        }
-//    }
-
-//    static func create(from value: [Any], nullable: Bool) -> JSON? {
-//        if nullable {
-//            let array =  value.map { (v: Any) -> JSON in
-//                return JSON.create(from: v, nullable: nullable) ?? JSON.null
-//            }
-//            return JSONArray(array)
-//        } else {
-//            let array = value.compactMap { (v: Any) -> JSON? in
-//                return JSON.create(from: v, nullable: nullable)
-//            }
-//            return JSONArray(array)
-//        }
-//    }
-//
-//    public static func create(from value: [String: Any], nullable: Bool) -> JSON? {
-//        if nullable {
-//            let map = value.mapValues { (v: Any) -> JSON in
-//                return JSON.create(from: v, nullable: nullable) ?? JSON.null
-//            }
-//            return JSONObject(map)
-//        } else {
-//            let map = value.compactMapValues { (v: Any) -> JSON? in
-//                return JSON.create(from: v, nullable: nullable)
-//            }
-//            return JSONObject(map)
-//        }
-//    }
 }
