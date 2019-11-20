@@ -130,33 +130,77 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public init(string value: String) {
-        self.buffer = JSON.null.buffer
-        self.ref = JSON.null.ref
+        let ref = json_create_type(JSONType.string)
+        self.buffer = JSONBuffer(ref: ref)
+        self.ref = ref
         _cachedString = value
     }
 
     public init(array value: [JSON]) {
-        self.buffer = JSON.null.buffer
-        self.ref = JSON.null.ref
+        let ref = json_create_type(JSONType.array)
+        self.buffer = JSONBuffer(ref: ref)
+        self.ref = ref
         _cachedArray = value
     }
 
     public init(dictionary value: [String: JSON]) {
-        self.buffer = JSON.null.buffer
-        self.ref = JSON.null.ref
+        let ref = json_create_type(JSONType.object)
+        self.buffer = JSONBuffer(ref: ref)
+        self.ref = ref
         _cachedDictionary = value
     }
 
     public required init(from decoder: Decoder) throws {
-        fatalError()
+        if let start = decoder as? SJDecoder {
+            buffer = start.options.buffer
+            ref = start.value
+        } else {
+            let context = DecodingError.Context(codingPath: decoder.codingPath,
+                debugDescription: "Currently, StartPoint.JSON only supports StartJSONDecoder")
+            throw DecodingError.dataCorrupted(context)
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
-        fatalError()
+        if let start = encoder as? SJEncoder {
+            let node = start.popNode()
+            json_replace_copy(node.ref, ref)
+            node._cachedString = _cachedString
+            node._cachedArray = _cachedArray
+            node._cachedDictionary = _cachedDictionary
+            return
+        }
+        var single = encoder.singleValueContainer()
+        switch json_type(ref) {
+        case JSONType.null:
+            try single.encodeNil()
+        case JSONType.true:
+            try single.encode(true)
+        case JSONType.false:
+            try single.encode(false)
+        case JSONType.int:
+            try single.encode(int32)
+        case JSONType.int64:
+            try single.encode(int64)
+        case JSONType.uint:
+            try single.encode(uint32)
+        case JSONType.uint64:
+            try single.encode(uint64)
+        case JSONType.double:
+            try single.encode(double)
+        case JSONType.string:
+            try single.encode(string)
+        case JSONType.array:
+            try single.encode(array)
+        case JSONType.object:
+            try single.encode(dictionary)
+        @unknown default:
+            try single.encodeNil()
+        }
     }
 
     public var raw: Any {
-        return ""
+        ""
     }
 
     func makeRef(ref: JSONRef?) -> JSON {
@@ -394,7 +438,16 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
-        json_is_equal(lhs.ref, rhs.ref)
+        switch json_type(lhs.ref) {
+        case .string:
+            return lhs.stringValue == rhs.stringValue
+        case .array:
+            return lhs.arrayValue == rhs.arrayValue
+        case .object:
+            return lhs.dictionaryValue == rhs.dictionaryValue
+        default:
+            return json_is_equal(lhs.ref, rhs.ref)
+        }
     }
 
     public static func <(lhs: JSON, rhs: JSON) -> Bool {
@@ -463,6 +516,33 @@ extension JSON {
     @inlinable
     public static func array() -> JSON {
         JSON(type: JSONType.array)
+    }
+
+    public func toDecoder(base: Decoder? = nil, codingPath: [CodingKey]) -> Decoder {
+        let options: SJDecoderOptions
+        if let start = base as? StartJSONDecoder {
+            options = SJDecoderOptions(buffer: buffer,
+                userInfo: start.userInfo,
+                keyDecodingStrategy: start.keyDecodingStrategy,
+                dateDecodingStrategy: start.dateDecodingStrategy,
+                dataDecodingStrategy: start.dataDecodingStrategy,
+                nonConformingFloatDecodingStrategy: start.nonConformingFloatDecodingStrategy)
+        } else if let standard = base as? JSONDecoder {
+            options = SJDecoderOptions(buffer: buffer,
+                userInfo: standard.userInfo,
+                keyDecodingStrategy: standard.keyDecodingStrategy,
+                dateDecodingStrategy: standard.dateDecodingStrategy,
+                dataDecodingStrategy: standard.dataDecodingStrategy,
+                nonConformingFloatDecodingStrategy: standard.nonConformingFloatDecodingStrategy)
+        } else {
+            options = SJDecoderOptions(buffer: buffer,
+                userInfo: base?.userInfo ?? [:],
+                keyDecodingStrategy: .useDefaultKeys,
+                dateDecodingStrategy: .deferredToDate,
+                dataDecodingStrategy: .base64,
+                nonConformingFloatDecodingStrategy: .throw)
+        }
+        return SJDecoder(value: ref, options: options, codingPath: codingPath)
     }
 }
 

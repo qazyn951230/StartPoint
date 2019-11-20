@@ -113,7 +113,7 @@ void json_replace(JSONRef json, JSONRef source) {
 }
 
 void json_replace_copy(JSONRef json, JSONRef source) {
-    *unwrap(json) = *unwrap(source);
+    *unwrap(json) = unwrap(source)->deepCopy();
 }
 
 JSONType json_type(JSONRef json) {

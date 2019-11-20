@@ -519,8 +519,7 @@ private:
                 case 0x16:
                 case 0x17:
                 case 0x18:
-                case 0x19:
-                case 0x20: {
+                case 0x19: {
                     auto end = _stream.current();
                     if (start != end) {
                         append(start, end);

@@ -452,7 +452,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
     }
 
     init(decoder: SJDecoder, value: JSONRef) throws {
-        guard json_is_array(decoder.value) || json_is_null(decoder.value) else {
+        guard json_is_array(value) || json_is_null(value) else {
             let context = DecodingError.Context(codingPath: decoder.codingPath,
                 debugDescription: SJDecoder.valueIsNotUnkeyedContainer(value))
             throw DecodingError.dataCorrupted(context)

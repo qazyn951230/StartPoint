@@ -654,6 +654,40 @@ public:
         return nullptr;
     }
 
+    JSON deepCopy() const {
+        JSON result;
+        switch (_type) {
+            case JSONTypeTrue:
+            case JSONTypeFalse:
+            case JSONTypeInt:
+            case JSONTypeUint:
+            case JSONTypeInt64:
+            case JSONTypeUint64:
+            case JSONTypeDouble:
+            case JSONTypeNull:
+            case JSONTypeString:
+                result = *this;
+                break;
+            case JSONTypeArray: {
+                result = JSON(JSONTypeArray);
+                array_t array = *result._data.array;
+                for (const auto& item: *_data.array) {
+                    array.push_back(std::move(item.deepCopy()));
+                }
+            }
+                break;
+            case JSONTypeObject: {
+                result = JSON(JSONTypeObject);
+                object_t map = *result._data.object;
+                for (const auto& item: *_data.object) {
+                    map[item.first] = std::move(item.second.deepCopy());
+                }
+            }
+                break;
+        }
+        return result;
+    }
+
     void reset(JSONType type) {
         assert_invariant();
         _data.destroy(_type);
