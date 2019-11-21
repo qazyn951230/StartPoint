@@ -640,16 +640,19 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : Coding
     }
 
     func contains(_ key: Key) -> Bool {
+        contains(key: key) != nil
+    }
+
+    @inline(__always)
+    private func contains(key: Key) -> JSONRef? {
         key.stringValue.withCString { pointer in
-            json_object_contains_key(value, pointer)
+            json_object_find_key(value, pointer)
         }
     }
 
+    @inline(__always)
     private func find(key: Key) throws -> JSONRef {
-        let item: JSONRef? = key.stringValue.withCString { pointer in
-            json_object_find_key(value, pointer)
-        }
-        if let item = item {
+        if let item = contains(key: key) {
             return item
         } else {
             let context = DecodingError.Context(codingPath: codingPath,
@@ -659,7 +662,9 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key : Coding
     }
 
     func decodeNil(forKey key: Key) throws -> Bool {
-        let item = try find(key: key)
+        guard let item = contains(key: key) else {
+            return true
+        }
         return SJDecoder.decodeNil(item)
     }
 

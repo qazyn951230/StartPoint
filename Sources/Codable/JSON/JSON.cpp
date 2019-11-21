@@ -311,6 +311,9 @@ JSONRef json_object_find_key(JSONRef json, const int8_t* data) {
     if (value != nullptr) {
         std::string key{reinterpret_cast<const char*>(data)};
         auto temp = value->find(key);
+        if (temp == value->end()) { // not find
+            return nullptr;
+        }
         return wrap(&(temp->second));
     }
     return nullptr;
