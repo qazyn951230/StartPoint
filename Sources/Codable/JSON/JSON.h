@@ -72,6 +72,7 @@ typedef SP_ENUM(uint8_t, JSONParseStatus) {
 typedef struct SPOpaqueJSON* JSONRef;
 
 JSONRef json_create();
+JSONRef json_create_copy(JSONRef other);
 JSONRef json_create_type(JSONType type);
 JSONRef json_create_int32(int32_t value);
 JSONRef json_create_int64(int64_t value);

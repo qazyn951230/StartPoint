@@ -152,8 +152,9 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
 
     public required init(from decoder: Decoder) throws {
         if let start = decoder as? SJDecoder {
-            buffer = start.options.buffer
-            ref = start.value
+            let _ref = json_create_copy(start.value)
+            buffer = JSONBuffer(ref: _ref)
+            ref = _ref
         } else {
             let context = DecodingError.Context(codingPath: decoder.codingPath,
                 debugDescription: "Currently, StartPoint.JSON only supports StartJSONDecoder")

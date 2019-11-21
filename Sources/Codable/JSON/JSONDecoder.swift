@@ -354,11 +354,6 @@ struct SJDSingleContainer: SingleValueDecodingContainer {
     }
 
     init(decoder: SJDecoder) throws {
-        if json_is_array(decoder.value) || json_is_object(decoder.value) {
-            let context = DecodingError.Context(codingPath: decoder.codingPath,
-                debugDescription: SJDecoder.valueIsNotSingleContainer(decoder.value))
-            throw DecodingError.dataCorrupted(context)
-        }
         self.value = decoder.value
         self.decoder = decoder
     }

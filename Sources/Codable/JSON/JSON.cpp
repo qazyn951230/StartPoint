@@ -30,6 +30,12 @@ JSONRef json_create() {
     return wrap(new json);
 }
 
+JSONRef json_create_copy(JSONRef other) {
+    auto result = new json;
+    *result = unwrap(other)->deepCopy();
+    return wrap(result);
+}
+
 JSONRef json_create_type(JSONType type) {
     return wrap(new json{type});
 }
