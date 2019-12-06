@@ -29,7 +29,7 @@ public enum Validation {
 
     public func function(default: Bool = true) -> (String?) -> Bool {
         switch self {
-        case .number(let length):
+        case let .number(length):
             if let l = length {
                 return Validation.create(pattern: "\\d{0,\(l)}", default: `default`)
             } else {
@@ -37,16 +37,14 @@ public enum Validation {
             }
         case .phone:
             return Validation.create(pattern: "1\\d{0,10}", default: `default`)
-        case .pattern(let p):
+        case let .pattern(p):
             return Validation.create(pattern: p, default: `default`)
         }
     }
 
     static func create(pattern: String, default: Bool) -> (String?) -> Bool {
         guard let expression = try? NSRegularExpression(pattern: pattern, options: []) else {
-            return { _ in
-                `default`
-            }
+            return { _ in `default`}
         }
         return { value in
             guard let value = value, !value.isEmpty else {

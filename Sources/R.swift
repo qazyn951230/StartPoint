@@ -27,51 +27,51 @@ import UIKit
 public struct R {
     public struct image {
         public static func ic_arrow_back() -> UIImage? {
-            return _image(name: "ic_arrow_back")
+            _image(name: "ic_arrow_back")
         }
 
         public static func ic_arrow_downward() -> UIImage? {
-            return _image(name: "ic_arrow_downward")
+            _image(name: "ic_arrow_downward")
         }
 
         public static func ic_arrow_forward() -> UIImage? {
-            return _image(name: "ic_arrow_forward")
+            _image(name: "ic_arrow_forward")
         }
 
         public static func ic_arrow_upward() -> UIImage? {
-            return _image(name: "ic_arrow_upward")
+            _image(name: "ic_arrow_upward")
         }
 
         public static func ic_check() -> UIImage? {
-            return _image(name: "ic_check")
+            _image(name: "ic_check")
         }
 
         public static func ic_close() -> UIImage? {
-            return _image(name: "ic_close")
+            _image(name: "ic_close")
         }
 
         public static func ic_more_horiz() -> UIImage? {
-            return _image(name: "ic_more_horiz")
+            _image(name: "ic_more_horiz")
         }
 
         public static func ic_more_vert() -> UIImage? {
-            return _image(name: "ic_more_vert")
+            _image(name: "ic_more_vert")
         }
 
         public static func ic_refresh() -> UIImage? {
-            return _image(name: "ic_refresh")
+            _image(name: "ic_refresh")
         }
 
         public static func ic_chevron_left() -> UIImage? {
-            return _image(name: "ic_chevron_left")
+            _image(name: "ic_chevron_left")
         }
 
         public static func ic_chevron_right() -> UIImage? {
-            return _image(name: "ic_chevron_right")
+            _image(name: "ic_chevron_right")
         }
 
         private static func _image(name: String) -> UIImage? {
-            return UIImage(named: name, in: PackageInfo.bundle, compatibleWith: nil)
+            UIImage(named: name, in: PackageInfo.bundle, compatibleWith: nil)
         }
     }
 }

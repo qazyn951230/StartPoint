@@ -86,7 +86,7 @@ public struct SafeArea {
     }
 
     public static func statusBar() -> CGSize {
-        return CGSize(width: Device.width, height: Device.statusBar)
+        CGSize(width: Device.width, height: Device.statusBar)
     }
 }
 #endif // #if os(iOS)

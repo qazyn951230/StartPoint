@@ -34,7 +34,7 @@ public protocol ClassIdentified {
 
 public extension ClassIdentified {
     static var identifier: String {
-        return String(describing: self)
+        String(describing: self)
     }
 }
 

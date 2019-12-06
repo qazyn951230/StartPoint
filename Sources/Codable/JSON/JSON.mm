@@ -45,15 +45,15 @@ NSArray<NSString*>* json_object_all_key(JSONRef json) {
     if (raw == nullptr) {
         return [NSArray array];
     }
-    NSMutableArray<NSString *>* result = [[NSMutableArray alloc] initWithCapacity:static_cast<NSUInteger>(raw->size())];
+    NSMutableArray<NSString*>* result = [[NSMutableArray alloc] initWithCapacity:static_cast<NSUInteger>(raw->size())];
     auto begin = raw->begin();
     const auto end = raw->end();
     while (begin != end) {
         auto& key = begin->first;
         NSString* t = [[NSString alloc] initWithBytesNoCopy:const_cast<char*>(key.data())
-                                                       length:static_cast<NSUInteger>(key.size())
-                                                     encoding:NSUTF8StringEncoding
-                                                 freeWhenDone:false];
+                                                     length:static_cast<NSUInteger>(key.size())
+                                                   encoding:NSUTF8StringEncoding
+                                               freeWhenDone:false];
         [result addObject:t ?: @""];
         begin++;
     }
