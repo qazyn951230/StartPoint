@@ -1431,28 +1431,7 @@ extension JSON {
 
 // MARK: - JSON parse
 extension JSON {
-    public static func parse(_ value: String) -> JSON {
-        value.withCString { pointer in
-            if let ref = json_parse_int8_data(pointer) {
-                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
-            }
-            return JSON.null
-        }
-    }
-
-    public static func parse(data: Data) -> JSON {
-        data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
-            guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
-                return JSON.null
-            }
-            if let ref = json_parse_uint8_data(pointer) {
-                return JSON(buffer: JSONBuffer(ref: ref), ref: ref)
-            }
-            return JSON.null
-        }
-    }
-
-    public static func tryParse(_ value: String) throws -> JSON {
+    public static func parse(_ value: String) throws -> JSON {
         try value.withCString { pointer in
             var status = JSONParseStatus.success
             if let ref = json_parse_int8_data_status(pointer, &status) {
@@ -1462,7 +1441,7 @@ extension JSON {
         }
     }
 
-    public static func tryParse(data: Data) throws -> JSON {
+    public static func parse(data: Data) throws -> JSON {
         try data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) in
             guard let pointer = raw.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
                 return JSON.null
