@@ -201,7 +201,19 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public var raw: Any {
-        ""
+        if let s = _cachedString {
+            return s
+        } else if let a = _cachedArray {
+            return a
+        } else if let d = _cachedDictionary {
+            return d
+        } else {
+            return ref
+        }
+    }
+
+    public func copy() -> JSON {
+        JSON(ref: json_create_copy(ref))
     }
 
     func makeRef(ref: JSONRef?) -> JSON {
