@@ -20,32 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(CoreGraphics)
+
 import CoreGraphics
 
 public extension CGSize {
     var ceiled: CGSize {
-        return CGSize(width: ceil(width), height: ceil(height))
+        CGSize(width: ceil(width), height: ceil(height))
     }
 
     var floored: CGSize {
-        return CGSize(width: floor(width), height: floor(height))
+        CGSize(width: floor(width), height: floor(height))
     }
 
     var rounded: CGSize {
-        return CGSize(width: round(width), height: round(height))
+        CGSize(width: round(width), height: round(height))
     }
 
     static func max(width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
-        let w = width ?? CGFloat.greatestFiniteMagnitude
-        let h = height ?? CGFloat.greatestFiniteMagnitude
-        return CGSize(width: w, height: h)
+        CGSize(width: width ?? CGFloat.greatestFiniteMagnitude,
+            height: height ?? CGFloat.greatestFiniteMagnitude)
     }
 
     func setWidth(_ width: CGFloat) -> CGSize {
-        return CGSize(width: width, height: height)
+        CGSize(width: width, height: height)
     }
 
     func setHeight(_ height: CGFloat) -> CGSize {
-        return CGSize(width: width, height: height)
+        CGSize(width: width, height: height)
     }
 }
+
+#endif // canImport(CoreGraphics)

@@ -41,19 +41,19 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
     }
 
     public var isEmpty: Bool {
-        return store.isEmpty
+        store.isEmpty
     }
 
     public var count: Int {
-        return store.count
+        store.count
     }
 
     public var startIndex: Int {
-        return store.startIndex
+        store.startIndex
     }
 
     public var endIndex: Int {
-        return store.endIndex
+        store.endIndex
     }
 
     public func append(_ newElement: Element) {
@@ -70,19 +70,19 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
     }
 
     public func index(_ i: Int, offsetBy n: Int) -> Int {
-        return store.index(i, offsetBy: n)
+        store.index(i, offsetBy: n)
     }
 
     public func index(_ i: Int, offsetBy n: Int, limitedBy limit: Int) -> Int? {
-        return store.index(i, offsetBy: n, limitedBy: limit)
+        store.index(i, offsetBy: n, limitedBy: limit)
     }
 
     public func distance(from start: Int, to end: Int) -> Int {
-        return store.distance(from: start, to: end)
+        store.distance(from: start, to: end)
     }
 
     public func index(after i: Int) -> Int {
-        return store.index(after: i)
+        store.index(after: i)
     }
 
     public func formIndex(after i: inout Int) {
@@ -91,7 +91,7 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
 
     public subscript(index: Int) -> Element {
         get {
-            return store[index]
+            store[index]
         }
         set {
             store[index] = newValue
@@ -100,7 +100,7 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
 
     public subscript(bounds: Range<Int>) -> ListSlice<Element> {
         get {
-            return ListSlice(slice: store[bounds])
+            ListSlice(slice: store[bounds])
         }
         set {
             store[bounds] = newValue.store
@@ -110,10 +110,10 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
 
 extension List: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        return store.description
+        store.description
     }
 
     public var debugDescription: String {
-        return store.debugDescription
+        store.debugDescription
     }
 }

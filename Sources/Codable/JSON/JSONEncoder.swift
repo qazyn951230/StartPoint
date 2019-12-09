@@ -48,31 +48,6 @@ public final class StartJSONEncoder {
     }
 }
 
-struct StartCodingKey: CodingKey {
-    var stringValue: String
-    var intValue: Int?
-
-    init?(stringValue: String) {
-        self.stringValue = stringValue
-        intValue = nil
-    }
-
-    init?(intValue: Int) {
-        self.intValue = intValue
-        stringValue = "\(intValue)"
-    }
-
-    init(_ value: String) {
-        stringValue = value
-        intValue = nil
-    }
-
-    init(_ value: Int) {
-        self.intValue = value
-        stringValue = "\(value)"
-    }
-}
-
 class SJEncoderContext {
     let userInfo: [CodingUserInfoKey: Any]
     let outputFormatting: JSONEncoder.OutputFormatting

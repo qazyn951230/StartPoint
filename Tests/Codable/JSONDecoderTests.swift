@@ -29,7 +29,57 @@ class JSONDecoderTests: XCTestCase {
         return try! decoder.decode(T.self, from: value.data(using: .utf8)!)
     }
 
+    func decodeError<T>(_ value: String, as type: T.Type, decoder: StartJSONDecoder? = nil) throws where T: Decodable {
+        let decoder = decoder ?? StartJSONDecoder()
+        _ = try decoder.decode(T.self, from: value.data(using: .utf8)!)
+    }
+
     func testDecodeInt() {
         XCTAssertEqual(decode("1", as: Int.self), 1)
+    }
+
+    func testDecodeArray() {
+        XCTAssertEqual(decode("[1, 3]", as: [Int].self), [1, 3])
+    }
+
+    func testDecodeNullArray() {
+        XCTAssertEqual(decode("[null, null]", as: [Int?].self), [nil, nil])
+    }
+
+    func testDecodeMixedArray() {
+        XCTAssertEqual(decode("[null, 9]", as: [Int?].self), [nil, 9])
+    }
+
+    func testDecodeCustomArray() {
+        struct Foobar: Decodable, Equatable {
+            let array: [Int?]
+
+            init(_ array: [Int?]) {
+                self.array = array
+            }
+
+            init(from decoder: Decoder) throws {
+                var container = try decoder.unkeyedContainer()
+                var array: [Int?] = []
+                while !container.isAtEnd {
+                    let value = try container.decodeIfPresent(Int.self)
+                    array.append(value)
+                }
+                self.array = array
+            }
+        }
+
+        XCTAssertEqual(decode("[null, 9]", as: Foobar.self), Foobar([nil, 9]))
+    }
+
+    func testDecodeArrayCodingPath() {
+        do {
+            try decodeError("[1, \"1\"]", as: [Int].self)
+        } catch let DecodingError.typeMismatch(_, context) {
+            let result = context.codingPath.map { $0.intValue ?? -1 }
+            XCTAssertEqual(result, [1])
+        } catch {
+            XCTAssertTrue(false)
+        }
     }
 }

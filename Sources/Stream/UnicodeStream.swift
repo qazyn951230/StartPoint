@@ -98,7 +98,7 @@ public final class StringProvider: UnicodeProvider {
         defer {
             current = scalars.index(after: current)
         }
-        return scalars.element(at: current)?.value ?? 0
+        return scalars.at(current)?.value ?? 0
     }
 }
 

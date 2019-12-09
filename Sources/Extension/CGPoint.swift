@@ -20,26 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(CoreGraphics)
+
 import CoreGraphics
 
 public extension CGPoint {
     var ceiled: CGPoint {
-        return CGPoint(x: ceil(x), y: ceil(y))
+        CGPoint(x: ceil(x), y: ceil(y))
     }
 
     var floored: CGPoint {
-        return CGPoint(x: floor(x), y: floor(y))
+        CGPoint(x: floor(x), y: floor(y))
     }
 
     var rounded: CGPoint {
-        return CGPoint(x: round(x), y: round(y))
+        CGPoint(x: round(x), y: round(y))
     }
 
     func setX(_ x: CGFloat) -> CGPoint {
-        return CGPoint(x: x, y: y)
+        CGPoint(x: x, y: y)
     }
 
     func setY(_ y: CGFloat) -> CGPoint {
-        return CGPoint(x: x, y: y)
+        CGPoint(x: x, y: y)
     }
 }
+
+#endif // canImport(CoreGraphics)

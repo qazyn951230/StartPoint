@@ -21,29 +21,55 @@
 // SOFTWARE.
 
 public extension Collection {
-    var isNotEmpty: Bool {
-        return !isEmpty
+    @inlinable
+    func chunked(size: Int) -> [SubSequence] {
+        if isEmpty {
+            return []
+        }
+        var result: [SubSequence] = []
+        var start = startIndex
+        var end = index(start, offsetBy: size)
+        while end <= endIndex {
+            let seq: SubSequence = self[start..<end]
+            result.append(seq)
+            start = end
+            end = index(start, offsetBy: size)
+        }
+        if start != endIndex {
+            let seq: SubSequence = self[start..<endIndex]
+            result.append(seq)
+        }
+        return result
     }
 
-    func element(at index: Index) -> Element? {
+
+    @inline(__always)
+    var isNotEmpty: Bool {
+        !isEmpty
+    }
+
+    @inline(__always)
+    func at(_ index: Index) -> Element? {
         guard index >= startIndex && index < endIndex else {
             return nil
         }
         return self[index]
     }
 
-    func element(at index: Index, or value: (Index) throws -> Element) rethrows -> Element {
+    @inline(__always)
+    func at(_ index: Index, or value: (Index) throws -> Element) rethrows -> Element {
         guard index >= startIndex && index < endIndex else {
             return try value(index)
         }
         return self[index]
     }
 
+    @inlinable
     func filterIndexed(_ isIncluded: (Element, Index) throws -> Bool) rethrows -> [Element] {
         if isEmpty {
             return []
         }
-        var result = [Element]()
+        var result: [Element] = []
         var i = startIndex
         repeat {
             if try isIncluded(self[i], i) {
@@ -54,11 +80,12 @@ public extension Collection {
         return result
     }
 
+    @inlinable
     func mapIndexed<T>(_ transform: (Element, Index) throws -> T) rethrows -> [T] {
         if isEmpty {
             return []
         }
-        var result = [T]()
+        var result: [T] = []
         var i = startIndex
         repeat {
             let t = try transform(self[i], i)
@@ -68,6 +95,22 @@ public extension Collection {
         return result
     }
 
+    @inlinable
+    func reduceIndexed<Result>(_ initialResult: Result,
+                               _ nextPartialResult: (Result, Index, Element) throws -> Result) rethrows -> Result {
+        if isEmpty {
+            return initialResult
+        }
+        var result = initialResult
+        var i = startIndex
+        repeat {
+            result = try nextPartialResult(result, i, self[i])
+            i = index(after: i)
+        } while i < endIndex
+        return result
+    }
+
+    @inlinable
     func forEachIndexed(_ body: (Element, Index) throws -> Void) rethrows {
         if isEmpty {
             return
@@ -79,61 +122,8 @@ public extension Collection {
         } while i < endIndex
     }
 
+    @available(*, deprecated, renamed: "chunked(size:)")
     func split(upTo count: Int) -> [SubSequence] {
-        guard isNotEmpty && count > 0 else {
-            return []
-        }
-        var result: [Self.SubSequence] = []
-        var start = startIndex
-        var end = index(start, offsetBy: count)
-        while true {
-            if end < endIndex {
-                let seq: SubSequence = self[start..<end]
-                result.append(seq)
-                if index(after: end) > endIndex {
-                    break
-                }
-            } else {
-                let seq: SubSequence = self[start..<endIndex]
-                result.append(seq)
-                break
-            }
-            start = end
-            end = index(start, offsetBy: count)
-        }
-        return result
-    }
-}
-
-public extension String {
-    func split(upTo count: Int) -> [Substring] {
-        guard isNotEmpty && count > 0 else {
-            return []
-        }
-        var result: [Substring] = []
-        var start = startIndex
-        var _end = index(start, offsetBy: count, limitedBy: endIndex)
-        if _end == nil {
-            return [self[start..<endIndex]]
-        }
-        while let end = _end {
-            if end < endIndex {
-                let seq: Substring = self[start..<end]
-                result.append(seq)
-                if index(after: end) > endIndex {
-                    break
-                }
-            } else {
-                let seq: Substring = self[start..<endIndex]
-                result.append(seq)
-                break
-            }
-            start = end
-            _end = index(start, offsetBy: count, limitedBy: endIndex)
-            if _end == nil && end < endIndex {
-                _end = endIndex
-            }
-        }
-        return result
+        chunked(size: count)
     }
 }

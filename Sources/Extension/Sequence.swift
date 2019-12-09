@@ -21,21 +21,21 @@
 // SOFTWARE.
 
 public extension Sequence {
-    func all(predicate: (Element) throws -> Bool) rethrows -> Bool {
-        for item in self where (try predicate(item)) == false {
-            return false
-        }
-        return true
+    @inline(__always)
+    func any() -> Bool {
+        anySatisfy { _ in true }
     }
 
-    func any(predicate: (Element) throws -> Bool) rethrows -> Bool {
+    @inlinable
+    func anySatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
         for item in self where (try predicate(item)) == true {
             return false
         }
         return true
     }
 
-    func associate<K: Hashable, V>(_ transform: (Element) throws -> (K, V)) rethrows -> [K: V] {
+    @inlinable
+    func associate<K, V>(_ transform: (Element) throws -> (K, V)) rethrows -> [K: V] where K: Hashable {
         var map: [K: V] = [:]
         for item in self {
             let (k, v) = try transform(item)
@@ -44,37 +44,79 @@ public extension Sequence {
         return map
     }
 
-    func associate<K: Hashable>(by keySelector: (Element) -> K) -> [K: Element] {
+    @inlinable
+    func associate<K>(by keySelector: (Element) throws -> K) rethrows -> [K: Element] where K: Hashable {
         var map: [K: Element] = [:]
         for item in self {
-            let key = keySelector(item)
+            let key = try keySelector(item)
             map[key] = item
         }
         return map
     }
 
-    func associate<K: Hashable, T>(by keySelector: (Element) -> K,
-                                          _ transform: (Element) throws -> T) rethrows -> [K: T] {
+    @inlinable
+    func associate<K, T>(by keySelector: (Element) throws -> K, _ transform: (Element) throws -> T) rethrows
+            -> [K: T] where K: Hashable {
         var map: [K: T] = [:]
         for item in self {
-            let key = keySelector(item)
+            let key = try keySelector(item)
             map[key] = try transform(item)
         }
         return map
     }
 
-//    func chunked(size: Int) -> List<List<Element>> {
-//
-//    }
-
-    func filter<T>(as: T.Type) -> [T] {
-        return compactMap { $0 as? T }
+    @inlinable
+    func associate<K, V>(to map: inout [K: V], _ transform: (Element) throws -> (K, V)) rethrows
+            -> [K: V] where K: Hashable {
+        for item in self {
+            let (k, v) = try transform(item)
+            map[k] = v
+        }
+        return map
     }
 
-    func group<K: Hashable>(by keySelector: (Element) -> K) -> [K: List<Element>] {
+    @inlinable
+    func associate<K>(to map: inout [K: Element], by keySelector: (Element) throws -> K) rethrows
+            -> [K: Element] where K: Hashable {
+        for item in self {
+            let key = try keySelector(item)
+            map[key] = item
+        }
+        return map
+    }
+
+    @inlinable
+    func associate<K, T>(to map: inout [K: T], by keySelector: (Element) throws -> K,
+                         _ transform: (Element) throws -> T) rethrows -> [K: T] where K: Hashable {
+        for item in self {
+            let key = try keySelector(item)
+            map[key] = try transform(item)
+        }
+        return map
+    }
+
+    @inline(__always)
+    func filterAs<T>() -> [T] {
+        compactMap { $0 as? T }
+    }
+
+    @inline(__always)
+    func filter<T>(as: T.Type) -> [T] {
+        compactMap { $0 as? T }
+    }
+
+    @inlinable
+    func filterNot(_ isNotIncluded: (Element) throws -> Bool) rethrows -> [Element] {
+        try filter { e in
+            !(try isNotIncluded(e))
+        }
+    }
+
+    @inlinable
+    func group<K>(by keySelector: (Element) throws -> K) rethrows -> [K: List<Element>] where K: Hashable {
         var map: [K: List<Element>] = [:]
         for item in self {
-            let key = keySelector(item)
+            let key = try keySelector(item)
             if let list = map[key] {
                 list.append(item)
             } else {
@@ -84,11 +126,11 @@ public extension Sequence {
         return map
     }
 
-    func group<K: Hashable, T>(by keySelector: (Element) -> K, _ transform: (Element) throws -> T) rethrows
-            -> [K: List<T>] {
+    func group<K, T>(by keySelector: (Element) throws -> K, _ transform: (Element) throws -> T) rethrows
+            -> [K: List<T>] where K: Hashable {
         var map: [K: List<T>] = [:]
         for item in self {
-            let key = keySelector(item)
+            let key = try keySelector(item)
             let value = try transform(item)
             if let list = map[key] {
                 list.append(value)
@@ -98,8 +140,4 @@ public extension Sequence {
         }
         return map
     }
-
-//    func windowed(size: Int, step: Int = 1, partialWindows: Bool = false) {
-//
-//    }
 }

@@ -80,12 +80,11 @@ public final class XMLNotation: TypeNotated {
     }
 
     public var raw: Any {
-        // TODO: XMLNotation.Any
-        return ""
+        element ?? node ?? ""
     }
 
     public var exists: Bool {
-        return !(element == nil || node == nil || _array == nil)
+        !(element == nil || node == nil || _array == nil)
     }
 
     public var arrayValue: [XMLNotation]? {
@@ -123,7 +122,7 @@ public final class XMLNotation: TypeNotated {
     }
 
     public var boolValue: Bool? {
-        return stringValue.flatMap(Bool.init)
+        stringValue.flatMap(Bool.init)
     }
 
     public var bool: Bool {
@@ -149,71 +148,71 @@ public final class XMLNotation: TypeNotated {
     }
 
     public var doubleValue: Double? {
-        return stringValue.flatMap(Double.init)
+        stringValue.flatMap(Double.init)
     }
 
     public var double: Double {
-        return Double(string) ?? 0.0
+        Double(string) ?? 0.0
     }
 
     public var floatValue: Float? {
-        return stringValue.flatMap(Float.init)
+        stringValue.flatMap(Float.init)
     }
 
     public var float: Float {
-        return Float(string) ?? 0
+        Float(string) ?? 0
     }
 
     public var intValue: Int? {
-        return stringValue.flatMap(Int.init)
+        stringValue.flatMap(Int.init)
     }
 
     public var int: Int {
-        return Int(string) ?? 0
+        Int(string) ?? 0
     }
 
     public var int32Value: Int32? {
-        return stringValue.flatMap(Int32.init)
+        stringValue.flatMap(Int32.init)
     }
 
     public var int32: Int32 {
-        return Int32(string) ?? 0
+        Int32(string) ?? 0
     }
 
     public var int64Value: Int64? {
-        return stringValue.flatMap(Int64.init)
+        stringValue.flatMap(Int64.init)
     }
 
     public var int64: Int64 {
-        return Int64(string) ?? 0
+        Int64(string) ?? 0
     }
 
     public var uintValue: UInt? {
-        return stringValue.flatMap(UInt.init)
+        stringValue.flatMap(UInt.init)
     }
 
     public var uint: UInt {
-        return UInt(string) ?? 0
+        UInt(string) ?? 0
     }
 
     public var uint32Value: UInt32? {
-        return stringValue.flatMap(UInt32.init)
+        stringValue.flatMap(UInt32.init)
     }
 
     public var uint32: UInt32 {
-        return UInt32(string) ?? 0
+        UInt32(string) ?? 0
     }
 
     public var uint64Value: UInt64? {
-        return stringValue.flatMap(UInt64.init)
+        stringValue.flatMap(UInt64.init)
     }
 
     public var uint64: UInt64 {
-        return UInt64(string) ?? 0
+        UInt64(string) ?? 0
     }
 
     public subscript(typed index: Int) -> XMLNotation {
-        return _array?.element(at: index) ?? XMLNotation.null
+        _array?.at(index) ?? XMLNotation.null
     }
 
     public subscript(typed key: String) -> XMLNotation {
@@ -221,10 +220,10 @@ public final class XMLNotation: TypeNotated {
         return _map?[key] ?? XMLNotation.null
     }
 
-    public static func parse(path: String, options: XMLNode.Options = []) -> XMLNotation {
+    public static func parse(path: String, options: XMLNode.Options = []) throws -> XMLNotation {
         let url = URL(fileURLWithPath: path)
-        guard let xml = try? XMLDocument(contentsOf: url, options: options),
-              let root = xml.rootElement() else {
+        let xml = try XMLDocument(contentsOf: url, options: options)
+        guard let root = xml.rootElement() else {
             return XMLNotation.null
         }
         return XMLNotation(root)

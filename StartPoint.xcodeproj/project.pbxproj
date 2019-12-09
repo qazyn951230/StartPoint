@@ -171,6 +171,7 @@
 		AC96ACAF4592BC56CCA73704 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7DD51A8DC2463702C6E /* PersistenceTests.swift */; };
 		AC96ACCEC96F1015BFCC17F4 /* MeasureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADE42256C86A28799055 /* MeasureTests.swift */; };
 		AC96ACCF2CCC4001ACE5116E /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AF6BFC92CCBFACCADA7C /* Stream.swift */; };
+		AC96ACD683AB65D81B9F4174 /* CodingKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A640F92B05AEA59A7DEE /* CodingKey.swift */; };
 		AC96ACE6C81FA6B99C78B494 /* MemoryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */; };
 		AC96ACF5A55DA28EEAA4C9D7 /* AsyncLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AFEC484673FEBC3FDF5B /* AsyncLabel.swift */; };
 		AC96AD0B363703B4490B9200 /* MinMaxDimensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A6BFB7CCADE64AA3230F /* MinMaxDimensionTests.swift */; };
@@ -207,7 +208,6 @@
 		AC96AF4809CDDECA23E313CB /* RouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ADD6A32F1944E34B2888 /* RouteTests.swift */; };
 		AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AEFB08179502D41AE365 /* UIEdgeInsets.swift */; };
 		AC96AF86441EB34F17E99A4A /* FlexButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC5E105A8574AD1E3295 /* FlexButton.swift */; };
-		AC96AF8BD6AA389908A0E30B /* OrderedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A7D52EB86AA35673CF2D /* OrderedList.swift */; };
 		AC96AFAB03E61A187385089D /* RunLoopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A46B8B71C16C26CBE55F /* RunLoopQueue.swift */; };
 		AC96AFAE3A9ACC9E0137D124 /* PhotoPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A84CB7A6EAB3FB8C6A51 /* PhotoPermission.swift */; };
 		AC96AFAE9F22E932FD983726 /* FlexAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */; };
@@ -332,6 +332,7 @@
 		AC96A5E6DA3952501D318D1F /* Element.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		AC96A6043BD21EA3A0BCA5EE /* Notation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notation.swift; sourceTree = "<group>"; };
 		AC96A6343AA9195CFA7C7A96 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		AC96A640F92B05AEA59A7DEE /* CodingKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodingKey.swift; sourceTree = "<group>"; };
 		AC96A660ACE5815583364D09 /* ByteStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteStream.swift; sourceTree = "<group>"; };
 		AC96A664648AA4B30AE21432 /* ButtonElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonElement.swift; sourceTree = "<group>"; };
 		AC96A684DD58323E99058DCD /* AsyncTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTransaction.swift; sourceTree = "<group>"; };
@@ -353,7 +354,6 @@
 		AC96A76AFAB96DC3A2B1BD27 /* MarginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarginTests.swift; sourceTree = "<group>"; };
 		AC96A773B80ECC265FB72C2B /* AlignItemsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlignItemsTests.swift; sourceTree = "<group>"; };
 		AC96A7B3446BBB16CCEBE486 /* TableElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableElement.swift; sourceTree = "<group>"; };
-		AC96A7D52EB86AA35673CF2D /* OrderedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedList.swift; sourceTree = "<group>"; };
 		AC96A7D70B0582F4A8DBAA3E /* RoundingFunctionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundingFunctionTests.swift; sourceTree = "<group>"; };
 		AC96A7DAB98F07172DF5C170 /* FlexTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexTestCase.swift; sourceTree = "<group>"; };
 		AC96A7DD51A8DC2463702C6E /* PersistenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
@@ -770,6 +770,7 @@
 				AC96A2B933B7C1D12BAF3B79 /* XML */,
 				AC96A8CA8F19330C578E6C71 /* Double.c */,
 				AC96A1E6B919B93CC1BC06BC /* Double.h */,
+				AC96A640F92B05AEA59A7DEE /* CodingKey.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -843,7 +844,6 @@
 				BCA7D1BB226DA0B000754113 /* ByteBuffer.swift */,
 				AC96A4D560BBF1E4278D3A5A /* List.swift */,
 				AC96A11B3A8E302018B756A5 /* ListSlice.swift */,
-				AC96A7D52EB86AA35673CF2D /* OrderedList.swift */,
 			);
 			path = Algorithm;
 			sourceTree = "<group>";
@@ -1442,7 +1442,6 @@
 				AC96A437E0D779AE7E197244 /* TextPropertyListReader.swift in Sources */,
 				BCFAFF8323682A8100C80BF5 /* JSON.cpp in Sources */,
 				AC96A9C111CEEF20BBD4A0FB /* BasicElement+UIKit.swift in Sources */,
-				AC96AF8BD6AA389908A0E30B /* OrderedList.swift in Sources */,
 				AC96A72648ACFD6AEA5D9284 /* ElementAction.swift in Sources */,
 				AC96A4647824BA6DCFF4DCDA /* Element+UIKit.swift in Sources */,
 				AC96A9B51706437AE7096439 /* FlexLayout+Debug.swift in Sources */,
@@ -1466,6 +1465,7 @@
 				AC96A5A878B38C247A04A50D /* Notated.swift in Sources */,
 				AC96A5FF449F980A91C09A0B /* XMLNotation.swift in Sources */,
 				AC96AC9DCAF4388E7942A3ED /* Double.c in Sources */,
+				AC96ACD683AB65D81B9F4174 /* CodingKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

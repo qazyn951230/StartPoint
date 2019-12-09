@@ -36,7 +36,7 @@ public extension ObservableType {
 
 #if RxCompactMap
     public func compactMap<R>(_ transform: @escaping (E) throws -> R?) -> Observable<R> {
-        return Observable<R>.create { observer in
+        Observable<R>.create { observer in
             let subscription = self.subscribe { e in
                 switch e {
                 case .next(let value):

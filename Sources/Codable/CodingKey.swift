@@ -20,6 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class OrderedList {
+struct StartCodingKey: CodingKey {
+    var stringValue: String
+    var intValue: Int?
 
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+        intValue = nil
+    }
+
+    init?(intValue: Int) {
+        self.intValue = intValue
+        stringValue = "\(intValue)"
+    }
+
+    init(_ value: String) {
+        stringValue = value
+        intValue = nil
+    }
+
+    init(_ value: Int) {
+        intValue = value
+        stringValue = "\(value)"
+    }
+
+    init(_ value: UInt32) {
+        self.init(Int(value))
+    }
 }

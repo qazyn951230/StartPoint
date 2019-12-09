@@ -58,95 +58,95 @@ public protocol Notated {
 
 public extension Notated {
     var exists: Bool {
-        return true
+        true
     }
 
     var boolValue: Bool? {
-        return nil
+        nil
     }
 
     var bool: Bool {
-        return false
+        false
     }
 
     var stringValue: String? {
-        return nil
+        nil
     }
 
     var string: String {
-        return String.empty
+        String.empty
     }
 
     var doubleValue: Double? {
-        return nil
+        nil
     }
 
     var double: Double {
-        return 0
+        0
     }
 
     var floatValue: Float? {
-        return nil
+        nil
     }
 
     var float: Float {
-        return 0
+        0
     }
 
     var intValue: Int? {
-        return nil
+        nil
     }
 
     var int: Int {
-        return 0
+        0
     }
 
     var int32Value: Int32? {
-        return nil
+        nil
     }
 
     var int32: Int32 {
-        return 0
+        0
     }
 
     var int64Value: Int64? {
-        return nil
+        nil
     }
 
     var int64: Int64 {
-        return 0
+        0
     }
 
     var uintValue: UInt? {
-        return nil
+        nil
     }
 
     var uint: UInt {
-        return 0
+        0
     }
 
     var uint32Value: UInt32? {
-        return nil
+        nil
     }
 
     var uint32: UInt32 {
-        return 0
+        0
     }
 
     var uint64Value: UInt64? {
-        return nil
+        nil
     }
 
     var uint64: UInt64 {
-        return 0
+        0
     }
 
     subscript(index: Int) -> Notated {
-        return item(at: index)
+        item(at: index)
     }
 
     subscript(key: String) -> Notated {
-        return item(key: key)
+        item(key: key)
     }
 }
 
@@ -164,31 +164,31 @@ public protocol TypeNotated: Notated {
 
 public extension TypeNotated {
     var listValue: [Notated]? {
-        return arrayValue
+        arrayValue
     }
     var list: [Notated] {
-        return array
+        array
     }
     var mapValue: [String: Notated]? {
-        return dictionaryValue
+        dictionaryValue
     }
     var map: [String: Notated] {
-        return dictionary
+        dictionary
     }
 
     func item(at index: Int) -> Notated {
-        return self[typed: index]
+        self[typed: index]
     }
 
     func item(key: String) -> Notated {
-        return self[typed: key]
+        self[typed: key]
     }
 
     subscript(index: Int) -> Notated {
-        return self[typed: index]
+        self[typed: index]
     }
 
     subscript(key: String) -> Notated {
-        return self[typed: key]
+        self[typed: key]
     }
 }
