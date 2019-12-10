@@ -41,14 +41,12 @@ public extension DataRequest {
             return .failure(AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
         }
 
-        let json = JSON.parse(data: validData)
-        return .success(json)
-//        do {
-//            let json = try JSON.parse(data: validData)
-//            return .success(json)
-//        } catch {
-//            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
-//        }
+        do {
+            let json = try JSON.parse(data: validData)
+            return .success(json)
+        } catch {
+            return .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error)))
+        }
     }
 
     static func jsonResponseSerializer2() -> DataResponseSerializer<JSON> {

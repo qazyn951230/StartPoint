@@ -21,7 +21,9 @@
 // SOFTWARE.
 
 #if canImport(UIKit)
+
 import UIKit
+
 #endif
 
 public protocol Creatable {
@@ -29,9 +31,11 @@ public protocol Creatable {
 }
 
 #if canImport(UIKit)
+
 public extension Creatable where Self: UIViewController {
     static func create() -> Self {
         return self.init(nibName: nil, bundle: nil)
     }
 }
+
 #endif

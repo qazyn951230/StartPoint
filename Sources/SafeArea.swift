@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #if os(iOS)
+
 import UIKit
 
 public struct SafeAreaOption: OptionSet {
@@ -89,4 +90,5 @@ public struct SafeArea {
         CGSize(width: Device.width, height: Device.statusBar)
     }
 }
-#endif // #if os(iOS)
+
+#endif // os(iOS)

@@ -116,7 +116,9 @@ class SJEncoder: Encoder {
 
     func resolve() -> Data {
         let writer = JSONDataWriter()
-        writer.sortKeys = context.outputFormatting.contains(.sortedKeys)
+        if #available(iOS 11.0, *) {
+            writer.sortKeys = context.outputFormatting.contains(.sortedKeys)
+        }
         root.accept(visitor: writer)
         return Data(bytes: byte_array_data(writer.data), count: byte_array_size(writer.data))
     }

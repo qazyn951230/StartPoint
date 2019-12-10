@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(macOS)
+
 import Foundation
 
 public final class XMLNotation: TypeNotated {
@@ -229,3 +231,5 @@ public final class XMLNotation: TypeNotated {
         return XMLNotation(root)
     }
 }
+
+#endif // os(macOS)
