@@ -44,3 +44,13 @@ public enum BasicError: Error {
         return BasicError.posix(errno)
     }
 }
+
+struct Errors {
+    static func darwin() -> StartError {
+        StartError.darwin(errno)
+    }
+}
+
+public enum StartError: Error {
+    case darwin(Int32)
+}

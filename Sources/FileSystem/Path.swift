@@ -20,41 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Darwin.C
+#if canImport(Foundation)
+
+import Foundation // For URL
+
+#endif
 
 // C++ 17 Path
 // https://en.cppreference.com/w/cpp/filesystem/path
-public final class Path: ExpressibleByStringLiteral {
+public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConvertible {
     public typealias StringLiteralType = String
     public static let separator = "/"
 
-    public let absolute: Bool
+    public let isAbsolute: Bool
     public let components: [String]
+    public let string: String
 
-    init(absolute: Bool, components: [String]) {
-        self.absolute = absolute
-        self.components = components
+    public var isRelative: Bool {
+        !isAbsolute
     }
-
-    public init(_ value: String) {
-        (absolute, components) = Path.pathComponents(path: value)
-    }
-
-    public convenience init(stringLiteral value: String) {
-        self.init(value)
-    }
-
-    public lazy var string: String = {
-        var components = self.components
-        if absolute {
-            components.insert("", at: 0)
-        }
-        return components.joined(separator: Path.separator)
-    }()
 
     lazy var _filename: String? = {
-        if let last = components.last {
-            return (last != "." && last != "..") ? last : nil
+        if let last = components.last, last != "." && last != ".." {
+            return last
         }
         return nil
     }()
@@ -64,14 +52,18 @@ public final class Path: ExpressibleByStringLiteral {
     }
 
     public lazy var name: String = {
-        guard let name = _filename, let end = name.firstIndex(of: ".") else {
+        guard let name = _filename else {
             return ""
         }
-        return String(name[..<end])
+        if let end = name.lastIndex(of: ".") {
+            return String(name[..<end])
+        } else {
+            return name
+        }
     }()
 
     public lazy var `extension`: String = {
-        guard let name = _filename, let end = name.lastIndex(of: ".") else {
+        guard let name = _filename, let end = name.lastIndex(of: "."), end != name.startIndex else {
             return ""
         }
         return String(name[end...])
@@ -82,9 +74,43 @@ public final class Path: ExpressibleByStringLiteral {
         if components.count > 1 {
             array = Array(components.dropLast())
         } else {
-            array = absolute ? [] : ["."]
+            array = isAbsolute ? [] : ["."]
         }
-        return Path(absolute: absolute, components: array)
+        return Path(absolute: isAbsolute, components: array)
+    }
+
+    // CustomStringConvertible
+    public var description: String {
+        "<Path: \(string)>"
+    }
+
+    init(absolute: Bool, components: [String]) {
+        self.isAbsolute = absolute
+        self.components = components
+        string = Path.assemble(absolute: absolute, components: components)
+    }
+
+    public init(_ value: String) {
+        (isAbsolute, components) = Path.pathComponents(path: value)
+        string = Path.assemble(absolute: isAbsolute, components: components)
+    }
+
+    // Codable
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        (isAbsolute, components) = Path.pathComponents(path: value)
+        string = Path.assemble(absolute: isAbsolute, components: components)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(string)
+    }
+
+    // ExpressibleByStringLiteral
+    public convenience init(stringLiteral value: String) {
+        self.init(value)
     }
 
     public func normalize() -> Path {
@@ -94,7 +120,7 @@ public final class Path: ExpressibleByStringLiteral {
             case ".":
                 continue
             case "..":
-                if absolute {
+                if isAbsolute {
                     if result.count > 0 {
                         _ = result.popLast()
                     }
@@ -110,98 +136,35 @@ public final class Path: ExpressibleByStringLiteral {
             }
         }
         if result.isEmpty {
-            result = absolute ? [] : ["."]
+            result = isAbsolute ? [] : ["."]
         }
-        return Path(absolute: absolute, components: result)
+        return Path(absolute: isAbsolute, components: result)
     }
 
-    public func resolve(base: Path) -> Path {
-        if absolute {
+    public func resolve(base: Path = FileSystems.darwin.current) -> Path {
+        if isAbsolute {
             return normalize()
         } else {
             var components = base.components
             components.append(contentsOf: self.components)
-            return Path(absolute: base.absolute, components: components).normalize()
+            return Path(absolute: base.isAbsolute, components: components).normalize()
         }
     }
 
-    public func join(_ path: String...) -> Path {
+    public func join(_ path: Path...) -> Path {
         join(paths: path)
-    }
-
-    public func join(paths: [String]) -> Path {
-        if paths.isEmpty {
-            return self
-        }
-        var absolute = self.absolute
-        var components = self.components
-        for path in paths {
-            if path.isEmpty {
-                continue
-            }
-            let (a, c) = Path.pathComponents(path: path)
-            if a {
-                components = c
-                absolute = a
-            } else {
-                components.append(contentsOf: c)
-            }
-        }
-        return Path(absolute: absolute, components: components)
     }
 
     public func join(paths: [Path]) -> Path {
         if paths.isEmpty {
             return self
         }
-        var absolute = self.absolute
+        var absolute = self.isAbsolute
         var components = self.components
         for path in paths {
-            if path.absolute {
+            if path.isAbsolute {
                 components = path.components
-                absolute = path.absolute
-            } else {
-                components.append(contentsOf: path.components)
-            }
-        }
-        return Path(absolute: absolute, components: components)
-    }
-
-    public static func join(_ path: String...) -> Path {
-        join(paths: path)
-    }
-
-    public static func join(paths: [String]) -> Path {
-        if paths.isEmpty {
-            return Path("")
-        }
-        var absolute = false
-        var components: [String] = []
-        for path in paths {
-            if path.isEmpty {
-                continue
-            }
-            let (a, c) = Path.pathComponents(path: path)
-            if a {
-                components = c
-                absolute = a
-            } else {
-                components.append(contentsOf: c)
-            }
-        }
-        return Path(absolute: absolute, components: components)
-    }
-
-    public static func join(paths: [Path]) -> Path {
-        if paths.isEmpty {
-            return Path("")
-        }
-        var absolute = false
-        var components: [String] = []
-        for path in paths {
-            if path.absolute {
-                components = path.components
-                absolute = path.absolute
+                absolute = path.isAbsolute
             } else {
                 components.append(contentsOf: path.components)
             }
@@ -213,9 +176,30 @@ public final class Path: ExpressibleByStringLiteral {
         Path.relative(from: self, to: other)
     }
 
+    public static func join(_ path: Path...) -> Path {
+        join(paths: path)
+    }
+
+    public static func join(paths: [Path]) -> Path {
+        if paths.isEmpty {
+            return Path(".")
+        }
+        var absolute = false
+        var components: [String] = []
+        for path in paths {
+            if path.isAbsolute {
+                components = path.components
+                absolute = path.isAbsolute
+            } else {
+                components.append(contentsOf: path.components)
+            }
+        }
+        return Path(absolute: absolute, components: components)
+    }
+
     public static func relative(from: Path, to: Path) -> Path {
-        var from = ArraySlice<String>(from.resolve(base: Path.currentWorkingPath).components)
-        var to = ArraySlice<String>(to.resolve(base: Path.currentWorkingPath).components)
+        var from = ArraySlice<String>(from.resolve().components)
+        var to = ArraySlice<String>(to.resolve().components)
         let count = from.count < to.count ? from.count : to.count
 
         var i = 0
@@ -236,25 +220,23 @@ public final class Path: ExpressibleByStringLiteral {
         return Path(absolute: false, components: array)
     }
 
-    @inline(__always)
-    private static func next(_ char: Character, in string: String, start: String.Index) -> String.Index {
-        var current = start
-        while current < string.endIndex, string[current] != char {
-            current = string.index(after: current)
-        }
-        return current
-    }
-
-    @inline(__always)
-    private static func skipAll(_ char: Character, in string: String, start: String.Index) -> String.Index {
-        var current = start
-        while current < string.endIndex, string[current] == char {
-            current = string.index(after: current)
-        }
-        return current
-    }
-
     public static func pathComponents(path: String) -> (Bool, [String]) {
+        func next(_ char: Character, in string: String, start: String.Index) -> String.Index {
+            var current = start
+            while current < string.endIndex, string[current] != char {
+                current = string.index(after: current)
+            }
+            return current
+        }
+
+        func skipAll(_ char: Character, in string: String, start: String.Index) -> String.Index {
+            var current = start
+            while current < string.endIndex, string[current] == char {
+                current = string.index(after: current)
+            }
+            return current
+        }
+
         let separator: Character = Character(Path.separator)
         var start = skipAll(separator, in: path, start: path.startIndex)
         let end = path.endIndex
@@ -277,23 +259,46 @@ public final class Path: ExpressibleByStringLiteral {
         return (absolute, components)
     }
 
-    public static var currentWorkingPath: Path {
-        let size = Int(PATH_MAX)
-        let data = UnsafeMutablePointer<Int8>.allocate(capacity: size)
-        getcwd(data, size)
-        let text = String(utf8String: data)
-        data.deallocate()
-        return Path(text ?? "/")
+    @inline(__always)
+    private static func assemble(absolute: Bool, components: [String]) -> String {
+        var array = components
+        if absolute {
+            array.insert("", at: 0)
+        }
+        return array.joined(separator: separator)
     }
 }
 
-extension Path: CustomStringConvertible {
-    public var description: String {
-        string
+extension Path: Hashable, Comparable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(string)
+    }
+
+    public static func ==(lhs: Path, rhs: Path) -> Bool {
+        lhs.string == rhs.string
+    }
+
+    public static func < (lhs: Path, rhs: Path) -> Bool {
+        if lhs.isAbsolute != rhs.isAbsolute {
+            return lhs.string < rhs.string
+        } else {
+            return lhs.isAbsolute
+        }
+    }
+
+    public static func > (lhs: Path, rhs: Path) -> Bool {
+        if lhs.isAbsolute != rhs.isAbsolute {
+            return lhs.string > rhs.string
+        } else {
+            return rhs.isAbsolute
+        }
     }
 }
 
 extension Path {
+
+#if canImport(Foundation)
+
     public convenience init?(fileURL url: URL) {
         guard url.isFileURL else {
             return nil
@@ -304,31 +309,22 @@ extension Path {
     public func fileURL() -> URL {
         URL(fileURLWithPath: string)
     }
-}
 
-extension Path: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(absolute)
-        hasher.combine(components)
-    }
+#endif // canImport(Foundation)
 
     public static func +(lhs: Path, rhs: String) -> Path {
-        lhs.join(rhs)
+        lhs.join(Path(rhs))
     }
 
     public static func +(lhs: Path, rhs: Path) -> Path {
-        lhs.join(paths: [rhs])
+        lhs.join(rhs)
     }
 
     public static func +=(lhs: inout Path, rhs: String) {
-        lhs = lhs.join(rhs)
+        lhs = lhs.join(Path(rhs))
     }
 
     public static func +=(lhs: inout Path, rhs: Path) {
-        lhs = lhs.join(paths: [rhs])
-    }
-
-    public static func ==(lhs: Path, rhs: Path) -> Bool {
-        lhs.absolute == rhs.absolute && lhs.components == rhs.components
+        lhs = lhs.join(rhs)
     }
 }

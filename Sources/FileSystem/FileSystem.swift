@@ -20,25 +20,83 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//import Darwin.C
-//
-//public class FileSystem {
-//    public var current: Path {
-//        get {
-//            let size = Int(PATH_MAX)
-//            let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: size)
-//            defer {
-//                buffer.deallocate()
-//            }
-//            getcwd(buffer, size)
-//            return Path(String(cString: buffer))
-//        }
-//        set {
-//           _ = newValue.string.withCString(chdir)
-//        }
-//    }
-//
-//    public func copy(from: Path, to: Path) {
-//
-//    }
-//}
+import Foundation
+import Darwin.C
+
+public protocol FileSystem {
+    var current: Path { get set }
+
+    func copy(from: Path, to: Path) throws
+}
+
+public struct FileSystems {
+    public static var `default`: FileSystem {
+        darwin
+    }
+
+    public static let darwin: DarwinFileSystem = DarwinFileSystem()
+
+    public static let foundation: FoundationFileSystem = FoundationFileSystem()
+}
+
+public struct DarwinFileSystem: FileSystem {
+    public var current: Path {
+        get {
+            let size = Int(PATH_MAX)
+            let data = UnsafeMutablePointer<Int8>.allocate(capacity: size)
+            getcwd(data, size)
+            let text = String(utf8String: data)
+            data.deallocate()
+            return Path(text ?? "/")
+        }
+        set {
+            _ = newValue.string.withCString(chdir)
+        }
+    }
+
+    public func copy(from: Path, to: Path) throws {
+        let state = copyfile_state_alloc()
+        let flag = copyfile_flags_t(COPYFILE_ALL | COPYFILE_RECURSIVE | COPYFILE_NOFOLLOW_SRC)
+        let status = copyfile(from.string, to.string, state, flag)
+        copyfile_state_free(state)
+        if status < 0 {
+            throw Errors.darwin()
+        }
+    }
+}
+
+public struct FoundationFileSystem: FileSystem {
+    let manager: FileManager
+
+    public init(fileManager: FileManager = FileManager.default) {
+        manager = fileManager
+    }
+
+    public var current: Path {
+        get {
+            Path(manager.currentDirectoryPath)
+        }
+        set {
+            _ = manager.changeCurrentDirectoryPath(newValue.string)
+        }
+    }
+
+    public func copy(from: Path, to: Path) throws {
+        try manager.copyItem(atPath: from.string, toPath: to.string)
+    }
+
+    public func move(from: Path, to: Path) throws {
+        try manager.moveItem(atPath: from.string, toPath: to.string)
+    }
+
+    public func remove(_ path: Path) throws {
+        try manager.removeItem(atPath: path.string)
+    }
+
+    @discardableResult
+    public func trash(_ path: Path) throws -> Path? {
+        var result: NSURL?
+        try manager.trashItem(at: path.fileURL(), resultingItemURL: &result)
+        return (result as URL?).flatMap(Path.init(fileURL:))
+    }
+}
