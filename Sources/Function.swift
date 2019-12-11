@@ -78,6 +78,11 @@ public struct Function {
     }
 
     @inline(__always)
+    public static func alwaysNil<T>() -> T? {
+        nil
+    }
+
+    @inline(__always)
     public static func alwaysTrue() -> Bool {
         true
     }

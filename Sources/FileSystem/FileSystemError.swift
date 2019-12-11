@@ -20,31 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct AnyCodingKey: CodingKey {
-    public let stringValue: String
-    public let intValue: Int?
-
-    public init?(stringValue: String) {
-        self.stringValue = stringValue
-        intValue = nil
-    }
-
-    public init?(intValue: Int) {
-        self.intValue = intValue
-        stringValue = "\(intValue)"
-    }
-
-    public init(_ value: String) {
-        stringValue = value
-        intValue = nil
-    }
-
-    public init(_ value: Int) {
-        intValue = value
-        stringValue = "\(value)"
-    }
-
-    init(_ value: UInt32) {
-        self.init(Int(value))
-    }
+public enum FileSystemError: Error {
+    case writeFailed
 }

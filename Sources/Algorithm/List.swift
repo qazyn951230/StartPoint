@@ -20,11 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class List<Element>: MutableCollection, RandomAccessCollection, RangeReplaceableCollection {
+public final class List<Element>: MutableCollection, RandomAccessCollection, RangeReplaceableCollection,
+    ExpressibleByArrayLiteral {
+
     public typealias Index = Int
     public typealias Indices = CountableRange<Int>
     public typealias Iterator = IndexingIterator<List<Element>>
     public typealias SubSequence = ListSlice<Element>
+    public typealias ArrayLiteralElement = Element
 
     var store: [Element]
 
@@ -38,6 +41,10 @@ public final class List<Element>: MutableCollection, RandomAccessCollection, Ran
 
     public init(repeating repeatedValue: Element, count: Int) {
         store = Array<Element>(repeating: repeatedValue, count: count)
+    }
+
+    public init(arrayLiteral elements: Element...) {
+        store = elements
     }
 
     public var isEmpty: Bool {

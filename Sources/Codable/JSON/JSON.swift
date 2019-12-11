@@ -69,6 +69,11 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         buffer = JSONBuffer(ref: ref)
     }
 
+    private init(other: JSON) {
+        self.ref = other.ref
+        self.buffer = other.buffer
+    }
+
     public convenience init(_ value: Bool) {
         self.init(ref: json_create_bool(value))
     }
@@ -150,15 +155,38 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
         _cachedDictionary = value
     }
 
-    public required init(from decoder: Decoder) throws {
+    public required convenience init(from decoder: Decoder) throws {
         if let start = decoder as? SJDecoder {
-            let _ref = json_create_copy(start.value)
-            buffer = JSONBuffer(ref: _ref)
-            ref = _ref
+            let ref = json_create_copy(start.value)
+            self.init(ref: ref)
         } else {
-            let context = DecodingError.Context(codingPath: decoder.codingPath,
-                debugDescription: "Currently, StartPoint.JSON only supports StartJSONDecoder")
-            throw DecodingError.dataCorrupted(context)
+            if let keyed = try? decoder.container(keyedBy: AnyCodingKey.self) {
+                var dictionary: [String: JSON] = [:]
+                for key in keyed.allKeys {
+                    let next = try keyed.decode(JSON.self, forKey: key)
+                    dictionary[key.stringValue] = next
+                }
+                self.init(dictionary: dictionary)
+            } else if var unkeyed = try? decoder.unkeyedContainer() {
+                var array: [JSON] = []
+                while !unkeyed.isAtEnd {
+                    let next = try unkeyed.decode(JSON.self)
+                    array.append(next)
+                }
+                self.init(array: array)
+            } else if let single = try? decoder.singleValueContainer() {
+                if single.decodeNil() {
+                    self.init(other: JSON.null)
+                } else if let string = try? single.decode(String.self) {
+                    self.init(string: string)
+                } else {
+                    self.init(ref: JSON.decodeSingle(single))
+                }
+            } else {
+                let context = DecodingError.Context(codingPath: decoder.codingPath,
+                    debugDescription: "Value cannot represent as JSON")
+                throw DecodingError.dataCorrupted(context)
+            }
         }
     }
 
@@ -447,7 +475,7 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
     }
 
     public var description: String {
-        return ""
+        ""
     }
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
@@ -517,6 +545,47 @@ public final class JSON: Codable, TypeNotated, Comparable, CustomStringConvertib
             }
         }
         return result
+    }
+
+    @inline(__always)
+    private static func decodeSingle(_ container: SingleValueDecodingContainer) -> JSONRef {
+        let ref = json_create()
+        if let int = try? container.decode(Int.self) {
+#if arch(arm64) || arch(x86_64)
+            json_set_int64(ref, Int64(int))
+#else
+            json_set_uint32(ref, Int32(int))
+#endif
+        } else if let double = try? container.decode(Double.self) {
+            json_set_double(ref, double)
+        } else if let bool = try? container.decode(Bool.self) {
+            json_set_bool(ref, bool)
+        } else if let int64 = try? container.decode(Int64.self) {
+            json_set_int64(ref, int64)
+        } else if let int32 = try? container.decode(Int32.self) {
+            json_set_int32(ref, int32)
+        } else if let uint = try? container.decode(UInt.self) {
+#if arch(arm64) || arch(x86_64)
+            json_set_uint64(ref, UInt64(uint))
+#else
+            json_set_uint32(ref, UInt32(uint))
+#endif
+        } else if let uint64 = try? container.decode(UInt64.self) {
+            json_set_uint64(ref, uint64)
+        } else if let uint32 = try? container.decode(UInt32.self) {
+            json_set_uint32(ref, uint32)
+        } else if let float = try? container.decode(Float.self) {
+            json_set_float(ref, float)
+        } else if let int16 = try? container.decode(Int16.self) {
+            json_set_int32(ref, Int32(int16))
+        } else if let int8 = try? container.decode(Int8.self) {
+            json_set_int32(ref, Int32(int8))
+        } else if let uint16 = try? container.decode(UInt16.self) {
+            json_set_uint32(ref, UInt32(uint16))
+        } else if let uint8 = try? container.decode(UInt8.self) {
+            json_set_uint32(ref, UInt32(uint8))
+        }
+        return ref
     }
 }
 

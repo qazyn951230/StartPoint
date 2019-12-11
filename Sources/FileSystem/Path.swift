@@ -79,6 +79,10 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
         return Path(absolute: isAbsolute, components: array)
     }
 
+    public var lastComponent: String?  {
+        components.last
+    }
+
     // CustomStringConvertible
     public var description: String {
         "<Path: \(string)>"
@@ -111,6 +115,18 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
     // ExpressibleByStringLiteral
     public convenience init(stringLiteral value: String) {
         self.init(value)
+    }
+
+    public func basename(`extension`: String? = nil) -> String {
+        if components.isEmpty {
+            return ""
+        }
+        var last = lastComponent ?? "."
+        if let ext = `extension`, last != ext,
+            let range = last.range(of: ext, options: [String.CompareOptions.backwards, .anchored]) {
+            last.removeSubrange(range)
+        }
+        return last
     }
 
     public func normalize() -> Path {
@@ -149,6 +165,24 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
             components.append(contentsOf: self.components)
             return Path(absolute: base.isAbsolute, components: components).normalize()
         }
+    }
+
+    public func join(_ path: String...) -> Path {
+        if path.isEmpty {
+            return self
+        }
+        var absolute = self.isAbsolute
+        var components = self.components
+        for p in path {
+            let (a, c) = Path.pathComponents(path: p)
+            if a {
+                components = c
+                absolute = a
+            } else {
+                components.append(contentsOf: c)
+            }
+        }
+        return Path(absolute: absolute, components: components)
     }
 
     public func join(_ path: Path...) -> Path {

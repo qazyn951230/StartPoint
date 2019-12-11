@@ -21,14 +21,15 @@
 // SOFTWARE.
 
 public class JSONDataWriter: JSONWriter {
-    public typealias Output = ByteArrayRef
+    public typealias Output = Data
 
     public private(set) var data: ByteArrayRef
     private(set) var state: [State] = []
     public var sortKeys = false
 
-    public var output: ByteArrayRef {
-        data
+    public var output: Data {
+        Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: byte_array_data(data)),
+             count: byte_array_size(data), deallocator: Data.Deallocator.free)
     }
 
     public init() {
@@ -41,6 +42,10 @@ public class JSONDataWriter: JSONWriter {
 
     var current: State {
         state.last ?? State.value
+    }
+
+    public func copyData() -> Data {
+        Data(bytes: byte_array_data(data), count: byte_array_size(data))
     }
 
     /// ```swift

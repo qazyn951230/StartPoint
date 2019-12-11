@@ -137,12 +137,12 @@ final class SJDecoder: Decoder {
 
     @inline(__always)
     fileprivate func appendKey(_ value: UInt32) {
-        codingPath.append(StartCodingKey(Int(value)))
+        codingPath.append(AnyCodingKey(Int(value)))
     }
 
     @inline(__always)
     fileprivate func appendKey(_ value: String) {
-        codingPath.append(StartCodingKey(value))
+        codingPath.append(AnyCodingKey(value))
     }
 
     @inline(__always)
@@ -156,7 +156,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeBool(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Bool {
+    func decodeBool(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Bool {
         var result = false
         if json_get_bool(value, &result) {
             return result
@@ -166,7 +166,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeString(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> String {
+    func decodeString(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> String {
         if let result = JSON.decodeString(ref: value) {
             return result
         } else {
@@ -175,7 +175,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeDouble(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Double {
+    func decodeDouble(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Double {
         var result: Double = 0
         if json_get_double(value, &result) {
             return result
@@ -204,7 +204,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeFloat(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Float {
+    func decodeFloat(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Float {
         var result: Float = 0
         if json_get_float(value, &result) {
             return result
@@ -233,7 +233,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeInt(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Int {
+    func decodeInt(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Int {
 #if arch(arm64) || arch(x86_64)
         var result: Int64 = 0
         if json_get_int64(value, &result) {
@@ -252,7 +252,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeInt8(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Int8 {
+    func decodeInt8(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Int8 {
         var result: Int32 = 0
         if json_get_int32(value, &result), let next = Int8(exactly: result) {
             return next
@@ -262,7 +262,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeInt16(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Int16 {
+    func decodeInt16(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Int16 {
         var result: Int32 = 0
         if json_get_int32(value, &result), let next = Int16(exactly: result) {
             return next
@@ -272,7 +272,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeInt32(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Int32 {
+    func decodeInt32(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Int32 {
         var result: Int32 = 0
         if json_get_int32(value, &result) {
             return result
@@ -282,7 +282,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeInt64(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Int64 {
+    func decodeInt64(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Int64 {
         var result: Int64 = 0
         if json_get_int64(value, &result) {
             return result
@@ -292,7 +292,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeUInt(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> UInt {
+    func decodeUInt(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> UInt {
 #if arch(arm64) || arch(x86_64)
         var result: UInt64 = 0
         if json_get_uint64(value, &result) {
@@ -311,7 +311,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeUInt8(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> UInt8 {
+    func decodeUInt8(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> UInt8 {
         var result: UInt32 = 0
         if json_get_uint32(value, &result), let next = UInt8(exactly: result) {
             return next
@@ -321,7 +321,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeUInt16(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> UInt16 {
+    func decodeUInt16(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> UInt16 {
         var result: UInt32 = 0
         if json_get_uint32(value, &result), let next = UInt16(exactly: result) {
             return next
@@ -331,7 +331,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeUInt32(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> UInt32 {
+    func decodeUInt32(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> UInt32 {
         var result: UInt32 = 0
         if json_get_uint32(value, &result) {
             return result
@@ -341,7 +341,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decodeUInt64(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> UInt64 {
+    func decodeUInt64(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> UInt64 {
         var result: UInt64 = 0
         if json_get_uint64(value, &result) {
             return result
@@ -351,7 +351,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    func decode<T>(_ type: T.Type, value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws
+    func decode<T>(_ type: T.Type, value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws
             -> T where T: Decodable {
         if type == Date.self {
             return try decodeDate(value, key: key()) as! T
@@ -368,7 +368,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    private func decodeDate(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Date {
+    private func decodeDate(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Date {
         switch options.dateDecodingStrategy {
         case .secondsSince1970:
             let time = try decodeDouble(value, key: key())
@@ -400,7 +400,7 @@ final class SJDecoder: Decoder {
     }
 
     @inline(__always)
-    private func decodeData(_ value: JSONRef, key: @autoclosure () -> StartCodingKey?) throws -> Data {
+    private func decodeData(_ value: JSONRef, key: @autoclosure () -> AnyCodingKey?) throws -> Data {
         switch options.dataDecodingStrategy {
         case .deferredToData:
             return try Data.init(from: self)
@@ -644,7 +644,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeBool(item, key: StartCodingKey(_current))
+        return try decoder.decodeBool(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: String.Type) throws -> String {
@@ -654,7 +654,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeString(item, key: StartCodingKey(_current))
+        return try decoder.decodeString(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Double.Type) throws -> Double {
@@ -664,7 +664,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeDouble(item, key: StartCodingKey(_current))
+        return try decoder.decodeDouble(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Float.Type) throws -> Float {
@@ -674,7 +674,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeFloat(item, key: StartCodingKey(_current))
+        return try decoder.decodeFloat(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Int.Type) throws -> Int {
@@ -684,7 +684,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeInt(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Int8.Type) throws -> Int8 {
@@ -694,7 +694,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeInt8(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt8(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Int16.Type) throws -> Int16 {
@@ -704,7 +704,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeInt16(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt16(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Int32.Type) throws -> Int32 {
@@ -714,7 +714,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeInt32(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt32(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: Int64.Type) throws -> Int64 {
@@ -724,7 +724,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeInt64(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt64(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: UInt.Type) throws -> UInt {
@@ -734,7 +734,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeUInt(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: UInt8.Type) throws -> UInt8 {
@@ -744,7 +744,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeUInt8(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt8(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: UInt16.Type) throws -> UInt16 {
@@ -754,7 +754,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeUInt16(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt16(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: UInt32.Type) throws -> UInt32 {
@@ -764,7 +764,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeUInt32(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt32(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode(_ type: UInt64.Type) throws -> UInt64 {
@@ -774,7 +774,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decodeUInt64(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt64(item, key: AnyCodingKey(_current))
     }
 
     mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
@@ -784,7 +784,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         defer {
             _current += 1
         }
-        return try decoder.decode(type, value: item, key: StartCodingKey(_current))
+        return try decoder.decode(type, value: item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Bool.Type) throws -> Bool? {
@@ -797,7 +797,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeBool(item, key: StartCodingKey(_current))
+        return try decoder.decodeBool(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: String.Type) throws -> String? {
@@ -810,7 +810,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeString(item, key: StartCodingKey(_current))
+        return try decoder.decodeString(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Double.Type) throws -> Double? {
@@ -823,7 +823,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeDouble(item, key: StartCodingKey(_current))
+        return try decoder.decodeDouble(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Float.Type) throws -> Float? {
@@ -836,7 +836,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeFloat(item, key: StartCodingKey(_current))
+        return try decoder.decodeFloat(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Int.Type) throws -> Int? {
@@ -849,7 +849,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeInt(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Int8.Type) throws -> Int8? {
@@ -862,7 +862,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeInt8(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt8(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Int16.Type) throws -> Int16? {
@@ -875,7 +875,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeInt16(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt16(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Int32.Type) throws -> Int32? {
@@ -888,7 +888,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeInt32(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt32(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: Int64.Type) throws -> Int64? {
@@ -901,7 +901,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeInt64(item, key: StartCodingKey(_current))
+        return try decoder.decodeInt64(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: UInt.Type) throws -> UInt? {
@@ -914,7 +914,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeUInt(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: UInt8.Type) throws -> UInt8? {
@@ -927,7 +927,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeUInt8(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt8(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: UInt16.Type) throws -> UInt16? {
@@ -940,7 +940,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeUInt16(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt16(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: UInt32.Type) throws -> UInt32? {
@@ -953,7 +953,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeUInt32(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt32(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent(_ type: UInt64.Type) throws -> UInt64? {
@@ -966,7 +966,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decodeUInt64(item, key: StartCodingKey(_current))
+        return try decoder.decodeUInt64(item, key: AnyCodingKey(_current))
     }
 
     mutating func decodeIfPresent<T>(_ type: T.Type) throws -> T? where T: Decodable {
@@ -979,7 +979,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         if decoder.decodeNil(item) {
             return nil
         }
-        return try decoder.decode(T.self, value: item, key: StartCodingKey(_current))
+        return try decoder.decode(T.self, value: item, key: AnyCodingKey(_current))
     }
 
     mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws ->
@@ -987,11 +987,9 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         guard let item = json_array_get_index(value, _current) else {
             throw outOfIndexError()
         }
-        defer {
-            _current += 1
-        }
         decoder.appendKey(_current)
         defer {
+            _current += 1
             decoder.removeLastKey()
         }
         let nested = try SJDKeyedContainer<NestedKey>(decoder: decoder, value: item)
@@ -1002,11 +1000,9 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
         guard let item = json_array_get_index(value, _current) else {
             throw outOfIndexError()
         }
-        defer {
-            _current += 1
-        }
         decoder.appendKey(_current)
         defer {
+            _current += 1
             decoder.removeLastKey()
         }
         return try SJDUnkeyedContainer(decoder: decoder, value: item)
@@ -1019,7 +1015,7 @@ struct SJDUnkeyedContainer: UnkeyedDecodingContainer {
     @inline(__always)
     private func outOfIndexError() -> DecodingError {
         var path = decoder.codingPath
-        path.append(StartCodingKey(Int(_current + 1)))
+        path.append(AnyCodingKey(Int(_current + 1)))
         let context = DecodingError.Context(codingPath: path, debugDescription: SJDecoder.valueOutOfIndex())
         return DecodingError.dataCorrupted(context)
     }
@@ -1050,10 +1046,6 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
         allKeys = keys.compactMap(Key.init(stringValue:))
     }
 
-    func contains(_ key: Key) -> Bool {
-        contains(key: key) != nil
-    }
-
     @inline(__always)
     private func contains(key: Key) -> JSONRef? {
         let real = decoder.findKey(key)
@@ -1071,6 +1063,10 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
         }
     }
 
+    func contains(_ key: Key) -> Bool {
+        contains(key: key) != nil
+    }
+
     func decodeNil(forKey key: Key) throws -> Bool {
         guard let item = contains(key: key) else {
             return true
@@ -1080,79 +1076,79 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
 
     func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
         let item = try find(key: key)
-        return try decoder.decodeBool(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeBool(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: String.Type, forKey key: Key) throws -> String {
         let item = try find(key: key)
-        return try decoder.decodeString(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeString(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
         let item = try find(key: key)
-        return try decoder.decodeDouble(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeDouble(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
         let item = try find(key: key)
-        return try decoder.decodeFloat(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeFloat(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
         let item = try find(key: key)
-        return try decoder.decodeInt(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeInt(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
         let item = try find(key: key)
-        return try decoder.decodeInt8(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeInt8(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
         let item = try find(key: key)
-        return try decoder.decodeInt16(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeInt16(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
         let item = try find(key: key)
-        return try decoder.decodeInt32(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeInt32(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
         let item = try find(key: key)
-        return try decoder.decodeInt64(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeInt64(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
         let item = try find(key: key)
-        return try decoder.decodeUInt(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeUInt(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
         let item = try find(key: key)
-        return try decoder.decodeUInt8(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeUInt8(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
         let item = try find(key: key)
-        return try decoder.decodeUInt16(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeUInt16(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
         let item = try find(key: key)
-        return try decoder.decodeUInt32(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeUInt32(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
         let item = try find(key: key)
-        return try decoder.decodeUInt64(item, key: StartCodingKey(key.stringValue))
+        return try decoder.decodeUInt64(item, key: AnyCodingKey(key.stringValue))
     }
 
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
         let item = try find(key: key)
         var path = decoder.codingPath
         path.append(key)
-        return try decoder.decode(type, value: item, key: StartCodingKey(key.stringValue))
+        return try decoder.decode(type, value: item, key: AnyCodingKey(key.stringValue))
     }
 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws ->
@@ -1190,7 +1186,7 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
     @inline(__always)
     private func keyNotFoundError(key: Key) -> DecodingError {
         var path = decoder.codingPath
-        path.append(StartCodingKey(key.stringValue))
+        path.append(AnyCodingKey(key.stringValue))
         let context = DecodingError.Context(codingPath: path, debugDescription: SJDecoder.keyNotFound())
         return DecodingError.keyNotFound(key, context)
     }
