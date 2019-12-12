@@ -52,7 +52,7 @@ public struct DarwinFileSystem: FileSystem {
         let status = copyfile(from.string, to.string, state, flag)
         copyfile_state_free(state)
         if status < 0 {
-            throw Errors.darwin()
+            throw Errors.posix()
         }
     }
 

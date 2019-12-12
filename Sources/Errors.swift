@@ -46,11 +46,23 @@ public enum BasicError: Error {
 }
 
 struct Errors {
-    static func darwin() -> StartError {
-        StartError.darwin(errno)
+    static func posix() -> StartError {
+        StartError.posix(errno)
     }
 }
 
 public enum StartError: Error {
-    case darwin(Int32)
+    case posix(Int32)
+    case message(String)
+
+    public var localizedDescription: String {
+        switch self {
+        case let .posix(code):
+            return strerror(code).map({ (pointer: UnsafeMutablePointer<Int8>) in
+                String.init(cString: pointer)
+            }) ?? "posix error with code: \(code)"
+        case let .message(text):
+            return text
+        }
+    }
 }
