@@ -185,6 +185,7 @@
 		AC96AD9FE9EA2D914F94BA80 /* TestElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD3D2C1F8432D3994DBE /* TestElement.swift */; };
 		AC96ADAEC73129DDDE5E6D04 /* BasicElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AD8DE83BB1E6946ADA74 /* BasicElementTests.swift */; };
 		AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AE8FA4DF515AD4382975 /* DefaultValuesTests.swift */; };
+		AC96ADDCA7806BCCFE9F63DE /* StringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A904865EBEF068844B03 /* StringTests.swift */; };
 		AC96ADDDB1576CD661784F79 /* FileSystems.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A94237583279D3A255D3 /* FileSystems.swift */; };
 		AC96ADF4C11FCFFFC0761DB5 /* HadOverflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */; };
 		AC96ADF88680B235C85F021C /* ImageElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A88DAF244E5EAAC1C668 /* ImageElement.swift */; };
@@ -384,6 +385,7 @@
 		AC96A8B7FBE72C5486B3F808 /* FlexAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexAlgorithm.swift; sourceTree = "<group>"; };
 		AC96A8CA8F19330C578E6C71 /* Double.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Double.c; sourceTree = "<group>"; };
 		AC96A8F7A138D61BC5B15CBB /* R.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.swift; sourceTree = "<group>"; };
+		AC96A904865EBEF068844B03 /* StringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTests.swift; sourceTree = "<group>"; };
 		AC96A90E1FFE0A0283FFA2EF /* Approximate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Approximate.swift; sourceTree = "<group>"; };
 		AC96A93466C792C36E118E28 /* UnicodeStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnicodeStream.swift; sourceTree = "<group>"; };
 		AC96A94237583279D3A255D3 /* FileSystems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileSystems.swift; sourceTree = "<group>"; };
@@ -757,6 +759,7 @@
 			isa = PBXGroup;
 			children = (
 				AC96A44925FEFE942EB0AE91 /* CollectionTests.swift */,
+				AC96A904865EBEF068844B03 /* StringTests.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1562,6 +1565,7 @@
 				AC96A363CF4720B9AEAD3039 /* JSONEncoderTests.swift in Sources */,
 				AC96AB03CB59F4D5832FD44A /* JSONDataWriterTests.swift in Sources */,
 				AC96A0A6A318396F959FC98C /* JSONCodableTests.swift in Sources */,
+				AC96ADDCA7806BCCFE9F63DE /* StringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
