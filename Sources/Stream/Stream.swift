@@ -20,72 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol InStream {
+public protocol InputStream {
     associatedtype Value
 
-    func next() -> Value
-    func take() -> Value
-    func take(size: Int) -> [Value]
+    var readable: Bool { get }
 
-    func peek() -> Value
-    func peek(offset: Int) -> Value
-
-    func move() -> Bool
-    func move(offset: Int) -> Bool
+    mutating func read() -> Value?
 }
 
-public extension InStream {
-    func next() -> Value {
-        _ = move()
-        return peek()
-    }
-
-    func take() -> Value {
-        let value = peek()
-        _ = move()
-        return value
-    }
-
-    func take(size: Int) -> [Value] {
-        precondition(size > -1)
-        var result: [Value] = []
-        for _ in 0..<size {
-            result.append(take())
-        }
-        return result
-    }
-}
-
-public protocol OutStream {
+public protocol OutputStream {
     associatedtype Value
 
-    mutating func write(_ value: Value) throws
-    mutating func flush() throws
+    var writable: Bool { get }
+
+    mutating func write(_ value: Value)
+    mutating func write<C>(_ value: C) where C: Collection, C.Element == Value
+
+    mutating func flush()
 }
 
-public enum SeekOffset {
-    case current
-    case start
-    case end
-}
+public typealias Stream = InputStream & OutputStream
 
-public protocol RandomAccessStream: InStream {
-    func move(offset: Int, seek: SeekOffset) -> Bool
-    func peek(offset: Int, seek: SeekOffset) -> Value
-
-    subscript(position: Int) -> Value { get }
-}
-
-public extension RandomAccessStream {
-    func peek(offset: Int) -> Value {
-        self.peek(offset: offset, seek: .current)
+public extension InputStream {
+    var readable: Bool {
+        true
     }
+}
 
-    func move(offset: Int) -> Bool {
-        self.move(offset: offset, seek: .current)
-    }
-
-    subscript(position: Int) -> Value {
-        self.peek(offset: position, seek: .start)
+public extension OutputStream {
+    var writable: Bool {
+        true
     }
 }

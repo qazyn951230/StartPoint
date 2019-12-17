@@ -20,232 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Darwin.C
+import Foundation
 
-public class ByteStream: InStream {
-    public typealias Value = UInt8
+public protocol ByteOutputStream: OutputStream, TextOutputStream {
+    associatedtype Value = UInt8
 
-#if DEBUG
-    public var consumedText: String {
-        return ""
-    }
-#endif
+    mutating func write(_ data: Data)
+    mutating func write(_ string: String, encoding: String.Encoding)
+}
 
-    public var effective: Bool {
-        return false
-    }
-
-    public func peek() -> UInt8 {
-        return 0
-    }
-
-    public func peek(offset: Int) -> UInt8 {
-        return 0
+public extension ByteOutputStream where Value == UInt8 {
+    mutating func write(_ data: Data) {
+        data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) -> Void in
+            let buffer = raw.bindMemory(to: UInt8.self)
+            buffer.forEach { value in
+                self.write(value)
+            }
+        }
     }
 
-    @discardableResult
-    public func move() -> Bool {
-        return false
+    mutating func write(_ string: String, encoding: String.Encoding) {
+        if let data = string.data(using: encoding) {
+            write(data)
+        }
     }
 
-    @discardableResult
-    public func move(offset: Int) -> Bool {
-        return false
-    }
-
-    public static func int8(_ source: UnsafePointer<Int8>) -> ByteStream {
-        return Int8Stream(source: source)
-    }
-
-    public static func uint8(_ source: UnsafePointer<UInt8>) -> ByteStream {
-        return UInt8Stream(source: source)
-    }
-
-    public static func file(_ path: String) -> ByteStream {
-        return FileByteStream(path: path)
+    mutating func write(_ string: String) {
+        write(string, encoding: .utf8)
     }
 }
 
-public final class Int8Stream: ByteStream {
-    public let source: UnsafePointer<Int8>
-    public let size: Int
-    public let nullTerminated: Bool
-    var index: Int = 0
-    var current: UnsafePointer<Int8>
-    var terminated: Bool = false
+public protocol ByteInputSteam: InputStream {
+    associatedtype Value = UInt8
 
-#if DEBUG
-    public override var consumedText: String {
-        let count = source.distance(to: current)
-        let data = Data(bytes: UnsafeRawPointer(source), count: count)
-        return String(data: data, encoding: .utf8) ?? ""
-    }
-#endif
-
-    public init(source: UnsafePointer<Int8>, size: Int = 0) {
-        self.source = source
-        self.size = size
-        current = source
-        nullTerminated = size < 1
-    }
-
-    public override var effective: Bool {
-        return nullTerminated ? !terminated : index < size
-    }
-
-    public override func peek() -> UInt8 {
-        return effective ? UInt8(bitPattern: current.pointee) : 0
-    }
-
-    public override func peek(offset: Int) -> UInt8 {
-        if nullTerminated {
-            var t = current
-            for _ in 0 ..< offset {
-                t = t.successor()
-                if t.pointee == 0 {
-                    break
-                }
-            }
-            return UInt8(bitPattern: t.pointee)
-        } else {
-            if index + offset < size {
-                return UInt8(bitPattern: current.advanced(by: offset).pointee)
-            } else {
-                return 0
-            }
-        }
-    }
-
-    @discardableResult
-    public override func move() -> Bool {
-        if nullTerminated {
-            if terminated {
-                return false
-            }
-            current = current.advanced(by: 1)
-            terminated = current.pointee == 0
-            return true
-        } else {
-            current = current.advanced(by: 1)
-            index += 1
-            return effective
-        }
-    }
-
-    @discardableResult
-    public override func move(offset: Int) -> Bool {
-        if nullTerminated {
-            if terminated {
-                return false
-            }
-            var t = current
-            for _ in 0 ..< offset {
-                t = t.successor()
-                if t.pointee == 0 {
-                    return false
-                }
-            }
-            current = t
-            terminated = current.pointee == 0
-            return true
-        } else {
-            if index + offset < size {
-                current = current.advanced(by: offset)
-                index += offset
-            }
-            return effective
-        }
-    }
+    mutating func read(count: Int) -> Data
+    mutating func readAll() -> Data
 }
 
-public final class UInt8Stream: ByteStream {
-    public let source: UnsafePointer<UInt8>
-    public let size: Int
-    public let nullTerminated: Bool
-    var index: Int = 0
-    var current: UnsafePointer<UInt8>
-    var terminated: Bool = false
-
-#if DEBUG
-    public override var consumedText: String {
-        let count = source.distance(to: current)
-        let data = Data(bytes: UnsafeRawPointer(source), count: count)
-        return String(data: data, encoding: .utf8) ?? ""
-    }
-#endif
-
-    public init(source: UnsafePointer<UInt8>, size: Int = 0) {
-        self.source = source
-        self.size = size
-        current = source
-        nullTerminated = size < 1
-    }
-
-    public override var effective: Bool {
-        return nullTerminated ? !terminated : index < size
-    }
-
-    public override func peek() -> UInt8 {
-        return effective ? current.pointee : 0
-    }
-
-    public override func peek(offset: Int) -> UInt8 {
-        if nullTerminated {
-            var t = current
-            for _ in 0 ..< offset {
-                t = t.successor()
-                if t.pointee == 0 {
-                    break
-                }
-            }
-            return t.pointee
-        } else {
-            if index + offset < size {
-                return current.advanced(by: offset).pointee
-            } else {
-                return 0
-            }
-        }
-    }
-
-    @discardableResult
-    public override func move() -> Bool {
-        if nullTerminated {
-            if terminated {
-                return false
-            }
-            current = current.advanced(by: 1)
-            terminated = current.pointee == 0
-            return true
-        } else {
-            current = current.advanced(by: 1)
-            index += 1
-            return effective
-        }
-    }
-
-    @discardableResult
-    public override func move(offset: Int) -> Bool {
-        if nullTerminated {
-            if terminated {
-                return false
-            }
-            var t = current
-            for _ in 0 ..< offset {
-                t = t.successor()
-                if t.pointee == 0 {
-                    return false
-                }
-            }
-            current = t
-            terminated = current.pointee == 0
-            return true
-        } else {
-            if index + offset < size {
-                current = current.advanced(by: offset)
-                index += offset
-            }
-            return effective
-        }
-    }
-}
+public typealias ByteStream = ByteOutputStream & ByteInputSteam

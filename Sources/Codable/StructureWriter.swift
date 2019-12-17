@@ -20,11 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol Writable {
-    func write<Target>(to writer: Target) where Target: Writer
-}
-
-public protocol Writer: class {
+public protocol StructureWriter: class {
     associatedtype Output
 
     var output: Output { get }
@@ -70,12 +66,9 @@ public protocol Writer: class {
     func write(_ value: UInt16)
     func write(_ value: UInt32)
     func write(_ value: UInt64)
-
-    func write(any value: Writable?)
-    func write(_ value: Writable)
 }
 
-public extension Writer {
+public extension StructureWriter {
     func write(_ value: Int) {
 #if arch(arm64) || arch(x86_64)
         self.write(Int64(value))
@@ -106,10 +99,6 @@ public extension Writer {
 
     func write(_ value: UInt16) {
         self.write(UInt32(value))
-    }
-
-    func write(_ value: Writable) {
-        value.write(to: self)
     }
 
     func write(any value: String?) {
@@ -217,14 +206,6 @@ public extension Writer {
     }
 
     func write(any value: UInt64?) {
-        if let value = value {
-            write(value)
-        } else {
-            writeNull()
-        }
-    }
-
-    func write(any value: Writable?) {
         if let value = value {
             write(value)
         } else {

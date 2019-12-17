@@ -20,13 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol MemoryBuffer: Buffer {
-    var start: UnsafePointer<Element> { get }
-    var end: UnsafePointer<Element> { get }
-}
+public protocol Buffer {
+    associatedtype Element
 
-public extension MemoryBuffer {
-    var capacity : Int {
-        start.distance(to: end)
-    }
+    var count: Int { get }
+    var capacity: Int { get }
+
+    mutating func reserveCapacity(_ minimumCapacity: Int)
+
+    mutating func append(_ newElement: Element)
+    mutating func append<S>(contentsOf newElements: S) where S : Sequence, Element == S.Element
+
+    mutating func removeAll(keepingCapacity keepCapacity: Bool)
 }

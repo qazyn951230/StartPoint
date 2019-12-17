@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public protocol JSONWriter: Writer, JSONVisitor {
+public protocol JSONWriter: StructureWriter, JSONVisitor {
     func write(any value: JSONGenerator?)
     func write(_ value: JSONGenerator)
 }

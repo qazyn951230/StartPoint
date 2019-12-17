@@ -21,159 +21,200 @@
 // SOFTWARE.
 
 import Darwin.C
-import Foundation
 
-public class DataStream: OutStream {
-    public typealias Value = Data
+public final class FileStream: ByteStream, BufferStream, RandomAccessStream {
+    public typealias WriteBuffer = UIntBuffer
+    public typealias ReadBuffer = UIntBuffer
+    public typealias Value = UInt8
+    public typealias Index = Int
+    public static let defaultBufferCapacity = 1024
 
-    init() {
-        // Do nothing.
-    }
+    public let readable: Bool
+    public let writable: Bool
+    public var writeBuffer = UIntBuffer(capacity: FileStream.defaultBufferCapacity)
+    public var readBuffer = UIntBuffer(capacity: FileStream.defaultBufferCapacity)
+    public private(set) var error: Error?
 
-    public func write(_ value: Data) throws {
-        // Do nothing.
-    }
-
-    public func flush() throws {
-        // Do nothing.
-    }
-
-    public func write(string value: String, encoding: String.Encoding = String.Encoding.utf8) throws {
-        guard let data = value.data(using: .utf8) else {
-            throw BasicError.invalidArgument
-        }
-        try write(data)
-    }
-
-    public func write(byte value: UInt8) throws {
-        let data = Data([value])
-        try write(data)
-    }
-
-    public func write(bytes value: [UInt8]) throws {
-        let data = Data(value)
-        try write(data)
-    }
-
-    public static func standardOutput() -> DataStream {
-        return FileStream(file: FileHandle.standardOutput)
-    }
-
-    public static func standardError() -> DataStream {
-        return FileStream(file: FileHandle.standardError)
-    }
-}
-
-public final class FileStream: DataStream {
-    public typealias Value = Data
-
-    let file: FileHandle
-
-    public convenience init(path: String) throws {
-        let manager = FileManager.default
-        if !manager.fileExists(atPath: path) {
-            if !manager.createFile(atPath: path, contents: nil) {
-                throw BasicError.ioError
-            }
-        }
-        guard let file = FileHandle(forWritingAtPath: path) else {
-            throw BasicError.noSuchFile
-        }
-        self.init(file: file)
-    }
-
-    public init(file: FileHandle) {
-        self.file = file
-        super.init()
-    }
-
-    public override func write(_ value: Data) throws {
-        file.write(value)
-    }
-}
-
-public final class CFileStream: DataStream {
-    static let capacity = 65536
+    let behavior: Behavior
     let file: UnsafeMutablePointer<FILE>
-    let buffer: UnsafeMutablePointer<UInt8>
-    var current: UnsafeMutablePointer<UInt8>
-    var count = 0
 
-    public init(path: String) throws {
-        guard let _file = fopen(path, "w") else {
-            throw BasicError.posixError()
+    public var hasError: Bool {
+        error != nil
+    }
+
+    public init(read file: UnsafeMutablePointer<FILE>, behavior: Behavior = Behavior.close) {
+        self.file = file
+        self.readable = true
+        self.writable = false
+        self.behavior = behavior
+    }
+
+    public init(write file: UnsafeMutablePointer<FILE>, behavior: Behavior = Behavior.close) {
+        self.file = file
+        self.readable = false
+        self.writable = true
+        self.behavior = behavior
+    }
+
+    public init(read path: Path) throws {
+        guard let file = fopen(path.string, "rb") else {
+            throw Errors.posix()
         }
-        file = _file
-        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: CFileStream.capacity)
-        current = buffer
-        super.init()
+        self.readable = true
+        self.writable = false
+        self.file = file
+        self.behavior = .close
+    }
+
+    public init(write path: Path) throws {
+        guard let file = fopen(path.string, "wb") else {
+            throw Errors.posix()
+        }
+        self.readable = false
+        self.writable = true
+        self.file = file
+        self.behavior = .close
     }
 
     deinit {
-        fclose(file)
-        buffer.deallocate()
+        if behavior == Behavior.close {
+            fclose(file)
+        }
     }
 
-    public override func flush() throws {
-        if count < 1 {
+    public func write(pointer: UnsafePointer<UInt8>, size: Int) {
+        guard writable, size > 0 else {
             return
         }
-        let raw = UnsafeRawPointer(buffer)
-        _ = fwrite(raw, 1, count, file)
-        current = buffer
-        count = 0
-    }
-
-    public override func write(_ value: Data) throws {
-        var iterator = value.makeIterator()
-        while let next = iterator.next() {
-            try write(byte: next)
+        let raw = UnsafeRawPointer(pointer)
+        while true {
+            let n = fwrite(raw, 1, size, file)
+            if n != size && errno != EINTR {
+                error = StartError.posix(errno)
+                break
+            }
         }
     }
 
-    public override func write(byte value: UInt8) throws {
-        let remain: Int = CFileStream.capacity - count
-        if remain < 1 {
-            try flush()
+    public func write(_ value: UInt8) {
+        guard writable else {
+            return
         }
-        count += 1
-        current.initialize(to: value)
-        current = current.successor()
-    }
-
-    public override func write(bytes value: [UInt8]) throws {
-        let remain: Int = CFileStream.capacity - count
-        if remain < value.count {
-            try flush()
+        if writeBuffer.count + 1 > writeBuffer.capacity {
+            self.flush()
         }
-        count += value.count
-        for item in value {
-            current.initialize(to: item)
-            current = current.successor()
+        assert(writeBuffer.count + 1 <= writeBuffer.capacity)
+        writeBuffer.append(value)
+    }
+
+    public func write(_ data: Data) {
+        guard writable else {
+            return
+        }
+        data.withUnsafeBytes { (raw: UnsafeRawBufferPointer) -> Void in
+            let buffer = raw.bindMemory(to: UInt8.self)
+            if let base = buffer.baseAddress {
+                self.write(pointer: base, size: buffer.count)
+            }
         }
     }
-}
 
-public final class StringStream: DataStream {
-    var _content: Data = Data()
-
-    public override init() {
-        super.init()
+    public func write<C>(_ value: C) where C: Collection, C.Element == UInt8 {
+        guard writable && value.isNotEmpty else {
+            return
+        }
+        if writeBuffer.count + value.count <= writeBuffer.capacity {
+            writeBuffer.append(contentsOf: value)
+            return
+        }
+        // buffer.count + value.count > buffer.capacity
+        self.flush()
+        let max = value.endIndex
+        var start = value.startIndex
+        var end = value.index(start, offsetBy: writeBuffer.capacity, limitedBy: max)
+        while let _end = end {
+            writeBuffer.append(contentsOf: value[start..<_end])
+            self.flush()
+            start = _end
+            end = value.index(start, offsetBy: writeBuffer.capacity, limitedBy: max)
+        }
+        if start != max {
+            writeBuffer.append(contentsOf: value[start..<max])
+        }
     }
 
-    public var content: String {
-        return String(data: _content, encoding: .utf8) ?? ""
+    public func write(_ string: String) {
+        guard writable else {
+            return
+        }
+        write(string)
     }
 
-    public override func write(byte value: UInt8) throws {
-        _content.append(value)
+    public func write(_ string: String, encoding: String.Encoding) {
+        guard writable else {
+            return
+        }
+        if let data = string.data(using: encoding) {
+            self.write(data)
+        } else {
+            error = StartError.invalidStringEncoding(string, encoding)
+        }
     }
 
-    public override func write(bytes value: [UInt8]) throws {
-        _content.append(contentsOf: value)
+    public func flush() {
+        guard writable else {
+            return
+        }
+        write(pointer: writeBuffer.start, size: writeBuffer.count)
+        writeBuffer.removeAll(keepingCapacity: true)
+        fflush(file)
+    }
+    
+    public func seek(offset: Int, direction: SeekDirection) {
     }
 
-    public override func write(_ value: Data) throws {
-        _content.append(value)
+    public func peek() -> UInt8 {
+        0
+    }
+
+    public func peek(offset: Int) -> UInt8 {
+        0
+    }
+
+    public func move() -> Bool {
+        false
+    }
+
+    public func move(offset: Int) -> Bool {
+        false
+    }
+
+    public func read() -> UInt8? {
+        fatalError("read() has not been implemented")
+    }
+
+    public func read(count: Int) -> Data {
+        fatalError("read(count:) has not been implemented")
+    }
+
+    public func readAll() -> Data {
+        fatalError("readAll() has not been implemented")
+    }
+
+    public enum Behavior {
+        case close
+        case none
+    }
+
+    public static func standardError() -> FileStream {
+        FileStream(read: stderr, behavior: .none)
+    }
+
+    public static func standardInput() -> FileStream {
+        FileStream(write: stdin, behavior: .none)
+    }
+
+    public static func standardOutput() -> FileStream {
+        FileStream(read: stdout, behavior: .none)
     }
 }
