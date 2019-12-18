@@ -233,6 +233,10 @@
 		BC6127581F3EFCD400AC8224 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */; };
 		BC6127591F3EFCD400AC8224 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */; };
 		BC61275B1F3EFCE300AC8224 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC16E7541F3EAB9800DDC894 /* Request.swift */; };
+		BC64BDEC23A9CE7500908485 /* JSONPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC64BDEA23A9CE7100908485 /* JSONPerformanceTests.swift */; };
+		BC64BDEF23A9D2A700908485 /* xpm_build_settings.json in Resources */ = {isa = PBXBuildFile; fileRef = BC64BDEE23A9D2A700908485 /* xpm_build_settings.json */; };
+		BC64BDF123A9D4AA00908485 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC64BDF023A9D4AA00908485 /* Codable.swift */; };
+		BC64BDF323A9D9D900908485 /* sample.json in Resources */ = {isa = PBXBuildFile; fileRef = BC64BDF223A9D9D900908485 /* sample.json */; };
 		BC6BA1B31F2DC08700772AA8 /* StartPoint.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */; };
 		BC6BA1C61F2DC38700772AA8 /* StartPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AC96A342F409A0E293EB7804 /* StartPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BC87EFAB2193D49500896E21 /* Config.h in Headers */ = {isa = PBXBuildFile; fileRef = BC87EFA92193D15200896E21 /* Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -499,6 +503,10 @@
 		BC33768F211D771C006DF19C /* macOS-Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC57E7E1236FD14400E1903C /* ParserTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ParserTests.mm; sourceTree = "<group>"; };
 		BC6127391F3EF9EB00AC8224 /* iOS-Test.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Test.xcconfig"; sourceTree = "<group>"; };
+		BC64BDEA23A9CE7100908485 /* JSONPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONPerformanceTests.swift; sourceTree = "<group>"; };
+		BC64BDEE23A9D2A700908485 /* xpm_build_settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = xpm_build_settings.json; sourceTree = "<group>"; };
+		BC64BDF023A9D4AA00908485 /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
+		BC64BDF223A9D9D900908485 /* sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.json; sourceTree = "<group>"; };
 		BC6BA1A91F2DC08700772AA8 /* StartPoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StartPoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC6BA1B21F2DC08700772AA8 /* StartPointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StartPointTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC86B874211ADD6100C02605 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
@@ -685,6 +693,7 @@
 				AC96A48C2C2CDB1F8620071E /* Extension */,
 				AC96A1F339CA6B8CEFE79E5B /* Layout */,
 				AC96ABAE9E0E01AD5A5A59C4 /* React */,
+				BC64BDED23A9D26800908485 /* Resouces */,
 				AC96AB8D6DC9B61E9FD00A87 /* Router */,
 				AC96AB1D2CCA9441AF78C03B /* Stream */,
 				AC96A3E1666CFBEBB14A6977 /* Thread */,
@@ -816,13 +825,15 @@
 		AC96A566939DBC0E67587FEC /* Codable */ = {
 			isa = PBXGroup;
 			children = (
+				BC64BDF023A9D4AA00908485 /* Codable.swift */,
+				AC96AF1001AA15132776F931 /* JSONCodableTests.swift */,
 				AC96A1D63E0DD8004765D953 /* JSONDataWriterTests.swift */,
 				BC902E182373B9F700233DBE /* JSONDecoderTests.swift */,
 				AC96A0889091CDAC49E57928 /* JSONEncoderTests.swift */,
+				BC64BDEA23A9CE7100908485 /* JSONPerformanceTests.swift */,
 				BCF881CF23711C9F0062227E /* JSONTests.mm */,
 				AC96ABA401F1A1C80607730B /* JSONTests.swift */,
 				BC57E7E1236FD14400E1903C /* ParserTests.mm */,
-				AC96AF1001AA15132776F931 /* JSONCodableTests.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -1034,6 +1045,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		BC64BDED23A9D26800908485 /* Resouces */ = {
+			isa = PBXGroup;
+			children = (
+				BC64BDF223A9D9D900908485 /* sample.json */,
+				BC64BDEE23A9D2A700908485 /* xpm_build_settings.json */,
+			);
+			path = Resouces;
+			sourceTree = "<group>";
+		};
 		BC6BA19F1F2DC08600772AA8 = {
 			isa = PBXGroup;
 			children = (
@@ -1098,16 +1118,16 @@
 				BCFAFF5E23682A6700C80BF5 /* JSON.hpp */,
 				BCF881D22371548F0062227E /* JSON.mm */,
 				AC96AC8280B7520BCAC87885 /* JSON.swift */,
+				AC96AED52D45256CF43868DA /* JSONDataWriter.swift */,
 				BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */,
 				AC96A37B5B62D9284471E336 /* JSONEncoder.swift */,
+				AC96A42C413AB294B89C975D /* JSONGenerator.swift */,
 				AC96A31773EF5A2CB168B077 /* JSONParseError.swift */,
+				AC96A73CFB4D83315AD4CDFC /* JSONVisitor.swift */,
 				AC96A3945B6593059880EA8E /* JSONWriter.swift */,
 				AC96AFE35FFF8A5ACBAA8E05 /* Optional.hpp */,
 				BCDD7D79236C24E4007C728D /* Parser.hpp */,
 				BCDD7D7D236C2514007C728D /* Stream.hpp */,
-				AC96AED52D45256CF43868DA /* JSONDataWriter.swift */,
-				AC96A73CFB4D83315AD4CDFC /* JSONVisitor.swift */,
-				AC96A42C413AB294B89C975D /* JSONGenerator.swift */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -1310,6 +1330,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC64BDEF23A9D2A700908485 /* xpm_build_settings.json in Resources */,
+				BC64BDF323A9D9D900908485 /* sample.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1533,6 +1555,7 @@
 				AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */,
 				AC96A2613771E4272D5C20C8 /* BorderTests.swift in Sources */,
 				AC96A971B402B448B1D55A57 /* AlignSelfTests.swift in Sources */,
+				BC64BDEC23A9CE7500908485 /* JSONPerformanceTests.swift in Sources */,
 				AC96A58850891422118778BD /* DisplayTests.swift in Sources */,
 				AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */,
 				BC034E0B21BFADA100F3627A /* StreamTests.swift in Sources */,
@@ -1557,6 +1580,7 @@
 				AC96A0AFFC6533238FB13AD4 /* RelayoutTests.swift in Sources */,
 				AC96A7CD785F264D901183AC /* RoundingFunctionTests.swift in Sources */,
 				AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */,
+				BC64BDF123A9D4AA00908485 /* Codable.swift in Sources */,
 				AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */,
 				AC96A3FE03768BF5F4255EE1 /* StyleTests.swift in Sources */,
 				AC96ACAF4592BC56CCA73704 /* PersistenceTests.swift in Sources */,

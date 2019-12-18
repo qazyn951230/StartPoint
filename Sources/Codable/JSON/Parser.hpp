@@ -23,6 +23,7 @@
 #ifndef START_POINT_PARSER_HPP
 #define START_POINT_PARSER_HPP
 
+#include <algorithm>
 #include "JSON.hpp"
 #include "Stream.hpp"
 #include "Double.h"
@@ -119,20 +120,25 @@ private:
         }
     }
 
+    void parseString(std::string& container) {
+        if (!consume(0x22)) {
+            throw Error{JSONParseStatusValueInvalid};
+        }
+        rawString(&container);
+        if (!consume(0x22)) {
+            throw Error{JSONParseStatusValueInvalid};
+        }
+    }
+
     void parseString() {
         if (!consume(0x22)) {
             throw Error{JSONParseStatusValueInvalid};
         }
-        append(value_t{JSONTypeString});
-        Scope scope{[&]() {
-            assert(!_stack.empty());
-            auto value = _stack.back();
-            assert(value->isString());
-            _stack.pop_back();
-            _current = _stack.back();
-        }};
-        rawString();
-        if (!consume(0x22)) {
+        value_t value{JSONTypeString};
+        rawString(value.asString());
+        if (consume(0x22)) {
+            append(std::move(value));
+        } else {
             throw Error{JSONParseStatusValueInvalid};
         }
     }
@@ -412,7 +418,9 @@ private:
             if (_stream.peek() != 0x22) {
                 throw Error{JSONParseStatusObjectMissName};
             }
-            parseString();
+            std::string key;
+            parseString(key);
+            _keys.push_back(std::move(key));
             skip();
             if (!consume(0x3a)) {
                 throw Error{JSONParseStatusObjectMissColon};
@@ -467,7 +475,7 @@ private:
 
     //  \,  ",  b,  f,  n,  r,  t,  /,  u
     // [5c, 22, 62, 66, 6e, 72, 74, 2f, 75]
-    void rawString() {
+    void rawString(std::string* container) {
         auto next = _stream.peek();
         auto start = _stream.current();
         while (true) {
@@ -475,14 +483,14 @@ private:
                 case 0x5c: {
                     auto end = _stream.current();
                     if (start != end) {
-                        append(start, end);
+                        append(container, start, end);
                     }
                     next = _stream.next();
                     if (next == 0x75) {
-                        parseUnicode();
+                        parseUnicode(container);
                     } else {
                         auto value = parseChar();
-                        append(value);
+                        container->push_back(static_cast<char>(value));
                     }
                     start = _stream.current();
                 }
@@ -490,14 +498,14 @@ private:
                 case 0x22: {
                     auto end = _stream.current();
                     if (start != end) {
-                        append(start, end);
+                        append(container, start, end);
                     }
                     return;
                 }
                 case 0x00: {
                     auto end = _stream.current();
                     if (start != end) {
-                        append(start, end);
+                        append(container, start, end);
                     }
                     throw Error{JSONParseStatusMissQuotationMark};
                 }
@@ -522,7 +530,7 @@ private:
                 case 0x19: {
                     auto end = _stream.current();
                     if (start != end) {
-                        append(start, end);
+                        append(container, start, end);
                     }
                     throw Error{JSONParseStatusMissQuotationMark};
                 }
@@ -569,7 +577,7 @@ private:
         }
     }
 
-    void parseUnicode() {
+    void parseUnicode(std::string* container) {
         auto code = parseUnicodeValue();
         if (SP_UNLIKELY(code >= 0xd800u && code <= 0xdbffu)) {
             // Handle UTF-16 surrogate pair
@@ -583,19 +591,19 @@ private:
             code = (((code - 0xd800u) << 10u) | (next - 0xdc00u)) + 0x10000u;
         }
         if (code <= 0x7f) {
-            append(static_cast<uint8_t>(code & 0xffu));
+            container->push_back(static_cast<char>(code & 0xffu));
         } else if (code <= 0x7ff) {
-            append(static_cast<uint8_t>(0xc0u | ((code >> 6u) & 0xffu)));
-            append(static_cast<uint8_t>(0x80u | (code & 0x3fu)));
+            container->push_back(static_cast<char>(0xc0u | ((code >> 6u) & 0xffu)));
+            container->push_back(static_cast<char>(0x80u | (code & 0x3fu)));
         } else if (code <= 0xffff) {
-            append(static_cast<uint8_t>(0xe0u | ((code >> 12u) & 0xffu)));
-            append(static_cast<uint8_t>(0x80u | ((code >> 6u) & 0x3fu)));
-            append(static_cast<uint8_t>(0x80u | (code & 0x3fu)));
+            container->push_back(static_cast<char>(0xe0u | ((code >> 12u) & 0xffu)));
+            container->push_back(static_cast<char>(0x80u | ((code >> 6u) & 0x3fu)));
+            container->push_back(static_cast<char>(0x80u | (code & 0x3fu)));
         } else if (code <= 0x10'ffff) {
-            append(static_cast<uint8_t>(0xf0u | ((code >> 18u) & 0xffu)));
-            append(static_cast<uint8_t>(0x80u | ((code >> 12u) & 0x3fu)));
-            append(static_cast<uint8_t>(0x80u | ((code >> 6u) & 0x3fu)));
-            append(static_cast<uint8_t>(0x80u | (code & 0x3fu)));
+            container->push_back(static_cast<char>(0xf0u | ((code >> 18u) & 0xffu)));
+            container->push_back(static_cast<char>(0x80u | ((code >> 12u) & 0x3fu)));
+            container->push_back(static_cast<char>(0x80u | ((code >> 6u) & 0x3fu)));
+            container->push_back(static_cast<char>(0x80u | (code & 0x3fu)));
         } else {
             throw Error{JSONParseStatusValueInvalid};
         }
@@ -662,7 +670,6 @@ private:
             }
             return;
         }
-#if (SP_JSON_MAP_TYPE == 3)
         switch (_current->type()) {
             case JSONTypeArray: {
                 auto& next = _current->append(std::move(value));
@@ -673,61 +680,35 @@ private:
                 break;
             }
             case JSONTypeObject: {
-                if (_keys.empty()) {
-                    assert(value.isString());
-                    _keys.push_back(std::move(value));
-                    auto& next = _keys.back();
-                    _current = &next;
+                assert(!_keys.empty());
+                auto last = _keys.back();
+                _keys.pop_back();
+                auto& result = _current->append(std::move(last), std::move(value));
+                if (result.second.isComplex()) {
+                    _current = &(result.second);
                     _stack.push_back(_current);
-                } else {
-                    auto last = _keys.back();
-                    _keys.pop_back();
-                    auto result = _current->append(std::move(last), std::move(value));
-                    if (result.first->second.isComplex()) {
-                        _current = &(result.first->second);
-                        _stack.push_back(_current);
-                    }
                 }
             }
                 break;
             default:
                 break;
         }
-#else
-        switch (_current->type()) {
-            case JSONTypeArray:
-            case JSONTypeObject: {
-                auto& next = _current->append(std::move(value));
-                if (next.isComplex()) {
-                    _current = &next;
-                    _stack.push_back(_current);
-                }
-                break;
-            }
-            default:
-                break;
-        }
-#endif
-    }
-
-    inline void append(byte_t value) {
-        assert(_current != nullptr && _current->isString());
-        _current->append(value);
     }
 
     // *end not included.
-    inline void append(const byte_t* start, const byte_t* end) {
-        assert(_current != nullptr && _current->isString());
-        _current->append(start, end);
+    inline void append(std::string* container, const byte_t* start, const byte_t* end) {
+        assert(container != nullptr && end > start);
+        if (container->empty()) {
+            container->reserve(std::min(static_cast<size_t>(16llu), static_cast<size_t>(end - start)));
+        }
+        container->append(reinterpret_cast<const char*>(start), reinterpret_cast<const char*>(end));
     }
 
     value_t& _root;
     std::vector<value_t*> _stack;
     value_t* _current;
     stream_t _stream;
-#if (SP_JSON_MAP_TYPE == 3)
-    std::vector<value_t> _keys{};
-#endif
+    std::vector<std::string> _keys{};
 };
 
 SP_CPP_FILE_END

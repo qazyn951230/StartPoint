@@ -23,16 +23,16 @@
 import XCTest
 @testable import StartPoint
 
-class ByteStreamTests: XCTestCase {
-    func testInt8StreamCString() {
-        let string = "{\"aaa\":\"bbb\",\"ccc\":112233}"
-        let effective: Bool = string.withCString { p in
-            let stream = Int8Stream(source: p)
-            while stream.effective {
-                _ = stream.next()
-            }
-            return stream.effective
-        }
-        XCTAssertFalse(effective)
-    }
-}
+//class ByteStreamTests: XCTestCase {
+//    func testInt8StreamCString() {
+//        let string = "{\"aaa\":\"bbb\",\"ccc\":112233}"
+//        let effective: Bool = string.withCString { p in
+//            let stream = Int8Stream(source: p)
+//            while stream.effective {
+//                _ = stream.next()
+//            }
+//            return stream.effective
+//        }
+//        XCTAssertFalse(effective)
+//    }
+//}

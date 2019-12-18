@@ -137,7 +137,7 @@ bool json_get_double(JSONRef json, double* result);
 bool json_get_bool(JSONRef json, bool* result);
 void* json_get_string(JSONRef json, uint32_t* size);
 
-bool json_object_contains_key(JSONRef json, const int8_t* data);
+//bool json_object_contains_key(JSONRef json, const int8_t* data);
 JSONRef SP_NULLABLE json_object_find_key(JSONRef json, const int8_t* data);
 
 JSONRef SP_NULLABLE json_parse_int8_data(const int8_t* data);

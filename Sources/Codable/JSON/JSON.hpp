@@ -25,7 +25,7 @@
 
 #ifndef SP_JSON_MAP_TYPE
 // 1 vector 2 map 3 unordered_map
-#define SP_JSON_MAP_TYPE 3
+#define SP_JSON_MAP_TYPE 1
 #endif
 
 #ifndef SP_JSON_SUPPORT_IOS_10
@@ -67,7 +67,7 @@ public:
 #if (SP_JSON_MAP_TYPE == 3)
     using object_t = std::unordered_map<std::string, value_t>;
 #else
-    using object_t = std::vector<value_t>;
+    using object_t = std::vector<std::pair<std::string, value_t>>;
 #endif
 
     union Data {
@@ -296,7 +296,7 @@ public:
     }
 
     [[nodiscard]] bool isComplex() const noexcept {
-        return _type == JSONTypeString || _type == JSONTypeArray || _type == JSONTypeObject;
+        return _type == JSONTypeArray || _type == JSONTypeObject;
     }
 
     [[nodiscard]] auto int32() const noexcept {
@@ -677,11 +677,21 @@ public:
             }
                 break;
             case JSONTypeObject: {
+#if (SP_JSON_MAP_TYPE == 3)
                 result = JSON(JSONTypeObject);
                 object_t map = *result._data.object;
                 for (const auto& item: *_data.object) {
                     map[item.first] = std::move(item.second.deepCopy());
                 }
+#else
+                result = JSON(JSONTypeObject);
+                object_t map = *result._data.object;
+                for (const auto& item: *_data.object) {
+                    string_t key = item.first;
+                    value_t value = item.second.deepCopy();
+                    map.emplace_back(std::pair{std::move(key), std::move(value)});
+                }
+#endif
             }
                 break;
         }
@@ -766,41 +776,39 @@ public:
     }
 
     value_t& append(const value_t& value) {
-#if (SP_JSON_MAP_TYPE == 1)
-        assert(_type == JSONTypeArray || _type == JSONTypeObject);
-#else
         assert(_type == JSONTypeArray);
-#endif
         _data.array->push_back(value);
         return _data.array->back();
     }
 
     value_t& append(value_t&& value) {
-#if (SP_JSON_MAP_TYPE == 1)
-        assert(_type == JSONTypeArray || _type == JSONTypeObject);
-#else
         assert(_type == JSONTypeArray);
-#endif
         _data.array->push_back(std::move(value));
         return _data.array->back();
     }
 
     template<typename ...Args>
     value_t& appendValue(Args&& ...args) {
-#if (SP_JSON_MAP_TYPE == 1)
-        assert(_type == JSONTypeArray || _type == JSONTypeObject);
-#else
         assert(_type == JSONTypeArray);
-#endif
         _data.array->emplace_back(std::forward<Args>(args)...);
         return _data.array->back();
     }
 
-#if (SP_JSON_MAP_TYPE != 1)
+#if (SP_JSON_MAP_TYPE == 1)
+    typename object_t::reference append(string_t&& key, value_t&& value) {
+        assert(_type == JSONTypeObject);
+        return _data.object->emplace_back(std::pair{std::move(key), std::move(value)});
+    }
+#else
     std::pair<typename object_t::iterator, bool> append(value_t&& key, value_t&& value) {
         assert(_type == JSONTypeObject);
         auto temp = std::move(key);
         return _data.object->insert({std::move(*temp._data.string), std::move(value)});
+    }
+
+    std::pair<typename object_t::iterator, bool> append(string_t&& key, value_t&& value) {
+        assert(_type == JSONTypeObject);
+        return _data.object->insert({std::move(key), std::move(value)});
     }
 #endif
 
@@ -936,11 +944,7 @@ public:
             case JSONTypeArray:
                 return (*_data.array) > (*other._data.array);
             case JSONTypeObject:
-#if (SP_JSON_MAP_TYPE == 3)
                 return false;
-#else
-                return (*_data.object) > (*other._data.object);
-#endif
         }
     }
 
@@ -1007,11 +1011,7 @@ public:
             case JSONTypeArray:
                 return (*_data.array) < (*other._data.array);
             case JSONTypeObject:
-#if (SP_JSON_MAP_TYPE == 3)
                 return false;
-#else
-                return (*_data.object) < (*other._data.object);
-#endif
         }
     }
 

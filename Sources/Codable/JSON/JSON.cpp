@@ -302,21 +302,33 @@ void* json_get_string(JSONRef json, uint32_t* SP_NONNULL size) {
     return nullptr;
 }
 
-bool json_object_contains_key(JSONRef json, const int8_t* data) {
-    auto value = unwrap(json)->asObject();
-    if (value != nullptr) {
-        std::string key{reinterpret_cast<const char*>(data)};
-        // https://en.cppreference.com/w/cpp/container/map/find
-        return value->find(key) != value->end();
-    }
-    return false;
-}
+//bool json_object_contains_key(JSONRef json, const int8_t* data) {
+//    auto value = unwrap(json)->asObject();
+//    if (value != nullptr) {
+//        std::string key{reinterpret_cast<const char*>(data)};
+//        // https://en.cppreference.com/w/cpp/container/map/find
+//        return value->find(key) != value->end();
+//    }
+//    return false;
+//}
 
 JSONRef json_object_find_key(JSONRef json, const int8_t* data) {
+//    auto value = unwrap(json)->asObject();
+//    if (value != nullptr) {
+//        std::string key{reinterpret_cast<const char*>(data)};
+//        auto temp = value->find(key);
+//        if (temp == value->end()) { // not find
+//            return nullptr;
+//        }
+//        return wrap(&(temp->second));
+//    }
+//    return nullptr;
     auto value = unwrap(json)->asObject();
     if (value != nullptr) {
         std::string key{reinterpret_cast<const char*>(data)};
-        auto temp = value->find(key);
+        auto temp = std::find_if(value->begin(), value->end(), [&](json::object_t::const_reference pair) {
+            return pair.first == key;
+        });
         if (temp == value->end()) { // not find
             return nullptr;
         }

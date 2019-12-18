@@ -222,4 +222,16 @@ map parseObject(const char* data) {
     testParseObject(R"({"11": "234", "null": "false"})", (map{{"11", json{std::string{"234"}}}, {"null", json{std::string{"false"}}}}));
 }
 
+//- (void)testParsingSamplePerformance {
+//    auto bundle = [NSBundle bundleWithIdentifier:@"com.undev.StartPointTests"];
+//    auto path = [bundle URLForResource:@"sample" withExtension:@"json"];
+//    auto data = [NSData dataWithContentsOfURL:path options:0 error:nil];
+//    [self measureBlock:^{
+//        ByteStreams stream{reinterpret_cast<const uint8_t*>(data.bytes), 0};
+//        json result;
+//        Parser parser{result, std::move(stream)};
+//        parser.parse();
+//    }];
+//}
+
 @end
