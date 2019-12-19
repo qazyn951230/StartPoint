@@ -1048,8 +1048,12 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
 
     @inline(__always)
     private func contains(key: Key) -> JSONRef? {
-        let real = decoder.findKey(key)
-        return real.withCString { pointer in
+        contains(key: decoder.findKey(key))
+    }
+
+    @inline(__always)
+    private func contains(key: String) -> JSONRef? {
+        return key.withCString { pointer in
             json_object_find_key(value, pointer)
         }
     }
@@ -1172,7 +1176,17 @@ struct SJDKeyedContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingK
     }
 
     func superDecoder() throws -> Decoder {
-        decoder
+        let key = AnyCodingKey("super")
+        guard let item = contains(key: key.stringValue) else {
+            var path = decoder.codingPath
+            path.append(key)
+            let context = DecodingError.Context(codingPath: path, debugDescription: SJDecoder.keyNotFound())
+            throw DecodingError.keyNotFound(key, context)
+        }
+        var path = decoder.codingPath
+        path.append(key)
+        let next = SJDecoder(value: item, options: decoder.options, codingPath: path)
+        return next
     }
 
     func superDecoder(forKey key: Key) throws -> Decoder {
