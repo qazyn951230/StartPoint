@@ -83,6 +83,10 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
         components.last
     }
 
+    public var isEmpty: Bool {
+        !isAbsolute && components.isEmpty
+    }
+
     // CustomStringConvertible
     public var description: String {
         "<Path: \(string)>"
@@ -329,36 +333,46 @@ extension Path: Hashable, Comparable {
     }
 }
 
-extension Path {
+public extension Path {
 
 #if canImport(Foundation)
 
-    public convenience init?(fileURL url: URL) {
+    convenience init?(fileURL url: URL) {
         guard url.isFileURL else {
             return nil
         }
         self.init(url.absoluteString)
     }
 
-    public func fileURL() -> URL {
+    func fileURL() -> URL {
         URL(fileURLWithPath: string)
     }
 
 #endif // canImport(Foundation)
 
-    public static func +(lhs: Path, rhs: String) -> Path {
+    static func +(lhs: Path, rhs: String) -> Path {
         lhs.join(Path(rhs))
     }
 
-    public static func +(lhs: Path, rhs: Path) -> Path {
+    static func +(lhs: Path, rhs: Path) -> Path {
         lhs.join(rhs)
     }
 
-    public static func +=(lhs: inout Path, rhs: String) {
+    static func +=(lhs: inout Path, rhs: String) {
         lhs = lhs.join(Path(rhs))
     }
 
-    public static func +=(lhs: inout Path, rhs: Path) {
+    static func +=(lhs: inout Path, rhs: Path) {
         lhs = lhs.join(rhs)
+    }
+}
+
+extension Path {
+    var filenameIsDot: Bool {
+        lastComponent == "."
+    }
+
+    var filenameIsDotDot: Bool {
+        lastComponent == ".."
     }
 }

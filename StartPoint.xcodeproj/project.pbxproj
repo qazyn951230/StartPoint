@@ -79,6 +79,7 @@
 		AC96A5A878B38C247A04A50D /* Notated.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A22F8E1A1B0088342CB8 /* Notated.swift */; };
 		AC96A5B359DEE599ACD6EB86 /* AsyncLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A9641732CAA268D0936D /* AsyncLayer.swift */; };
 		AC96A5BAFF506D6B416039FB /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A95BC07C5AFE77700234 /* LogLevel.swift */; };
+		AC96A5CABBE142E9B80E2087 /* DarwinFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */; };
 		AC96A5E4E851F18EC9306C6C /* AnyNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96A2F53DA889EF6F638C22 /* AnyNotation.swift */; };
 		AC96A5F38B400B1FBEED4784 /* CameraPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AC275CC2DD827B3F3ADC /* CameraPermission.swift */; };
 		AC96A5FF449F980A91C09A0B /* XMLNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC96AA4C3D63CB15A391C271 /* XMLNotation.swift */; };
@@ -422,6 +423,7 @@
 		AC96AB99B0030BF3D9FD9AF0 /* RecyclerDataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecyclerDataController.swift; sourceTree = "<group>"; };
 		AC96ABA401F1A1C80607730B /* JSONTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONTests.swift; sourceTree = "<group>"; };
 		AC96ABCB4BAAB4012A8B8F3C /* TextFieldElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldElement.swift; sourceTree = "<group>"; };
+		AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarwinFileSystem.swift; sourceTree = "<group>"; };
 		AC96AC10B4D5AC9D90F67125 /* HadOverflowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HadOverflowTests.swift; sourceTree = "<group>"; };
 		AC96AC11584C86E10FC2C9F9 /* FlexWrapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlexWrapTests.swift; sourceTree = "<group>"; };
 		AC96AC218564F941A3032F29 /* FilePermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePermission.swift; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 				AC96AC218564F941A3032F29 /* FilePermission.swift */,
 				AC96AC375EF64BBC97FCBF47 /* FileStatus.swift */,
 				AC96A1F3E43CDEEA8E7BC45D /* FoundationFileSystem.swift */,
+				AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */,
 			);
 			path = FileSystem;
 			sourceTree = "<group>";
@@ -1535,6 +1538,7 @@
 				AC96AD92BFD70FC67C0379E2 /* AnyByteStream.swift in Sources */,
 				AC96A50C36735A4A74ECE882 /* RandomAccessStream.swift in Sources */,
 				AC96A3952BBD5F53016A18B8 /* BidirectionalStream.swift in Sources */,
+				AC96A5CABBE142E9B80E2087 /* DarwinFileSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -46,6 +46,7 @@ public enum BasicError: Error {
 }
 
 struct Errors {
+    @inline(__always)
     static func posix() -> StartError {
         StartError.posix(errno)
     }

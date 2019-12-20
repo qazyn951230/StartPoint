@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct FoundationFileSystem: FileSystem {
+import Foundation
+
+public final class FoundationFileSystem: FileSystem {
     let manager: FileManager
 
     public init(fileManager: FileManager = FileManager.default) {
@@ -36,10 +38,9 @@ public struct FoundationFileSystem: FileSystem {
         }
     }
 
-    // https://en.cppreference.com/w/cpp/filesystem/status
-    public func status(for path: Path, resolveSymbolicLink: Bool = false) throws -> FileStatus {
+    public func status(for path: Path, follow: Bool = false) throws -> FileStatus {
         var p = path.string
-        if resolveSymbolicLink {
+        if follow {
             p = try manager.destinationOfSymbolicLink(atPath: p)
         }
         let map = try manager.attributesOfItem(atPath: p)
@@ -112,7 +113,7 @@ public struct FoundationFileSystem: FileSystem {
         return Path(p)
     }
 
-    public func remove(at path: Path) throws {
+    public func remove(_ path: Path) throws {
         try manager.removeItem(atPath: path.string)
     }
 

@@ -27,42 +27,22 @@ public protocol FileSystem {
     var current: Path { get set }
 
     func copy(from: Path, to: Path) throws
-//    func move(from: Path, to: Path) throws
-//    func remove(_ path: Path) throws
+    func exists(_ path: Path) -> Bool
+    func exists(directory path: Path) -> Bool
+    func makeDirectory(_ path: Path) throws
+    func makeDirectories(_ path: Path) throws
+    func move(from: Path, to: Path) throws
+    func readDirectory(_ path: Path) throws -> [Path]
+    func readFile(at path: Path) throws -> Data
+    func remove(_ path: Path) throws
+    func status(for path: Path, follow: Bool) throws  -> FileStatus
 }
 
-public struct DarwinFileSystem: FileSystem {
-    public var current: Path {
-        get {
-            let size = Int(PATH_MAX)
-            let data = UnsafeMutablePointer<Int8>.allocate(capacity: size)
-            getcwd(data, size)
-            let text = String(utf8String: data)
-            data.deallocate()
-            return Path(text ?? "/")
-        }
-        set {
-            _ = newValue.string.withCString(chdir)
-        }
+public extension FileSystem {
+    @inlinable
+    func status(for path: Path) throws  -> FileStatus {
+        try status(for: path, follow: false)
     }
-
-    public func copy(from: Path, to: Path) throws {
-        let state = copyfile_state_alloc()
-        let flag = copyfile_flags_t(COPYFILE_ALL | COPYFILE_RECURSIVE | COPYFILE_NOFOLLOW_SRC)
-        let status = copyfile(from.string, to.string, state, flag)
-        copyfile_state_free(state)
-        if status < 0 {
-            throw Errors.posix()
-        }
-    }
-
-//    public func move(from: Path, to: Path) throws {
-//
-//    }
-//
-//    public func remove(_ path: Path) throws {
-//
-//    }
 }
 
 public struct DirectoryEntry {

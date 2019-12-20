@@ -20,13 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Foundation
+
 public enum FileType {
     case regular
     case directory
     case symbolicLink
     case block
     case character
+    case fifo
     case socket
+    case notFound
     case unknown
 
     public init(_ value: FileAttributeType) {
