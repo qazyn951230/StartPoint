@@ -376,3 +376,9 @@ extension Path {
         lastComponent == ".."
     }
 }
+
+public extension Path {
+    func resolve(with fileSystem: FileSystem) throws -> Path {
+        try fileSystem.readSymbolicLink(at: resolve(base: fileSystem.current))
+    }
+}

@@ -23,7 +23,11 @@
 import Foundation
 
 public protocol LogDestination {
-    func write(_ data: Data)
+    func write(message: Log.Message)
+    func write(messages: [Log.Message])
 }
 
-extension FileHandle: LogDestination {}
+extension FileHandle: LogDestination {
+    public func write(message: Log.Message) {}
+    public func write(messages: [Log.Message]) {}
+}

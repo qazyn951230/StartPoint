@@ -34,6 +34,7 @@ public protocol FileSystem {
     func move(from: Path, to: Path) throws
     func readDirectory(_ path: Path) throws -> [Path]
     func readFile(at path: Path) throws -> Data
+    func readSymbolicLink(at path: Path) throws -> Path
     func remove(_ path: Path) throws
     func status(for path: Path, follow: Bool) throws  -> FileStatus
 }

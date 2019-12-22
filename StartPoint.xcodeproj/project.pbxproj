@@ -851,15 +851,15 @@
 		AC96A6B6EB859A1F50D65727 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
-				AC96A9DE41EA263C74E68932 /* Path.swift */,
+				AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */,
+				AC96AC218564F941A3032F29 /* FilePermission.swift */,
+				AC96AC375EF64BBC97FCBF47 /* FileStatus.swift */,
 				AC96A981C5C1F35F672D6245 /* FileSystem.swift */,
 				AC96A65710304ABFC5D97FA6 /* FileSystemError.swift */,
 				AC96A94237583279D3A255D3 /* FileSystems.swift */,
 				AC96A4843DED9EE2BCA1FE4E /* FileType.swift */,
-				AC96AC218564F941A3032F29 /* FilePermission.swift */,
-				AC96AC375EF64BBC97FCBF47 /* FileStatus.swift */,
 				AC96A1F3E43CDEEA8E7BC45D /* FoundationFileSystem.swift */,
-				AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */,
+				AC96A9DE41EA263C74E68932 /* Path.swift */,
 			);
 			path = FileSystem;
 			sourceTree = "<group>";

@@ -25,249 +25,485 @@ import Dispatch
 
 public final class Log {
 #if DEBUG
-    public static let global = Log(tag: "global", level: .verbose, destinations: [FileHandle.standardOutput])
+    public static let global = Log(.verbose, tag: "com.undev.log.global", to: [FileHandle.standardOutput])
 #else
-    public static let global = Log(tag: "global", level: .off, destinations: [FileHandle.standardOutput])
+    public static let global = Log(.off, tag: "com.undev.log.global", to: [FileHandle.standardOutput])
 #endif
 
     public var level: LogLevel
     public var destinations: [LogDestination]
-    public var waitGroup: DispatchGroup?
-    // Default is a single space.
-    private let separator: String = "\u{0020}"
-    // Default is a single '\n'
-    private let newline: [UInt8] = [0x0a]
-#if os(iOS)
-    private let dateFormatter = DateFormatter()
-#else
-    private let dateFormatter = ISO8601DateFormatter()
-#endif
-    private let queue: DispatchQueue
-    private let tag: String
 
-    public convenience init(tag: String, level: LogLevel, queue: DispatchQueue? = nil, destination: LogDestination...) {
-        assert(!tag.isEmpty)
-        self.init(tag: tag, level: level, queue: queue, destinations: destination)
+    @usableFromInline
+    let queue: DispatchQueue
+    @usableFromInline
+    let tag: String
+    @usableFromInline
+    var messages: [Message] = []
+    @usableFromInline
+    var writing = spa_bool_create(false)
+
+    deinit {
+        spa_bool_free(writing)
     }
 
-    public init(tag: String, level: LogLevel, queue: DispatchQueue? = nil, destinations: [LogDestination]) {
+    public init(_ level: LogLevel, tag: String, queue: DispatchQueue? = nil, to destinations: [LogDestination]) {
         self.level = level
         self.destinations = destinations
-        let _tag = tag.isEmpty ? "com.undev.log" : ("com.undev.log." + tag)
-        self.tag = _tag
-        self.queue = queue ?? DispatchQueue(label: _tag, qos: .utility)
+        self.tag = tag
+        self.queue = queue ?? DispatchQueue(label: tag, qos: .utility)
     }
 
+    @inlinable
+    public func verbose(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .verbose && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .verbose, tag: self.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func debug(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .debug && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .debug, tag: self.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func info(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .info && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .info, tag: self.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func warn(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .warn && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .warn, tag: self.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func error(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .error && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .error, tag: self.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
     public func verbose(_ value: Any..., file: String = #file, function: String = #function,
-                        line: UInt = #line, column: UInt = #column) {
-        write(value, level: .verbose, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .verbose && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .verbose, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
-    public func verbose(any value: Any?..., file: String = #file, function: String = #function,
-                        line: UInt = #line, column: UInt = #column) {
-        write(any: value, level: .verbose, file, function, line, column)
-    }
-
+    @inlinable
     public func debug(_ value: Any..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        write(value, level: .debug, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .debug && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .debug, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
-    public func debug(any value: Any?..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        write(any: value, level: .debug, file, function, line, column)
-    }
-
+    @inlinable
     public func info(_ value: Any..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        write(value, level: .info, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .info && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .info, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
-    public func info(any value: Any?..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        write(any: value, level: .info, file, function, line, column)
-    }
-
+    @inlinable
     public func warn(_ value: Any..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        write(value, level: .warn, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .warn && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .warn, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
-    public func warn(any value: Any?..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        write(any: value, level: .warn, file, function, line, column)
-    }
-
+    @inlinable
     public func error(_ value: Any..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        write(value, level: .error, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .error && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .error, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
+    @inlinable
+    public func verbose(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .verbose && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .verbose, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func debug(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .debug && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .debug, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func info(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .info && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .info, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
+    public func warn(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .warn && self.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .warn, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
+    }
+
+    @inlinable
     public func error(any value: Any?..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        write(any: value, level: .error, file, function, line, column)
-    }
-
-    @inline(__always)
-    private func write(_ value: [Any], level: LogLevel, _ file: String,
-                       _ function: String, _ line: UInt, _ column: UInt) {
-        guard self.level >= level && self.level > LogLevel.off else {
+        line: UInt = #line, column: UInt = #column) {
+        guard self.level >= .error && self.level > LogLevel.off else {
             return
         }
-        write(value: value, level, file, function, line, column)
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .error, tag: self.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        self.write(message: message)
     }
 
-    @inline(__always)
-    private func write(any value: [Any?], level: LogLevel, _ file: String,
-                       _ function: String, _ line: UInt, _ column: UInt) {
-        guard self.level >= level && self.level > LogLevel.off else {
+    @inlinable
+    public func write(message: Message) {
+        func flush() {
+            if spa_bool_load(writing) != 0 {
+                queue.async {
+                    flush()
+                }
+                return
+            }
+            spa_bool_add(writing, true)
+            let messages = self.messages
+            self.messages.removeAll()
+            let destinations = self.destinations
+            for destination in destinations {
+                destination.write(messages: messages)
+            }
+            spa_bool_add(writing, false)
+        }
+
+        guard self.level >= message.level && self.level > LogLevel.off else {
             return
         }
-        let array: [Any] = value.compactMap { $0 }
-        write(value: array, level, file, function, line, column)
-    }
-
-    // Date [Thread] Level [file:line:column] function
-    // message lines
-    @inline(__always)
-    private func write(value: [Any], _ level: LogLevel, _ file: String,
-                       _ function: String, _ line: UInt, _ column: UInt) {
-        assert(level != LogLevel.off)
-        waitGroup?.enter()
-        let header = self.header(level, file, function, line, column)
+        messages.append(message)
         queue.async {
-            var data = Data()
-            if let _header = header.data(using: .utf8) {
-                data.append(contentsOf: _header)
-                data.append(contentsOf: self.newline)
-            }
-            for item in value {
-//                self.format(item, in: &data, expand: false)
-                self.format(item, in: &data)
-                data.append(contentsOf: self.newline)
-            }
-            self.destinations.forEach {
-                $0.write(data)
-            }
-            self.waitGroup?.leave()
+            flush()
         }
     }
 
-    // Date [Thread] Level [file:line:column] function
-    @inline(__always)
-    private func header(_ level: LogLevel, _ file: String,
-                        _ function: String, _ line: UInt, _ column: UInt) -> String {
-        var array: [String] = [dateFormatter.string(from: Date())]
-        array.append(level.description)
-        if Thread.isMainThread {
-            array.append("[main]")
-        } else {
-            let name = Thread.current.name ?? tag
-            array.append("[\(name)]")
+    @inlinable
+    public static func verbose(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .verbose && global.level > LogLevel.off else {
+            return
         }
-        array.append("[\(file):\(line):\(column)]")
-        array.append(function)
-        return array.joined(separator: separator)
+        let message = Message(level: .verbose, tag: global.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    @inline(__always)
-    private func format(_ value: Any, in data: inout Data, expand: Bool) {
-        if expand {
-            if let list = value as? [Any] {
-                data.append(0x5b) // '['
-                for item in list {
-                    format(item, in: &data)
-                    data.append(0x2c) // ','
-                }
-                data.append(0x5c) // ']'
-                return
-            } else if let list = value as? [AnyHashable: Any] {
-                data.append(0x7b) // '{'
-                for (key, item) in list {
-                    format(key, in: &data)
-                    data.append(0x2c) // ','
-                    data.append(contentsOf: newline)
-                    format(item, in: &data)
-                }
-                data.append(0x7c) // '}'
-                return
-            }
+    @inlinable
+    public static func debug(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .debug && global.level > LogLevel.off else {
+            return
         }
-        format(value, in: &data)
+        let message = Message(level: .debug, tag: global.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    @inline(__always)
-    private func format(_ value: Any, in data: inout Data) {
-        let result: String
-        if let text = value as? String {
-            result = text
-        } else if level > LogLevel.info, let dev = value as? CustomDebugStringConvertible {
-            result = dev.debugDescription
-        } else if let con = value as? CustomStringConvertible {
-            result = con.description
-        } else {
-            result = String(describing: value)
+    @inlinable
+    public static func info(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .info && global.level > LogLevel.off else {
+            return
         }
-        if let temp = result.data(using: .utf8) {
-            data.append(temp)
-        }
+        let message = Message(level: .info, tag: global.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    public static func make<Subject>(type: Subject.Type, level: LogLevel? = nil,
-                                     destinations: [LogDestination]? = nil) -> Log {
-        let tag = String(describing: type)
-        let _level = level ?? global.level
-        let _destinations = destinations ?? [FileHandle.standardOutput]
-        return Log(tag: tag, level: _level, destinations: _destinations)
+    @inlinable
+    public static func warn(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .warn && global.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .warn, tag: global.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
+    @inlinable
+    public static func error(_ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .error && global.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: .error, tag: global.tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    @inlinable
     public static func verbose(_ value: Any..., file: String = #file, function: String = #function,
-                        line: UInt = #line, column: UInt = #column) {
-        global.write(value, level: .verbose, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .verbose && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .verbose, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    public static func verbose(any value: Any?..., file: String = #file, function: String = #function,
-                        line: UInt = #line, column: UInt = #column) {
-        global.write(any: value, level: .verbose, file, function, line, column)
-    }
-
+    @inlinable
     public static func debug(_ value: Any..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        global.write(value, level: .debug, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .debug && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .debug, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    public static func debug(any value: Any?..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        global.write(any: value, level: .debug, file, function, line, column)
-    }
-
+    @inlinable
     public static func info(_ value: Any..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        global.write(value, level: .info, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .info && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .info, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    public static func info(any value: Any?..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        global.write(any: value, level: .info, file, function, line, column)
-    }
-
+    @inlinable
     public static func warn(_ value: Any..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        global.write(value, level: .warn, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .warn && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .warn, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
-    public static func warn(any value: Any?..., file: String = #file, function: String = #function,
-                     line: UInt = #line, column: UInt = #column) {
-        global.write(any: value, level: .warn, file, function, line, column)
-    }
-
+    @inlinable
     public static func error(_ value: Any..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        global.write(value, level: .error, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .error && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:next:))
+        let message = Message(level: .error, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
     }
 
+    @inlinable
+    public static func verbose(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .verbose && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .verbose, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    @inlinable
+    public static func debug(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .debug && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .debug, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    @inlinable
+    public static func info(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .info && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .info, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    @inlinable
+    public static func warn(any value: Any?..., file: String = #file, function: String = #function,
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .warn && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .warn, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    @inlinable
     public static func error(any value: Any?..., file: String = #file, function: String = #function,
-                      line: UInt = #line, column: UInt = #column) {
-        global.write(any: value, level: .error, file, function, line, column)
+        line: UInt = #line, column: UInt = #column) {
+        guard global.level >= .error && global.level > LogLevel.off else {
+            return
+        }
+        let subject = value.reduce("", Log.format(result:any:))
+        let message = Message(level: .error, tag: global.tag, subject: subject, file: file,
+            function: function, line: line, column: column)
+        global.write(message: message)
+    }
+
+    public struct Message {
+        public let level: LogLevel
+        public let tag: String
+        public let subject: String
+        public let file: String
+        public let function: String
+        public let line: UInt
+        public let column: UInt
+
+        public init(level: LogLevel,
+            tag: String,
+            subject: String,
+            file: String,
+            function: String,
+            line: UInt,
+            column: UInt) {
+            self.level = level
+            self.tag = tag
+            self.subject = subject
+            self.file = file
+            self.function = function
+            self.line = line
+            self.column = column
+        }
+    }
+
+    @inline(__always)
+    public static func debugFormat(result: String, any value: Any?) -> String {
+        if let temp = value {
+            return "\(result) \(debugFormat(temp))"
+        } else {
+            return result
+        }
+    }
+
+    @inline(__always)
+    public static func debugFormat(result: String, next value: Any) -> String {
+        "\(result) \(debugFormat(value))"
+    }
+
+    @inline(__always)
+    public static func debugFormat(_ value: Any) -> String {
+        switch value {
+        case let a as CustomStringConvertible:
+            return a.description
+        case let b as CustomDebugStringConvertible:
+            return b.debugDescription
+        default:
+            return String(describing: value)
+        }
+    }
+
+    @inline(__always)
+    public static func format(result: String, any value: Any?) -> String {
+        if let temp = value {
+            return "\(result) \(format(temp))"
+        } else {
+            return result
+        }
+    }
+
+    @inline(__always)
+    public static func format(result: String, next value: Any) -> String {
+        "\(result) \(format(value))"
+    }
+
+    @inline(__always)
+    public static func format(_ value: Any) -> String {
+        switch value {
+        case let a as CustomStringConvertible:
+            return a.description
+        default:
+            return String(describing: value)
+        }
     }
 }

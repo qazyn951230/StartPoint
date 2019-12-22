@@ -146,6 +146,21 @@ public final class DarwinFileSystem: FileSystem {
         // TODO: readFile(at:)
         try Data(contentsOf: path.fileURL())
     }
+    
+    public func readSymbolicLink(at path: Path) throws -> Path {
+        let size = Int(PATH_MAX)
+        let data = UnsafeMutablePointer<Int8>.allocate(capacity: size)
+        defer {
+            data.deallocate()
+        }
+        let used = readlink(path.string, data, size)
+        if used == -1 {
+            throw Errors.posix()
+        }
+        let text = String(bytesNoCopy: UnsafeMutableRawPointer(data),
+                          length: used, encoding: .utf8, freeWhenDone: false)
+        return Path(text ?? "")
+    }
 
     public func remove(_ path: Path) throws {
         let value = try status(for: path)

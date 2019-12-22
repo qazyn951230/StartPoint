@@ -32,9 +32,9 @@ public extension Locking {
     @discardableResult
     @inline(__always)
     func locking<T>(_ method: () throws -> T) rethrows -> T {
-        lock()
+        self.lock()
         defer {
-            unlock()
+            self.unlock()
         }
         return try method()
     }
@@ -42,9 +42,9 @@ public extension Locking {
     @discardableResult
     @inline(__always)
     func unlocking<T>(_ method: () throws -> T) rethrows -> T {
-        unlock()
+        self.unlock()
         defer {
-            lock()
+            self.lock()
         }
         return try method()
     }
@@ -82,11 +82,9 @@ public final class MutexLock: Locking {
 
     public init(recursive: Bool = false) {
         mutex = UnsafeMutablePointer.allocate(capacity: 1)
-        mutex.initialize(to: pthread_mutex_t())
 
         var attribute = pthread_mutexattr_t()
         pthread_mutexattr_init(&attribute)
-
         defer {
             pthread_mutexattr_destroy(&attribute)
         }
@@ -100,8 +98,6 @@ public final class MutexLock: Locking {
     deinit {
         let status = pthread_mutex_destroy(mutex)
         assert(status == 0, "Unexpected pthread_mutex_destroy error code: \(status)")
-
-        mutex.deinitialize(count: 1)
         mutex.deallocate()
     }
 
@@ -126,6 +122,83 @@ public final class MutexLock: Locking {
             assert(false, "Unexpected pthread_mutex_trylock error code: \(status)")
             return false
         }
+    }
+}
+
+public final class ReadWriteLock {
+    private let lock: UnsafeMutablePointer<pthread_rwlock_t>
+
+    public init(recursive: Bool = false) {
+        lock = UnsafeMutablePointer.allocate(capacity: 1)
+        let status = pthread_rwlock_init(lock, nil)
+        assert(status == 0, "Unexpected pthread_rwlock_init error code: \(status)")
+    }
+
+    deinit {
+        let status = pthread_rwlock_destroy(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_destroy error code: \(status)")
+        lock.deallocate()
+    }
+
+    public func lockRead() {
+        let status = pthread_rwlock_rdlock(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_rdlock error code: \(status)")
+    }
+    
+    public func lockWrite() {
+        let status = pthread_rwlock_wrlock(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_rdlock error code: \(status)")
+    }
+
+    public func unlock() {
+        let status = pthread_rwlock_unlock(lock)
+        assert(status == 0, "Unexpected pthread_mutex_unlock error code: \(status)")
+    }
+
+    public func tryRead() -> Bool {
+        let status = pthread_rwlock_tryrdlock(lock)
+        switch status {
+        case 0:
+            return true
+        case EBUSY:
+            return false
+        default:
+            assert(false, "Unexpected pthread_rwlock_tryrdlock error code: \(status)")
+            return false
+        }
+    }
+    
+    public func tryWrite() -> Bool {
+        let status = pthread_rwlock_trywrlock(lock)
+        switch status {
+        case 0:
+            return true
+        case EBUSY:
+            return false
+        default:
+            assert(false, "Unexpected pthread_rwlock_tryrdlock error code: \(status)")
+            return false
+        }
+    }
+    
+    @discardableResult
+    @inline(__always)
+    public func lockingRead<T>(_ method: () throws -> T) rethrows -> T {
+        self.lockRead()
+        defer {
+            self.unlock()
+        }
+        return try method()
+    }
+    
+    @discardableResult
+    @inline(__always)
+    public func lockingWrite<T>(_ method: () throws -> T) rethrows -> T {
+        self.lockWrite()
+        defer {
+            self.unlock()
+        }
+        return try method()
     }
 }
 
