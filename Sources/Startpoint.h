@@ -30,7 +30,7 @@ FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
 
 #import <StartPoint/Config.h>
 #import <StartPoint/Atomic.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/JSON.h>
 #import <StartPoint/ByteArray.h>
+#import <StartPoint/Double.h>
+#import <StartPoint/JSON.h>
+#import <StartPoint/Object.h>
