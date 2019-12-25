@@ -89,9 +89,13 @@ public final class FileStream: ByteStream, BufferStream, RandomAccessStream {
         let raw = UnsafeRawPointer(pointer)
         while true {
             let n = fwrite(raw, 1, size, file)
-            if n != size && errno != EINTR {
-                error = StartError.posix(errno)
+            if n == size {
                 break
+            } else {
+                if errno != EINTR {
+                    error = StartError.posix(errno)
+                    break
+                }
             }
         }
     }
@@ -147,7 +151,7 @@ public final class FileStream: ByteStream, BufferStream, RandomAccessStream {
         guard writable else {
             return
         }
-        write(string)
+        write(string, encoding: .utf8)
     }
 
     public func write(_ string: String, encoding: String.Encoding) {
@@ -207,14 +211,14 @@ public final class FileStream: ByteStream, BufferStream, RandomAccessStream {
     }
 
     public static func standardError() -> FileStream {
-        FileStream(read: stderr, behavior: .none)
+        FileStream(write: stderr, behavior: .none)
     }
 
     public static func standardInput() -> FileStream {
-        FileStream(write: stdin, behavior: .none)
+        FileStream(read: stdin, behavior: .none)
     }
 
     public static func standardOutput() -> FileStream {
-        FileStream(read: stdout, behavior: .none)
+        FileStream(write: stdout, behavior: .none)
     }
 }

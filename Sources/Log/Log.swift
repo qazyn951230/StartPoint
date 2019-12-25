@@ -25,9 +25,9 @@ import Dispatch
 
 public final class Log {
 #if DEBUG
-    public static let global = Log(.verbose, tag: "com.undev.log.global", to: [FileHandle.standardOutput])
+    public static let global = Log(.verbose, tag: "com.undev.log.global", to: [DefaultLogDestination()])
 #else
-    public static let global = Log(.off, tag: "com.undev.log.global", to: [FileHandle.standardOutput])
+    public static let global = Log(.off, tag: "com.undev.log.global", to: [DefaultLogDestination()])
 #endif
 
     public var level: LogLevel
@@ -228,32 +228,31 @@ public final class Log {
         self.write(message: message)
     }
 
-    @inlinable
     public func write(message: Message) {
-        func flush() {
-            if spa_bool_load(writing) != 0 {
-                queue.async {
-                    flush()
-                }
-                return
-            }
-            spa_bool_add(writing, true)
-            let messages = self.messages
-            self.messages.removeAll()
-            let destinations = self.destinations
-            for destination in destinations {
-                destination.write(messages: messages)
-            }
-            spa_bool_add(writing, false)
-        }
-
         guard self.level >= message.level && self.level > LogLevel.off else {
             return
         }
         messages.append(message)
         queue.async {
-            flush()
+            self.flush()
         }
+    }
+
+    func flush() {
+        if spa_bool_load(writing) {
+            queue.async {
+                self.flush()
+            }
+            return
+        }
+        spa_bool_store(writing, true)
+        let messages = self.messages
+        self.messages.removeAll()
+        let destinations = self.destinations
+        for destination in destinations {
+            destination.write(messages: messages)
+        }
+        spa_bool_store(writing, false)
     }
 
     @inlinable
@@ -460,7 +459,7 @@ public final class Log {
     @inline(__always)
     public static func debugFormat(result: String, any value: Any?) -> String {
         if let temp = value {
-            return "\(result) \(debugFormat(temp))"
+            return result.isEmpty ? debugFormat(temp) : "\(result) \(debugFormat(temp))"
         } else {
             return result
         }
@@ -468,7 +467,7 @@ public final class Log {
 
     @inline(__always)
     public static func debugFormat(result: String, next value: Any) -> String {
-        "\(result) \(debugFormat(value))"
+        result.isEmpty ? debugFormat(value) : "\(result) \(debugFormat(value))"
     }
 
     @inline(__always)
@@ -486,7 +485,7 @@ public final class Log {
     @inline(__always)
     public static func format(result: String, any value: Any?) -> String {
         if let temp = value {
-            return "\(result) \(format(temp))"
+            return result.isEmpty ? format(temp) : "\(result) \(format(temp))"
         } else {
             return result
         }
@@ -494,7 +493,7 @@ public final class Log {
 
     @inline(__always)
     public static func format(result: String, next value: Any) -> String {
-        "\(result) \(format(value))"
+        result.isEmpty ? format(value) : "\(result) \(format(value))"
     }
 
     @inline(__always)

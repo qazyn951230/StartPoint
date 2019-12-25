@@ -27,7 +27,26 @@ public protocol LogDestination {
     func write(messages: [Log.Message])
 }
 
-extension FileHandle: LogDestination {
-    public func write(message: Log.Message) {}
-    public func write(messages: [Log.Message]) {}
+public extension LogDestination {
+    func write(messages: [Log.Message]) {
+        for message in messages {
+            self.write(message: message)
+        }
+    }
+}
+
+public struct DefaultLogDestination: LogDestination {
+    private let stream: FileStream
+    
+    public init(stream: FileStream? = nil) {
+        self.stream = stream ?? FileStream.standardOutput()
+    }
+    
+    public func write(message: Log.Message) {
+        stream.write("\(message.tag) \(message.level)")
+        stream.write(" [\(message.file):\(message.line):\(message.column)] \(message.function)\n")
+        stream.write(message.subject)
+        stream.write(0x0a)
+        stream.flush()
+    }
 }
