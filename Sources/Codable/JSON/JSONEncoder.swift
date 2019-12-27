@@ -46,6 +46,18 @@ public final class StartJSONEncoder {
         try encoder.encode(value)
         return encoder.resolve()
     }
+
+    public func encodeToJSON<T>(_ value: T) throws -> JSON where T: Encodable {
+        let context = SJEncoderContext(userInfo: userInfo,
+            outputFormatting: outputFormatting,
+            keyEncodingStrategy: keyEncodingStrategy,
+            dateEncodingStrategy: dateEncodingStrategy,
+            dataEncodingStrategy: dataEncodingStrategy,
+            nonConformingFloatEncodingStrategy: nonConformingFloatEncodingStrategy)
+        let encoder = SJEncoder(options: context, codingPath: [])
+        try encoder.encode(value)
+        return encoder.root
+    }
 }
 
 class SJEncoderContext {
