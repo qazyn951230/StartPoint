@@ -249,10 +249,17 @@
 		BCA2A4681F3DA5BC007A772A /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A45A1F3DA5BC007A772A /* View.swift */; };
 		BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4621F3DA5BC007A772A /* Device.swift */; };
 		BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
+		BCA9E46623BB4E8100D1584B /* Queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCA9E46423BB4E8100D1584B /* Queue.cpp */; };
+		BCA9E46723BB4E8100D1584B /* Queue.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCA9E46523BB4E8100D1584B /* Queue.hpp */; settings = {ATTRIBUTES = (Private, ); }; };
+		BCA9E46A23BB4E9300D1584B /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA9E46923BB4E9300D1584B /* Queue.swift */; };
+		BCA9E46B23BB4E9B00D1584B /* Queue.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA9E46823BB4E8C00D1584B /* Queue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCDA2BED22854C70006C2ABB /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */; };
 		BCDA2C072285612F006C2ABB /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2C062285612F006C2ABB /* Codable.swift */; };
 		BCDD7D7A236C24E4007C728D /* Parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCDD7D79236C24E4007C728D /* Parser.hpp */; };
 		BCDD7D7E236C2514007C728D /* Stream.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCDD7D7D236C2514007C728D /* Stream.hpp */; };
+		BCF0947223BDBC31003A62C1 /* LockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF0947023BDBC2E003A62C1 /* LockTests.swift */; };
+		BCF11DEA23BDC91600C5A5E3 /* AtomicTests2.mm in Sources */ = {isa = PBXBuildFile; fileRef = BCF11DE923BDC91600C5A5E3 /* AtomicTests2.mm */; };
+		BCF11DEC23BDCB7800C5A5E3 /* AtomicTests3.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF11DEB23BDCB7800C5A5E3 /* AtomicTests3.m */; };
 		BCF881D023711C9F0062227E /* JSONTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = BCF881CF23711C9F0062227E /* JSONTests.mm */; };
 		BCF881D32371548F0062227E /* JSON.mm in Sources */ = {isa = PBXBuildFile; fileRef = BCF881D22371548F0062227E /* JSON.mm */; };
 		BCFAFF6723682A6800C80BF5 /* JSON.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCFAFF5E23682A6700C80BF5 /* JSON.hpp */; };
@@ -531,10 +538,17 @@
 		BCA9E07B1F2E1C5D00D78FE9 /* iOS-App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-App.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		BCA9E46423BB4E8100D1584B /* Queue.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Queue.cpp; sourceTree = "<group>"; };
+		BCA9E46523BB4E8100D1584B /* Queue.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Queue.hpp; sourceTree = "<group>"; };
+		BCA9E46823BB4E8C00D1584B /* Queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Queue.h; sourceTree = "<group>"; };
+		BCA9E46923BB4E9300D1584B /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecoder.swift; sourceTree = "<group>"; };
 		BCDA2C062285612F006C2ABB /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		BCDD7D79236C24E4007C728D /* Parser.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
 		BCDD7D7D236C2514007C728D /* Stream.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Stream.hpp; sourceTree = "<group>"; };
+		BCF0947023BDBC2E003A62C1 /* LockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockTests.swift; sourceTree = "<group>"; };
+		BCF11DE923BDC91600C5A5E3 /* AtomicTests2.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AtomicTests2.mm; sourceTree = "<group>"; };
+		BCF11DEB23BDCB7800C5A5E3 /* AtomicTests3.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AtomicTests3.m; sourceTree = "<group>"; };
 		BCF881CF23711C9F0062227E /* JSONTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = JSONTests.mm; sourceTree = "<group>"; };
 		BCF881D22371548F0062227E /* JSON.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = JSON.mm; sourceTree = "<group>"; };
 		BCF881D723715E880062227E /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
@@ -766,6 +780,9 @@
 			isa = PBXGroup;
 			children = (
 				AC96A72AD4C75E5449616991 /* AtomicTests.swift */,
+				BCF11DE923BDC91600C5A5E3 /* AtomicTests2.mm */,
+				BCF11DEB23BDCB7800C5A5E3 /* AtomicTests3.m */,
+				BCF0947023BDBC2E003A62C1 /* LockTests.swift */,
 			);
 			path = Thread;
 			sourceTree = "<group>";
@@ -884,6 +901,10 @@
 				AC96A4D560BBF1E4278D3A5A /* List.swift */,
 				AC96A11B3A8E302018B756A5 /* ListSlice.swift */,
 				AC96A0C5D45451D8D6BADCF2 /* MemoryBuffer.swift */,
+				BCA9E46423BB4E8100D1584B /* Queue.cpp */,
+				BCA9E46823BB4E8C00D1584B /* Queue.h */,
+				BCA9E46523BB4E8100D1584B /* Queue.hpp */,
+				BCA9E46923BB4E9300D1584B /* Queue.swift */,
 				AC96A98262FB8986478050BE /* UIntBuffer.swift */,
 			);
 			path = Structure;
@@ -1220,6 +1241,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCA9E46B23BB4E9B00D1584B /* Queue.h in Headers */,
 				BCFAFF6723682A6800C80BF5 /* JSON.hpp in Headers */,
 				BCDD7D7E236C2514007C728D /* Stream.hpp in Headers */,
 				BC87EFAB2193D49500896E21 /* Config.h in Headers */,
@@ -1232,6 +1254,7 @@
 				AC96AA49E538AFFC38BE7362 /* ByteArray.h in Headers */,
 				AC96AAC0807398D2AAB0A09E /* IntToChar.hpp in Headers */,
 				AC96AC086E32762EC7560D62 /* ByteArray.hpp in Headers */,
+				BCA9E46723BB4E8100D1584B /* Queue.hpp in Headers */,
 				AC96A33D558064251AB1C887 /* Double.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1364,6 +1387,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCA9E46A23BB4E9300D1584B /* Queue.swift in Sources */,
 				BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */,
 				BC61275B1F3EFCE300AC8224 /* Request.swift in Sources */,
 				BCA2A4641F3DA5BC007A772A /* NSAttributedString.swift in Sources */,
@@ -1483,6 +1507,7 @@
 				AC96ABFC042BE7CE0910C3D5 /* DataController.swift in Sources */,
 				AC96ABE0606849B63DDF8601 /* Observable.swift in Sources */,
 				AC96A0FB7797A323EC2E34A3 /* Errors.swift in Sources */,
+				BCA9E46623BB4E8100D1584B /* Queue.cpp in Sources */,
 				AC96A7E5633F1756F813D108 /* Path.swift in Sources */,
 				AC96AC9DBE3766A7271D6C6C /* FileSystem.swift in Sources */,
 				AC96AEA79DF29756F1E87FE9 /* JSONParseError.swift in Sources */,
@@ -1557,6 +1582,7 @@
 				AC96A971B402B448B1D55A57 /* AlignSelfTests.swift in Sources */,
 				BC64BDEC23A9CE7500908485 /* JSONPerformanceTests.swift in Sources */,
 				AC96A58850891422118778BD /* DisplayTests.swift in Sources */,
+				BCF11DEC23BDCB7800C5A5E3 /* AtomicTests3.m in Sources */,
 				AC96A79C45B669DD35875966 /* FlexTests.swift in Sources */,
 				BC034E0B21BFADA100F3627A /* StreamTests.swift in Sources */,
 				AC96A9C81938A244F20C6D66 /* FlexWrapTests.swift in Sources */,
@@ -1567,6 +1593,7 @@
 				AC96A0FC23AC0E924A53FA61 /* ManualLayoutTests.swift in Sources */,
 				AC96A6511AC0D4581376B815 /* AspectRatioTests.swift in Sources */,
 				AC96AD5B96DCA236BEEEBC83 /* DirtyMarkingTests.swift in Sources */,
+				BCF11DEA23BDC91600C5A5E3 /* AtomicTests2.mm in Sources */,
 				AC96A15D231CE2A7DD54C9D6 /* BaselineFuncTests.swift in Sources */,
 				AC96ADAECEA3BAC03DD2BE5A /* DefaultValuesTests.swift in Sources */,
 				AC96A853D3E3D6CE8E0A246A /* ComputedMarginTests.swift in Sources */,
@@ -1582,6 +1609,7 @@
 				AC96A0BB3E8214B559B3B001 /* RoundingMeasureFuncTests.swift in Sources */,
 				BC64BDF123A9D4AA00908485 /* Codable.swift in Sources */,
 				AC96AC46A0C6D79F13220916 /* ZeroOutLayoutRecursivlyTests.swift in Sources */,
+				BCF0947223BDBC31003A62C1 /* LockTests.swift in Sources */,
 				AC96A3FE03768BF5F4255EE1 /* StyleTests.swift in Sources */,
 				AC96ACAF4592BC56CCA73704 /* PersistenceTests.swift in Sources */,
 				AC96A80C1EF61F19CC7CE2DA /* AndroidNewsFeeds.swift in Sources */,

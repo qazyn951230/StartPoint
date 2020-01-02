@@ -20,18 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import <XCTest/XCTest.h>
+#import <stdatomic.h>
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+static const int max = 1000000ll;
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+// https://en.cppreference.com/w/c/atomic
+@interface AtomicTests3 : XCTestCase
 
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/ByteArray.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/JSON.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/Queue.h>
+@end
+
+@implementation AtomicTests3
+
+- (void)testCppAtomicIntPerformance {
+    [self measureBlock:^{
+        atomic_int count;
+        atomic_init(&count, 0);
+        for (int i = 0; i < max; ++i) {
+            atomic_fetch_add(&count, 1);
+        }
+    }];
+}
+
+@end

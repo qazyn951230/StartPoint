@@ -183,6 +183,21 @@ inline CRef wrap(const CxxType* value) {                        \
     return reinterpret_cast<CRef>(const_cast<CxxType*>(value)); \
 }                                                               \
 
+#define SP_POINTER_CAST(type, source) (reinterpret_cast<type>(source))
+
+#else
+
+#define SP_SIMPLE_CONVERSION(CxxType, CRef)                     \
+inline CxxType *unwrap(CRef value) {                            \
+    return (CxxType*)(value);                                   \
+}                                                               \
+                                                                \
+inline CRef wrap(const CxxType* value) {                        \
+    return (CRef)(const_cast<CxxType*>(value));                 \
+}                                                               \
+
+#define SP_POINTER_CAST(type, source) ((type)(source))
+
 #endif
 
-#endif //START_POINT_CONFIG_H
+#endif // START_POINT_CONFIG_H

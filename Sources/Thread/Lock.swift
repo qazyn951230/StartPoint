@@ -41,6 +41,25 @@ public extension Locking {
 
     @discardableResult
     @inline(__always)
+    func locking<T, R>(_ value: T, _ method: (T) throws -> R) rethrows -> R {
+        self.lock()
+        defer {
+            self.unlock()
+        }
+        return try method(value)
+    }
+
+    @inline(__always)
+    func locking<T>(into value: inout T, _ method: (inout T) throws -> Void) rethrows {
+        self.lock()
+        defer {
+            self.unlock()
+        }
+        try method(&value)
+    }
+
+    @discardableResult
+    @inline(__always)
     func unlocking<T>(_ method: () throws -> T) rethrows -> T {
         self.unlock()
         defer {
@@ -50,30 +69,29 @@ public extension Locking {
     }
 }
 
-@available(iOS 10.0, *)
+@available(OSX 10.12, iOS 10.0, *)
 public final class UnfairLock: Locking {
-    private let _lock: os_unfair_lock_t
+    @usableFromInline
+    var _lock: os_unfair_lock
 
+    @inline(__always)
     public init() {
-        _lock = os_unfair_lock_t.allocate(capacity: 1)
-        _lock.initialize(to: os_unfair_lock())
+        _lock = os_unfair_lock()
     }
 
-    deinit {
-        _lock.deinitialize(count: 1)
-        _lock.deallocate()
-    }
-
+    @inline(__always)
     public func lock() {
-        os_unfair_lock_lock(_lock)
+        os_unfair_lock_lock(&_lock)
     }
 
+    @inline(__always)
     public func unlock() {
-        os_unfair_lock_unlock(_lock)
+        os_unfair_lock_unlock(&_lock)
     }
 
+    @inline(__always)
     public func `try`() -> Bool {
-        return os_unfair_lock_trylock(_lock)
+        return os_unfair_lock_trylock(&_lock)
     }
 }
 

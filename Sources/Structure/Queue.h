@@ -20,18 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#ifndef START_POINT_QUEUE_H
+#define START_POINT_QUEUE_H
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+#if (__cplusplus)
+#include <cstdint>
+#else
+#include <stdint.h>
+#include <stdbool.h>
+#endif
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+#include "Config.h"
 
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/ByteArray.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/JSON.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/Queue.h>
+SP_C_FILE_BEGIN
+
+typedef struct SPOpaqueQueue* QueueRef;
+
+QueueRef queue_create();
+void queue_free(QueueRef SP_NULLABLE ref);
+
+void* queue_append(QueueRef queue, size_t size);
+void* SP_NULLABLE queue_first(QueueRef queue);
+
+SP_C_FILE_END
+
+#endif // START_POINT_QUEUE_H

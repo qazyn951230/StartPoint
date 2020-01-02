@@ -20,18 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#include "Queue.hpp"
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+using namespace StartPoint;
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+QueueRef queue_create() {
+    return wrap(new Queue);
+}
 
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/ByteArray.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/JSON.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/Queue.h>
+void queue_free(QueueRef ref) {
+    delete unwrap(ref);
+}
+
+void* queue_append(QueueRef queue, size_t size) {
+    return unwrap(queue)->append(size);
+}
+
+void* queue_first(QueueRef queue) {
+    return unwrap(queue)->first();
+}

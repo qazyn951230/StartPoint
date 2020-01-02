@@ -31,45 +31,73 @@
 
 SP_C_FILE_BEGIN
 
-#ifdef __cplusplus
-#define atomic_simple_cast(type, source) (reinterpret_cast<type>(source))
-#else
-#define atomic_simple_cast(type, source) ((type)(source))
-#endif
+//typedef struct sp_atomic_int8* SPAInt8Ref;
+//static inline SPAInt8Ref spa_int8_create(signed char value) {
+//    atomic_schar* result = (atomic_schar*)malloc(sizeof(atomic_schar));
+//    atomic_init(result, value);
+//    return SP_POINTER_CAST(SPAInt8Ref, result);
+//}
+//static inline void spa_int8_free(SPAInt8Ref swift_type) {
+//    free(SP_POINTER_CAST(atomic_schar*, swift_type));
+//}
+//static inline void spa_int8_store(SPAInt8Ref swift_type, signed char value) {
+//    return atomic_store(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline signed char spa_int8_load(SPAInt8Ref swift_type) {
+//    return atomic_load(SP_POINTER_CAST(atomic_schar*, swift_type));
+//}
+//static inline signed char spa_int8_exchange(SPAInt8Ref swift_type, signed char value) {
+//    return atomic_exchange(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline void spa_int8_add(SPAInt8Ref swift_type, signed char value) {
+//    atomic_fetch_add(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline void spa_int8_sub(SPAInt8Ref swift_type, signed char value) {
+//    atomic_fetch_sub(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline void spa_int8_or(SPAInt8Ref swift_type, signed char value) {
+//    atomic_fetch_or(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline void spa_int8_xor(SPAInt8Ref swift_type, signed char value) {
+//    atomic_fetch_xor(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
+//static inline void spa_int8_and(SPAInt8Ref swift_type, signed char value) {
+//    atomic_fetch_and(SP_POINTER_CAST(atomic_schar*, swift_type), value);
+//}
 
 #define make_atomic_type(swift_type, swift_name, raw_type, atomic_type)                                 \
-typedef struct sp_atomic_##swift_name *SPA##swift_type##Ref;                                            \
+typedef struct sp_atomic_##swift_name* SPA##swift_type##Ref;                                            \
 static inline SPA##swift_type##Ref spa_##swift_name##_create(raw_type value) {                          \
-    atomic_##atomic_type* result = (atomic_##atomic_type *)malloc(sizeof(atomic_##atomic_type));        \
+    atomic_##atomic_type* result = (atomic_##atomic_type*)malloc(sizeof(atomic_##atomic_type));         \
     atomic_init(result, value);                                                                         \
-    return atomic_simple_cast(SPA##swift_type##Ref, result);                                            \
+    return SP_POINTER_CAST(SPA##swift_type##Ref, result);                                               \
 }                                                                                                       \
 static inline void spa_##swift_name##_free(SPA##swift_type##Ref swift_type) {                           \
-    free(atomic_simple_cast(atomic_##atomic_type*, swift_type));                                        \
+    free(SP_POINTER_CAST(atomic_##atomic_type*, swift_type));                                           \
 }                                                                                                       \
 static inline void spa_##swift_name##_store(SPA##swift_type##Ref swift_type, raw_type value) {          \
-    return atomic_store(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                  \
+    return atomic_store(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                     \
 }                                                                                                       \
 static inline raw_type spa_##swift_name##_load(SPA##swift_type##Ref swift_type) {                       \
-    return atomic_load(atomic_simple_cast(atomic_##atomic_type*, swift_type));                          \
+    return atomic_load(SP_POINTER_CAST(atomic_##atomic_type*, swift_type));                             \
 }                                                                                                       \
 static inline raw_type spa_##swift_name##_exchange(SPA##swift_type##Ref swift_type, raw_type value) {   \
-    return atomic_exchange(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);               \
+    return atomic_exchange(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                  \
 }                                                                                                       \
 static inline void spa_##swift_name##_add(SPA##swift_type##Ref swift_type, raw_type value) {            \
-    atomic_fetch_add(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                     \
+    atomic_fetch_add(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                        \
 }                                                                                                       \
 static inline void spa_##swift_name##_sub(SPA##swift_type##Ref swift_type, raw_type value) {            \
-    atomic_fetch_sub(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                     \
+    atomic_fetch_sub(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                        \
 }                                                                                                       \
 static inline void spa_##swift_name##_or(SPA##swift_type##Ref swift_type, raw_type value) {             \
-    atomic_fetch_or(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                      \
+    atomic_fetch_or(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                         \
 }                                                                                                       \
 static inline void spa_##swift_name##_xor(SPA##swift_type##Ref swift_type, raw_type value) {            \
-    atomic_fetch_xor(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                     \
+    atomic_fetch_xor(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                        \
 }                                                                                                       \
 static inline void spa_##swift_name##_and(SPA##swift_type##Ref swift_type, raw_type value) {            \
-    atomic_fetch_and(atomic_simple_cast(atomic_##atomic_type*, swift_type), value);                     \
+    atomic_fetch_and(SP_POINTER_CAST(atomic_##atomic_type*, swift_type), value);                        \
 }                                                                                                       \
 
 make_atomic_type(Bool, bool, bool, bool)
@@ -89,7 +117,6 @@ make_atomic_type(UInt, uint, unsigned int, uint)
 make_atomic_type(Int64, int64, long long, llong)
 make_atomic_type(UInt64, uint64, unsigned long long, ullong)
 
-#undef atomic_simple_cast
 #undef make_atomic_type
 
 SP_C_FILE_END

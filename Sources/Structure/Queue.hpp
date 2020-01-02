@@ -20,18 +20,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#ifndef START_POINT_QUEUE_HPP
+#define START_POINT_QUEUE_HPP
 
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
+#include <cstddef>
+#include <cstdlib>
+#include "Queue.h"
 
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
+SP_CPP_FILE_BEGIN
 
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/ByteArray.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/JSON.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/Queue.h>
+class Queue final {
+public:
+    Queue(): _root(nullptr) {}
+
+    ~Queue() {
+        delete _root;
+    }
+
+    void* append(std::size_t size) {
+        _root = reinterpret_cast<Node*>(::malloc(size + sizeOfNode));
+        return _root + sizeOfNode;
+    }
+
+    void* SP_NULLABLE first() const {
+        return _root != nullptr ? _root + sizeOfNode : nullptr;
+    }
+
+private:
+    struct Node {
+        Node* SP_NULLABLE next;
+    };
+
+    static constexpr auto sizeOfNode = sizeof(Node);
+
+    Node* SP_NULLABLE _root;
+};
+
+SP_SIMPLE_CONVERSION(Queue, QueueRef);
+
+SP_CPP_FILE_END
+
+#endif // START_POINT_QUEUE_HPP

@@ -20,18 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
-//! Project version number for StartPoint.
-FOUNDATION_EXPORT double StartPointVersionNumber;
-
-//! Project version string for StartPoint.
-FOUNDATION_EXPORT const unsigned char StartPointVersionString[];
-
-#import <StartPoint/Config.h>
-#import <StartPoint/Atomic.h>
-#import <StartPoint/ByteArray.h>
-#import <StartPoint/Double.h>
-#import <StartPoint/JSON.h>
-#import <StartPoint/Object.h>
-#import <StartPoint/Queue.h>
+public final class Queue<Element> {
+    private let _queue: QueueRef
+    
+    public var first: Element? {
+        guard let raw = queue_first(_queue) else {
+            return nil
+        }
+        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
+        return pointer.pointee
+    }
+    
+    public init() {
+        _queue = queue_create()
+    }
+    
+    deinit {
+        queue_free(_queue)
+    }
+    
+    public func append(_ newElement: Element) {
+        let raw = queue_append(_queue, MemoryLayout<Element>.size)
+        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
+        pointer.initialize(to: newElement)
+    }
+}
