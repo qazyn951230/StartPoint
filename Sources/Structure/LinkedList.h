@@ -40,19 +40,24 @@ typedef struct SPOpaqueLinkedListIterator* LinkedListIteratorRef;
 LinkedListRef linked_list_create(size_t size);
 void linked_list_free(LinkedListRef SP_NULLABLE ref);
 
+LinkedListIteratorRef linked_list_iterator_copy(LinkedListIteratorRef ref);
+void linked_list_iterator_free(LinkedListIteratorRef SP_NULLABLE ref);
+
 void* linked_list_append(LinkedListRef list);
-LinkedListIteratorRef SP_NULLABLE linked_list_begin(LinkedListRef list);
-LinkedListIteratorRef SP_NULLABLE linked_list_end(LinkedListRef list);
+LinkedListIteratorRef linked_list_begin(LinkedListRef list);
+LinkedListIteratorRef linked_list_end(LinkedListRef list);
 void* SP_NULLABLE linked_list_first(LinkedListRef list);
 void* SP_NULLABLE linked_list_last(LinkedListRef list);
+NSInteger linked_list_count(LinkedListRef list);
+bool linked_list_is_empty(LinkedListRef list);
 
-LinkedListIteratorRef SP_NULLABLE linked_list_make_iterator(LinkedListRef list);
-void* SP_NULLABLE linked_list_iterator_element(LinkedListRef list, LinkedListIteratorRef SP_NULLABLE iterator);
-LinkedListIteratorRef SP_NULLABLE linked_list_iterator_previous(LinkedListIteratorRef SP_NULLABLE iterator);
-LinkedListIteratorRef SP_NULLABLE linked_list_iterator_next(LinkedListIteratorRef SP_NULLABLE iterator);
+void* SP_NULLABLE linked_list_iterator_element(LinkedListRef list, LinkedListIteratorRef iterator);
+LinkedListIteratorRef linked_list_iterator_previous(LinkedListIteratorRef iterator);
+LinkedListIteratorRef linked_list_iterator_next(LinkedListIteratorRef iterator);
 bool linked_list_iterator_equal(LinkedListIteratorRef SP_NULLABLE lhs, LinkedListIteratorRef SP_NULLABLE rhs);
 bool linked_list_iterator_less_then(LinkedListIteratorRef lhs, LinkedListIteratorRef rhs);
 bool linked_list_iterator_greater_then(LinkedListIteratorRef lhs, LinkedListIteratorRef rhs);
+NSInteger linked_list_iterator_distance(LinkedListIteratorRef start, LinkedListIteratorRef end);
 
 SP_C_FILE_END
 

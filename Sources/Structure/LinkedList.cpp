@@ -32,16 +32,29 @@ void linked_list_free(LinkedListRef ref) {
     delete unwrap(ref);
 }
 
+LinkedListIteratorRef linked_list_iterator_copy(LinkedListIteratorRef ref) {
+    auto temp = new LinkedList::iterator{*unwrap(ref)};
+    return wrap(temp);
+}
+
+void linked_list_iterator_free(LinkedListIteratorRef SP_NULLABLE ref) {
+    delete unwrap(ref);
+}
+
 void* linked_list_append(LinkedListRef list) {
     return unwrap(list)->append();
 }
 
 LinkedListIteratorRef linked_list_begin(LinkedListRef list) {
-    return wrap(unwrap(list)->first());
+    auto temp = new LinkedList::iterator;
+    *temp = unwrap(list)->first();
+    return wrap(temp);
 }
 
 LinkedListIteratorRef linked_list_end(LinkedListRef list) {
-    return wrap(unwrap(list)->last());
+    auto temp = new LinkedList::iterator;
+    *temp = unwrap(list)->last();
+    return wrap(temp);
 }
 
 void* linked_list_first(LinkedListRef list) {
@@ -54,74 +67,49 @@ void* linked_list_last(LinkedListRef list) {
     return raw->element(raw->last());
 }
 
-LinkedListIteratorRef linked_list_make_iterator(LinkedListRef list) {
-    auto raw = unwrap(list);
-    return wrap(raw->first());
+NSInteger linked_list_count(LinkedListRef list) {
+    return static_cast<NSInteger>(unwrap(list)->count());
+}
+
+bool linked_list_is_empty(LinkedListRef list) {
+    return unwrap(list)->isEmpty();
 }
 
 void* linked_list_iterator_element(LinkedListRef list, LinkedListIteratorRef iterator) {
     auto raw = unwrap(iterator);
-    return raw == nullptr ? nullptr : unwrap(list)->element(raw);
+    return unwrap(list)->element(raw->node);
 }
 
 LinkedListIteratorRef linked_list_iterator_previous(LinkedListIteratorRef iterator) {
     auto raw = unwrap(iterator);
-    return raw == nullptr ? nullptr : wrap(raw->previous);
+    raw->operator--(1);
+    return iterator;
 }
 
 LinkedListIteratorRef linked_list_iterator_next(LinkedListIteratorRef iterator) {
     auto raw = unwrap(iterator);
-    return raw == nullptr ? nullptr : wrap(raw->next);
+    raw->operator++(1);
+    return iterator;
 }
 
 bool linked_list_iterator_equal(LinkedListIteratorRef lhs, LinkedListIteratorRef rhs) {
-    return lhs == rhs;
+    return unwrap(lhs)->operator==(*unwrap(rhs));
 }
 
 bool linked_list_iterator_less_then(LinkedListIteratorRef lhs, LinkedListIteratorRef rhs) {
-    if (lhs == nullptr || rhs == nullptr || lhs == rhs) {
-        return false;
-    }
-    auto left = unwrap(lhs);
-    const auto right = unwrap(rhs);
-    while (left->previous != nullptr) {
-        if (left->previous == right) {
-            return true;
-        } else {
-            left = left->previous;
-        }
-    }
-    left = unwrap(lhs);
-    while (left->next != nullptr) {
-        if (left->next == right) {
-            return false;
-        } else {
-            left = left->next;
-        }
-    }
-    return false;
+    return unwrap(lhs)->operator<(*unwrap(rhs));
 }
 
 bool linked_list_iterator_greater_then(LinkedListIteratorRef lhs, LinkedListIteratorRef rhs) {
-    if (lhs == nullptr || rhs == nullptr || lhs == rhs) {
-        return false;
+    return unwrap(lhs)->operator>(*unwrap(rhs));
+}
+
+NSInteger linked_list_iterator_distance(LinkedListIteratorRef start, LinkedListIteratorRef end) {
+    auto left = unwrap(start);
+    auto right = unwrap(end);
+    if (left->index > right->index) {
+        return -static_cast<NSInteger>(left->index - right->index);
+    } else {
+        return static_cast<NSInteger>(right->index - left->index);
     }
-    auto left = unwrap(lhs);
-    const auto right = unwrap(rhs);
-    while (left->previous != nullptr) {
-        if (left->previous == right) {
-            return false;
-        } else {
-            left = left->previous;
-        }
-    }
-    left = unwrap(lhs);
-    while (left->next != nullptr) {
-        if (left->next == right) {
-            return true;
-        } else {
-            left = left->next;
-        }
-    }
-    return false;
 }

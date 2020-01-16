@@ -23,54 +23,128 @@
 @frozen
 public struct LinkedListIterator<Element>: IteratorProtocol {
     let box: LinkedListBox<Element>
-
-    var current: LinkedListIteratorRef?
+    let last: LinkedListIndexBox
+    var current: LinkedListIndexBox
 
     init(_ box: LinkedListBox<Element>) {
         self.box = box
-        current = linked_list_make_iterator(box.ref)
+        current = box.begin
+        last = box.end
+    }
+
+    init(_ box: LinkedListBox<Element>, start: LinkedListIndexBox, end: LinkedListIndexBox) {
+        self.box = box
+        current = start
+        last = end
     }
 
     public mutating func next() -> Element? {
-        let _raw = linked_list_iterator_element(box.ref, current)
-        current = linked_list_iterator_next(current)
-        guard let raw = _raw else {
+        if current == last {
             return nil
         }
-        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
-        return pointer.pointee
+        defer {
+            current.next()
+        }
+        return box.element(from: current)
     }
 }
 
 @frozen
 public struct LinkedListIndex: Comparable {
     @usableFromInline
-    let raw: LinkedListIteratorRef?
+    let box: LinkedListIndexBox
 
+    @inlinable
+    init(_ box: LinkedListIndexBox) {
+        self.box = box
+    }
+
+    @inlinable
+    public static func == (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
+        lhs.box == rhs.box
+    }
+
+    @inlinable
+    public static func < (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
+        lhs.box < rhs.box
+    }
+
+    @inlinable
+    public static func > (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
+        lhs.box > rhs.box
+    }
+}
+
+@usableFromInline
+class LinkedListIndexBox: Comparable {
     @usableFromInline
-    init(_ raw: LinkedListIteratorRef?) {
+    let raw: LinkedListIteratorRef
+
+    @inline(__always)
+    init(_ raw: LinkedListIteratorRef) {
         self.raw = raw
     }
 
-    public static func == (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
-        guard let left = lhs.raw, let right = rhs.raw else {
-            return true
-        }
-        return linked_list_iterator_equal(left, right)
+    deinit {
+        linked_list_iterator_free(raw)
     }
 
-    public static func < (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
-        guard let left = lhs.raw, let right = rhs.raw else {
-            return false
-        }
-        return linked_list_iterator_less_then(left, right)
+    @inline(__always)
+    @discardableResult
+    func previous() -> LinkedListIndexBox {
+        linked_list_iterator_previous(raw)
+        return self
     }
 
-    public static func > (lhs: LinkedListIndex, rhs: LinkedListIndex) -> Bool {
-        guard let left = lhs.raw, let right = rhs.raw else {
-            return false
+    @inline(__always)
+    @discardableResult
+    func next() -> LinkedListIndexBox {
+        linked_list_iterator_next(raw)
+        return self
+    }
+
+    @inline(__always)
+    func copy() -> LinkedListIndexBox {
+        LinkedListIndexBox(linked_list_iterator_copy(raw))
+    }
+
+    func index(offsetBy distance: Int) -> LinkedListIndexBox {
+        for _ in 0..<distance {
+            next()
         }
-        return linked_list_iterator_greater_then(left, right)
+        return self
+    }
+
+    func index(offsetBy distance: Int, limitedBy limit: LinkedListIndexBox) -> LinkedListIndexBox? {
+        for _ in 0..<distance {
+            if self > limit {
+                return nil
+            }
+            next()
+        }
+        return self
+    }
+
+    func distance(to end: LinkedListIndexBox) -> Int {
+        linked_list_iterator_distance(raw, end.raw)
+    }
+
+    @inline(__always)
+    @usableFromInline
+    static func == (lhs: LinkedListIndexBox, rhs: LinkedListIndexBox) -> Bool {
+        linked_list_iterator_equal(lhs.raw, rhs.raw)
+    }
+
+    @inline(__always)
+    @usableFromInline
+    static func < (lhs: LinkedListIndexBox, rhs: LinkedListIndexBox) -> Bool {
+        linked_list_iterator_less_then(lhs.raw, rhs.raw)
+    }
+
+    @inline(__always)
+    @usableFromInline
+    static func > (lhs: LinkedListIndexBox, rhs: LinkedListIndexBox) -> Bool {
+        linked_list_iterator_greater_then(lhs.raw, rhs.raw)
     }
 }
 
@@ -86,31 +160,36 @@ final class LinkedListBox<Element> {
         linked_list_free(ref)
     }
 
-//    var first: Element? {
-//        guard let raw = linked_list_first(ref) else {
-//            return nil
-//        }
-//        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
-//        return pointer.pointee
-//    }
-//
-//    var last: Element? {
-//        guard let raw = linked_list_last(ref) else {
-//            return nil
-//        }
-//        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
-//        return pointer.pointee
-//    }
-//
-//    func append(_ newElement: __owned Element) {
-//        let raw = linked_list_append(ref)
-//        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
-//        pointer.initialize(to: newElement)
-//    }
+    var begin: LinkedListIndexBox {
+        LinkedListIndexBox(linked_list_begin(ref))
+    }
+
+    var end: LinkedListIndexBox {
+        LinkedListIndexBox(linked_list_end(ref))
+    }
+
+    @inline(__always)
+    func element(from index: LinkedListIndexBox) -> Element? {
+        guard let raw = linked_list_iterator_element(ref, index.raw) else {
+            return nil
+        }
+        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
+        return pointer.pointee
+    }
+
+    @inline(__always)
+    func setElement(_ element: __owned Element, for index: LinkedListIndexBox) {
+        guard let raw = linked_list_iterator_element(ref, index.raw) else {
+            return
+        }
+        let pointer = raw.bindMemory(to: Element.self, capacity: 1)
+        pointer.deinitialize(count: 1)
+        pointer.initialize(to: element)
+    }
 }
 
 @frozen
-public struct LinkedListSlice<Element>: Collection /*, _DestructorSafeContainer*/ {
+public struct LinkedListSlice<Element>: MutableCollection /*, _DestructorSafeContainer*/ {
     @usableFromInline
     typealias Buffer = LinkedListBox<Element>
 
@@ -125,70 +204,63 @@ public struct LinkedListSlice<Element>: Collection /*, _DestructorSafeContainer*
     public let endIndex: Index
 
     @inlinable
-    init(buffer: Buffer, start: LinkedListIteratorRef?, end: LinkedListIteratorRef?) {
+    init(buffer: Buffer, start: LinkedListIndex, end: LinkedListIndex) {
         self.buffer = buffer
-        startIndex = LinkedListIndex(start)
-        endIndex = LinkedListIndex(end)
+        startIndex = start
+        endIndex = end
     }
 
     public var isEmpty: Bool {
-        true
+        startIndex == endIndex
     }
 
     public var count: Int {
-        0
+        linked_list_iterator_distance(startIndex.box.raw, endIndex.box.raw)
     }
 
     public func makeIterator() -> LinkedListIterator<Element> {
-        LinkedListIterator(buffer)
+        LinkedListIterator(buffer, start: startIndex.box.copy(), end: endIndex.box.copy())
+    }
+
+    public func formIndex(after i: inout LinkedListIndex) {
+        i.box.next()
     }
     
-    public func index(after i: LinkedListIndex) -> LinkedListIndex {
-        index(i, offsetBy: 1)
+    public func index(after i: Index) -> Index {
+        Index(i.box.copy().next())
     }
 
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
-        var raw = i.raw
-        for _ in 0..<distance {
-            if raw == nil {
-                break
-            }
-            raw = linked_list_iterator_next(raw)
-        }
-        return Index(raw)
+        Index(i.box.copy().index(offsetBy: distance))
     }
 
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-        var raw = i.raw
-        for _ in 0..<distance {
-            if raw == nil || linked_list_iterator_equal(raw, limit.raw) {
-                break
-            }
-            raw = linked_list_iterator_next(raw)
-        }
-        return Index(raw)
+        let box = i.box.copy().index(offsetBy: distance, limitedBy: limit.box)
+        return box.map(Index.init)
     }
 
     public func distance(from start: Index, to end: Index) -> Int {
-        0
+        start.box.distance(to: end.box)
     }
     
     public subscript(position: LinkedListIndex) -> Element {
         get {
-            precondition(position.raw != nil)
-            let raw = linked_list_iterator_element(buffer.ref, position.raw!)!
-            let pointer = raw.bindMemory(to: Element.self, capacity: 1)
-            return pointer.pointee
+            buffer.element(from: position.box)!
+        }
+        set {
+            buffer.setElement(newValue, for: position.box)
         }
     }
 }
 
 @frozen
-public struct LinkedList<Element>: Sequence /*, _DestructorSafeContainer*/ {
+public struct LinkedList<Element>: MutableCollection /*, _DestructorSafeContainer*/ {
     @usableFromInline
     typealias Buffer = LinkedListBox<Element>
 
     public typealias Iterator = LinkedListIterator<Element>
+    public typealias Index = LinkedListIndex
+    public typealias SubSequence = LinkedListSlice<Element>
 
     @usableFromInline
     var buffer: Buffer
@@ -198,7 +270,57 @@ public struct LinkedList<Element>: Sequence /*, _DestructorSafeContainer*/ {
         self.buffer = buffer
     }
 
+    public var startIndex: Index {
+        Index(buffer.begin)
+    }
+
+    public var endIndex: Index {
+        Index(buffer.end)
+    }
+
+    public var isEmpty: Bool {
+        linked_list_is_empty(buffer.ref)
+    }
+
+    public var count: Int {
+        linked_list_count(buffer.ref)
+    }
+
+    public var underestimatedCount: Int {
+        linked_list_count(buffer.ref)
+    }
+
     public func makeIterator() -> LinkedListIterator<Element> {
         LinkedListIterator(buffer)
+    }
+
+    public func formIndex(after i: inout LinkedListIndex) {
+        i.box.next()
+    }
+
+    public func index(after i: Index) -> Index {
+        Index(i.box.copy().next())
+    }
+
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+        Index(i.box.copy().index(offsetBy: distance))
+    }
+
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+        let box = i.box.copy().index(offsetBy: distance, limitedBy: limit.box)
+        return box.map(Index.init)
+    }
+
+    public func distance(from start: Index, to end: Index) -> Int {
+        start.box.distance(to: end.box)
+    }
+
+    public subscript(position: LinkedListIndex) -> Element {
+        get {
+            buffer.element(from: position.box)!
+        }
+        set {
+            buffer.setElement(newValue, for: position.box)
+        }
     }
 }
