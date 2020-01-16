@@ -32,11 +32,10 @@ public final class Log {
 
     public var level: LogLevel
     public var destinations: [LogDestination]
+    public let tag: String
 
     @usableFromInline
     let queue: DispatchQueue
-    @usableFromInline
-    let tag: String
     @usableFromInline
     var messages: [Message] = []
     @usableFromInline
