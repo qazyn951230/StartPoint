@@ -236,6 +236,17 @@ public final class Log {
             self.flush()
         }
     }
+    
+    @inlinable
+    public func write(level: LogLevel, _ value: @autoclosure () -> String, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= level && self.level > LogLevel.off else {
+            return
+        }
+        let message = Message(level: level, tag: tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        write(message: message)
+    }
 
     func flush() {
         if spa_bool_load(writing) {
