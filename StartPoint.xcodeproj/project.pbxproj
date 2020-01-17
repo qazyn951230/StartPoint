@@ -253,6 +253,7 @@
 		BCA2A4681F3DA5BC007A772A /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A45A1F3DA5BC007A772A /* View.swift */; };
 		BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4621F3DA5BC007A772A /* Device.swift */; };
 		BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
+		BCCBA3DC23D15643003F4AB4 /* PathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBA3DB23D15643003F4AB4 /* PathTests.swift */; };
 		BCDA2BED22854C70006C2ABB /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */; };
 		BCDA2C072285612F006C2ABB /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2C062285612F006C2ABB /* Codable.swift */; };
 		BCDD7D7A236C24E4007C728D /* Parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCDD7D79236C24E4007C728D /* Parser.hpp */; };
@@ -506,8 +507,7 @@
 		BC16E75A1F3EB2D600DDC894 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxCocoa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC16E75B1F3EB2D600DDC894 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC1C2E5F1F7F895F00CA9C99 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		BC33768D211D7648006DF19C /* iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = iOS.plist; sourceTree = "<group>"; };
-		BC33768E211D7648006DF19C /* macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = macOS.plist; sourceTree = "<group>"; };
+		BC33768D211D7648006DF19C /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
 		BC33768F211D771C006DF19C /* macOS-Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Test.xcconfig"; sourceTree = "<group>"; };
 		BC57E7E1236FD14400E1903C /* ParserTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ParserTests.mm; sourceTree = "<group>"; };
 		BC60DD1323C1ACF9001BE10E /* LinkedList.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LinkedList.cpp; sourceTree = "<group>"; };
@@ -542,6 +542,7 @@
 		BCA9E07B1F2E1C5D00D78FE9 /* iOS-App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-App.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
+		BCCBA3DB23D15643003F4AB4 /* PathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTests.swift; sourceTree = "<group>"; };
 		BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecoder.swift; sourceTree = "<group>"; };
 		BCDA2C062285612F006C2ABB /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		BCDD7D79236C24E4007C728D /* Parser.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
@@ -701,10 +702,10 @@
 		AC96A2B2BF91A41A3864FD36 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				BC33768D211D7648006DF19C /* iOS.plist */,
-				BC33768E211D7648006DF19C /* macOS.plist */,
+				BC33768D211D7648006DF19C /* info.plist */,
 				AC96A566939DBC0E67587FEC /* Codable */,
 				AC96A48C2C2CDB1F8620071E /* Extension */,
+				BCCBA3DA23D15605003F4AB4 /* FileSystem */,
 				AC96A1F339CA6B8CEFE79E5B /* Layout */,
 				AC96ABAE9E0E01AD5A5A59C4 /* React */,
 				BC64BDED23A9D26800908485 /* Resouces */,
@@ -1224,6 +1225,14 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
+		BCCBA3DA23D15605003F4AB4 /* FileSystem */ = {
+			isa = PBXGroup;
+			children = (
+				BCCBA3DB23D15643003F4AB4 /* PathTests.swift */,
+			);
+			path = FileSystem;
+			sourceTree = "<group>";
+		};
 		BCF881D623715E690062227E /* Universal */ = {
 			isa = PBXGroup;
 			children = (
@@ -1577,6 +1586,7 @@
 				AC96A1E5940F3AD9DE91D218 /* AlignContentTests.swift in Sources */,
 				AC96A64D823FF9CC24B4452B /* PercentageTests.swift in Sources */,
 				AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */,
+				BCCBA3DC23D15643003F4AB4 /* PathTests.swift in Sources */,
 				AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */,
 				AC96A2613771E4272D5C20C8 /* BorderTests.swift in Sources */,
 				AC96A971B402B448B1D55A57 /* AlignSelfTests.swift in Sources */,
@@ -1682,7 +1692,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCF881D823715EB40062227E /* Universal-Test.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/iOS.plist;
+				INFOPLIST_FILE = Tests/info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 			};
@@ -1692,7 +1702,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BCF881D823715EB40062227E /* Universal-Test.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = Tests/iOS.plist;
+				INFOPLIST_FILE = Tests/info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartPointTests;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 			};

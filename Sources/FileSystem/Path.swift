@@ -55,7 +55,7 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
         guard let name = _filename else {
             return ""
         }
-        if let end = name.lastIndex(of: ".") {
+        if let end = name.lastIndex(of: "."), end != name.startIndex {
             return String(name[..<end])
         } else {
             return name
@@ -119,6 +119,36 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
     // ExpressibleByStringLiteral
     public convenience init(stringLiteral value: String) {
         self.init(value)
+    }
+
+    public func replace(filename: String) -> Path {
+        precondition(!filename.isEmpty)
+        if self.components.isEmpty {
+            return self
+        }
+        var components = self.components
+        components[components.endIndex - 1] = filename
+        return Path(absolute: isAbsolute, components: components)
+    }
+
+    public func replace(name: String) -> Path {
+        precondition(!name.isEmpty)
+        if self.components.isEmpty {
+            return self
+        }
+        var components = self.components
+        components[components.endIndex - 1] = name + `extension`
+        return Path(absolute: isAbsolute, components: components)
+    }
+
+    public func replace(`extension`: String?) -> Path {
+        precondition(`extension` == nil || `extension`!.firstIndex(of: ".") == `extension`!.startIndex)
+        if self.components.isEmpty || (name.isEmpty && `extension` == nil) {
+            return self
+        }
+        var components = self.components
+        components[components.endIndex - 1] = name + (`extension` ?? "")
+        return Path(absolute: isAbsolute, components: components)
     }
 
     public func basename(`extension`: String? = nil) -> String {
@@ -299,6 +329,9 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
 
     @inline(__always)
     private static func assemble(absolute: Bool, components: [String]) -> String {
+        if components.isEmpty {
+            return absolute ? separator : ""
+        }
         var array = components
         if absolute {
             array.insert("", at: 0)

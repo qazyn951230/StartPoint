@@ -25,9 +25,9 @@ import Dispatch
 
 public final class Log {
 #if DEBUG
-    public static let global = Log(.verbose, tag: "com.undev.log.global", to: [DefaultLogDestination()])
+    public static let global = Log(.verbose, tag: "com.undev.global", to: [DefaultLogDestination()])
 #else
-    public static let global = Log(.off, tag: "com.undev.log.global", to: [DefaultLogDestination()])
+    public static let global = Log(.off, tag: "com.undev.global", to: [DefaultLogDestination()])
 #endif
 
     public var level: LogLevel
@@ -244,6 +244,17 @@ public final class Log {
             return
         }
         let message = Message(level: level, tag: tag, subject: value(), file: file,
+            function: function, line: line, column: column)
+        write(message: message)
+    }
+
+    @inlinable
+    public func write(level: LogLevel, any value: @autoclosure () -> String?, file: String = #file,
+        function: String = #function, line: UInt = #line, column: UInt = #column) {
+        guard self.level >= level && self.level > LogLevel.off, let subject = value() else {
+            return
+        }
+        let message = Message(level: level, tag: tag, subject: subject, file: file,
             function: function, line: line, column: column)
         write(message: message)
     }
