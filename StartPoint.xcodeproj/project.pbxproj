@@ -254,6 +254,7 @@
 		BCA2A46F1F3DA5BC007A772A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4621F3DA5BC007A772A /* Device.swift */; };
 		BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4631F3DA5BC007A772A /* Function.swift */; };
 		BCCBA3DC23D15643003F4AB4 /* PathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBA3DB23D15643003F4AB4 /* PathTests.swift */; };
+		BCCBA3E923D184D1003F4AB4 /* TemporaryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBA3E823D184D1003F4AB4 /* TemporaryFile.swift */; };
 		BCDA2BED22854C70006C2ABB /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */; };
 		BCDA2C072285612F006C2ABB /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDA2C062285612F006C2ABB /* Codable.swift */; };
 		BCDD7D7A236C24E4007C728D /* Parser.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCDD7D79236C24E4007C728D /* Parser.hpp */; };
@@ -543,6 +544,7 @@
 		BCA9E07D1F2E1C5D00D78FE9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
 		BCA9E07E1F2E1C5D00D78FE9 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 		BCCBA3DB23D15643003F4AB4 /* PathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTests.swift; sourceTree = "<group>"; };
+		BCCBA3E823D184D1003F4AB4 /* TemporaryFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryFile.swift; sourceTree = "<group>"; };
 		BCDA2BEB22854C70006C2ABB /* JSONDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDecoder.swift; sourceTree = "<group>"; };
 		BCDA2C062285612F006C2ABB /* Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
 		BCDD7D79236C24E4007C728D /* Parser.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
@@ -876,6 +878,7 @@
 				AC96A4843DED9EE2BCA1FE4E /* FileType.swift */,
 				AC96A1F3E43CDEEA8E7BC45D /* FoundationFileSystem.swift */,
 				AC96A9DE41EA263C74E68932 /* Path.swift */,
+				BCCBA3E823D184D1003F4AB4 /* TemporaryFile.swift */,
 			);
 			path = FileSystem;
 			sourceTree = "<group>";
@@ -1433,6 +1436,7 @@
 				AC96A961D2413ABE7D375AE5 /* AlertController.swift in Sources */,
 				AC96A95E37503B8812972882 /* UIImagePickerController.swift in Sources */,
 				AC96AF008794E423F1EE5CD9 /* RequestBuilder.swift in Sources */,
+				BCCBA3E923D184D1003F4AB4 /* TemporaryFile.swift in Sources */,
 				AC96A270DCF9EC380399133A /* BannerView.swift in Sources */,
 				AC96AA6B9A51BDE717CA1039 /* Collection.swift in Sources */,
 				AC96AF7C0FF04F83DF0894E0 /* UIEdgeInsets.swift in Sources */,
