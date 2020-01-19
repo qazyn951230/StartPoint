@@ -247,6 +247,8 @@
 		BC87EFAB2193D49500896E21 /* Config.h in Headers */ = {isa = PBXBuildFile; fileRef = BC87EFA92193D15200896E21 /* Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BC902E192373B9F700233DBE /* JSONDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC902E182373B9F700233DBE /* JSONDecoderTests.swift */; };
 		BC993297222646EE001E0645 /* ByteStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC993296222646EE001E0645 /* ByteStreamTests.swift */; };
+		BC99D89E23D4241A002864D8 /* DarwinFileSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC99D89D23D4241A002864D8 /* DarwinFileSystemTests.swift */; };
+		BC99D8A023D42FB9002864D8 /* DirectoryIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC99D89F23D42FB9002864D8 /* DirectoryIterator.swift */; };
 		BCA2A4641F3DA5BC007A772A /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4551F3DA5BC007A772A /* NSAttributedString.swift */; };
 		BCA2A4651F3DA5BC007A772A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4561F3DA5BC007A772A /* Color.swift */; };
 		BCA2A4671F3DA5BC007A772A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2A4581F3DA5BC007A772A /* String.swift */; };
@@ -534,6 +536,8 @@
 		BC87EFA92193D15200896E21 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		BC902E182373B9F700233DBE /* JSONDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoderTests.swift; sourceTree = "<group>"; };
 		BC993296222646EE001E0645 /* ByteStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteStreamTests.swift; sourceTree = "<group>"; };
+		BC99D89D23D4241A002864D8 /* DarwinFileSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinFileSystemTests.swift; sourceTree = "<group>"; };
+		BC99D89F23D42FB9002864D8 /* DirectoryIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryIterator.swift; sourceTree = "<group>"; };
 		BCA2A4551F3DA5BC007A772A /* NSAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAttributedString.swift; sourceTree = "<group>"; };
 		BCA2A4561F3DA5BC007A772A /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		BCA2A4581F3DA5BC007A772A /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -870,6 +874,7 @@
 			isa = PBXGroup;
 			children = (
 				AC96ABE176DCE46E2BC63F49 /* DarwinFileSystem.swift */,
+				BC99D89F23D42FB9002864D8 /* DirectoryIterator.swift */,
 				AC96AC218564F941A3032F29 /* FilePermission.swift */,
 				AC96AC375EF64BBC97FCBF47 /* FileStatus.swift */,
 				AC96A981C5C1F35F672D6245 /* FileSystem.swift */,
@@ -1231,6 +1236,7 @@
 		BCCBA3DA23D15605003F4AB4 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				BC99D89D23D4241A002864D8 /* DarwinFileSystemTests.swift */,
 				BCCBA3DB23D15643003F4AB4 /* PathTests.swift */,
 			);
 			path = FileSystem;
@@ -1403,6 +1409,7 @@
 				BC61275B1F3EFCE300AC8224 /* Request.swift in Sources */,
 				BCA2A4641F3DA5BC007A772A /* NSAttributedString.swift in Sources */,
 				BCA2A4701F3DA5BC007A772A /* Function.swift in Sources */,
+				BC99D8A023D42FB9002864D8 /* DirectoryIterator.swift in Sources */,
 				BCA2A4681F3DA5BC007A772A /* View.swift in Sources */,
 				BCA2A4671F3DA5BC007A772A /* String.swift in Sources */,
 				BCA2A4651F3DA5BC007A772A /* Color.swift in Sources */,
@@ -1590,6 +1597,7 @@
 				AC96A1E5940F3AD9DE91D218 /* AlignContentTests.swift in Sources */,
 				AC96A64D823FF9CC24B4452B /* PercentageTests.swift in Sources */,
 				AC96A82A7D3EB86A756581A5 /* PaddingTests.swift in Sources */,
+				BC99D89E23D4241A002864D8 /* DarwinFileSystemTests.swift in Sources */,
 				BCCBA3DC23D15643003F4AB4 /* PathTests.swift in Sources */,
 				AC96A7D4C774971258E8C00B /* DimensionTests.swift in Sources */,
 				AC96A2613771E4272D5C20C8 /* BorderTests.swift in Sources */,

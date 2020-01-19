@@ -20,29 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
-import Darwin.C
+public struct DirectoryEntry {
+    let path: Path
+    let fileSystem: FileSystem
 
-public protocol FileSystem {
-    var current: Path { get set }
+    public init(path: Path, fileSystem: FileSystem) {
+        self.path = path
+        self.fileSystem = fileSystem
+    }
 
-    func copy(from: Path, to: Path) throws
-    func exists(_ path: Path) -> Bool
-    func exists(directory path: Path) -> Bool
-    func makeDirectory(_ path: Path) throws
-    func makeDirectories(_ path: Path) throws
-    func makeIterator(_ path: Path) throws -> DirectoryIterator
-    func move(from: Path, to: Path) throws
-    func readDirectory(_ path: Path) throws -> [Path]
-    func readFile(at path: Path) throws -> Data
-    func readSymbolicLink(at path: Path) throws -> Path
-    func remove(_ path: Path) throws
-    func status(for path: Path, follow: Bool) throws  -> FileStatus
+    public init?(url: URL, fileSystem: FileSystem) {
+        guard let path = Path(fileURL: url) else {
+            return nil
+        }
+        self.path = path
+        self.fileSystem = fileSystem
+    }
 }
 
-public extension FileSystem {
-    @inlinable
-    func status(for path: Path) throws  -> FileStatus {
-        try status(for: path, follow: false)
+public struct DirectoryIterator: IteratorProtocol {
+    public typealias Element = DirectoryEntry
+
+    let fileSystem: FileSystem
+    let delegate: () -> DirectoryEntry?
+
+    init(_ foundation: FoundationDirectoryIterator) {
+        fileSystem = foundation.fileSystem
+        delegate = foundation.next
+    }
+
+    init(_ darwin: DarwinDirectoryIterator) {
+        fileSystem = darwin.fileSystem
+        delegate = darwin.next
+    }
+
+    public mutating func next() -> DirectoryEntry? {
+        delegate()
     }
 }

@@ -56,14 +56,6 @@ public final class FoundationFileSystem: FileSystem {
         return FileStatus(type: type, permission: permission)
     }
 
-    public func enumerator(at path: Path) -> DirectoryIterator {
-        if let raw = manager.enumerator(atPath: path.string) {
-            return DirectoryIterator(FoundationDirectoryIterator(raw, fileSystem: self))
-        } else {
-            return DirectoryIterator(fileSystem: self)
-        }
-    }
-
     public func copy(from: Path, to: Path) throws {
         try manager.copyItem(atPath: from.string, toPath: to.string)
     }
@@ -90,6 +82,15 @@ public final class FoundationFileSystem: FileSystem {
             return
         }
         try manager.createDirectory(atPath: path.string, withIntermediateDirectories: true)
+    }
+
+    public func makeIterator(_ path: Path) throws -> DirectoryIterator {
+        guard let enumerator = manager.enumerator(at: path.fileURL(), includingPropertiesForKeys: nil,
+            options: .skipsSubdirectoryDescendants) else {
+            throw StartError.message("Cannot enumerator: \(path.string)")
+        }
+        let temp = FoundationDirectoryIterator(enumerator, fileSystem: self)
+        return DirectoryIterator(temp)
     }
 
     public func move(from: Path, to: Path) throws {
@@ -128,6 +129,32 @@ public final class FoundationFileSystem: FileSystem {
         let success = manager.createFile(atPath: path.string, contents: data)
         if !success {
             throw FileSystemError.writeFailed
+        }
+    }
+}
+
+class FoundationDirectoryIterator: IteratorProtocol {
+    public typealias Element = DirectoryEntry
+
+    let fileSystem: FileSystem
+    let enumerator: FileManager.DirectoryEnumerator
+
+    init(_ enumerator: FileManager.DirectoryEnumerator, fileSystem: FileSystem) {
+        self.enumerator = enumerator
+        self.fileSystem = fileSystem
+    }
+
+    public func next() -> DirectoryEntry? {
+        var url: URL? = enumerator.nextObject() as? URL
+        while url == nil {
+            if let raw = enumerator.nextObject() {
+                url = raw as? URL
+            } else {
+                break
+            }
+        }
+        return url.flatMap {
+            DirectoryEntry(url: $0, fileSystem: self.fileSystem)
         }
     }
 }

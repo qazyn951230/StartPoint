@@ -87,6 +87,10 @@ public final class Path: Codable, ExpressibleByStringLiteral, CustomStringConver
         !isAbsolute && components.isEmpty
     }
 
+    public var isEmptyOrRoot: Bool {
+        components.isEmpty
+    }
+
     // CustomStringConvertible
     public var description: String {
         "<Path: \(string)>"

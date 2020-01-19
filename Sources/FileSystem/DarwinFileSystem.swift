@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
 import Darwin.C
 
 public final class DarwinFileSystem: FileSystem {
@@ -87,6 +86,17 @@ public final class DarwinFileSystem: FileSystem {
     }
 
     public func makeDirectory(_ path: Path) throws {
+        if mkdir(path.string, S_IRWXU | S_IRWXG | S_IRWXO) == 0 {
+            return
+        }
+        let code = errno
+        if exists(directory: path) {
+            return
+        }
+        throw StartError.posix(code)
+    }
+
+    public func makeDirectories(_ path: Path) throws {
         if path.isEmpty {
             return
         }
@@ -107,15 +117,9 @@ public final class DarwinFileSystem: FileSystem {
         return try makeDirectory(path)
     }
 
-    public func makeDirectories(_ path: Path) throws {
-        if mkdir(path.string, S_IRWXU | S_IRWXG | S_IRWXO) == 0 {
-            return
-        }
-        let code = errno
-        if exists(directory: path) {
-            return
-        }
-        throw StartError.posix(code)
+    public func makeIterator(_ path: Path) throws -> DirectoryIterator {
+        let temp = try DarwinDirectoryIterator(path: path, fileSystem: self)
+        return DirectoryIterator(temp)
     }
 
     public func move(from: Path, to: Path) throws {
@@ -176,5 +180,110 @@ public final class DarwinFileSystem: FileSystem {
                 throw Errors.posix()
             }
         }
+    }
+}
+
+class DarwinDirectoryIterator: IteratorProtocol {
+    public typealias Element = DirectoryEntry
+
+    let root: Path
+    let fileSystem: FileSystem
+    var dir: UnsafeMutablePointer<DIR>?
+    var buffer: dirent
+    var current: Path?
+
+    init(path: Path, fileSystem: FileSystem) throws {
+        let next = path.normalize()
+        if next.isEmpty {
+            throw StartError.message("Empty path")
+        }
+        if let _dir = opendir(next.string) {
+            dir = _dir
+        } else {
+            throw Errors.posix()
+        }
+        root = next
+        buffer = dirent()
+        current = root.join(".")
+        self.fileSystem = fileSystem
+        try increment()
+    }
+
+    deinit {
+        try? close()
+    }
+
+    private func increment() throws {
+        while true {
+            let filename = try move()
+            if dir == nil {
+                return
+            }
+            if filename != "." && filename != ".." {
+                current = current?.replace(filename: filename ?? "")
+                break
+            }
+        }
+    }
+
+    private func move() throws -> String? {
+        guard let dir = self.dir else {
+            return nil
+        }
+        var result: UnsafeMutablePointer<dirent>?
+        let code = readDir(dir, buffer: &buffer, to: &result)
+        if code != 0 {
+            throw StartError.posix(code)
+        }
+        if let next = result?.pointee {
+            return String.decodeFixedArray(next, keyPath: \dirent.d_name, count: Int(next.d_reclen))
+        } else {
+            try close()
+            return nil
+        }
+    }
+
+    // `result` set to `nil` on end of directory
+    @inline(__always)
+    private func readDir(_ dir: UnsafeMutablePointer<DIR>, buffer: UnsafeMutablePointer<dirent>,
+                         to result: inout UnsafeMutablePointer<dirent>?) -> Int32 {
+        if sysconf(_SC_THREAD_SAFE_FUNCTIONS) >= 0 {
+            var target: UnsafeMutablePointer<dirent>? = result
+            let code = withUnsafeMutablePointer(to: &target) {
+                (foo: UnsafeMutablePointer<UnsafeMutablePointer<dirent>?>) in
+                    readdir_r(dir, buffer, foo)
+                }
+            result = target
+            return code
+        }
+        errno = 0
+        let next: UnsafeMutablePointer<dirent>? = readdir(dir)
+        result = next
+        if next == nil {
+            return errno
+        } else {
+            return 0
+        }
+    }
+
+    @inline(__always)
+    private func close() throws {
+        guard let dir = self.dir else {
+            return
+        }
+        let code = closedir(dir)
+        self.dir = nil
+        if code != 0 {
+            throw Errors.posix()
+        }
+    }
+
+    public func next() -> DirectoryEntry? {
+        if dir == nil {
+            return nil
+        }
+        let entry = current.map { DirectoryEntry(path: $0, fileSystem: fileSystem) }
+        try? increment()
+        return entry
     }
 }
