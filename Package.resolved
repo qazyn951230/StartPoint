@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "RxSwift",
+        "repositoryURL": "https://github.com/qazyn951230/RxSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "3f6822956846aeca6a0aae8c933194bf04431f0d",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
