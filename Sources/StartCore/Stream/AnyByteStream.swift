@@ -94,29 +94,29 @@ public class AnyByteStream: ByteStream, UnsafeRandomAccessStream {
     }
 
     public static func file(_ fileStream: FileStream) -> AnyByteStream {
-        _AnyFileStream(file: fileStream)
+        AnyFileStream(file: fileStream)
     }
 
     public static func file(read file: UnsafeMutablePointer<FILE>, behavior: FileStream.Behavior = .close)
             -> AnyByteStream {
-        _AnyFileStream(file: FileStream(read: file, behavior: behavior))
+        AnyFileStream(file: FileStream(read: file, behavior: behavior))
     }
 
     public static func file(write file: UnsafeMutablePointer<FILE>, behavior: FileStream.Behavior = .close)
             -> AnyByteStream {
-        _AnyFileStream(file: FileStream(write: file, behavior: behavior))
+        AnyFileStream(file: FileStream(write: file, behavior: behavior))
     }
 
     public static func file(read path: Path) throws -> AnyByteStream {
-        _AnyFileStream(file: try FileStream(read: path))
+        AnyFileStream(file: try FileStream(read: path))
     }
 
     public static func file(write path: Path) throws -> AnyByteStream {
-        _AnyFileStream(file: try FileStream(write: path))
+        AnyFileStream(file: try FileStream(write: path))
     }
 }
 
-class _AnyFileStream: AnyByteStream {
+private class AnyFileStream: AnyByteStream {
     var file: FileStream
 
     override var readable: Bool {
