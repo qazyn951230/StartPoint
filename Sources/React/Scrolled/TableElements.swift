@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 // UITableViewCellAccessoryType, Table width => n
@@ -247,3 +248,4 @@ final class TableDataMap: ArrayScrollDataMap {
         }
     }
 }
+#endif // #if os(iOS)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 protocol ElementVisitor {
@@ -120,3 +121,4 @@ public extension BasicElement {
         printer.print(basic: self)
     }
 }
+#endif // #if os(iOS)

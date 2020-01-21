@@ -1,2 +1,2 @@
-github "Alamofire/Alamofire" ~> 4.5
-github "qazyn951230/RxSwift" "239fd09345502f99b24f156b99b76cd6bec557bb"
+github "Alamofire/Alamofire" ~> 4.9
+github "qazyn951230/RxSwift" "3f6822956846aeca6a0aae8c933194bf04431f0d"

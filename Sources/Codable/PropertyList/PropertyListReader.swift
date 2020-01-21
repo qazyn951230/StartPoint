@@ -31,7 +31,7 @@ public class PropertyListReader {
         // Do nothing.
     }
 
-    public static func binaryReader(stream: FileByteStream) -> PropertyListReader {
+    public static func binaryReader(stream: AnyByteStream) -> PropertyListReader {
         return BinaryPropertyListReader(stream: stream)
     }
 }

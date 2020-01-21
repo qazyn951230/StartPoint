@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 final class ElementAction {
     typealias Action = (() -> Void)
     var load: [Action] = []
@@ -38,3 +39,4 @@ final class ElementAction {
         }
     }
 }
+#endif // #if os(iOS)

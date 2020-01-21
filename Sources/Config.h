@@ -43,7 +43,7 @@
 
 #define SP_CPP_FILE_BEGIN
 #define SP_CPP_FILE_END
-#endif
+#endif // #if (__cplusplus)
 
 #define SP_C_FILE_BEGIN SP_EXTERN_C_BEGIN \
                         _Pragma("clang assume_nonnull begin")
@@ -71,7 +71,20 @@
 #define SP_NONNULL
 #define SP_NULL_UNSPECIFIED
 #define SP_NULLABLE
+#endif // #if defined(__clang__)
+
+// .../usr/include/objc/NSObjCRuntime.h
+#if !defined(__OBJC2__)
+
+#if __LP64__ || 0 || NS_BUILD_32_LIKE_64
+typedef long NSInteger;
+typedef unsigned long NSUInteger;
+#else
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
 #endif
+
+#endif // #if !defined(__OBJC2__)
 
 // Enums and Options
 #ifdef NS_ENUM
@@ -145,6 +158,20 @@
 
 #endif
 
+#ifdef NS_NOESCAPE
+
+#define SP_NOESCAPE NS_NOESCAPE
+
+#else
+
+#if __has_attribute(noescape)
+#define SP_NOESCAPE __attribute__((noescape))
+#else
+#define SP_NOESCAPE
+#endif
+
+#endif
+
 #if (__cplusplus)
 
 #define SP_SIMPLE_CONVERSION(CxxType, CRef)                     \
@@ -156,6 +183,21 @@ inline CRef wrap(const CxxType* value) {                        \
     return reinterpret_cast<CRef>(const_cast<CxxType*>(value)); \
 }                                                               \
 
+#define SP_POINTER_CAST(type, source) (reinterpret_cast<type>(source))
+
+#else
+
+#define SP_SIMPLE_CONVERSION(CxxType, CRef)                     \
+inline CxxType *unwrap(CRef value) {                            \
+    return (CxxType*)(value);                                   \
+}                                                               \
+                                                                \
+inline CRef wrap(const CxxType* value) {                        \
+    return (CRef)(const_cast<CxxType*>(value));                 \
+}                                                               \
+
+#define SP_POINTER_CAST(type, source) ((type)(source))
+
 #endif
 
-#endif //START_POINT_CONFIG_H
+#endif // START_POINT_CONFIG_H

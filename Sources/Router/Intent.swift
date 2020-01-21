@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public enum IntentMethod {
@@ -208,3 +209,4 @@ public class Intent {
         }
     }
 }
+#endif // #if os(iOS)

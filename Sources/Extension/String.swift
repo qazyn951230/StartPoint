@@ -23,6 +23,34 @@
 public extension String {
     static let empty: String = ""
 
+    @inlinable
+    func chunked(size: Int) -> [Substring] {
+        if isEmpty || size < 1 {
+            return []
+        }
+        var result: [Substring] = []
+        var start = startIndex
+        // index(endIndex, offsetBy: 1) will cause a fatal error
+        var end = index(start, offsetBy: size, limitedBy: endIndex)
+        while let _end = end, _end <= endIndex {
+            let seq: Substring = self[start..<_end]
+            result.append(seq)
+            start = _end
+            end = index(start, offsetBy: size, limitedBy: endIndex)
+        }
+        if start != endIndex {
+            let seq: Substring = self[start..<endIndex]
+            result.append(seq)
+        }
+        return result
+    }
+
+    func editDistance(other: String, replace: Bool, max: Int = 0) -> Int {
+        let from = unicodeScalars.map { $0.value }
+        let to = other.unicodeScalars.map { $0.value }
+        return from.editDistance(to: to, replace: replace, max: max)
+    }
+
     func split(at index: String.Index) -> (Substring, Substring) {
         if index < startIndex {
             return (Substring(), self[startIndex...])
@@ -44,15 +72,15 @@ public extension String {
     }
 
     func string(upTo index: String.Index) -> String {
-        return String(self[..<index])
+        String(self[..<index])
     }
 
     func string(through index: String.Index) -> String {
-        return String(self[...index])
+        String(self[...index])
     }
 
     func string(from index: String.Index) -> String {
-        return String(self[index...])
+        String(self[index...])
     }
 
     func remove(prefix: String) -> String {

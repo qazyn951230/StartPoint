@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 import RxSwift
 import RxCocoa
@@ -407,3 +408,4 @@ public final class AsyncLabelElement: Element<AsyncLabel>, AsyncLabelDelegate {
         return Size(cgSize: rect.size).ceiled
     }
 }
+#endif // #if os(iOS)

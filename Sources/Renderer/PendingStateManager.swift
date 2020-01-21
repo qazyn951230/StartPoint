@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import Dispatch
 
 public final class PendingStateManager {
@@ -66,3 +67,4 @@ public final class PendingStateManager {
         }
     }
 }
+#endif // #if os(iOS)

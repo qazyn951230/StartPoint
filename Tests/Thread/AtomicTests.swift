@@ -25,7 +25,6 @@ import Dispatch
 @testable import StartPoint
 
 class AtomicTests: XCTestCase {
-    // https://en.cppreference.com/w/c/atomic/atomic_fetch_add
     func testCAtomicIntAdd() {
         let value: SPAIntRef = spa_int_create(0)
         XCTAssertEqual(spa_int_load(value), 0)
@@ -42,5 +41,37 @@ class AtomicTests: XCTestCase {
         _ = group.wait(timeout: .distantFuture)
         XCTAssertEqual(spa_int_load(value), 10000)
         spa_int_free(value)
+    }
+
+    // https://github.com/ReactiveX/RxSwift/issues/1853
+    func testCAtomicIntDataRace() {
+        let value  = spa_int_create(0)
+        let group = DispatchGroup()
+        for i in 0...100 {
+            DispatchQueue.global(qos: .background).async {
+                if i % 2 == 0 {
+                    spa_int_add(value, 1)
+                } else {
+                    spa_int_sub(value, 1)
+                }
+                if i == 100 {
+                    group.leave()
+                }
+            }
+        }
+        group.enter()
+        _ = group.wait(timeout: .distantFuture)
+        XCTAssertEqual(spa_int_load(value), 1)
+        spa_int_free(value)
+    }
+
+    func testCAtomicIntPerformance() {
+        measure {
+            let value = spa_int_create(0)
+            for _ in 0..<LockTests.max {
+                spa_int_add(value, 1)
+            }
+            spa_int_free(value)
+        }
     }
 }

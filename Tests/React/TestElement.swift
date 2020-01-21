@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 @testable import StartPoint
 import XCTest
 import Dispatch
@@ -45,3 +46,4 @@ class ElementTestCase: XCTestCase {
         XCTAssertEqual(result, DispatchTimeoutResult.success)
     }
 }
+#endif // #if os(iOS)

@@ -20,8 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import UIKit
 import CoreGraphics
+#if canImport(UIKit)
+import UIKit
+#endif
 
 public enum LayoutAttribute {
     case left
@@ -61,6 +63,7 @@ extension LayoutView {
     }
 }
 
+#if canImport(UIKit)
 extension UIView: LayoutView {
     public var parent: LayoutView? {
         return superview
@@ -482,3 +485,4 @@ public class Layout {
         view.frame = CGRect(x: _left, y: _top, width: _width, height: _height).ceiled
     }
 }
+#endif

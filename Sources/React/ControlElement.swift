@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class ControlElement<Control>: Element<Control> where Control: UIControl {
 }
+#endif // #if os(iOS)

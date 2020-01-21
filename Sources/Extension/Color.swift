@@ -23,19 +23,22 @@
 #if canImport(UIKit)
 import UIKit
 #endif
+
 #if canImport(AppKit)
 import AppKit
 #endif
+
 import CoreGraphics
 import QuartzCore
 
 @inline(__always)
 fileprivate func convert(_ value: UInt32) -> CGFloat {
-    return CGFloat(value) / CGFloat(255.0)
+    CGFloat(value) / CGFloat(255.0)
 }
 
 @inline(__always)
-fileprivate func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
+@usableFromInline
+func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
     let value = value < 0xFFFFFFFF ? value : 0xFFFFFFFF
     let a: UInt32 = (value > 0x00FFFFFF) ? ((value & 0xFF000000) >> 24) : 0xFF
     let r = (value & 0x00FF0000) >> 16
@@ -45,8 +48,9 @@ fileprivate func hexColor<T>(_ value: UInt32, creator: (CGFloat, CGFloat, CGFloa
 }
 
 @inline(__always)
-fileprivate func hexColor<T>(_ value: UInt32, alpha: CGFloat,
-                             creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
+@usableFromInline
+func hexColor<T>(_ value: UInt32, alpha: CGFloat,
+                 creator: (CGFloat, CGFloat, CGFloat, CGFloat) -> T) -> T {
     let value = value < 0xFFFFFF ? value : 0xFFFFFF
     let r = (value & 0x00FF0000) >> 16
     let g = (value & 0x0000FF00) >> 8
@@ -55,20 +59,19 @@ fileprivate func hexColor<T>(_ value: UInt32, alpha: CGFloat,
 }
 
 #if canImport(UIKit)
+
 public extension UIColor {
+    @inlinable
     static func hex(_ value: UInt32) -> UIColor {
-        return hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
+        hexColor(value, creator: UIColor.init(red:green:blue:alpha:))
     }
 
+    @inlinable
     static func hex(_ value: UInt32, alpha: CGFloat) -> UIColor {
-        return hexColor(value, alpha: alpha, creator: UIColor.init(red:green:blue:alpha:))
+        hexColor(value, alpha: alpha, creator: UIColor.init(red:green:blue:alpha:))
     }
 
-    // red:
-    // On return, the red component of the color object. On applications linked for iOS 10 or later,
-    // the red component is specified in an extended range sRGB color space and can have any value.
-    // Values between 0.0 and 1.0 are inside the sRGB color gamut. On earlier versions of iOS,
-    // the specified value is always between 0.0 and 1.0.
+    @inlinable
     func rgba() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         var r: CGFloat = 0
         var g: CGFloat = 0
@@ -78,6 +81,7 @@ public extension UIColor {
         return (r, g, b, a)
     }
 
+    @inlinable
     func rgbaHex() -> UInt32 {
         let (r, g, b, a) = self.rgba()
         var value: UInt32 = UInt32(a * 255) << 24
@@ -87,82 +91,91 @@ public extension UIColor {
         return value
     }
 
-#if DEBUG
+    @inlinable
     static var random: UIColor {
-        return UIColor.hex(UInt32.random(in: 0...0xFFFFFF))
+        UIColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
-#endif
 }
 
 public extension CGColor {
+    @inlinable
     static func hex(_ value: UInt32) -> CGColor {
-        return UIColor.hex(value).cgColor
+        UIColor.hex(value).cgColor
     }
 
+    @inlinable
     static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
-        return UIColor.hex(value, alpha: alpha).cgColor
+        UIColor.hex(value, alpha: alpha).cgColor
     }
 }
 
-#if DEBUG
+
 extension UIView {
+    @inline(__always)
     public func randomBackgroundColor() {
         backgroundColor = UIColor.random
     }
 }
 
 extension CALayer {
+    @inline(__always)
     public func randomBackgroundColor() {
         backgroundColor = UIColor.random.cgColor
     }
 }
 
 extension Element {
+    @inline(__always)
     @discardableResult
     public func randomBackgroundColor() -> Self {
-        return backgroundColor(UIColor.random)
+        backgroundColor(UIColor.random)
     }
 }
 
 extension BasicLayerElement {
+    @inline(__always)
     @discardableResult
     public func randomBackgroundColor() -> Self {
-        return backgroundColor(UIColor.random)
+        backgroundColor(UIColor.random)
     }
 }
-#endif
-#endif
+
+#endif // canImport(UIKit)
 
 #if canImport(AppKit)
+
 public extension NSColor {
+    @inlinable
     static func hex(_ value: UInt32) -> NSColor {
-        return hexColor(value, creator: NSColor.init(red:green:blue:alpha:))
+        hexColor(value, creator: NSColor.init(red:green:blue:alpha:))
     }
 
+    @inlinable
     static func hex(_ value: UInt32, alpha: CGFloat) -> NSColor {
-        return hexColor(value, alpha: alpha, creator: NSColor.init(red:green:blue:alpha:))
+        hexColor(value, alpha: alpha, creator: NSColor.init(red:green:blue:alpha:))
     }
 
-#if DEBUG
+    @inlinable
     static var random: NSColor {
-        return NSColor.hex(UInt32.random(in: 0...0xFFFFFF))
+        NSColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
-#endif
 }
 
 public extension CGColor {
+    @inlinable
     static func hex(_ value: UInt32) -> CGColor {
-        return hexColor(value, creator: CGColor.init(red:green:blue:alpha:))
+        hexColor(value, creator: CGColor.init(red:green:blue:alpha:))
     }
 
+    @inlinable
     static func hex(_ value: UInt32, alpha: CGFloat) -> CGColor {
-        return hexColor(value, alpha: alpha, creator: CGColor.init(red:green:blue:alpha:))
+        hexColor(value, alpha: alpha, creator: CGColor.init(red:green:blue:alpha:))
     }
 
-#if DEBUG
+    @inlinable
     static var random: CGColor {
-        return CGColor.hex(UInt32.random(in: 0...0xFFFFFF))
+        CGColor.hex(UInt32.random(in: 0...0xFFFFFF))
     }
-#endif
 }
-#endif
+
+#endif // canImport(AppKit)

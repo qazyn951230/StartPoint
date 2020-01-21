@@ -32,48 +32,66 @@ public extension Locking {
     @discardableResult
     @inline(__always)
     func locking<T>(_ method: () throws -> T) rethrows -> T {
-        lock()
+        self.lock()
         defer {
-            unlock()
+            self.unlock()
         }
         return try method()
     }
 
     @discardableResult
     @inline(__always)
-    func unlocking<T>(_ method: () throws -> T) rethrows -> T {
-        unlock()
+    func locking<T, R>(_ value: T, _ method: (T) throws -> R) rethrows -> R {
+        self.lock()
         defer {
-            lock()
+            self.unlock()
+        }
+        return try method(value)
+    }
+
+    @inline(__always)
+    func locking<T>(into value: inout T, _ method: (inout T) throws -> Void) rethrows {
+        self.lock()
+        defer {
+            self.unlock()
+        }
+        try method(&value)
+    }
+
+    @discardableResult
+    @inline(__always)
+    func unlocking<T>(_ method: () throws -> T) rethrows -> T {
+        self.unlock()
+        defer {
+            self.lock()
         }
         return try method()
     }
 }
 
-@available(iOS 10.0, *)
+@available(OSX 10.12, iOS 10.0, *)
 public final class UnfairLock: Locking {
-    private let _lock: os_unfair_lock_t
+    @usableFromInline
+    var _lock: os_unfair_lock
 
+    @inline(__always)
     public init() {
-        _lock = os_unfair_lock_t.allocate(capacity: 1)
-        _lock.initialize(to: os_unfair_lock())
+        _lock = os_unfair_lock()
     }
 
-    deinit {
-        _lock.deinitialize(count: 1)
-        _lock.deallocate()
-    }
-
+    @inline(__always)
     public func lock() {
-        os_unfair_lock_lock(_lock)
+        os_unfair_lock_lock(&_lock)
     }
 
+    @inline(__always)
     public func unlock() {
-        os_unfair_lock_unlock(_lock)
+        os_unfair_lock_unlock(&_lock)
     }
 
+    @inline(__always)
     public func `try`() -> Bool {
-        return os_unfair_lock_trylock(_lock)
+        return os_unfair_lock_trylock(&_lock)
     }
 }
 
@@ -82,11 +100,9 @@ public final class MutexLock: Locking {
 
     public init(recursive: Bool = false) {
         mutex = UnsafeMutablePointer.allocate(capacity: 1)
-        mutex.initialize(to: pthread_mutex_t())
 
         var attribute = pthread_mutexattr_t()
         pthread_mutexattr_init(&attribute)
-
         defer {
             pthread_mutexattr_destroy(&attribute)
         }
@@ -100,8 +116,6 @@ public final class MutexLock: Locking {
     deinit {
         let status = pthread_mutex_destroy(mutex)
         assert(status == 0, "Unexpected pthread_mutex_destroy error code: \(status)")
-
-        mutex.deinitialize(count: 1)
         mutex.deallocate()
     }
 
@@ -126,6 +140,83 @@ public final class MutexLock: Locking {
             assert(false, "Unexpected pthread_mutex_trylock error code: \(status)")
             return false
         }
+    }
+}
+
+public final class ReadWriteLock {
+    private let lock: UnsafeMutablePointer<pthread_rwlock_t>
+
+    public init(recursive: Bool = false) {
+        lock = UnsafeMutablePointer.allocate(capacity: 1)
+        let status = pthread_rwlock_init(lock, nil)
+        assert(status == 0, "Unexpected pthread_rwlock_init error code: \(status)")
+    }
+
+    deinit {
+        let status = pthread_rwlock_destroy(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_destroy error code: \(status)")
+        lock.deallocate()
+    }
+
+    public func lockRead() {
+        let status = pthread_rwlock_rdlock(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_rdlock error code: \(status)")
+    }
+    
+    public func lockWrite() {
+        let status = pthread_rwlock_wrlock(lock)
+        assert(status == 0, "Unexpected pthread_rwlock_rdlock error code: \(status)")
+    }
+
+    public func unlock() {
+        let status = pthread_rwlock_unlock(lock)
+        assert(status == 0, "Unexpected pthread_mutex_unlock error code: \(status)")
+    }
+
+    public func tryRead() -> Bool {
+        let status = pthread_rwlock_tryrdlock(lock)
+        switch status {
+        case 0:
+            return true
+        case EBUSY:
+            return false
+        default:
+            assert(false, "Unexpected pthread_rwlock_tryrdlock error code: \(status)")
+            return false
+        }
+    }
+    
+    public func tryWrite() -> Bool {
+        let status = pthread_rwlock_trywrlock(lock)
+        switch status {
+        case 0:
+            return true
+        case EBUSY:
+            return false
+        default:
+            assert(false, "Unexpected pthread_rwlock_tryrdlock error code: \(status)")
+            return false
+        }
+    }
+    
+    @discardableResult
+    @inline(__always)
+    public func lockingRead<T>(_ method: () throws -> T) rethrows -> T {
+        self.lockRead()
+        defer {
+            self.unlock()
+        }
+        return try method()
+    }
+    
+    @discardableResult
+    @inline(__always)
+    public func lockingWrite<T>(_ method: () throws -> T) rethrows -> T {
+        self.lockWrite()
+        defer {
+            self.unlock()
+        }
+        return try method()
     }
 }
 

@@ -24,6 +24,6 @@ import Foundation
 
 public struct PackageInfo {
     public static var bundle: Bundle? {
-        return Bundle(identifier: "com.undev.StartPoint")
+        Bundle(identifier: "com.undev.StartPoint")
     }
 }

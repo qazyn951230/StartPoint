@@ -25,7 +25,7 @@ import ObjectiveC.runtime
 
 extension NSObject {
     func associatedObject<T>(key: UnsafeRawPointer) -> T? {
-        return objc_getAssociatedObject(self, key) as? T
+        objc_getAssociatedObject(self, key) as? T
     }
 
     func associatedObject<T>(key: UnsafeRawPointer, `default`: @autoclosure () -> T) -> T {

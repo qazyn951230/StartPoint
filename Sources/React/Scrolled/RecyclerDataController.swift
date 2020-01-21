@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 final class AttributesCache {
@@ -229,3 +230,4 @@ final class RecyclerDataController: UICollectionViewLayout, DataController,
         }
     }
 }
+#endif // #if os(iOS)

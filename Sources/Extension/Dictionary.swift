@@ -30,7 +30,7 @@ public extension Dictionary {
         }
         return map
     }
-    
+
     func firstValue(where predicate: (Key, Value) throws -> Bool) rethrows -> Value? {
         for (key, value) in self {
             if try predicate(key, value) {
@@ -38,5 +38,26 @@ public extension Dictionary {
             }
         }
         return nil
+    }
+
+    static func generate(count: Int, _ generator: (Int) throws -> (Key, Value)) rethrows
+            -> Dictionary<Key, Value> {
+        var result: [Key: Value] = [:]
+        for index in 0..<count {
+            let (key, value) = try generator(index)
+            result[key] = value
+        }
+        return result
+    }
+
+    static func generate(from: Key, _ generator: (Key) throws -> (Key, Value)?) rethrows
+            -> Dictionary<Key, Value> {
+        var result: [Key: Value] = [:]
+        var last = from
+        while let (_key, _value) = try generator(last) {
+            result[_key] = _value
+            last = _key
+        }
+        return result
     }
 }

@@ -62,6 +62,14 @@ public extension Array {
     }
 
     static func from(_ value: Element?...) -> Array<Element> {
-        return value.compactMap(Function.this)
+        value.compactMap(Function.this)
+    }
+
+    static func generate(count: Int, _ generator: (Int) throws -> Element) rethrows -> Array<Element> {
+        var result: [Element] = []
+        for index in 0..<count {
+            result.append(try generator(index))
+        }
+        return result
     }
 }

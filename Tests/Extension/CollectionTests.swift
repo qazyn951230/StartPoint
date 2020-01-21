@@ -26,59 +26,42 @@ import XCTest
 class CollectionTests: XCTestCase {
     func testSplit() {
         let array = [1, 2, 3, 4]
-        let result = array.split(upTo: 0)
+        let result = array.chunked(size: 0)
         XCTAssertEqual(result, [] as [ArraySlice<Int>])
 
-        let result1 = array.split(upTo: 1)
+        let result1 = array.chunked(size: 1)
         XCTAssertEqual(result1, [[1], [2], [3], [4]] as [ArraySlice<Int>])
 
-        let result2 = array.split(upTo: 2)
+        let result2 = array.chunked(size: 2)
         XCTAssertEqual(result2, [[1, 2], [3, 4]] as [ArraySlice<Int>])
 
-        let result3 = array.split(upTo: 3)
+        let result3 = array.chunked(size: 3)
         XCTAssertEqual(result3, [[1, 2, 3], [4]] as [ArraySlice<Int>])
 
-        let result4 = array.split(upTo: 4)
+        let result4 = array.chunked(size: 4)
         XCTAssertEqual(result4, [[1, 2, 3, 4]] as [ArraySlice<Int>])
 
-        let result5 = array.split(upTo: 5)
+        let result5 = array.chunked(size: 5)
         XCTAssertEqual(result5, [[1, 2, 3, 4]] as [ArraySlice<Int>])
     }
 
     func testEmptyArraySplit() {
         let array = [] as [Int]
         for i in 0..<6 {
-            let result = array.split(upTo: i)
-            XCTAssertEqual(result, [] as [ArraySlice<Int>], "upTo: \(i)")
+            let result = array.chunked(size: i)
+            XCTAssertEqual(result, [] as [ArraySlice<Int>], "size: \(i)")
         }
     }
 
-    func testStringSplit() {
-        let string = "1234"
-        let result = string.split(upTo: 0)
-        XCTAssertEqual(result, [] as [Substring])
+    func testEditDistance() {
+        var from = [1, 2, 3]
+        var to = [2, 4]
+        XCTAssertEqual(from.editDistance(to: to, replace: true), 2)
+        XCTAssertEqual(from.editDistance(to: to, replace: false), 3)
 
-        let result1 = string.split(upTo: 1)
-        XCTAssertEqual(result1, ["1", "2", "3", "4"] as [Substring])
-
-        let result2 = string.split(upTo: 2)
-        XCTAssertEqual(result2, ["12", "34"] as [Substring])
-
-        let result3 = string.split(upTo: 3)
-        XCTAssertEqual(result3, ["123", "4"] as [Substring])
-
-        let result4 = string.split(upTo: 4)
-        XCTAssertEqual(result4, ["1234"] as [Substring])
-
-        let result5 = string.split(upTo: 5)
-        XCTAssertEqual(result5, ["1234"] as [Substring])
-    }
-
-    func testEmptyStringSplit() {
-        let string = String.empty
-        for i in 0..<6 {
-            let result = string.split(upTo: i)
-            XCTAssertEqual(result, [] as [Substring], "upTo: \(i)")
-        }
+        from = [1, 2, 3, 4] // cafe
+        to = [1, 5, 3, 3, 4, 4] // coffee
+        XCTAssertEqual(from.editDistance(to: to, replace: true), 3)
+        XCTAssertEqual(from.editDistance(to: to, replace: false), 4)
     }
 }

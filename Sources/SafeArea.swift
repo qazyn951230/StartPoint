@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
+
 import UIKit
 
 public struct SafeAreaOption: OptionSet {
@@ -85,6 +87,8 @@ public struct SafeArea {
     }
 
     public static func statusBar() -> CGSize {
-        return CGSize(width: Device.width, height: Device.statusBar)
+        CGSize(width: Device.width, height: Device.statusBar)
     }
 }
+
+#endif // os(iOS)

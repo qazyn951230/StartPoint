@@ -22,7 +22,7 @@
 
 // https://opensource.apple.com/source/CF/CF-1153.18/CFBinaryPList.c.auto.html
 final class BinaryPropertyListReader: PropertyListReader {
-    let stream: FileByteStream
+    var stream: AnyByteStream
     var offsetWidth: Int = 0
     var referenceWidth: Int = 0
     var objectCount: Int = 0
@@ -32,7 +32,7 @@ final class BinaryPropertyListReader: PropertyListReader {
     // Offset => PropertyList
     var objects: [Int: PropertyList] = [:]
 
-    init(stream: FileByteStream) {
+    init(stream: AnyByteStream) {
         self.stream = stream
         super.init()
     }
@@ -46,7 +46,7 @@ final class BinaryPropertyListReader: PropertyListReader {
     }
 
     private func readHeader() -> Bool {
-        guard let raw = stream.peekRaw(size: Header.size) else {
+        guard let raw = stream.peek(count: Header.size) else {
             return false
         }
         stream.move(offset: Header.size)
@@ -55,8 +55,8 @@ final class BinaryPropertyListReader: PropertyListReader {
     }
 
     private func readFooter() -> Bool {
-        guard stream.move(offset: -Footer.size, seek: .end),
-              let raw = stream.peekRaw(size: Footer.size) else {
+        stream.seek(offset: -Footer.size, direction: .end)
+        guard let raw = stream.peek(count: Footer.size) else {
             return false
         }
         stream.move(offset: Footer.size)
@@ -71,9 +71,7 @@ final class BinaryPropertyListReader: PropertyListReader {
 
     private func readOffsetTable() -> Bool {
         assert(offsetTable.isEmpty)
-        guard stream.move(offset: offsetTableStart, seek: .start) else {
-            return false
-        }
+        stream.seek(offset: offsetTableStart, direction: .start)
         offsetTable.reserveCapacity(objectCount)
         objects.reserveCapacity(objectCount)
         for _ in 0..<objectCount {
@@ -90,9 +88,7 @@ final class BinaryPropertyListReader: PropertyListReader {
         if let cached = objects[offset] {
             return cached
         }
-        if !stream.move(offset: offset, seek: .start) {
-            return PropertyList.null
-        }
+        stream.seek(offset: offset, direction: .start)
         let object = readObject()
         objects[offset] = object
         return object
@@ -162,7 +158,7 @@ final class BinaryPropertyListReader: PropertyListReader {
     private func readData(size: Int) -> PropertyListData {
         let length = readLength(size: size)
         var data = Data()
-        if length > 0, let raw = stream.peekRaw(size: length) {
+        if length > 0, let raw = stream.peek(count: length) {
             data.append(raw, count: length)
         }
         return PropertyListData(data)
@@ -171,7 +167,7 @@ final class BinaryPropertyListReader: PropertyListReader {
     private func readASCIIString(size: Int) -> PropertyListString {
         let length = readLength(size: size) * MemoryLayout<UInt8>.size
         var data = Data()
-        if length > 0, let raw = stream.peekRaw(size: length) {
+        if length > 0, let raw = stream.peek(count: length) {
             data.append(raw, count: length)
         }
         let text = String(data: data, encoding: .ascii)
@@ -181,7 +177,7 @@ final class BinaryPropertyListReader: PropertyListReader {
     private func readUTF16String(size: Int) -> PropertyListString {
         let length = readLength(size: size) * MemoryLayout<UInt16>.size
         var data = Data()
-        if length > 0, let raw = stream.peekRaw(size: length) {
+        if length > 0, let raw = stream.peek(count: length) {
             data.append(raw, count: length)
         }
         let text = String(data: data, encoding: .utf16BigEndian)

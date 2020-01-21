@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #if os(iOS)
+
 public func match<T>(v4: T, v5: T, v6: T, v6p: T, x: T) -> T {
     switch Device.current {
     case .phone4:
@@ -102,7 +103,8 @@ public func match<T>(v320: T?, v375: T?, v414: T?) -> T? {
 public func within<T:Comparable>(_ value: T, min: T, max: T) -> T {
     return Swift.max(min, Swift.min(value, max))
 }
-#endif
+
+#endif // os(iOS)
 
 public func address(of object: Any) -> String {
     return stringAddress(object)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class ElementCollectionCell: UICollectionViewCell, ElementContainer {
@@ -33,3 +34,4 @@ public final class ElementReusableView: UICollectionReusableView, ElementContain
 
     public weak var element: BasicElement? = nil
 }
+#endif // #if os(iOS)

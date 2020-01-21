@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 @testable import StartPoint
 import XCTest
 import UIKit
@@ -146,3 +147,4 @@ class ElementTests: ElementTestCase {
         waitForExpectations(timeout: 1)
     }
 }
+#endif // #if os(iOS)

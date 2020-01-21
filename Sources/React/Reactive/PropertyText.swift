@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 import RxSwift
 import RxCocoa
@@ -131,3 +132,4 @@ public extension PropertyText {
         return object.bind(to: value)
     }
 }
+#endif // #if os(iOS)

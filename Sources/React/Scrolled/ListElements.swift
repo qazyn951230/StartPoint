@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import CoreGraphics
 
 public final class ListSectionElement: BasicElement, ArrayScrollSectionMap {
@@ -92,3 +93,4 @@ public final class ListDataElement: BasicElement, ArrayScrollDataMap {
         hasher.combine(sections)
     }
 }
+#endif // #if os(iOS)

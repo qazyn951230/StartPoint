@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import WebKit
 import RxSwift
 
@@ -141,3 +142,4 @@ public final class WebBridge {
         contentController.addUserScript(script)
     }
 }
+#endif // #if os(iOS)

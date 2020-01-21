@@ -20,25 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-//import Darwin.C
-//
-//public class FileSystem {
-//    public var current: Path {
-//        get {
-//            let size = Int(PATH_MAX)
-//            let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: size)
-//            defer {
-//                buffer.deallocate()
-//            }
-//            getcwd(buffer, size)
-//            return Path(String(cString: buffer))
-//        }
-//        set {
-//           _ = newValue.string.withCString(chdir)
-//        }
-//    }
-//
-//    public func copy(from: Path, to: Path) {
-//
-//    }
-//}
+import Foundation
+import Darwin.C
+
+public protocol FileSystem {
+    var current: Path { get set }
+
+    func copy(from: Path, to: Path) throws
+    func exists(_ path: Path) -> Bool
+    func exists(directory path: Path) -> Bool
+    func makeDirectory(_ path: Path) throws
+    func makeDirectories(_ path: Path) throws
+    func makeIterator(_ path: Path) throws -> DirectoryIterator
+    func move(from: Path, to: Path) throws
+    func readDirectory(_ path: Path) throws -> [Path]
+    func readFile(at path: Path) throws -> Data
+    func readSymbolicLink(at path: Path) throws -> Path
+    func remove(_ path: Path) throws
+    func status(for path: Path, follow: Bool) throws  -> FileStatus
+}
+
+public extension FileSystem {
+    @inlinable
+    func status(for path: Path) throws  -> FileStatus {
+        try status(for: path, follow: false)
+    }
+}

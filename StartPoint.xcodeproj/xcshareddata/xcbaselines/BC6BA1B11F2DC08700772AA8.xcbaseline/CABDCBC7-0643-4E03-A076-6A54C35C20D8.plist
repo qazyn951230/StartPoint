@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>classNames</key>
+	<dict>
+		<key>AtomicTests</key>
+		<dict>
+			<key>testCAtomicIntPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.54615</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>AtomicTests2</key>
+		<dict>
+			<key>testCppAtomicIntPerformance</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.010369</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>AtomicTests3</key>
+		<dict>
+			<key>testCppAtomicIntPerformance</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.011111</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>JSONPerformanceTests</key>
+		<dict>
+			<key>testDecodePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0034116</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+			<key>testNSDecodePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.001271</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+			<key>testNSParsingPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.00040919</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+			<key>testNSParsingSamplePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0041338</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+			<key>testParsingPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0016693</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+			<key>testParsingSamplePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.021631</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:16:18</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>LockTests</key>
+		<dict>
+			<key>testUnfairLockPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.59968</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:33:04</string>
+				</dict>
+			</dict>
+			<key>testUnfairLockPerformance1()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.59831</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:33:04</string>
+				</dict>
+			</dict>
+			<key>testUnfairLockPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.59025</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:33:04</string>
+				</dict>
+			</dict>
+			<key>testUnfairLockPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.59349</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:33:04</string>
+				</dict>
+			</dict>
+			<key>testUnfairLockPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.53763</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Jan 2, 2020 at 15:33:04</string>
+				</dict>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

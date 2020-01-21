@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public final class FlexButton: UIControl {
@@ -65,3 +66,4 @@ public final class FlexButton: UIControl {
         root.build(in: self)
     }
 }
+#endif // #if os(iOS)

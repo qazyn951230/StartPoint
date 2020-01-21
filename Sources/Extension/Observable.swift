@@ -20,22 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import RxSwift
 
 public extension ObservableType {
     @inlinable
-    static func first(_ method: () throws -> E) -> Observable<E> {
+    static func first(_ method: () throws -> Element) -> Observable<Element> {
         do {
             let e = try method()
-            return Observable<E>.just(e)
+            return Observable<Element>.just(e)
         } catch let error {
-            return Observable<E>.error(error)
+            return Observable<Element>.error(error)
         }
     }
 
 #if RxCompactMap
     public func compactMap<R>(_ transform: @escaping (E) throws -> R?) -> Observable<R> {
-        return Observable<R>.create { observer in
+        Observable<R>.create { observer in
             let subscription = self.subscribe { e in
                 switch e {
                 case .next(let value):
@@ -57,3 +58,4 @@ public extension ObservableType {
     }
 #endif
 }
+#endif // #if os(iOS)

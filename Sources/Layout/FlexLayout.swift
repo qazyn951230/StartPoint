@@ -195,7 +195,7 @@ public final class FlexLayout: Equatable {
     }
     
     public func replace(at index: Int, with element: FlexLayout) {
-        guard let old = children.element(at: index) else {
+        guard let old = children.at(index) else {
             return
         }
         children.replace(at: index, with: element)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 public protocol TableElementDelegate: class {
@@ -107,3 +108,4 @@ public class TableElement: BasicTableElement {
         dataController.reloadData(completion: completion)
     }
 }
+#endif // #if os(iOS)

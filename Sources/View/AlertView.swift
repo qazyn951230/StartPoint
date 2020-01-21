@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class BasicAlertView: Hashable {
@@ -234,3 +235,4 @@ public final class StartAlertView: BasicAlertView {
 //        case material
 //    }
 }
+#endif // #if os(iOS)

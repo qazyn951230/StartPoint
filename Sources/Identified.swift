@@ -20,35 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if canImport(UIKit)
 import UIKit
+#endif
 
 public protocol Identified {
-    var identifier: String { get }
-}
-
-public protocol ClassIdentified {
     static var identifier: String { get }
 }
 
-public extension ClassIdentified {
+public extension Identified {
     static var identifier: String {
-        return String(describing: self)
+        String(describing: self)
     }
 }
 
-public extension ClassIdentified where Self: UITableViewCell {
+#if canImport(UIKit)
+
+public extension Identified where Self: UITableViewCell {
     static func register(to tableView: UITableView) {
         tableView.register(self, forCellReuseIdentifier: identifier)
     }
 }
 
-public extension ClassIdentified where Self: UICollectionViewCell {
+public extension Identified where Self: UICollectionViewCell {
     static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forCellWithReuseIdentifier: identifier)
     }
 }
 
-public extension ClassIdentified where Self: UICollectionReusableView {
+public extension Identified where Self: UICollectionReusableView {
     static func register(to collectionView: UICollectionView) {
         collectionView.register(self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                 withReuseIdentifier: identifier)
@@ -57,5 +57,7 @@ public extension ClassIdentified where Self: UICollectionReusableView {
     }
 }
 
-extension UIView: ClassIdentified { }
-extension UIViewController: ClassIdentified { }
+extension UIView: Identified { }
+extension UIViewController: Identified { }
+
+#endif // canImport(UIKit)

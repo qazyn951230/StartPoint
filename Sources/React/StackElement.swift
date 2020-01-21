@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#if os(iOS)
 import UIKit
 
 open class StackElement: BasicElement {
@@ -48,3 +49,4 @@ open class StackElement: BasicElement {
         return StackElement(direction: .column, children: any.compactMap(Function.this))
     }
 }
+#endif // #if os(iOS)

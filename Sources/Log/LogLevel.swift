@@ -22,11 +22,11 @@
 
 public enum LogLevel: Int, Comparable, CustomStringConvertible {
     case off = 0
-    case error = 1
-    case warn = 2
-    case info = 3
-    case debug = 4
-    case verbose = 5
+    case error = 10
+    case warn = 50
+    case info = 80
+    case debug = 90
+    case verbose = 100
 
     public var description: String {
         switch self {
@@ -46,22 +46,22 @@ public enum LogLevel: Int, Comparable, CustomStringConvertible {
     }
 
     public static func ==(lhs: LogLevel, rhs: LogLevel) -> Bool {
-        return lhs.rawValue == rhs.rawValue
+        lhs.rawValue == rhs.rawValue
     }
 
     public static func <(lhs: LogLevel, rhs: LogLevel) -> Bool {
-        return lhs.rawValue < rhs.rawValue
+        lhs.rawValue < rhs.rawValue
     }
 
     public static func <=(lhs: LogLevel, rhs: LogLevel) -> Bool {
-        return lhs.rawValue <= rhs.rawValue
+        lhs.rawValue <= rhs.rawValue
     }
 
     public static func >=(lhs: LogLevel, rhs: LogLevel) -> Bool {
-        return lhs.rawValue >= rhs.rawValue
+        lhs.rawValue >= rhs.rawValue
     }
 
     public static func >(lhs: LogLevel, rhs: LogLevel) -> Bool {
-        return lhs.rawValue > rhs.rawValue
+        lhs.rawValue > rhs.rawValue
     }
 }
