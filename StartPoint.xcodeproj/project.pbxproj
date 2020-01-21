@@ -2094,6 +2094,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/Info.plist;
 				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
@@ -2106,6 +2107,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = Sources/Info.plist;
 				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = com.undev.StartCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator";
