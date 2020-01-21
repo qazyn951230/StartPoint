@@ -29,10 +29,10 @@ protocol ElementVisitor {
     func visit<Layer: CALayer>(layer element: BasicLayerElement<Layer>)
 }
 
-final class ElementHtmlPrinter: DataStreamWriter, ElementVisitor {
+final class ElementHtmlPrinter: StreamWriter, ElementVisitor {
     let flexPrinter: FlexHtmlPrinter
 
-    override init(stream: DataStream) {
+    override init(stream: AnyByteStream) {
         flexPrinter = FlexHtmlPrinter(stream: stream, options: [])
         super.init(stream: stream)
     }
@@ -117,7 +117,7 @@ final class ElementHtmlPrinter: DataStreamWriter, ElementVisitor {
 
 public extension BasicElement {
     func print() {
-        let printer = ElementHtmlPrinter()
+        let printer = ElementHtmlPrinter(stream: AnyByteStream.file(.standardInput()))
         printer.print(basic: self)
     }
 }

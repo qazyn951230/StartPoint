@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 import Foundation
+
 public class JSONDataWriter: JSONWriter {
     public typealias Output = Data
 

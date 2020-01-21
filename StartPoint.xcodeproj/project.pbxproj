@@ -282,6 +282,7 @@
 		BCDD466623D6E65E00B55CC6 /* AtomicCxxTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = BCDD466423D6E65E00B55CC6 /* AtomicCxxTests.mm */; };
 		BCDD466823D6E80900B55CC6 /* StartCore.h in Headers */ = {isa = PBXBuildFile; fileRef = BCDD466723D6E80900B55CC6 /* StartCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCDD466A23D6E81C00B55CC6 /* StartPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = BCDD466923D6E81C00B55CC6 /* StartPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCDD467023D6FCDA00B55CC6 /* StreamWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDD466F23D6FCDA00B55CC6 /* StreamWriter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -615,6 +616,7 @@
 		BCDD466423D6E65E00B55CC6 /* AtomicCxxTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AtomicCxxTests.mm; sourceTree = "<group>"; };
 		BCDD466723D6E80900B55CC6 /* StartCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartCore.h; sourceTree = "<group>"; };
 		BCDD466923D6E81C00B55CC6 /* StartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartPoint.h; sourceTree = "<group>"; };
+		BCDD466F23D6FCDA00B55CC6 /* StreamWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamWriter.swift; sourceTree = "<group>"; };
 		BCF881D723715E880062227E /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
 		BCF881D823715EB40062227E /* Universal-Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Universal-Test.xcconfig"; sourceTree = "<group>"; };
 		BCF881D923715EBD0062227E /* Universal-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Universal-Framework.xcconfig"; sourceTree = "<group>"; };
@@ -790,19 +792,19 @@
 			children = (
 				BCDD442423D6E12900B55CC6 /* include */,
 				BCDD443023D6E12900B55CC6 /* ByteArray.cpp */,
-				BCDD443123D6E12900B55CC6 /* Double.cpp */,
-				BCDD443223D6E12900B55CC6 /* JSON.cpp */,
-				BCDD442223D6E12900B55CC6 /* LinkedList.cpp */,
-				BCDD465323D6E36200B55CC6 /* Core.h */,
 				BCDD442C23D6E12900B55CC6 /* ByteArray.hpp */,
+				BCDD465323D6E36200B55CC6 /* Core.h */,
+				BCDD443123D6E12900B55CC6 /* Double.cpp */,
 				BCDD442123D6E12900B55CC6 /* IntToChar.hpp */,
+				BCDD443223D6E12900B55CC6 /* JSON.cpp */,
 				BCDD442023D6E12900B55CC6 /* JSON.hpp */,
+				BCDD442323D6E12900B55CC6 /* JSON.mm */,
+				BCDD442223D6E12900B55CC6 /* LinkedList.cpp */,
 				BCDD443323D6E12900B55CC6 /* LinkedList.hpp */,
+				BCDD442E23D6E12900B55CC6 /* Object.mm */,
 				BCDD442F23D6E12900B55CC6 /* Optional.hpp */,
 				BCDD441F23D6E12900B55CC6 /* Parser.hpp */,
 				BCDD442D23D6E12900B55CC6 /* Stream.hpp */,
-				BCDD442323D6E12900B55CC6 /* JSON.mm */,
-				BCDD442E23D6E12900B55CC6 /* Object.mm */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -824,15 +826,15 @@
 		BCDD444823D6E12F00B55CC6 /* StartCore */ = {
 			isa = PBXGroup;
 			children = (
+				BCDD466723D6E80900B55CC6 /* StartCore.h */,
+				BCDD448423D6E12F00B55CC6 /* Function.swift */,
+				BCDD447F23D6E12F00B55CC6 /* StartCore.swift */,
 				BCDD445423D6E12F00B55CC6 /* Codable */,
 				BCDD447123D6E12F00B55CC6 /* Date */,
 				BCDD449223D6E12F00B55CC6 /* Error */,
 				BCDD444923D6E12F00B55CC6 /* Extension */,
 				BCDD447323D6E12F00B55CC6 /* FileSystem */,
-				BCDD448423D6E12F00B55CC6 /* Function.swift */,
 				BCDD448023D6E12F00B55CC6 /* Log */,
-				BCDD466723D6E80900B55CC6 /* StartCore.h */,
-				BCDD447F23D6E12F00B55CC6 /* StartCore.swift */,
 				BCDD446823D6E12F00B55CC6 /* Stream */,
 				BCDD448523D6E12F00B55CC6 /* Structure */,
 				BCDD448C23D6E12F00B55CC6 /* Thread */,
@@ -860,25 +862,25 @@
 		BCDD445423D6E12F00B55CC6 /* Codable */ = {
 			isa = PBXGroup;
 			children = (
-				BCDD445523D6E12F00B55CC6 /* Notated.swift */,
+				BCDD446123D6E12F00B55CC6 /* AnyCodingKey.swift */,
 				BCDD445623D6E12F00B55CC6 /* AnyNotation.swift */,
-				BCDD445723D6E12F00B55CC6 /* JSONEncoder.swift */,
-				BCDD445823D6E12F00B55CC6 /* PropertyList.swift */,
 				BCDD445923D6E12F00B55CC6 /* BinaryPropertyListReader.swift */,
-				BCDD445A23D6E12F00B55CC6 /* JSONVisitor.swift */,
-				BCDD445B23D6E12F00B55CC6 /* JSONDecoder.swift */,
-				BCDD445C23D6E12F00B55CC6 /* PropertyListKind.swift */,
-				BCDD445D23D6E12F00B55CC6 /* JSONGenerator.swift */,
-				BCDD445E23D6E12F00B55CC6 /* Notation.swift */,
 				BCDD445F23D6E12F00B55CC6 /* JSON.swift */,
 				BCDD446023D6E12F00B55CC6 /* JSONDataWriter.swift */,
-				BCDD446123D6E12F00B55CC6 /* AnyCodingKey.swift */,
-				BCDD446223D6E12F00B55CC6 /* TextPropertyListReader.swift */,
-				BCDD446323D6E12F00B55CC6 /* StructureWriter.swift */,
-				BCDD446423D6E12F00B55CC6 /* XMLNotation.swift */,
-				BCDD446523D6E12F00B55CC6 /* PropertyListReader.swift */,
-				BCDD446623D6E12F00B55CC6 /* JSONWriter.swift */,
+				BCDD445B23D6E12F00B55CC6 /* JSONDecoder.swift */,
+				BCDD445723D6E12F00B55CC6 /* JSONEncoder.swift */,
+				BCDD445D23D6E12F00B55CC6 /* JSONGenerator.swift */,
 				BCDD446723D6E12F00B55CC6 /* JSONParseError.swift */,
+				BCDD445A23D6E12F00B55CC6 /* JSONVisitor.swift */,
+				BCDD446623D6E12F00B55CC6 /* JSONWriter.swift */,
+				BCDD445523D6E12F00B55CC6 /* Notated.swift */,
+				BCDD445E23D6E12F00B55CC6 /* Notation.swift */,
+				BCDD445823D6E12F00B55CC6 /* PropertyList.swift */,
+				BCDD445C23D6E12F00B55CC6 /* PropertyListKind.swift */,
+				BCDD446523D6E12F00B55CC6 /* PropertyListReader.swift */,
+				BCDD446323D6E12F00B55CC6 /* StructureWriter.swift */,
+				BCDD446223D6E12F00B55CC6 /* TextPropertyListReader.swift */,
+				BCDD446423D6E12F00B55CC6 /* XMLNotation.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -886,14 +888,14 @@
 		BCDD446823D6E12F00B55CC6 /* Stream */ = {
 			isa = PBXGroup;
 			children = (
-				BCDD446923D6E12F00B55CC6 /* UnicodeStream.swift */,
-				BCDD446A23D6E12F00B55CC6 /* Stream.swift */,
-				BCDD446B23D6E12F00B55CC6 /* BufferStream.swift */,
-				BCDD446C23D6E12F00B55CC6 /* RandomAccessStream.swift */,
-				BCDD446D23D6E12F00B55CC6 /* ByteStream.swift */,
-				BCDD446E23D6E12F00B55CC6 /* BidirectionalStream.swift */,
-				BCDD446F23D6E12F00B55CC6 /* FileStream.swift */,
 				BCDD447023D6E12F00B55CC6 /* AnyByteStream.swift */,
+				BCDD446E23D6E12F00B55CC6 /* BidirectionalStream.swift */,
+				BCDD446B23D6E12F00B55CC6 /* BufferStream.swift */,
+				BCDD446D23D6E12F00B55CC6 /* ByteStream.swift */,
+				BCDD446F23D6E12F00B55CC6 /* FileStream.swift */,
+				BCDD446C23D6E12F00B55CC6 /* RandomAccessStream.swift */,
+				BCDD446A23D6E12F00B55CC6 /* Stream.swift */,
+				BCDD446923D6E12F00B55CC6 /* UnicodeStream.swift */,
 			);
 			path = Stream;
 			sourceTree = "<group>";
@@ -937,12 +939,12 @@
 		BCDD448523D6E12F00B55CC6 /* Structure */ = {
 			isa = PBXGroup;
 			children = (
-				BCDD448623D6E12F00B55CC6 /* UIntBuffer.swift */,
 				BCDD448723D6E12F00B55CC6 /* Buffer.swift */,
-				BCDD448823D6E12F00B55CC6 /* ListSlice.swift */,
-				BCDD448923D6E12F00B55CC6 /* List.swift */,
 				BCDD448A23D6E12F00B55CC6 /* LinkedList.swift */,
+				BCDD448923D6E12F00B55CC6 /* List.swift */,
+				BCDD448823D6E12F00B55CC6 /* ListSlice.swift */,
 				BCDD448B23D6E12F00B55CC6 /* MemoryBuffer.swift */,
+				BCDD448623D6E12F00B55CC6 /* UIntBuffer.swift */,
 			);
 			path = Structure;
 			sourceTree = "<group>";
@@ -970,17 +972,17 @@
 		BCDD44D623D6E13600B55CC6 /* StartPoint */ = {
 			isa = PBXGroup;
 			children = (
+				BCDD466923D6E81C00B55CC6 /* StartPoint.h */,
+				BCDD44DE23D6E13600B55CC6 /* PackageInfo.swift */,
+				BCDD44D723D6E13600B55CC6 /* R.swift */,
+				BCDD44F723D6E13600B55CC6 /* StartPoint.swift */,
 				BCDD44DF23D6E13600B55CC6 /* Extension */,
 				BCDD44E823D6E13600B55CC6 /* Layout */,
 				BCDD44F323D6E13600B55CC6 /* Network */,
-				BCDD44DE23D6E13600B55CC6 /* PackageInfo.swift */,
 				BCDD451123D6E13600B55CC6 /* Permission */,
-				BCDD44D723D6E13600B55CC6 /* R.swift */,
 				BCDD451E23D6E13600B55CC6 /* React */,
 				BCDD44D823D6E13600B55CC6 /* Renderer */,
 				BCDD454D23D6E13600B55CC6 /* Router */,
-				BCDD466923D6E81C00B55CC6 /* StartPoint.h */,
-				BCDD44F723D6E13600B55CC6 /* StartPoint.swift */,
 				BCDD44F823D6E13600B55CC6 /* TextKit */,
 				BCDD44FB23D6E13600B55CC6 /* View */,
 				BCDD451A23D6E13600B55CC6 /* ViewController */,
@@ -1121,29 +1123,30 @@
 		BCDD451E23D6E13600B55CC6 /* React */ = {
 			isa = PBXGroup;
 			children = (
+				BCDD453D23D6E13600B55CC6 /* BasicElement.swift */,
+				BCDD453B23D6E13600B55CC6 /* BasicElement+Debug.swift */,
 				BCDD451F23D6E13600B55CC6 /* BasicElement+UIKit.swift */,
-				BCDD452023D6E13600B55CC6 /* ShapeElement.swift */,
+				BCDD453F23D6E13600B55CC6 /* ButtonElement.swift */,
 				BCDD452123D6E13600B55CC6 /* ControlElement.swift */,
-				BCDD452223D6E13600B55CC6 /* VisualEffectElement.swift */,
+				BCDD453923D6E13600B55CC6 /* Element.swift */,
+				BCDD454B23D6E13600B55CC6 /* Element+UIKit.swift */,
+				BCDD454023D6E13600B55CC6 /* ElementAction.swift */,
+				BCDD453C23D6E13600B55CC6 /* ElementContainer.swift */,
+				BCDD453723D6E13600B55CC6 /* ElementState.swift */,
 				BCDD452323D6E13600B55CC6 /* Event.swift */,
+				BCDD453823D6E13600B55CC6 /* ImageElement.swift */,
+				BCDD454823D6E13600B55CC6 /* LabelElement.swift */,
+				BCDD453A23D6E13600B55CC6 /* LayerElement.swift */,
+				BCDD454C23D6E13600B55CC6 /* LayoutTransition.swift */,
+				BCDD452023D6E13600B55CC6 /* ShapeElement.swift */,
 				BCDD452423D6E13600B55CC6 /* StackElement.swift */,
+				BCDD466F23D6FCDA00B55CC6 /* StreamWriter.swift */,
+				BCDD453E23D6E13600B55CC6 /* TextFieldElement.swift */,
+				BCDD452223D6E13600B55CC6 /* VisualEffectElement.swift */,
 				BCDD452523D6E13600B55CC6 /* Reactive */,
 				BCDD452923D6E13600B55CC6 /* Scrolled */,
-				BCDD453723D6E13600B55CC6 /* ElementState.swift */,
-				BCDD453823D6E13600B55CC6 /* ImageElement.swift */,
-				BCDD453923D6E13600B55CC6 /* Element.swift */,
-				BCDD453A23D6E13600B55CC6 /* LayerElement.swift */,
-				BCDD453B23D6E13600B55CC6 /* BasicElement+Debug.swift */,
-				BCDD453C23D6E13600B55CC6 /* ElementContainer.swift */,
-				BCDD453D23D6E13600B55CC6 /* BasicElement.swift */,
-				BCDD453E23D6E13600B55CC6 /* TextFieldElement.swift */,
-				BCDD453F23D6E13600B55CC6 /* ButtonElement.swift */,
-				BCDD454023D6E13600B55CC6 /* ElementAction.swift */,
 				BCDD454123D6E13600B55CC6 /* View */,
-				BCDD454823D6E13600B55CC6 /* LabelElement.swift */,
 				BCDD454923D6E13600B55CC6 /* ViewController */,
-				BCDD454B23D6E13600B55CC6 /* Element+UIKit.swift */,
-				BCDD454C23D6E13600B55CC6 /* LayoutTransition.swift */,
 			);
 			path = React;
 			sourceTree = "<group>";
@@ -1759,6 +1762,7 @@
 				BCDD455223D6E13600B55CC6 /* PendingStateManager.swift in Sources */,
 				BCDD457D23D6E13600B55CC6 /* Device.swift in Sources */,
 				BCDD458923D6E13600B55CC6 /* HealthPermission.swift in Sources */,
+				BCDD467023D6FCDA00B55CC6 /* StreamWriter.swift in Sources */,
 				BCDD459D23D6E13600B55CC6 /* RecyclerElements.swift in Sources */,
 				BCDD45A123D6E13600B55CC6 /* TableElement.swift in Sources */,
 				BCDD45B023D6E13600B55CC6 /* ElementButton.swift in Sources */,
