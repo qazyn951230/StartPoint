@@ -22,7 +22,6 @@
 
 public final class List<Element>: MutableCollection, RandomAccessCollection, RangeReplaceableCollection {
     public typealias Index = Int
-    public typealias Indices = CountableRange<Int>
     public typealias Iterator = IndexingIterator<List<Element>>
     public typealias SubSequence = ListSlice<Element>
 
