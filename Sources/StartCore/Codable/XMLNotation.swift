@@ -53,7 +53,7 @@ public final class XMLNotation: TypeNotated {
     public init(list: List<XMLNode>) {
         node = nil
         element = nil
-        _array = list.map(XMLNotation.init)
+        _array = [] // list.map { node in XMLNotation(node) }
         resolved = true
     }
 

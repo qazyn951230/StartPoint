@@ -20,30 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public final class ListSlice<Element>: MutableCollection, RandomAccessCollection, RangeReplaceableCollection {
+public final class ListSlice<Element>: MutableCollection {
     public typealias Index = Int
-    public typealias Indices = CountableRange<Int>
+    // IndexingIterator<Element>, Element: Collection
     public typealias Iterator = IndexingIterator<ListSlice<Element>>
+    // List.SubSequence = ListSlice<Element>
+    //  => List.SubSequence == List.SubSequence.SubSequence
     public typealias SubSequence = ListSlice<Element>
 
+    @usableFromInline
     var store: ArraySlice<Element>
 
+    @inlinable
     public init() {
         store = []
     }
+
+    // RangeReplaceableCollection
+    @inlinable
+    public init<S>(_ elements: S) where S : Sequence, Element == S.Element {
+        store = ArraySlice(elements)
+    }
+
+    @inlinable
+    public init(repeating repeatedValue: Element, count: Int) {
+        store = ArraySlice(repeating: repeatedValue, count: count)
+    }
+    // RangeReplaceableCollection
 
     init(slice: ArraySlice<Element>) {
         store = slice
     }
 
-    public init<S>(_ elements: S) where S: Sequence, Element == S.Element {
-        store = ArraySlice<Element>(elements)
-    }
-
-    public init(repeating repeatedValue: Element, count: Int) {
-        store = ArraySlice<Element>(repeating: repeatedValue, count: count)
-    }
-
+    // Collection
     public var isEmpty: Bool {
         store.isEmpty
     }
@@ -52,64 +61,61 @@ public final class ListSlice<Element>: MutableCollection, RandomAccessCollection
         store.count
     }
 
-    public var startIndex: Int {
+    public var startIndex: Index {
         store.startIndex
     }
 
-    public var endIndex: Int {
+    public var endIndex: Index {
         store.endIndex
     }
 
-    public func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C)
-        where C: Collection, Element == C.Element {
-        store.replaceSubrange(subrange, with: newElements)
+    public subscript(position: Index) -> Element {
+        get { // MutableCollection only
+            store[position]
+        }
+        set(newValue) {
+            store[position] = newValue
+        }
     }
 
-    public func index(_ i: Int, offsetBy n: Int) -> Int {
-        store.index(i, offsetBy: n)
-    }
-
-    public func index(_ i: Int, offsetBy n: Int, limitedBy limit: Int) -> Int? {
-        store.index(i, offsetBy: n, limitedBy: limit)
-    }
-
+    @inlinable
     public func distance(from start: Int, to end: Int) -> Int {
         store.distance(from: start, to: end)
     }
 
-    public func index(after i: Int) -> Int {
+    @inlinable
+    public func index(after i: Index) -> Index {
         store.index(after: i)
     }
 
-    public func formIndex(after i: inout Int) {
-        store.formIndex(after: &i)
+    @inlinable
+    public func index(_ i: Int, offsetBy distance: Int) -> Int {
+        store.index(i, offsetBy: distance)
     }
 
-    public subscript(index: Int) -> Element {
-        get {
-            store[index]
-        }
-        set {
-            store[index] = newValue
-        }
+    @inlinable
+    public func index(_ i: Int, offsetBy distance: Int, limitedBy limit: Int) -> Int? {
+        store.index(i, offsetBy: distance, limitedBy: limit)
     }
+    // Collection
 
+    // MutableCollection & RandomAccessCollection & RangeReplaceableCollection
     public subscript(bounds: Range<Int>) -> ListSlice<Element> {
         get {
-            ListSlice(slice: store[bounds])
+            return ListSlice(slice: store[bounds])
         }
         set {
             store[bounds] = newValue.store
         }
     }
+    // MutableCollection & RandomAccessCollection & RangeReplaceableCollection
 }
 
-extension ListSlice: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        store.description
-    }
+extension ListSlice: RandomAccessCollection {}
 
-    public var debugDescription: String {
-        store.debugDescription
+extension ListSlice: RangeReplaceableCollection {
+    @inlinable
+    public func append(_ newElement: Element) {
+        store.append(newElement)
     }
 }

@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/qazyn951230/RxSwift.git",
-                 .revision("3f6822956846aeca6a0aae8c933194bf04431f0d"))
+                 .revision("35f3bb6983f42921dce306d002ddb12dfb1fb7b2"))
     ],
     targets: [
         .target(
