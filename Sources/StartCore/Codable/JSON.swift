@@ -600,32 +600,32 @@ extension JSON {
         JSON(type: JSONType.array)
     }
 
-    public func toDecoder(base: Decoder? = nil, codingPath: [CodingKey]) -> Decoder {
-        let options: SJDecoderOptions
-        if let start = base as? StartJSONDecoder {
-            options = SJDecoderOptions(buffer: buffer,
-                userInfo: start.userInfo,
-                keyDecodingStrategy: start.keyDecodingStrategy,
-                dateDecodingStrategy: start.dateDecodingStrategy,
-                dataDecodingStrategy: start.dataDecodingStrategy,
-                nonConformingFloatDecodingStrategy: start.nonConformingFloatDecodingStrategy)
-        } else if let standard = base as? JSONDecoder {
-            options = SJDecoderOptions(buffer: buffer,
-                userInfo: standard.userInfo,
-                keyDecodingStrategy: standard.keyDecodingStrategy,
-                dateDecodingStrategy: standard.dateDecodingStrategy,
-                dataDecodingStrategy: standard.dataDecodingStrategy,
-                nonConformingFloatDecodingStrategy: standard.nonConformingFloatDecodingStrategy)
-        } else {
-            options = SJDecoderOptions(buffer: buffer,
-                userInfo: base?.userInfo ?? [:],
-                keyDecodingStrategy: .useDefaultKeys,
-                dateDecodingStrategy: .deferredToDate,
-                dataDecodingStrategy: .base64,
-                nonConformingFloatDecodingStrategy: .throw)
-        }
-        return SJDecoder(value: ref, options: options, codingPath: codingPath)
-    }
+//    public func toDecoder(base: Decoder? = nil, codingPath: [CodingKey]) -> Decoder {
+//        let options: SJDecoderOptions
+//        if let start = base as? StartJSONDecoder {
+//            options = SJDecoderOptions(buffer: buffer,
+//                userInfo: start.userInfo,
+//                keyDecodingStrategy: start.keyDecodingStrategy,
+//                dateDecodingStrategy: start.dateDecodingStrategy,
+//                dataDecodingStrategy: start.dataDecodingStrategy,
+//                nonConformingFloatDecodingStrategy: start.nonConformingFloatDecodingStrategy)
+//        } else if let standard = base as? JSONDecoder {
+//            options = SJDecoderOptions(buffer: buffer,
+//                userInfo: standard.userInfo,
+//                keyDecodingStrategy: standard.keyDecodingStrategy,
+//                dateDecodingStrategy: standard.dateDecodingStrategy,
+//                dataDecodingStrategy: standard.dataDecodingStrategy,
+//                nonConformingFloatDecodingStrategy: standard.nonConformingFloatDecodingStrategy)
+//        } else {
+//            options = SJDecoderOptions(buffer: buffer,
+//                userInfo: base?.userInfo ?? [:],
+//                keyDecodingStrategy: .useDefaultKeys,
+//                dateDecodingStrategy: .deferredToDate,
+//                dataDecodingStrategy: .base64,
+//                nonConformingFloatDecodingStrategy: .throw)
+//        }
+//        return SJDecoder(value: ref, options: options, codingPath: codingPath)
+//    }
 }
 
 // MARK: - Single JSON Container
