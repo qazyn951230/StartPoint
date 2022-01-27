@@ -25,7 +25,7 @@
 
 #include "Compiler.h"
 
-#if __cplusplus
+#if (__cplusplus)
 #   define SP_LANG_CXX 1
 #else
 #   define SP_LANG_CXX 0
@@ -37,7 +37,7 @@
 #   define SP_LANG_OBJC 0
 #endif
 
-#if SP_LANG_CXX && SP_LANG_OBJC
+#if (SP_LANG_CXX && SP_LANG_OBJC)
 #   define SP_LANG_OBJCXX 1
 #else
 #   define SP_LANG_OBJCXX 0

@@ -1,3 +1,5 @@
 # StartPoint
 
-A description of this package.
+---
+
+A fundamental package for Apple platforms programming.

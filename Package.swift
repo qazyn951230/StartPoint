@@ -16,31 +16,15 @@ let package = Package(
     targets: [
         .target(
             name: "StartCxx",
-            dependencies: [],
             exclude: [
                 "CMakeLists.txt",
             ]),
-        .target(
-            name: "CAtomics",
-            dependencies: [
-                "StartCxx",
-            ],
-            exclude: [
-                "CMakeLists.txt",
-            ]),
-        .target(
-            name: "Atomics",
-            dependencies: [
-                "CAtomics",
-            ]),
-        .target(
-            name: "StartPoint",
-            dependencies: [
-                "Atomics",
-            ]),
+        .target(name: "StartPoint"),
         .testTarget(
             name: "StartPointTests",
-            dependencies: ["StartPoint"]),
+            dependencies: [
+                "StartPoint",
+            ]),
     ],
     cLanguageStandard: .c11,
     cxxLanguageStandard: .cxx20
